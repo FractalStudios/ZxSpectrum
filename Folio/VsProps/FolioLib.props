@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <PostBuildEvent>
+      <Command>@echo off
+if NOT exist "$(SolutionDir)SDKs" md "$(SolutionDir)SDKs" &gt;NUL
+if NOT exist "$(SolutionDir)SDKs\Folio" md "$(SolutionDir)SDKs\Folio" &gt;NUL
+if exist "$(ProjectDir)Include" if NOT exist "$(SolutionDir)SDKs\Folio\Include" md "$(SolutionDir)SDKs\Folio\Include" &gt;NUL
+if exist "$(ProjectDir)Include" if NOT exist "$(SolutionDir)SDKs\Folio\Include\$(ProjectName)" md "$(SolutionDir)SDKs\Folio\Include\$(ProjectName)" &gt;NUL
+if exist "$(ProjectDir)Include" copy "$(ProjectDir)Include\*.h" "$(SolutionDir)SDKs\Folio\Include\$(ProjectName)" &gt;NUL
+if exist "$(TargetDir)$(TargetName).lib" if NOT exist "$(SolutionDir)SDKs\Folio\Lib" md "$(SolutionDir)SDKs\Folio\Lib" &gt;NUL
+if exist "$(TargetDir)$(TargetName).lib" copy "$(TargetDir)$(TargetName).Lib" "$(SolutionDir)SDKs\Folio\Lib" &gt;NUL</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+</Project>

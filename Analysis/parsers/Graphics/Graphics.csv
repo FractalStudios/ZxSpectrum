@@ -1,0 +1,356 @@
+Background Item Attributes
+==========================
+01CaveDoorFrame, Address = 0xa7de, Width = 4, Height = 3, ColourData = ff ff ff ff ff ff ff ff ff ff ff ff 
+02NormalDoorFrame, Address = 0xa7d0, Width = 4, Height = 3, ColourData = 43 43 43 43 43 00 00 43 43 00 00 43 
+03BigDoorFrame, Address = 0xb4ac, Width = 6, Height = 4, ColourData = 43 43 43 43 43 43 43 43 43 43 43 43 43 43 00 00 43 43 43 43 00 00 43 43 
+04Unknown, Address = 0xaeea, Width = 0, Height = 0, ColourData = 
+05Unknown, Address = 0xaeea, Width = 0, Height = 0, ColourData = 
+06Unknown, Address = 0xaeea, Width = 0, Height = 0, ColourData = 
+07Unknown, Address = 0xaeea, Width = 0, Height = 0, ColourData = 
+08RedLockedNormalDoor, Address = 0xa6fe, Width = 4, Height = 3, ColourData = 43 43 43 43 43 42 46 43 43 42 42 43 
+09GreenLockedNormalDoor, Address = 0xa70c, Width = 4, Height = 3, ColourData = 43 43 43 43 43 44 46 43 43 44 44 43 
+10CyanLockedNormalDoor, Address = 0xa71a, Width = 4, Height = 3, ColourData = 43 43 43 43 43 45 46 43 43 45 45 43 
+11YellowLockedNormalDoor, Address = 0xa728, Width = 4, Height = 3, ColourData = 43 43 43 43 43 46 43 43 43 46 46 43 
+12RedLockedCaveDoor, Address = 0xa736, Width = 4, Height = 3, ColourData = ff ff ff ff ff 42 46 ff ff 42 42 ff 
+13GreenLockedCaveDoor, Address = 0xa744, Width = 4, Height = 3, ColourData = ff ff ff ff ff 44 46 ff ff 44 44 ff 
+14CyanLockedCaveDoor, Address = 0xa752, Width = 4, Height = 3, ColourData = ff ff ff ff ff 45 46 ff ff 45 45 ff 
+15YellowLockedCaveDoor, Address = 0xa760, Width = 4, Height = 3, ColourData = ff ff ff ff ff 46 43 ff ff 46 46 ff 
+16Clock, Address = 0xb774, Width = 4, Height = 4, ColourData = 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 45 
+17Picture, Address = 0xb528, Width = 4, Height = 3, ColourData = ff ff ff ff ff ff ff ff ff ff ff ff 
+18Table, Address = 0xa846, Width = 4, Height = 3, ColourData = 42 42 42 42 42 42 42 42 45 45 45 45 
+19FullChicken, Address = 0xaeea, Width = 0, Height = 0, ColourData = 
+20ChickenCarcass, Address = 0xaeea, Width = 0, Height = 0, ColourData = 
+21AntlerTrophy, Address = 0xc960, Width = 4, Height = 2, ColourData = 47 47 47 47 47 47 47 47 
+22Trophy, Address = 0xc96a, Width = 2, Height = 2, ColourData = 45 45 45 45 
+23Bookcase, Address = 0xc970, Width = 5, Height = 4, ColourData = 46 46 46 46 46 46 45 43 44 46 46 46 46 46 46 46 46 46 46 46 
+24ShutTrapDoor, Address = 0xc998, Width = 4, Height = 4, ColourData = 43 43 43 43 43 46 46 43 43 46 46 43 43 43 43 43 
+25OpenTrapDoor, Address = 0xc986, Width = 4, Height = 4, ColourData = 43 43 43 43 43 00 00 43 43 00 00 43 43 43 43 43 
+26Barrel, Address = 0xd057, Width = 4, Height = 4, ColourData = 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 46 
+27Rug, Address = 0xc9aa, Width = 6, Height = 5, ColourData = 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 07 
+28AcgShield, Address = 0xca50, Width = 2, Height = 2, ColourData = 47 43 43 47 
+29Shield, Address = 0xca56, Width = 2, Height = 2, ColourData = ff ff ff ff 
+30Knight, Address = 0xca5c, Width = 2, Height = 4, ColourData = 45 45 45 45 45 45 45 45 
+31Unknown, Address = 0xaeea, Width = 0, Height = 0, ColourData = 
+32ShutNormalDoor, Address = 0xca74, Width = 4, Height = 3, ColourData = 43 43 43 43 43 47 47 43 43 47 47 43 
+33OpenNormalDoor, Address = 0xa7d0, Width = 4, Height = 3, ColourData = 43 43 43 43 43 00 00 43 43 00 00 43 
+34ShutCaveDoor, Address = 0xca66, Width = 4, Height = 3, ColourData = ff ff ff ff ff 47 47 ff ff 47 47 ff 
+35OpenCaveDoor, Address = 0xa7de, Width = 4, Height = 3, ColourData = ff ff ff ff ff ff ff ff ff ff ff ff 
+36AcgExitDoor, Address = 0xd1ab, Width = 8, Height = 5, ColourData = 46 46 46 46 46 46 46 46 47 47 43 43 43 43 47 47 47 47 43 43 43 43 47 47 ff 47 43 43 43 43 47 ff ff 47 43 43 43 43 47 ff 
+37Picture, Address = 0xd295, Width = 4, Height = 2, ColourData = 46 46 46 46 46 46 46 46 
+38Skeleton, Address = 0xd3b8, Width = 5, Height = 5, ColourData = 47 ff ff ff 47 47 47 47 47 47 ff 47 47 ff ff ff 47 47 47 ff ff ff ff ff ff 
+39Barrels, Address = 0xd4ef, Width = 5, Height = 4, ColourData = 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 43 
+Background Item Sprites
+=======================
+01CaveDoorFrame, Address = 0xbcce, Width = 4, HeightInPixels = 24, SpriteData = 00 02 00 00 00 0f 00 c0 00 3d 87 f0 00 f0 df 78 03 c1 7d 58 0f 62 25 4c 7f 2c 05 4c f2 20 04 86 62 20 04 86 34 40 02 83 1c 40 02 e1 0c 40 02 3b 0c 40 02 26 8c 40 02 2c cc 80 01 38 58 80 01 30 78 80 01 18 38 80 01 0c 18 80 01 0e 0d 00 00 98 07 00 00 98 03 00 00 b0 03 00 00 b0 ff 00 00 ff 
+02NormalDoorFrame, Address = 0xa76e, Width = 4, HeightInPixels = 24, SpriteData = 00 00 00 00 00 07 e0 00 00 77 ee 00 03 7b de c0 07 7b de e0 17 bf fd e8 3b f0 0f dc 7d 80 01 be 3e 00 00 7c cc 00 00 33 f8 00 00 1f f0 00 00 1f 10 00 00 08 f0 00 00 0f f0 00 00 0f 08 00 00 08 f8 00 00 1f f8 00 00 1f 04 00 00 20 7c 00 00 3e 3e 00 00 7c 02 00 00 40 1f 00 00 f8 ff 00 00 ff 
+03BigDoorFrame, Address = 0xb3ea, Width = 6, HeightInPixels = 32, SpriteData = 00 00 00 00 00 00 00 00 0f f0 00 00 00 00 08 10 00 00 00 01 ee 77 80 00 00 1d ee ee b8 00 00 3c e6 67 3c 00 00 9e f6 6f 79 00 01 de f6 6f 7b 80 03 ce 77 ee 73 c0 07 ef 00 00 f7 e0 03 f4 00 00 2f c0 08 e0 00 00 07 10 0e 40 00 00 02 70 1f 00 00 00 00 f8 1f 80 00 00 01 f8 07 80 00 00 01 e0 10 00 00 00 00 08 1f 80 00 00 01 f8 1f 80 00 00 01 f8 1f 80 00 00 01 f8 00 00 00 00 00 00 0f c0 00 00 03 f0 0f e0 00 00 07 f0 07 e0 00 00 07 e0 00 00 00 00 00 00 03 f0 00 00 0f c0 03 f8 00 00 1f c0 01 f8 00 00 1f 80 00 00 00 00 00 00 01 fc 00 00 3f 80 00 fe 00 00 7f 00 ff fe 00 00 3f ff 
+04Unknown, Address = 0xaeea, Width = 0, HeightInPixels = 0, SpriteData = 
+05Unknown, Address = 0xaeea, Width = 0, HeightInPixels = 0, SpriteData = 
+06Unknown, Address = 0xaeea, Width = 0, HeightInPixels = 0, SpriteData = 
+07Unknown, Address = 0xaeea, Width = 0, HeightInPixels = 0, SpriteData = 
+08RedLockedNormalDoor, Address = 0xa69c, Width = 4, HeightInPixels = 24, SpriteData = 00 00 00 00 00 07 e0 00 00 77 ee 00 03 7b de c0 07 7b de e0 17 bf fd e8 3b f0 0f dc 7d 80 01 be 3e c3 06 7c cc c3 06 33 f8 c3 06 1f fe c3 00 1f 1e 63 0e 08 f0 63 19 0f f0 63 17 0f 08 63 07 08 f8 33 00 1f f8 33 18 1f 07 33 18 20 7f 33 18 3e 3e 1b 30 7c 02 1b 30 40 1f 1b 30 f8 ff 1b 30 ff 
+09GreenLockedNormalDoor, Address = 0xa69c, Width = 4, HeightInPixels = 24, SpriteData = 00 00 00 00 00 07 e0 00 00 77 ee 00 03 7b de c0 07 7b de e0 17 bf fd e8 3b f0 0f dc 7d 80 01 be 3e c3 06 7c cc c3 06 33 f8 c3 06 1f fe c3 00 1f 1e 63 0e 08 f0 63 19 0f f0 63 17 0f 08 63 07 08 f8 33 00 1f f8 33 18 1f 07 33 18 20 7f 33 18 3e 3e 1b 30 7c 02 1b 30 40 1f 1b 30 f8 ff 1b 30 ff 
+10CyanLockedNormalDoor, Address = 0xa69c, Width = 4, HeightInPixels = 24, SpriteData = 00 00 00 00 00 07 e0 00 00 77 ee 00 03 7b de c0 07 7b de e0 17 bf fd e8 3b f0 0f dc 7d 80 01 be 3e c3 06 7c cc c3 06 33 f8 c3 06 1f fe c3 00 1f 1e 63 0e 08 f0 63 19 0f f0 63 17 0f 08 63 07 08 f8 33 00 1f f8 33 18 1f 07 33 18 20 7f 33 18 3e 3e 1b 30 7c 02 1b 30 40 1f 1b 30 f8 ff 1b 30 ff 
+11YellowLockedNormalDoor, Address = 0xa69c, Width = 4, HeightInPixels = 24, SpriteData = 00 00 00 00 00 07 e0 00 00 77 ee 00 03 7b de c0 07 7b de e0 17 bf fd e8 3b f0 0f dc 7d 80 01 be 3e c3 06 7c cc c3 06 33 f8 c3 06 1f fe c3 00 1f 1e 63 0e 08 f0 63 19 0f f0 63 17 0f 08 63 07 08 f8 33 00 1f f8 33 18 1f 07 33 18 20 7f 33 18 3e 3e 1b 30 7c 02 1b 30 40 1f 1b 30 f8 ff 1b 30 ff 
+12RedLockedCaveDoor, Address = 0xc2ae, Width = 4, HeightInPixels = 24, SpriteData = 00 02 00 00 00 0f 00 c0 00 3d 87 f0 00 f0 df 38 03 c7 fc 18 0f 38 1c 0c 7f c0 03 0c f8 00 00 86 62 43 02 46 32 c3 03 43 1c c3 03 21 0c c3 00 23 0c 63 0e 26 8c 63 19 2c ce 63 17 78 5a 63 0e 70 7a 33 00 58 3a 33 0c ec 1a 33 0c 98 0d 33 0c 98 07 1b 18 98 03 1b 18 b0 03 1b 18 b0 ff 1b 18 ff 
+13GreenLockedCaveDoor, Address = 0xc2ae, Width = 4, HeightInPixels = 24, SpriteData = 00 02 00 00 00 0f 00 c0 00 3d 87 f0 00 f0 df 38 03 c7 fc 18 0f 38 1c 0c 7f c0 03 0c f8 00 00 86 62 43 02 46 32 c3 03 43 1c c3 03 21 0c c3 00 23 0c 63 0e 26 8c 63 19 2c ce 63 17 78 5a 63 0e 70 7a 33 00 58 3a 33 0c ec 1a 33 0c 98 0d 33 0c 98 07 1b 18 98 03 1b 18 b0 03 1b 18 b0 ff 1b 18 ff 
+14CyanLockedCaveDoor, Address = 0xc2ae, Width = 4, HeightInPixels = 24, SpriteData = 00 02 00 00 00 0f 00 c0 00 3d 87 f0 00 f0 df 38 03 c7 fc 18 0f 38 1c 0c 7f c0 03 0c f8 00 00 86 62 43 02 46 32 c3 03 43 1c c3 03 21 0c c3 00 23 0c 63 0e 26 8c 63 19 2c ce 63 17 78 5a 63 0e 70 7a 33 00 58 3a 33 0c ec 1a 33 0c 98 0d 33 0c 98 07 1b 18 98 03 1b 18 b0 03 1b 18 b0 ff 1b 18 ff 
+15YellowLockedCaveDoor, Address = 0xc2ae, Width = 4, HeightInPixels = 24, SpriteData = 00 02 00 00 00 0f 00 c0 00 3d 87 f0 00 f0 df 38 03 c7 fc 18 0f 38 1c 0c 7f c0 03 0c f8 00 00 86 62 43 02 46 32 c3 03 43 1c c3 03 21 0c c3 00 23 0c 63 0e 26 8c 63 19 2c ce 63 17 78 5a 63 0e 70 7a 33 00 58 3a 33 0c ec 1a 33 0c 98 0d 33 0c 98 07 1b 18 98 03 1b 18 b0 03 1b 18 b0 ff 1b 18 ff 
+16Clock, Address = 0xb6f2, Width = 4, HeightInPixels = 32, SpriteData = 00 03 e0 00 00 1f 68 00 00 6e f6 00 01 6f 76 00 06 f6 ef 60 06 ef 77 60 07 6e f6 e0 06 f7 6f 60 06 ee 77 60 07 69 96 e0 06 e7 e7 60 06 9f f9 60 06 79 9e 60 01 e0 27 80 01 c0 43 80 01 f7 8f 80 01 c0 03 80 01 e0 07 80 01 f9 9f 80 00 ff ff 00 00 ff ff 00 00 c0 03 00 00 df fb 00 00 df fb 00 00 cf f3 00 00 e8 f7 00 00 6b f6 00 00 67 e6 00 00 67 e6 00 00 77 ee 00 00 70 0e 00 00 3f fc 00 
+17Picture, Address = 0xb4c6, Width = 4, HeightInPixels = 24, SpriteData = 00 00 00 00 00 00 00 00 0e 06 60 70 1b 1c 31 d8 35 ff ff ac 1f ff ff f4 37 ff ff ec 1e 00 00 78 0e 03 c0 70 06 07 e0 60 07 0d b0 e0 0f 0c 90 f0 0b 0f f0 d0 03 0c 30 c0 07 8f f1 e0 03 8c 31 c0 01 80 01 80 01 80 01 80 03 ff ff c0 06 7f fe 60 07 c6 63 e0 03 80 01 c0 00 00 00 00 00 00 00 00 
+18Table, Address = 0xa7ec, Width = 4, HeightInPixels = 22, SpriteData = 0f ff ff f0 1f ff ff f8 1f ff ff f8 3f ff ff fc 3f ff ff fc 7f ff ff fe 7f ff ff fe 7f ff ff fe ff ff ff ff ff ff ff ff ff ff ff ff 7f ff ff fe 80 00 00 01 7f ff ff fe 3f ff ff fc 78 00 00 1e 70 00 00 0e 70 00 00 0e 30 00 00 0c 30 00 00 0c 70 00 00 0e 60 00 00 06 
+19FullChicken, Address = 0xc542, Width = 6, HeightInPixels = 30, SpriteData = 03 c0 00 00 00 00 06 60 00 00 00 00 06 e0 00 00 00 00 03 c0 00 00 00 00 1d e0 00 3f e0 00 33 f0 01 fb f8 00 37 b8 07 bf be 00 1e de 1d fb ff 80 0c 2f 37 bf fb c0 00 1f bf ff bf e0 00 1f c0 fb ff b0 00 0b ff 3f fb f8 00 17 fe df ff ec 00 3b 77 ed 7f de 00 dd fe f7 ff 7e 01 f6 ff db ff fe 07 be f7 7d ff fe 0e fb 7f fd bb fa 1b bf 7e be ff ba 3f ff b7 fe ff fe 36 fd bf f6 de fe 1f df 5d be ff fe 0f ff df de ff ec 07 ff ef f5 ff fc 03 ff f7 fd ff f8 01 ff f9 bb ff f0 00 7f fe f7 ff e0 00 1f ff 0f ff c0 00 07 ff ff ff 80 00 00 ff ff fe 00 
+20ChickenCarcass, Address = 0xc48c, Width = 6, HeightInPixels = 30, SpriteData = 03 c0 00 00 00 00 06 60 00 00 00 00 06 e0 00 00 00 00 03 c0 00 00 00 00 1d e0 00 00 00 00 33 f0 00 3f e0 00 37 b8 01 bb f8 00 1e dc 07 fc fe 00 0c 2e 1f 1b 7f 80 00 17 3e e3 bf c0 00 0b 9e f1 d8 e0 00 05 e0 79 e3 70 00 02 ff 3c e3 78 00 0d 3f dc f3 bc 00 1e df ee 71 dc 00 00 7f f6 71 d8 00 00 7f fb 38 e8 00 00 3f fb 38 e0 00 00 3f fd 18 e0 00 00 1f fd 18 e0 00 00 1f fd 18 e0 08 00 0f fd 18 e0 04 18 0f fd 38 c0 03 33 27 f8 33 c0 01 f6 73 fc 73 80 00 7e e4 f0 e7 60 00 1f e7 01 e8 c0 00 07 ff fd df 80 00 00 ff fe 3e 00 00 00 0f ff f8 00 
+21AntlerTrophy, Address = 0xc66a, Width = 4, HeightInPixels = 16, SpriteData = 00 3f fc 00 00 c0 03 00 20 8f f1 04 30 9f f9 0c 1c b9 9d 38 0f f6 6f f0 07 f5 af e0 03 f9 9f c0 00 7f fe 00 00 49 92 00 00 2d b4 00 00 27 e4 00 00 13 c8 00 00 08 10 00 00 04 20 00 00 03 c0 00 
+22Trophy, Address = 0xc6ac, Width = 2, HeightInPixels = 16, SpriteData = 3f fc c0 03 98 19 bf fd b9 9d b6 6d 94 29 49 92 4f f2 4d b2 2d b4 27 e4 13 c8 08 10 04 20 03 c0 
+23Bookcase, Address = 0xc6ce, Width = 5, HeightInPixels = 32, SpriteData = 07 ff ff ff e0 0f ff ff ff f0 1f ff ff ff f8 3f ff ff ff fc 7f ff ff ff fe ff ff ff ff ff 00 00 00 00 00 ff ff ff ff ff 44 f8 f6 eb 22 44 dc f6 ed 22 44 dc f6 eb 22 44 ce f6 ed 22 47 ce f6 eb e2 48 c7 f6 ed 12 50 c6 f6 ef 0a 60 00 00 00 06 7f ff ff ff fe 22 00 00 00 44 22 00 00 00 44 22 00 00 00 44 23 ff ff ff c4 24 00 00 00 24 28 00 00 00 14 30 00 00 00 0c 3f ff ff ff fc 12 00 00 00 48 12 00 00 00 48 12 00 00 00 48 13 ff ff ff c8 14 00 00 00 28 18 00 00 00 18 1f ff ff ff f8 
+24ShutTrapDoor, Address = 0xc7f2, Width = 4, HeightInPixels = 32, SpriteData = 01 c6 00 00 0f ce 7e 00 19 da c7 60 37 de bf 78 2f da be cc 6f ee be bc 7f ee fe bc 3f 36 7d 78 00 ff ff e3 3f 92 49 0f 73 92 49 7d 4e ff f9 43 7e ea ad 7f 0e ff f9 3e e0 92 49 00 be 92 49 3e db 92 49 63 de 92 49 5f 3f ff f9 7f 7e ea ad 1f 00 ff f9 ce 3e 92 49 f0 63 92 49 f2 4f ff ff 76 df d8 01 8e dd bb 77 f6 7b 6b 56 0e 77 58 55 fe 3f 5c d1 fc 1f 5e bb f8 0e 66 f9 c0 00 3c f0 00 
+25OpenTrapDoor, Address = 0xc770, Width = 4, HeightInPixels = 32, SpriteData = 01 c6 00 00 0f ce 7e 00 19 da c7 60 37 de bf 78 2f da be cc 6f ee be bc 7f ee fe bc 3f 36 7d 78 00 00 00 e3 3f 00 00 0f 73 00 00 7d 4e 00 00 43 7e 00 00 7f 0e 00 00 3e e0 00 00 00 be 00 00 3e db 00 00 63 de 00 00 5f 3f 00 00 7f 7e 00 00 1f 00 00 00 ce 3e 00 00 f0 63 00 00 f2 4f 00 00 76 df d8 01 8e dd bb 77 f6 7b 6b 56 0e 77 58 55 fe 3f 5c d1 fc 1f 5e bb f8 0e 66 f9 c0 00 3c f0 00 
+26Barrel, Address = 0xcfd5, Width = 4, HeightInPixels = 32, SpriteData = 00 00 00 00 00 00 00 00 00 00 00 00 00 1f f8 00 00 ff ff 00 03 ff ff c0 0f c0 23 f0 1e 00 40 78 38 1f f8 1c 70 ff ff 0e 63 f0 0f c6 c7 8f f1 e3 ce 77 fe 73 9d ef fb b9 bb df f7 dd b7 ff ff ed af 63 8c b5 ee 49 24 f7 dc 49 24 fb 5e 63 8c ba 56 49 24 2a 5e 49 27 ba 6e 63 8f b6 2f ff ff f4 17 df bd e8 17 bf 7b e8 0b 7e f7 d0 04 fd ef a0 02 7b de 40 01 87 b1 80 00 70 0e 00 00 0f f0 00 
+27Rug, Address = 0xc874, Width = 6, HeightInPixels = 39, SpriteData = 00 03 80 00 02 00 00 07 c0 00 0d 00 00 07 c0 00 1e 00 00 07 c0 00 1f 00 00 03 c0 00 1f 00 00 03 80 00 3e 00 00 03 80 00 3c 00 00 03 80 00 7c 00 00 02 80 00 78 00 00 03 80 00 50 00 00 02 80 00 f0 00 00 07 80 00 b0 00 00 04 c7 e1 f0 00 00 07 ff ff 20 00 00 07 c7 f9 e0 00 03 cc fe 36 e0 00 0f fb 8d d9 f0 00 e9 bf 76 3f 1c 03 bb d9 8f e6 ef ce ff f6 fc db 1e 7f bb d9 fb 67 f3 f0 79 bf 1c fc de 00 0f fe ef fb 70 00 03 cf 1e 3c e0 00 00 07 fd df e0 00 00 06 7e 3b 20 00 00 07 c7 e1 f0 00 00 07 80 00 b0 00 00 02 80 00 f0 00 00 03 80 00 70 00 00 03 80 00 78 00 00 03 80 00 7c 00 00 03 80 00 3c 00 00 03 80 00 3e 00 00 03 c0 00 1f 00 00 07 c0 00 1f 00 00 07 c0 00 1e 00 00 07 c0 00 0d 00 00 03 80 00 02 00 
+28AcgShield, Address = 0xc9ca, Width = 2, HeightInPixels = 16, SpriteData = 81 81 e7 e7 ff ff c4 43 d5 df c5 d3 d5 db 54 42 7f fe 7f fe 3f dc 30 0c 1f d8 0f f0 07 e0 01 80 
+29Shield, Address = 0xc9ec, Width = 2, HeightInPixels = 16, SpriteData = 81 81 e7 e7 fd 7f d7 eb c4 23 d7 eb dc 2f 7f fe 7f fe 75 ae 30 0c 39 9c 19 98 08 10 07 e0 01 80 
+30Knight, Address = 0xca0e, Width = 2, HeightInPixels = 32, SpriteData = 00 00 00 00 03 c0 07 e0 0f f0 07 e0 19 98 0e 70 07 e0 03 c0 37 ec 78 1e 7f fe 7f fe 6d b6 ad b5 cc 33 a6 65 67 e6 60 06 07 e0 47 e2 47 e7 07 e2 0a 52 1c 3a 0a 52 06 62 0e 72 1e 7a 1c 38 30 0c 
+31Unknown, Address = 0xaeea, Width = 0, HeightInPixels = 0, SpriteData = 
+32ShutNormalDoor, Address = 0xca82, Width = 4, HeightInPixels = 24, SpriteData = 00 00 00 00 00 07 e0 00 00 77 ee 00 03 7b de c0 07 7b de e0 17 bf fd e8 3b f0 0f dc 7d 80 01 be 3f 0b d0 7c cc 3b dc 33 f8 7b de 1f f0 fb df 1f 10 fb df 08 f0 00 00 0f f0 7b c0 0f 08 7b ce 08 f8 7b d1 1f f8 7b d7 1f 04 7b ce 20 7c 00 00 3e 3e 3b dc 7c 0c 3b dc 40 1f 3b dc f8 ff 3b dc ff 
+33OpenNormalDoor, Address = 0xa76e, Width = 4, HeightInPixels = 24, SpriteData = 00 00 00 00 00 07 e0 00 00 77 ee 00 03 7b de c0 07 7b de e0 17 bf fd e8 3b f0 0f dc 7d 80 01 be 3e 00 00 7c cc 00 00 33 f8 00 00 1f f0 00 00 1f 10 00 00 08 f0 00 00 0f f0 00 00 0f 08 00 00 08 f8 00 00 1f f8 00 00 1f 04 00 00 20 7c 00 00 3e 3e 00 00 7c 02 00 00 40 1f 00 00 f8 ff 00 00 ff 
+34ShutCaveDoor, Address = 0xcae4, Width = 4, HeightInPixels = 24, SpriteData = 00 02 00 00 00 0f 00 c0 00 3d 87 f0 00 f0 df 38 03 c7 fc 18 0f 38 1c 0c 7f c0 03 0c f1 00 00 86 62 0b d0 46 32 3b dc 43 1c 7b de 21 0c fb df 23 0c fb df 26 8c 00 00 2c ce 7b c0 78 5a 7b ce 70 7a 7b d1 58 3a 7b d7 ec 1a 7b ce 4e 0d 00 00 98 07 3b dc 98 03 3b dc b0 03 3b dc b0 ff 3b dc ff 
+35OpenCaveDoor, Address = 0xbcce, Width = 4, HeightInPixels = 24, SpriteData = 00 02 00 00 00 0f 00 c0 00 3d 87 f0 00 f0 df 78 03 c1 7d 58 0f 62 25 4c 7f 2c 05 4c f2 20 04 86 62 20 04 86 34 40 02 83 1c 40 02 e1 0c 40 02 3b 0c 40 02 26 8c 40 02 2c cc 80 01 38 58 80 01 30 78 80 01 18 38 80 01 0c 18 80 01 0e 0d 00 00 98 07 00 00 98 03 00 00 b0 03 00 00 b0 ff 00 00 ff 
+36AcgExitDoor, Address = 0xd069, Width = 8, HeightInPixels = 40, SpriteData = 00 00 00 00 00 00 00 00 2a aa aa aa aa aa aa ac 55 55 55 55 55 55 55 56 aa aa aa aa aa aa aa aa 00 00 00 00 00 00 00 00 ff ff ff ff ff ff ff ff 7f ff ff ff ff ff ff fe 7f ff ff ff ff ff ff fe 00 00 00 00 00 00 00 00 3f fe 00 07 60 00 7f fc 5f fd 00 7f fe 00 bf fa 67 f3 03 ff 7f c0 cf e6 38 0e 0f ff 7f f0 70 1c 1f fc 1f ff 7f f8 3f f8 07 f4 3f ff 7f fc 2f e0 04 cc 7f ff ff fe 33 20 06 cc 7f 8e 30 fe 33 60 02 6c ff 34 e7 ff 36 40 02 6c ff 34 e7 ff 36 40 03 6c ff 04 e4 ff 36 c0 03 6c ff 04 e4 ff 36 c0 01 6c ff 34 e6 ff 36 80 01 2c ff 36 30 ff 34 80 01 a4 ff ff ff ff 25 80 01 b6 ff e3 63 ff 6d 80 00 b6 ff cd 4d ff 6d 00 00 b6 7f d1 51 fe 69 00 00 d6 7f d1 51 fe 6b 00 00 d6 3f e3 63 fc 6b 00 00 5a 3f ff 7f fc 52 00 00 6a 1f ff 7f f8 56 00 ff eb ff ff 7f ff f7 ff 00 ef 00 00 00 00 f7 00 00 bd 00 00 00 00 bd 00 00 42 00 00 00 00 42 00 00 3c 00 00 00 00 3c 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+37Picture, Address = 0xd253, Width = 4, HeightInPixels = 16, SpriteData = 0f ff ff f0 0f ff ff f0 0c 00 00 30 0e 00 00 70 06 0f f0 60 06 19 98 60 06 19 98 60 07 1f f8 e0 03 16 68 c0 03 13 c8 c0 03 18 98 c0 03 8d 31 c0 01 87 e1 80 01 80 01 80 01 ff ff 80 01 ff ff 80 
+38Skeleton, Address = 0xd2ee, Width = 5, HeightInPixels = 40, SpriteData = 70 00 00 00 0e f8 00 00 00 1f b8 00 00 00 1b f0 00 00 00 1f 68 00 00 00 2e 14 00 00 00 28 14 00 00 00 f0 0b 00 00 00 40 05 00 00 00 e0 05 00 3c 03 80 07 00 7e 03 b0 17 78 ff 0b 98 27 18 87 18 50 50 0c e7 30 00 00 06 7b 60 00 00 02 ae e0 00 00 0c 99 00 00 00 14 46 00 00 00 14 18 00 00 00 14 30 00 00 00 12 60 00 00 00 28 10 00 00 00 24 e1 00 00 ff 50 4e ff 00 00 6b 9f 00 00 00 7c 1c 00 00 00 bf 30 80 00 00 c6 a1 c0 00 00 c1 c3 60 00 00 6e c6 70 00 00 fc ec 40 00 00 e0 78 00 00 00 00 60 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+39Barrels, Address = 0xd466, Width = 5, HeightInPixels = 27, SpriteData = 00 00 3c 00 00 00 00 c3 00 00 00 01 00 80 00 00 01 3c 80 00 00 02 c3 40 00 00 03 00 c0 00 00 0e 3c 70 00 00 32 c3 4c 00 00 43 00 c2 00 00 4e 3c 72 00 00 d2 ff 4b 00 00 c1 ff 83 00 03 8d ff b1 c0 0c b0 ff 0d 30 10 c0 3c 03 08 13 8f 00 f1 c8 2c bf db fc 34 30 7f e7 fe 0c 23 7f e7 fe c4 2c 3f c3 fc 34 30 0f 00 f0 0c 43 c0 3c 03 c4 2f f6 ff 6f f4 1f f9 ff 9f f8 1f f9 ff 9f f8 0f f0 ff 0f f0 03 c0 3c 03 c0 
+Font
+====
+' ', Address = 0xbf4c, SpriteData = 00 00 00 00 00 00 00 00 
+'!', Address = 0xbf54, SpriteData = 18 18 18 18 18 00 18 18 
+'"', Address = 0xbf5c, SpriteData = 28 28 00 00 00 00 00 00 
+'#', Address = 0xbf64, SpriteData = 00 18 18 00 00 18 18 00 
+'$', Address = 0xbf6c, SpriteData = 00 62 64 08 10 26 46 00 
+'%', Address = 0xbf74, SpriteData = 3c 42 99 a1 a1 99 42 3c 
+'&', Address = 0xbf7c, SpriteData = 00 00 00 00 00 00 00 00 
+''', Address = 0xbf84, SpriteData = 10 10 00 00 00 00 00 00 
+'(', Address = 0xbf8c, SpriteData = 08 18 18 18 18 18 18 08 
+')', Address = 0xbf94, SpriteData = 10 18 18 18 18 18 18 10 
+'*', Address = 0xbf9c, SpriteData = 00 14 58 3e 7c 1a 28 00 
+'+', Address = 0xbfa4, SpriteData = 00 18 18 7e 78 18 18 00 
+',', Address = 0xbfac, SpriteData = 00 00 00 00 00 00 20 20 
+'-', Address = 0xbfb4, SpriteData = 00 00 00 7e 7e 00 00 00 
+'.', Address = 0xbfbc, SpriteData = 00 00 00 00 00 00 18 18 
+'/', Address = 0xbfc4, SpriteData = 0c 0c 18 18 30 30 60 60 
+'0', Address = 0xbfcc, SpriteData = 7c fe c6 c6 c6 fe 7c 00 
+'1', Address = 0xbfd4, SpriteData = 18 38 58 18 18 18 3c 00 
+'2', Address = 0xbfdc, SpriteData = 7c fe 06 7c c0 fe fe 00 
+'3', Address = 0xbfe4, SpriteData = fe fc 08 1c 06 fe fc 00 
+'4', Address = 0xbfec, SpriteData = 0c 1c 3c 6c fe 0c 0c 00 
+'5', Address = 0xbff4, SpriteData = fe fe c0 fc 06 fe 7c 00 
+'6', Address = 0xbffc, SpriteData = 7c fe c0 fc c6 fe 7c 00 
+'7', Address = 0xc004, SpriteData = fe fc 0c 18 18 30 30 00 
+'8', Address = 0xc00c, SpriteData = 7c fe c6 7c c6 fe 7c 00 
+'9', Address = 0xc014, SpriteData = 7c fe c6 7e 06 fe 7c 00 
+':', Address = 0xc01c, SpriteData = 00 00 00 00 00 00 00 00 
+';', Address = 0xc024, SpriteData = 00 00 00 00 00 00 00 00 
+'<', Address = 0xc02c, SpriteData = 00 00 00 00 00 00 00 00 
+'=', Address = 0xc034, SpriteData = 00 00 00 00 00 00 00 00 
+'>', Address = 0xc03c, SpriteData = 00 00 00 00 00 00 00 00 
+'?', Address = 0xc044, SpriteData = 00 00 00 00 00 00 00 00 
+'@', Address = 0xc04c, SpriteData = 00 00 00 00 00 00 00 00 
+'A', Address = 0xc054, SpriteData = 38 38 6c 7c ee ee c6 00 
+'B', Address = 0xc05c, SpriteData = fc fe e6 fc e6 fe fc 00 
+'C', Address = 0xc064, SpriteData = 3c 7e f8 e0 f8 7e 3c 00 
+'D', Address = 0xc06c, SpriteData = f8 fc fe c6 fe fc f8 00 
+'E', Address = 0xc074, SpriteData = f8 f8 e0 fc e0 fe fe 00 
+'F', Address = 0xc07c, SpriteData = fe fe e0 fc e0 e0 e0 00 
+'G', Address = 0xc084, SpriteData = 3c 7e f8 e0 fe 7e 3a 00 
+'H', Address = 0xc08c, SpriteData = ee ee fe fe fe ee ee 00 
+'I', Address = 0xc094, SpriteData = 7c 7c 38 38 38 7c 7c 00 
+'J', Address = 0xc09c, SpriteData = 0e 0e 0e 0e ee 7c 38 00 
+'K', Address = 0xc0a4, SpriteData = ee ec f8 f8 f8 ec ee 00 
+'L', Address = 0xc0ac, SpriteData = e0 e0 e0 e0 fe fe fe 00 
+'M', Address = 0xc0b4, SpriteData = 82 ee fe fe d6 d6 d6 00 
+'N', Address = 0xc0bc, SpriteData = 8e ce ee fe ee e6 e2 00 
+'O', Address = 0xc0c4, SpriteData = 38 7c fe ee fe 7c 38 00 
+'P', Address = 0xc0cc, SpriteData = fc fe e6 fe fc e0 e0 00 
+'Q', Address = 0xc0d4, SpriteData = 38 7c fe ee fe 7c 3e 00 
+'R', Address = 0xc0dc, SpriteData = fc fe e6 fe fc ec ee 00 
+'S', Address = 0xc0e4, SpriteData = 7c fe f0 7c 1e fe 7c 00 
+'T', Address = 0xc0ec, SpriteData = fe fe fe 38 38 38 38 00 
+'U', Address = 0xc0f4, SpriteData = ee ee ee ee fe fe 7c 00 
+'V', Address = 0xc0fc, SpriteData = ee ee 6c 7c 38 38 10 00 
+'W', Address = 0xc104, SpriteData = d6 d6 d6 fe fe ee 82 00 
+'X', Address = 0xc10c, SpriteData = ee ee 6c 38 6c ee ee 00 
+'Y', Address = 0xc114, SpriteData = ee 6c 7c 38 38 38 38 00 
+'Z', Address = 0xc11c, SpriteData = fe fc f8 10 3e 7e fe 00 
+Character Sprites
+=================
+0, a9a0 Unknown, Address = 0xa9a0, Width = 2, HeightInPixels = 16, SpriteData = 30 54 bd 18 be 7e 18 d0 ab 30 ac e9 10 e2 ab 30 ac e9 10 96 ab 30 ab e9 30 9d ab 10 ac e9 30 4a 
+0, aab0 Unknown, Address = 0xaab0, Width = 2, HeightInPixels = 16, SpriteData = ff 1b 19 35 ff 1a ff 19 ff 18 ff 17 16 19 15 ff 13 ff 14 17 10 ff ff 13 18 10 12 15 10 ff ff 11 
+0, ac16 Unknown, Address = 0xac16, Width = 2, HeightInPixels = 16, SpriteData = ff 1f 1e 1d 1d ff 1b ff ff 1c ff 1b 1a 19 19 ff 17 ff ff 18 17 03 02 ff 17 11 ff 12 ff 11 19 0f 
+12, ad2e KnightWalkingDown1, Address = 0xad2e, Width = 2, HeightInPixels = 18, SpriteData = 02 80 05 c0 09 e0 13 f0 13 f0 3f f8 30 18 20 08 26 c8 44 40 ef e8 e9 2c 6b 6e 05 4e 1b 94 1f 78 3c f0 3c 00 
+13, ad53 KnightDown, Address = 0xad53, Width = 2, HeightInPixels = 18, SpriteData = 02 80 05 c0 09 e0 13 f0 13 f0 3f f8 30 18 20 08 26 c8 04 40 6f ec e9 2e eb 6e 65 4c 03 f0 05 40 0e e0 1e f0 
+14, ad78 KnightWalkingDown2, Address = 0xad78, Width = 2, HeightInPixels = 18, SpriteData = 02 80 05 c0 09 e0 13 f0 13 f0 3f f8 30 18 20 08 26 c8 04 44 2f ee 69 2e eb 6c e5 40 53 b0 3d f0 1e 78 00 78 
+8, ad9d KnightWalkingUp1, Address = 0xad9d, Width = 2, HeightInPixels = 18, SpriteData = 02 80 05 c0 09 e0 13 f0 13 f0 30 38 27 f8 27 f8 3f f8 40 00 ef e8 ef ec 6f ee 07 ce 1b 94 1f 78 3c f0 3c 00 
+9, adc2 KnightUp, Address = 0xadc2, Width = 2, HeightInPixels = 18, SpriteData = 02 80 05 c0 09 e0 13 f0 13 f0 30 38 27 f8 27 f8 3f f8 00 00 6f ec ef ee ef ee 67 cc 03 80 05 40 0e e0 1e f0 
+10, ade7 KnightWalkingUp2, Address = 0xade7, Width = 2, HeightInPixels = 18, SpriteData = 02 80 05 c0 09 e0 13 f0 13 f0 30 38 27 f8 27 f8 3f f8 00 04 2f ee 6f ee ef ec e7 c0 53 b0 3d f0 1e 78 00 78 
+0, ae0c KnightWalkingLeft1, Address = 0xae0c, Width = 2, HeightInPixels = 18, SpriteData = 01 40 02 e0 04 f0 09 f8 08 08 1f fc 01 fc 1a fc 6b 7c 67 80 1f f0 27 98 37 08 06 10 37 60 3b 98 1c 38 0c 70 
+1, ae31 KnightLeft, Address = 0xae31, Width = 2, HeightInPixels = 18, SpriteData = 01 40 02 e0 04 f0 09 f8 08 08 1f fc 01 fc 1a fc 6b 7c 67 80 1f f0 0f 98 04 18 06 38 03 f0 00 00 03 c0 07 c0 
+2, ae56 KnightWalkingLeft2, Address = 0xae56, Width = 2, HeightInPixels = 18, SpriteData = 01 40 02 e0 04 f0 09 f8 08 08 1f fc 01 fc 1a fc 6b 7c 67 80 1f f8 07 1e 08 3a 04 74 37 e0 3b d8 1c 38 0c 70 
+4, ae7b KnightWalkingRight1, Address = 0xae7b, Width = 2, HeightInPixels = 18, SpriteData = 02 80 05 c0 09 e0 13 f0 10 30 27 f8 27 80 27 58 3e d6 01 e6 1f f8 78 e0 5c 10 2e 20 07 ec 1b dc 1c 38 0e 30 
+5, aea0 KnightRight, Address = 0xaea0, Width = 2, HeightInPixels = 18, SpriteData = 02 80 05 c0 09 e0 13 f0 10 30 27 f8 27 80 27 58 3e d6 01 e6 0f f8 19 f0 18 20 1c 60 0f c0 00 00 03 c0 03 e0 
+6, aec5 KnightWalkingRight2, Address = 0xaec5, Width = 2, HeightInPixels = 18, SpriteData = 02 80 05 c0 09 e0 13 f0 10 30 27 f8 27 80 27 58 3e d6 01 e6 0f f8 19 e4 10 ec 08 60 06 ec 18 dc 1c 38 0e 30 
+99, aeea Unknown, Address = 0xaeea, Width = 2, HeightInPixels = 0, SpriteData = 
+48, aeec Unknown, Address = 0xaeec, Width = 2, HeightInPixels = 16, SpriteData = 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+127, af0d Leaf, Address = 0xaf0d, Width = 2, HeightInPixels = 16, SpriteData = f8 00 de 00 db 80 9b c0 f3 a0 7b b0 7d b8 20 b8 3f 3c 1f bc 0f da 06 0a 03 f2 00 fa 00 3f 00 03 
+128, af2e Key, Address = 0xaf2e, Width = 2, HeightInPixels = 10, SpriteData = 0c 00 1e 00 12 00 7b 00 cf ff cf ff 7b 1a 12 12 1e 17 0c 00 
+129, af43 MedicineBottle, Address = 0xaf43, Width = 2, HeightInPixels = 20, SpriteData = 01 c0 02 e0 01 40 01 40 01 40 03 60 0e f8 1c fc 19 fc 19 c0 19 dc 19 dc 19 dc 19 dc 19 dc 19 dc 19 dc 19 c0 19 fc 19 fc 
+86, af6c Bottle, Address = 0xaf6c, Width = 2, HeightInPixels = 20, SpriteData = 03 80 05 c0 02 80 02 80 02 80 06 c0 05 c0 05 c0 0d e0 0d e0 09 e0 19 f0 19 f0 19 f0 19 f0 19 f0 19 f0 19 f0 19 f0 19 f0 
+131, af95 Broken, Address = 0xaf95, Width = 2, HeightInPixels = 16, SpriteData = 00 1f 00 fe 03 fc 07 f8 0f f8 1f f8 3f 88 3c 74 73 f0 6f e0 df c0 d0 00 af 80 98 00 b0 00 a0 00 
+132, afb6 Rope, Address = 0xafb6, Width = 2, HeightInPixels = 16, SpriteData = 04 60 0e e0 1e ec 2c 1e 70 03 70 06 e0 36 00 30 40 80 e0 c0 e0 40 c0 30 00 30 e0 0c e0 02 c0 00 
+133, afd7 Arm, Address = 0xafd7, Width = 2, HeightInPixels = 16, SpriteData = 18 00 3e 00 3f 00 e7 c0 75 e0 76 f0 76 f0 32 78 33 3c 31 9e 30 cf 78 67 7c 37 f6 1e b1 0e 90 08 
+84, aff8 Bowl, Address = 0xaff8, Width = 2, HeightInPixels = 16, SpriteData = 07 00 0f 80 0c f0 0b e8 3f ec 7b de 67 3e 6f fe 00 00 ff ff c7 ff 00 00 67 fe 33 fc 00 00 05 e0 
+85, b019 Apple, Address = 0xb019, Width = 2, HeightInPixels = 16, SpriteData = 06 3c 07 7b 01 86 0e dc 1f f8 3b 06 33 ff 63 ff 67 ff 7f ff 7f ff 7f fe 3f fe 1f fc 0f f8 03 e0 
+85, b1fa Unknown, Address = 0xb1fa, Width = 2, HeightInPixels = 16, SpriteData = 30 18 30 30 18 18 18 18 30 30 60 30 60 60 c0 c0 00 c0 00 00 00 00 20 10 00 60 00 00 00 00 10 10 
+85, b34a Unknown, Address = 0xb34a, Width = 2, HeightInPixels = 16, SpriteData = 3e 14 5c 00 5a 5b 00 59 3d 13 00 00 00 00 00 00 3c 12 00 00 00 00 00 00 3b 11 00 00 00 00 00 00 
+44, b536 SerfWalkingDown1, Address = 0xb536, Width = 2, HeightInPixels = 18, SpriteData = 07 50 0d e8 17 fc 1c 14 08 0c 1b 6c 0a 28 00 80 45 d0 77 74 77 f4 77 70 27 ee 03 de 01 5e 0e 3c 17 38 1f 38 
+45, b55b SerfDown, Address = 0xb55b, Width = 2, HeightInPixels = 18, SpriteData = 07 50 0d e8 17 fc 1c 14 08 0c 1b 6c 0a 28 00 80 05 d0 17 74 17 f4 37 76 37 f6 23 e2 01 40 06 30 0d 68 0f f8 
+46, b580 SerfWalkingDown2, Address = 0xb580, Width = 2, HeightInPixels = 18, SpriteData = 07 a0 0d e8 17 fc 1c 14 08 0c 1b 6c 0a 28 00 80 05 d2 17 77 17 f7 07 77 3b f2 3d e0 3d 60 1f 58 07 74 07 7c 
+40, b5a5 SerfWalkingUp1, Address = 0xb5a5, Width = 2, HeightInPixels = 18, SpriteData = 0a a0 13 50 2f b8 15 d0 2b 68 3a 98 1b d0 15 70 8d a8 e2 4c ec 6c ef e0 4f e8 0f d8 07 d8 0a b0 1e 70 1e 40 
+41, b5ca SerfUp, Address = 0xb5ca, Width = 2, HeightInPixels = 18, SpriteData = 0a a0 13 50 2f b8 15 d0 2b 68 3a 98 1b d0 15 70 0d a0 23 88 2c 68 6f ec 6f ec 47 c4 07 c0 02 80 0e e0 0e e0 
+42, b5ef SerfWalkingUp2, Address = 0xb5ef, Width = 2, HeightInPixels = 18, SpriteData = 0a a0 13 50 2f b8 15 d0 2b 68 3a 98 1b d0 15 70 2d a2 63 8e 6c 3e 0f ee 2f e4 37 e0 37 c0 1a a0 1c f0 04 f0 
+32, b614 SerfWalkingLeft1, Address = 0xb614, Width = 2, HeightInPixels = 18, SpriteData = 0a a0 16 f0 19 58 07 a8 19 d0 68 68 60 b8 11 50 0f c0 77 30 37 88 07 c8 77 88 cb 10 fb ec 3f 1c 0f 78 03 70 
+33, b639 SerfLeft, Address = 0xb639, Width = 2, HeightInPixels = 18, SpriteData = 0a a0 16 f0 19 58 07 a8 19 d0 68 68 60 b8 11 50 0f c0 07 30 07 18 06 18 06 38 03 f0 19 e0 24 c0 2f e0 3f e0 
+34, b65e SerfWalkingLeft2, Address = 0xb65e, Width = 2, HeightInPixels = 18, SpriteData = 0a a0 16 f0 19 58 07 a8 19 d0 68 68 60 b8 11 50 0f c0 07 3c 18 1a 08 7a 07 f8 30 30 4d 9c 5a 5c 3a f8 03 f0 
+36, b683 SerfWalkingRight1, Address = 0xb683, Width = 2, HeightInPixels = 18, SpriteData = 05 50 0f e8 1a 98 15 e0 0b 98 16 16 1d 06 05 88 03 f0 3c e0 58 18 5e 10 1f e0 0c 0c 39 b2 3a 5a 1f 5c 0f c0 
+37, b6a8 SerfRight, Address = 0xb6a8, Width = 2, HeightInPixels = 18, SpriteData = 05 50 0f e8 1a 98 15 e0 0b 98 16 16 1d 06 05 88 03 f0 0c e0 18 e0 18 60 1c 60 0f c0 07 98 03 24 07 f4 07 fc 
+38, b6cd SerfWalkingRight2, Address = 0xb6cd, Width = 2, HeightInPixels = 18, SpriteData = 05 50 0f e8 1a 98 15 e0 0b 98 16 16 1d 06 05 88 03 f0 0c ee 11 ec 13 e0 11 ee 08 d3 37 df 31 fc 1e f0 0e c0 
+28, b786 WizardWalkingDown1, Address = 0xb786, Width = 2, HeightInPixels = 20, SpriteData = 01 00 03 80 03 80 06 40 04 c0 0c e0 0c e0 1e 70 1f f0 18 30 16 d0 44 40 ef e8 ee ec 6c 6e 06 6e 1b 84 1f 68 4c f0 3c 00 
+29, b7af WizardDown, Address = 0xb7af, Width = 2, HeightInPixels = 20, SpriteData = 01 00 03 80 03 80 06 40 04 c0 0c e0 0c e0 1e 70 1f f0 18 30 16 d0 04 40 6f ec ee ee ec 6e 66 cc 03 80 05 40 26 c8 1e f0 
+30, b7d8 WizardWalkingDown2, Address = 0xb7d8, Width = 2, HeightInPixels = 20, SpriteData = 01 00 03 80 03 80 06 40 04 c0 0c e0 0c e0 1e 70 1f f0 18 30 16 d0 04 44 2f ee 6e ee ec 6c e6 c0 43 b0 2d f0 1e 64 00 78 
+24, b801 WizardWalkingUp1, Address = 0xb801, Width = 2, HeightInPixels = 20, SpriteData = 00 80 01 c0 01 c0 03 60 02 20 07 70 07 f0 0d f8 08 f8 0d f8 0f f8 20 00 77 f4 ff f6 3e f7 03 e7 0d c2 0f d4 26 78 1e 00 
+25, b82a WizardUp, Address = 0xb82a, Width = 2, HeightInPixels = 20, SpriteData = 00 80 01 c0 01 c0 03 60 02 20 07 70 07 f0 0d f8 08 f8 0d f8 0f f8 00 00 37 f6 77 f7 77 f7 33 e6 01 c0 02 a0 13 64 0f 78 
+26, b853 WizardWalkingUp2, Address = 0xb853, Width = 2, HeightInPixels = 20, SpriteData = 00 80 01 c0 01 c0 03 60 02 20 07 70 07 f0 0d f8 08 f8 0d f8 0f f8 00 02 17 f7 37 f7 77 f6 73 e0 21 d8 16 f8 0f 32 00 3c 
+16, b87c WizardWalkingLeft1, Address = 0xb87c, Width = 2, HeightInPixels = 20, SpriteData = 00 80 01 c0 01 c0 02 e0 02 e0 05 f0 05 f0 0f d8 1f 88 00 d8 0d 78 35 80 31 f0 07 98 37 08 06 10 47 60 33 98 1c 38 0c f0 
+17, b8a5 WizardLeft, Address = 0xb8a5, Width = 2, HeightInPixels = 20, SpriteData = 00 80 01 c0 01 c0 02 e0 02 e0 05 f0 05 f0 0f d8 1f 88 00 d8 0d 78 35 80 31 f0 07 98 04 18 06 38 03 f0 00 00 09 c0 07 c0 
+18, b8ce WizardWalkingLeft2, Address = 0xb8ce, Width = 2, HeightInPixels = 20, SpriteData = 00 80 01 c0 01 c0 02 e0 02 e0 05 f0 05 f0 0f d8 1f 88 00 d8 0d 78 35 80 31 f8 07 1e 08 3a 04 74 47 e0 33 d8 1c 38 03 f0 
+20, b8f7 WizardWalkingRight1, Address = 0xb8f7, Width = 2, HeightInPixels = 20, SpriteData = 01 00 03 80 03 80 07 40 07 40 0f a0 0f a0 1b f0 11 f8 1b 00 1e b0 01 ac 1f 8c 78 e0 5c 10 2e 20 07 e2 1b cc 1c 38 0f 30 
+21, b920 WizardRight, Address = 0xb920, Width = 2, HeightInPixels = 20, SpriteData = 01 00 03 80 03 80 07 40 07 40 0f a0 0f a0 1b f0 11 f8 1b 00 1e b0 01 ac 0f 8c 19 e0 18 20 1c 60 0f c0 00 00 03 90 03 e0 
+22, b949 WizardWalkingRight2, Address = 0xb949, Width = 2, HeightInPixels = 20, SpriteData = 01 00 03 80 03 80 07 40 07 40 0f a0 0f a0 1b f0 11 f8 1b 00 1e b0 01 ac 0f 8c 19 e0 10 ec 08 60 06 e2 19 cc 1c 38 0f 30 
+61, b972 KnightSword7, Address = 0xb972, Width = 2, HeightInPixels = 12, SpriteData = 00 20 00 10 00 12 ff df 7f df 00 12 00 10 00 20 00 00 00 00 00 00 00 00 
+58, b98b KnightSword4, Address = 0xb98b, Width = 2, HeightInPixels = 13, SpriteData = 10 00 18 00 1c 00 0e 00 07 00 03 88 01 c8 00 d8 00 30 00 7c 01 dc 00 1c 00 00 
+59, b9a6 KnightSword5, Address = 0xb9a6, Width = 2, HeightInPixels = 16, SpriteData = 00 80 01 80 01 80 01 80 01 80 01 80 01 80 01 80 01 80 01 80 08 10 07 e0 01 80 01 80 03 c0 01 80 
+60, b9c7 KnightSword6, Address = 0xb9c7, Width = 2, HeightInPixels = 13, SpriteData = 00 1c 00 38 00 70 00 e0 11 c0 13 80 1b 00 0c 00 3e 00 3b 80 38 00 00 00 00 00 
+57, b9e2 KnightSword3, Address = 0xb9e2, Width = 2, HeightInPixels = 12, SpriteData = 04 00 08 00 48 00 fd fe fd ff 48 00 08 00 04 00 00 00 00 00 00 00 00 00 
+56, b9fb KnightSword2, Address = 0xb9fb, Width = 2, HeightInPixels = 12, SpriteData = 3b 80 3e 00 0c 00 1d 00 13 80 11 c0 00 e0 00 70 00 38 00 18 00 08 00 00 
+55, ba16 KnightSword1, Address = 0xba16, Width = 2, HeightInPixels = 16, SpriteData = 01 80 03 c0 01 80 01 80 07 e0 08 10 01 80 01 80 01 80 01 80 01 80 01 80 01 80 01 80 01 80 01 00 
+62, ba37 KnightSword8, Address = 0xba37, Width = 2, HeightInPixels = 16, SpriteData = 00 00 00 00 00 1c 01 dc 00 7c 00 30 00 d8 01 c8 03 88 07 00 0e 00 1c 00 18 00 10 00 00 00 00 00 
+63, ba58 SerfAxe1, Address = 0xba58, Width = 2, HeightInPixels = 16, SpriteData = 00 00 00 00 00 00 00 00 00 00 00 00 00 00 3d ff 3d ff 18 00 3c 00 c3 00 7e 00 3c 00 00 00 00 00 
+64, ba79 SerfAxe2, Address = 0xba79, Width = 2, HeightInPixels = 16, SpriteData = 00 00 00 00 00 00 08 00 1c 00 8e 00 bf 00 ba 80 d9 c0 60 e0 3c 70 00 38 00 1c 00 0e 00 04 00 00 
+65, ba9a SerfAxe3, Address = 0xba9a, Width = 2, HeightInPixels = 16, SpriteData = 08 00 18 00 35 80 37 80 37 80 35 80 18 00 09 80 01 80 01 80 01 80 01 80 01 80 01 80 01 80 01 80 
+66, babb SerfAxe4, Address = 0xbabb, Width = 2, HeightInPixels = 16, SpriteData = 01 e0 03 00 06 c0 05 d0 05 f8 04 70 00 e0 01 40 03 80 07 00 0e 00 1c 00 38 00 70 00 20 00 00 00 
+67, badc SerfAxe5, Address = 0xbadc, Width = 2, HeightInPixels = 16, SpriteData = 00 00 00 00 00 3c 00 7e 00 c3 00 3c 00 18 ff bc ff bc 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+68, bafd SerfAxe6, Address = 0xbafd, Width = 2, HeightInPixels = 16, SpriteData = 00 00 20 00 70 00 38 00 1c 00 0e 3c 07 06 03 9b 01 5d 00 fd 00 71 00 38 00 10 00 00 00 00 00 00 
+69, bb1e SerfAxe7, Address = 0xbb1e, Width = 2, HeightInPixels = 16, SpriteData = 01 80 01 80 01 80 01 80 01 80 01 80 01 80 01 80 01 90 00 18 01 ac 01 ec 01 ec 01 ac 00 18 00 10 
+70, bb3f SerfAxe8, Address = 0xbb3f, Width = 2, HeightInPixels = 16, SpriteData = 00 00 00 04 00 0e 00 1c 00 38 00 70 00 e0 01 c0 02 80 07 00 0e 20 1f a0 0b a0 03 60 00 c0 07 80 
+51, bb60 WizardPotion1, Address = 0xbb60, Width = 2, HeightInPixels = 15, SpriteData = 01 00 00 00 00 00 12 a0 05 a0 43 42 06 f0 0d 60 02 d0 09 80 00 80 00 24 00 00 00 00 00 00 
+52, bb7f WizardPotion2, Address = 0xbb7f, Width = 2, HeightInPixels = 15, SpriteData = 00 00 00 10 04 80 08 20 01 80 06 60 05 a8 15 f0 02 08 03 a0 01 00 20 80 00 00 00 08 00 00 
+52, bba8 Unknown, Address = 0xbba8, Width = 2, HeightInPixels = 16, SpriteData = 40 01 00 00 04 00 00 10 00 01 0f 00 10 80 00 08 20 00 01 00 09 90 07 42 0e b0 45 68 03 60 01 82 
+49, bbdc CursorDirectionsLeftPane, Address = 0xbbdc, Width = 2, HeightInPixels = 20, SpriteData = 00 01 00 03 00 07 00 0f 00 1f 00 43 00 c3 01 c3 03 f8 07 f8 07 f8 03 f8 01 c3 00 c3 00 43 00 1f 00 0f 00 07 00 03 00 01 
+50, bc05 CursorDirectionsRightPane, Address = 0xbc05, Width = 2, HeightInPixels = 20, SpriteData = 80 00 c0 00 e0 00 f0 00 f8 00 c2 00 c3 00 c3 80 1f c0 1f e0 1f e0 1f c0 c3 80 c3 00 c2 00 f8 00 f0 00 e0 00 c0 00 80 00 
+71, bc2e KeyboardLeftPane, Address = 0xbc2e, Width = 2, HeightInPixels = 16, SpriteData = 07 ff 0d 11 08 45 0f ff 08 00 07 ff 0c 92 0c 92 0f ff 09 24 09 24 0f ff 09 24 09 24 0f ff 0f ff 
+72, bc4f KeyboardRightPane, Address = 0xbc4f, Width = 2, HeightInPixels = 16, SpriteData = ff f0 ff f8 ff f8 ff f8 00 08 ff f0 49 38 49 38 ff f8 92 48 92 48 ff f8 92 48 92 48 ff f8 ff f8 
+73, bc70 JoystickLeftPane, Address = 0xbc70, Width = 2, HeightInPixels = 23, SpriteData = 00 03 00 06 00 0c 00 09 00 09 00 0f 00 07 00 03 00 00 00 01 00 01 00 0b 00 0b 00 0b 00 33 00 00 00 c7 01 8f 03 1f 00 00 03 1f 01 8f 00 c7 
+74, bc9f JoystickRightPane, Address = 0xbc9f, Width = 2, HeightInPixels = 23, SpriteData = c0 00 60 00 70 00 f0 00 f0 00 f0 00 e0 00 c0 00 00 00 80 00 80 00 f0 00 f0 00 f0 00 fc 00 00 00 ff 00 ff 80 ff c0 00 00 ff c0 ff 80 ff 00 
+75, bd30 Pumpkin1, Address = 0xbd30, Width = 2, HeightInPixels = 19, SpriteData = 00 60 00 e0 01 c0 0d b0 3f fc 7f fe 7b ce f7 cf ea 47 ff 7f ff ff f6 67 ef 67 f5 0f 7b 9e 7d be 3f fc 1f f8 07 e0 
+76, bd57 Pumpkin2, Address = 0xbd57, Width = 2, HeightInPixels = 19, SpriteData = 00 60 00 e0 01 c0 0d b0 3f fc 7f fe 73 ff f3 df e2 6f fe ff ff ff e6 77 e6 ef f0 5f 79 be 7d fe 3f fc 1f f8 07 e0 
+76, bdb3 Unknown, Address = 0xbdb3, Width = 2, HeightInPixels = 16, SpriteData = 19 17 ff 18 ff 17 04 33 16 17 15 ff 12 ff 25 15 ff 14 36 35 ff 13 ff 12 23 0f 11 12 35 ff 31 0a 
+79, c124 Can, Address = 0xc124, Width = 2, HeightInPixels = 20, SpriteData = 07 e0 18 18 20 c4 5d 22 20 c4 38 1c 2f fc 26 bc 27 7c 23 bc 39 dc 3d bc 3d dc 3e ec 3e 54 3e 34 7e 1e 2f f4 18 18 07 e0 
+135, c14d MoneyBag, Address = 0xc14d, Width = 2, HeightInPixels = 16, SpriteData = 0e c8 11 34 ce 04 7f 18 87 b4 1d ee 3e 1e 7f ff 7f 7f fc 0f f9 7f f8 0f f0 4f f8 1e 7f 7e 1f f8 
+130, c16e Gobstopper, Address = 0xc16e, Width = 2, HeightInPixels = 16, SpriteData = 07 a0 1f e8 38 74 70 3a 76 3a c8 1d c0 1d f2 35 fc 75 b0 75 d8 cd 5f da 6a 9a 3b 74 1f e8 07 a0 
+134, c18f Amulet, Address = 0xc18f, Width = 2, HeightInPixels = 13, SpriteData = 17 f8 37 d4 77 52 f7 f1 08 0f f7 f1 a7 b5 d5 58 f7 ef 9a b1 48 12 28 14 1f f8 
+80, c1aa CandyBar, Address = 0xc1aa, Width = 2, HeightInPixels = 16, SpriteData = 00 08 00 14 00 3e 00 7f 00 82 01 04 03 f8 07 f0 08 20 10 40 3f 80 7f 00 82 00 44 00 38 00 10 00 
+81, c1cb Ham, Address = 0xc1cb, Width = 2, HeightInPixels = 20, SpriteData = 07 60 07 e0 01 c0 01 80 01 80 01 80 00 00 03 c0 03 e0 03 e0 07 f0 07 f0 07 f8 0f f8 0f fc 18 0e 11 c3 11 c1 10 02 0f fc 
+82, c1f4 Lollipop, Address = 0xc1f4, Width = 2, HeightInPixels = 18, SpriteData = 0f 00 3f c0 71 e0 61 e0 c7 f0 cf f0 cf f0 ff f0 7f e0 7f e0 3f c0 0f 40 00 e0 00 60 00 70 00 30 00 38 00 18 
+83, c219 IceCreamCone, Address = 0xc219, Width = 2, HeightInPixels = 18, SpriteData = 00 00 0c 00 0f 00 3d 40 74 60 79 50 f2 70 e8 d0 d0 f8 c9 d0 07 f8 7d 54 3f fc 15 54 03 fe 00 54 00 0f 00 01 
+88, c253 CharacterAppear2, Address = 0xc253, Width = 2, HeightInPixels = 13, SpriteData = 02 00 00 a0 15 08 01 a0 0b 88 02 d0 04 80 09 50 02 00 00 80 00 00 00 00 00 00 
+89, c26e CharacterAppear3, Address = 0xc26e, Width = 2, HeightInPixels = 15, SpriteData = 01 00 00 10 0a 40 01 94 24 50 13 40 09 74 55 82 03 50 14 60 22 14 80 a0 02 08 01 20 00 00 
+90, c28d CharacterAppear4, Address = 0xc28d, Width = 2, HeightInPixels = 16, SpriteData = 00 40 09 20 22 44 08 90 05 00 52 52 05 28 11 14 45 a8 12 52 85 40 00 a8 2a 02 00 40 12 08 00 80 
+91, c310 Spider1, Address = 0xc310, Width = 2, HeightInPixels = 14, SpriteData = 0f f0 1f f8 3f fc 7f fe 79 9e 76 6e 74 2e 39 9c 1f f8 60 06 c6 63 c0 03 0c 30 0c 30 
+92, c32d Spider2, Address = 0xc32d, Width = 2, HeightInPixels = 14, SpriteData = 0f f0 1f f8 3f fc 7f fe 79 9e 76 6e 74 2e 39 9c 1f f8 33 cc 06 60 66 66 60 06 00 00 
+93, c34a Ghost1, Address = 0xc34a, Width = 2, HeightInPixels = 16, SpriteData = 02 00 03 1c 03 b8 67 f8 3f f1 33 9e ed 68 65 2f 13 9e 3f f8 ff fc 3f ff 0f fc 3f f0 ff fc 03 ff 
+94, c36b Ghost2, Address = 0xc36b, Width = 2, HeightInPixels = 16, SpriteData = 01 20 63 62 7f 6e 3f f8 1f f8 73 98 7d 6e 65 2f 33 98 1f fc 7f fe ff ff 3f f0 0f fc 7f ff ff 80 
+95, c38c Bouncy1, Address = 0xc38c, Width = 2, HeightInPixels = 11, SpriteData = f0 1e 38 38 1c 70 0f e0 1f f0 39 38 36 d8 34 90 39 38 1f f0 0e e0 
+96, c3a3 Bouncy2, Address = 0xc3a3, Width = 2, HeightInPixels = 9, SpriteData = f8 3e 3f f8 1f f0 39 38 36 d8 34 98 39 38 1f f0 0e e0 
+97, c3b6 Smorph1, Address = 0xc3b6, Width = 2, HeightInPixels = 20, SpriteData = 07 e0 0f f0 1f f8 19 98 19 98 19 98 d9 9b d9 9b df fb df fb df fb df f3 cf f3 8f e1 87 c1 83 81 03 00 03 00 03 80 01 c0 
+98, c3df Smorph2, Address = 0xc3df, Width = 2, HeightInPixels = 20, SpriteData = 07 e0 0f f0 0f f0 99 99 d9 9b d9 9b d9 9b d9 9b df fb df fb df fb 8f f9 8f f1 87 f1 03 e0 01 c0 00 c0 00 c0 01 c0 03 80 
+103, c408 JellyGhoul1, Address = 0xc408, Width = 2, HeightInPixels = 16, SpriteData = 03 c0 07 f0 0f f8 0c cc 1c 44 18 44 18 44 1c ec 1f fc 3f fe 7f fe ff ff ff ff 7f fe 07 e0 03 c0 
+104, c429 JellyGhoul2, Address = 0xc429, Width = 2, HeightInPixels = 16, SpriteData = 03 c0 07 f0 0f f8 0c cc 1c 44 18 44 18 44 1c ec 1f fc 1f fc 3f fe 7f ff ff ff fe 3f fc 1e 78 0c 
+105, c44a Bat1, Address = 0xc44a, Width = 2, HeightInPixels = 18, SpriteData = 80 02 80 02 c0 06 40 04 60 0c 30 18 38 38 1c 70 1f f0 0d 60 06 c0 07 c0 03 80 0c 60 04 40 00 00 00 00 00 00 
+106, c46f Bat2, Address = 0xc46f, Width = 2, HeightInPixels = 14, SpriteData = 08 20 0c 60 0f e0 05 40 06 c0 17 d0 3b b8 3c 78 64 4c 60 0c 40 04 80 02 80 02 80 02 
+107, c5f8 CharacterDead1, Address = 0xc5f8, Width = 2, HeightInPixels = 11, SpriteData = 01 00 03 c0 06 a0 07 60 05 c0 03 40 00 00 00 00 00 00 00 00 00 00 
+108, c60f CharacterDead2, Address = 0xc60f, Width = 2, HeightInPixels = 13, SpriteData = 02 90 02 a0 09 c8 07 b0 06 f8 1f 40 02 f0 0b 48 01 a0 00 80 00 00 00 00 00 00 
+109, c62a CharacterDead3, Address = 0xc62a, Width = 2, HeightInPixels = 15, SpriteData = 00 80 02 80 12 a8 0a 92 64 2c 10 00 00 0e 70 00 00 10 38 08 04 24 09 10 11 10 05 00 00 00 
+110, c649 CharacterDead4, Address = 0xc649, Width = 2, HeightInPixels = 16, SpriteData = 04 80 44 82 20 04 00 00 80 01 40 02 00 00 00 03 c0 00 00 00 20 00 40 04 00 02 08 20 11 10 01 00 
+111, cb46 Mummy1, Address = 0xcb46, Width = 2, HeightInPixels = 24, SpriteData = 03 80 07 c0 0d 60 0f e0 0c 60 07 c0 03 80 17 d4 5b be f7 cb e8 67 cf e5 04 20 0f e0 0f e0 0e 20 07 e0 01 f0 07 40 07 70 04 30 03 78 0f 78 0f 00 
+112, cb77 Mummy2, Address = 0xcb77, Width = 2, HeightInPixels = 24, SpriteData = 03 80 07 c0 0d 60 0f e0 0c 60 07 c0 03 80 17 d4 5b be f7 cb 78 67 af e5 02 10 07 f0 07 f0 07 10 07 e0 01 e0 07 f0 07 40 04 70 03 30 0f e8 0f e8 
+113, cba8 Mummy3, Address = 0xcba8, Width = 2, HeightInPixels = 24, SpriteData = 01 c0 03 e0 06 b0 07 f0 06 30 03 e0 01 c0 17 f4 5b fe f3 eb e4 37 a7 f5 02 10 07 f0 07 f0 07 10 01 e0 07 70 07 70 04 40 07 70 0f 30 0f 78 00 78 
+115, cbd9 Frankenstien1, Address = 0xcbd9, Width = 2, HeightInPixels = 24, SpriteData = 0f e0 1a b0 10 10 16 d0 14 50 0f e0 24 48 37 d8 20 08 0f e0 7e fc ff fe fe fe ee ee af ee a0 0a 4f ea 4f e4 0e c4 0e b0 0e 70 00 f0 1e 60 3e 00 
+116, cc0a Frankenstien2, Address = 0xcc0a, Width = 2, HeightInPixels = 24, SpriteData = 0f e0 1a b0 10 10 16 d0 14 50 0f e0 24 48 37 d8 20 08 0f e0 7e fc ff fe fe fe ef ee ef ee e0 0e af ea af ea 4e e4 4e e4 0e e0 00 00 1e f0 1e f0 
+117, cc3b Frankenstien3, Address = 0xcc3b, Width = 2, HeightInPixels = 24, SpriteData = 0f e0 1a b0 10 10 16 d0 14 50 0f e0 24 48 37 d8 20 08 0f f0 7e fc ff fe fe fe ef ee ef ea 0a a0 ae e4 4f e0 46 e0 1a e0 1c e0 1e 00 0c f0 00 f8 
+119, cc6c Devil1, Address = 0xcc6c, Width = 2, HeightInPixels = 24, SpriteData = 40 04 47 c4 6f ec 7b bc 31 18 16 d0 14 50 11 10 0a a0 07 c0 3f fc ff ff ab a8 0d 60 0b a0 05 40 0f c0 0f d0 0e f8 0c ec 0c 04 00 65 0c 63 0c 07 
+120, cc9d Devil2, Address = 0xcc9d, Width = 2, HeightInPixels = 24, SpriteData = 40 04 47 c4 6f ec 7b bc 31 18 16 d0 14 50 11 10 0a a0 07 c0 3f f8 ff fe ab aa 0d 60 0b a0 05 40 07 c0 07 d0 06 d8 06 cc 06 c4 00 05 06 c3 06 c7 
+121, ccce Devil3, Address = 0xccce, Width = 2, HeightInPixels = 24, SpriteData = 20 02 23 e2 37 f6 39 ce 18 8c 0b 68 0a 28 08 88 05 50 03 e0 3f fc ff ff a5 d5 06 b0 05 d0 02 a0 07 f0 03 f0 07 78 07 3c 00 34 06 05 06 33 00 37 
+123, ccff Dracula1, Address = 0xccff, Width = 2, HeightInPixels = 24, SpriteData = 07 c0 0f e0 1b b0 19 30 16 d0 54 54 41 04 72 9c 3a b8 0f e0 3f f8 23 88 6b ac 7f fc 7f fc f8 3e f7 de f7 de ce de b4 c2 38 c0 1c c0 0c 00 00 f0 
+124, cd30 Dracula2, Address = 0xcd30, Width = 2, HeightInPixels = 24, SpriteData = 07 c0 0f e0 1b b0 19 30 16 d0 54 54 41 04 72 9c 3a b8 0f e0 3f f8 23 88 6b ac 7f fc 7f fc f8 3e f7 de f7 de f6 de 86 c2 06 c0 00 00 0e e0 1e f0 
+125, cd61 Dracula3, Address = 0xcd61, Width = 2, HeightInPixels = 24, SpriteData = 07 c0 0f e0 1b b0 19 30 16 d0 54 54 41 04 72 9c 3a b8 0f e0 3f f8 23 88 6b ac 7f ec 7f fc f8 3e f7 de f7 de f6 e6 86 5a 06 38 06 70 00 60 1e 00 
+142, cd92 Gravestone, Address = 0xcd92, Width = 2, HeightInPixels = 21, SpriteData = 00 70 16 b8 3a dc 3d e2 3d ec 1f dc 0f d8 07 c0 07 ec 4f f6 2f f9 9e 77 9e ae 7d ce fd 80 7b 80 fb 00 37 60 56 80 4b c0 22 00 
+137, cdbd Crucifix, Address = 0xcdbd, Width = 2, HeightInPixels = 18, SpriteData = 01 80 03 c0 03 c0 01 80 03 c0 66 66 fd bf fd bf 66 66 03 c0 01 80 01 80 01 80 01 80 01 80 03 c0 03 c0 01 80 
+136, cde2 Skull, Address = 0xcde2, Width = 2, HeightInPixels = 15, SpriteData = 07 f0 1f fc 3f 02 38 02 79 12 73 1a 7b 5a 76 32 30 84 38 44 1c c8 0c 08 04 a8 03 50 02 d0 
+143, ce01 WitchFlyingLeft1, Address = 0xce01, Width = 2, HeightInPixels = 22, SpriteData = 08 1f 07 fc 03 f8 0d f0 16 e0 3b 40 2f 20 0f c0 0f c0 09 60 c3 78 e6 f6 3e f7 1d ff 05 ff 07 fe 07 fe 07 fc 3c d8 00 ba 07 da 00 0a 
+144, ce2e WitchFlyingLeft2, Address = 0xce2e, Width = 2, HeightInPixels = 22, SpriteData = 08 1f 07 fc 03 f8 0d f0 16 e0 3b 40 2f 20 0f 00 0f c0 49 60 e3 7c 76 f6 1e f7 0d ff 05 ff 07 fe 07 fe 07 fc 3c d4 00 ba 07 d5 00 80 
+145, ce5b WitchFlyingRight1, Address = 0xce5b, Width = 2, HeightInPixels = 22, SpriteData = f8 10 3f e0 1f c0 0f b0 07 68 02 dc 04 f4 00 f0 03 f0 06 92 3e c7 6f 6e ef 78 ff b0 ff a0 7f e0 7f e0 3f e0 2b 3c 5d 00 ab e0 10 00 
+146, ce88 WitchFlyingRight2, Address = 0xce88, Width = 2, HeightInPixels = 22, SpriteData = f8 10 3f e0 1f c0 0f b0 07 68 02 dc 04 f4 00 f0 03 f0 06 90 3e c3 6f 67 ef 7c ff b8 ff a0 7f e0 7f e0 3f e0 2b 3c 5d 00 ab e0 50 00 
+147, ceb5 GhoulFlyingLeft1, Address = 0xceb5, Width = 2, HeightInPixels = 19, SpriteData = 1e 00 3f 80 7f e0 4f f8 47 fc 24 3c 15 c6 0a e0 1d 70 e3 70 ff 70 7e f0 3d b0 3b 10 17 b0 2f b0 3f f8 1f fc 0c ce 
+148, cedc GhoulFlyingLeft2, Address = 0xcedc, Width = 2, HeightInPixels = 19, SpriteData = 1e 00 3f 80 7f e0 4f f8 47 fc 26 1f 17 c0 0c e0 0d 70 0b b0 e7 b0 ff 70 7e d0 7d 10 3b b0 37 b0 0f fc 1f ff 03 00 
+149, cf03 GhoulFlyingRight1, Address = 0xcf03, Width = 2, HeightInPixels = 19, SpriteData = 00 78 01 fc 07 f3 1f f2 3f e2 f8 64 03 e8 07 30 0e b0 0d d0 0d e7 0e ff 0d 7e 08 be 0d dc 0d ec 3f f0 ff f8 00 c0 
+150, cf2a GhoulFlyingRight2, Address = 0xcf2a, Width = 2, HeightInPixels = 19, SpriteData = 00 78 01 fc 07 fe 1f f2 3f e2 3c 24 63 a8 07 50 0e b8 0e c7 0e ff 0f 7e 0d bc 08 dc 0d e8 0d f4 1f fc 3f f8 73 30 
+151, cf51 BatFlyingLeft1, Address = 0xcf51, Width = 2, HeightInPixels = 19, SpriteData = 00 1f 00 fc 03 f8 07 f8 0c 18 0b e8 25 f8 dc 10 f7 f0 df 80 bf fe ff ff 67 f0 00 00 00 00 00 00 00 00 00 00 00 00 
+152, cf78 BatFlyingLeft2, Address = 0xcf78, Width = 2, HeightInPixels = 13, SpriteData = 20 00 b0 00 f0 00 df f0 bf fe ff 9f 67 e0 07 90 08 38 07 04 03 f8 00 fc 00 1f 
+153, cf93 BatFlyingRight1, Address = 0xcf93, Width = 2, HeightInPixels = 13, SpriteData = 00 04 00 0d 00 0f 0f fb 7f fd f9 ff 07 e6 09 e0 1c 10 2f e0 1f c0 3f 00 f8 00 
+154, cfae BatFlyingRight2, Address = 0xcfae, Width = 2, HeightInPixels = 19, SpriteData = f8 00 3f 00 1f c0 1f e0 18 30 27 d0 1f a4 08 6d 0f ef 01 fb 7f fd ff ff 0f e6 00 00 00 00 00 00 00 00 00 00 00 00 
+139, d1d5 ACGKeyLeft, Address = 0xd1d5, Width = 2, HeightInPixels = 11, SpriteData = 3f ff 40 00 5f ff 3f ff 07 fe 0c df 0c d8 0f d8 0f d8 0c df 0c ce 
+140, d1ec ACGKeyMiddle, Address = 0xd1ec, Width = 2, HeightInPixels = 15, SpriteData = 00 01 00 01 00 03 00 0f ff f0 00 0f ff ff ff f0 3c 0f 7e 03 60 01 6e 01 66 00 7e 00 3c 00 
+141, d20b ACGKeyRight, Address = 0xd20b, Width = 2, HeightInPixels = 19, SpriteData = 1c 00 7f 00 f8 80 c3 80 81 bc 81 66 1b 42 9f 73 c7 b1 c7 b1 9f 73 1b 42 81 66 81 dc c3 c0 c3 80 7f 00 7f 00 1c 00 
+160, d232 Mushroom, Address = 0xd232, Width = 2, HeightInPixels = 16, SpriteData = 03 f0 0f fc 1f 9e 33 f3 77 f3 7f 3e ff 3c 6f f0 cf c8 7e 3c 00 fc 00 fc 00 7e 00 7e 00 fc 00 70 
+138, d29f Spanner, Address = 0xd29f, Width = 2, HeightInPixels = 16, SpriteData = 00 22 00 63 00 63 00 7f 00 7f 00 7e 00 f8 01 e0 03 c0 07 80 0f 00 1e 00 3c 00 78 00 70 00 20 00 
+77, d2c0 Ghoul1, Address = 0xd2c0, Width = 2, HeightInPixels = 11, SpriteData = 01 e0 07 f0 0c 98 0b 6c 0a 2c 1c 9c 3f fe 7f ff ff ff dd b9 09 10 
+78, d2d7 Ghoul2, Address = 0xd2d7, Width = 2, HeightInPixels = 11, SpriteData = 03 c0 0f e0 19 30 36 d8 74 5c f9 3e ff ff d7 d7 01 01 00 00 00 00 
+155, d3d3 Hunchback1, Address = 0xd3d3, Width = 2, HeightInPixels = 24, SpriteData = 03 e0 05 f0 1e f8 3e cc 73 44 53 62 7f 72 7b 62 06 c2 1d 8c 43 9c 37 78 37 38 77 f8 60 00 03 f8 67 f8 0f 38 0e 38 0e 38 00 38 1c 00 3c 38 00 3c 
+156, d404 Hunchback2, Address = 0xd404, Width = 2, HeightInPixels = 24, SpriteData = 03 e0 05 f0 1e f8 3e cc 73 4c 53 66 7f 66 7b 66 06 cc 1d 8c 03 9c 26 f8 26 78 27 f8 30 00 07 f8 37 f8 07 38 07 38 07 38 07 38 00 00 07 38 0f 3c 
+157, d435 Hunchback3, Address = 0xd435, Width = 2, HeightInPixels = 24, SpriteData = 03 e0 05 f0 1e f8 3e cc 73 44 53 62 7f 72 7b 62 06 c2 1d 8c 43 9c 37 38 37 38 77 f8 60 00 07 f8 67 f8 07 3c 07 3c 07 38 07 00 00 38 07 3c 0f 00 
+BackgroundItemSprite,a69c,a6fd,98,
+BackgroundItemAttribute,a6fe,a76d,112,
+BackgroundItemSprite,a76e,a7cf,98,
+BackgroundItemAttribute,a7d0,a7eb,28,
+BackgroundItemSprite,a7ec,a845,90,
+BackgroundItemAttribute,a846,a853,14,
+Unknown,a854,a99f,332, 0x42 0x00 0x43 0x02 0x44 0x03 0x45 0x02 0x46 0x04 0x47 0x02 0x46 0x03 0x45 0x02 0x44 0x04 0x43 0x00 0x42 0x03 0x43 0x03 0x44 0x03 0x45 0x00 0x46 0x04 0x47 0x04 0x46 0x04 0x45 0x04 0x44 0x04 0x43 0x00 0x42 0x03 0x43 0x03 0x44 0x03 0x45 0x00 0x46 0x04 0x47 0x03 0x46 0x05 0x45 0x00 0x44 0x08 0x43 0x01 0x42 0x04 0x43 0x02 0x44 0x03 0x45 0x02 0x46 0x04 0x47 0x02 0x46 0x03 0x45 0x02 0x44 0x05 0x43 0x00 0x42 0x04 0x43 0x00 0x44 0x03 0x45 0x00 0x46 0x04 0x47 0x00 0x46 0x03 0x45 0x05 0x44 0x01 0x43 0x0a 0x42 0x0a 0x43 0x01 0x44 0x0a 0x45 0x01 0x46 0x09 0x47 0x09 0x46 0x01 0x45 0x01 0x44 0x01 0x43 0x01 0x42 0x01 0x43 0x01 0x44 0x01 0x45 0x09 0x46 0x01 0x47 0x01 0x46 0x0a 0x45 0x01 0x44 0x09 0x43 0x01 0x42 0x01 0x43 0x09 0x45 0x01 0x45 0x0a 0x46 0x09 0x47 0x01 0x46 0x01 0x45 0x0a 0x44 0x01 0x43 0x09 0x42 0x01 0x43 0x0a 0x44 0x09 0x45 0x01 0x46 0x01 0x47 0x01 0x46 0x00 0x45 0x00 0x44 0x00 0x43 0x00 0x42 0x00 0x47 0x00 0x43 0x00 0x44 0x00 0x45 0x00 0x46 0x00 0x47 0x00 0x46 0x00 0x45 0x00 0x44 0x00 0x43 0x00 0x42 0x00 0x43 0x00 0x44 0x00 0x45 0x00 0x46 0x00 0x47 0x00 0x46 0x00 0x45 0x00 0x44 0x00 0x43 0x00 0x42 0x04 0x43 0x00 0x44 0x05 0x45 0x05 0x46 0x03 0x47 0x01 0x46 0x00 0x45 0x00 0x44 0x03 0x43 0x00 0x42 0x04 0x43 0x00 0x44 0x03 0x45 0x00 0x46 0x04 0x47 0x00 0x46 0x00 0x45 0x00 0x44 0x00 0x43 0x00 0x42 0x00 0x43 0x00 0x44 0x00 0x45 0x00 0x46 0x00 0x47 0x00 0x46 0x00 0x45 0x00 0x44 0x04 0x43 0x04 0x42 0x04 0x47 0x0b 0x43 0x01 0x44 0x01 0x45 0x01 0x46 0x01 0x47 0x01 0x46 0x01 0x00 0x00 0x00 0x0c 0x38 0x38 0xdf 0xa9 0xef 0xa9 0x28 0x28 0x04 0xaa 0x78 0xaa 0x38 0x38 0x34 0xab 0x54 0xab 0x38 0x18 0x7d 0xab 0xef 0xa9 0x18 0x38 0x8d 0xab 0xef 0xa9
+CharacterSprite,a9a0,a9c0,33,
+Unknown,a9c1,aaaf,239, 0xbe 0x7e 0xbd 0x38 0x38 0xd0 0xa9 0xd8 0xa9 0x38 0x38 0xa9 0x97 0x09 0x98 0x04 0xbf 0x04 0x00 0x1f 0xbf 0x1f 0x00 0x00 0x01 0xff 0x02 0x03 0xff 0xff 0x04 0xbb 0x04 0x04 0xbb 0x04 0xbb 0xbb 0x1f 0xa0 0x1f 0x1f 0xa0 0x1f 0xa0 0xa0 0x00 0x01 0x03 0x04 0xff 0x02 0x01 0x03 0x06 0xff 0x05 0x01 0x04 0x06 0xff 0x07 0x03 0x04 0x06 0xff 0xff 0x93 0x05 0x24 0x7d 0x25 0x7d 0x02 0x8e 0x11 0xad 0x26 0xb7 0x46 0xad 0x4f 0x90 0x3b 0x96 0x2e 0x90 0x79 0xad 0x70 0x90 0x8c 0xb9 0x97 0xb4 0x7a 0x96 0x81 0x93 0x8a 0x99 0x82 0x94 0x97 0x85 0xa2 0xbf 0xb9 0x9c 0xb8 0x9b 0xad 0x79 0xae 0x79 0x91 0x71 0x90 0x70 0x90 0x4f 0xad 0x46 0x28 0x72 0x2f 0x70 0x12 0x79 0x11 0x78 0x0a 0x74 0x12 0x46 0x2f 0x4f 0x26 0x3c 0x2f 0x3c 0x05 0x2c 0x17 0x2c 0x2f 0x2b 0x17 0x13 0x37 0x24 0x38 0x25 0x24 0x02 0x23 0x01 0x46 0x12 0x4f 0x2f 0x79 0x12 0x70 0x2f 0x83 0x26 0x83 0x2f 0x94 0x2f 0x9c 0x37 0x9b 0x38 0xbe 0x23 0xbf 0x24 0xac 0x17 0x93 0x17 0x00 0x2f 0x31 0x39 0xff 0x01 0xff 0x02 0xff 0x03 0x01 0x04 0x20 0xff 0x04 0xff 0x05 0x06 0x08 0x04 0xff 0x06 0xff 0x07 0x06 0x08 0x0b 0xff 0x08 0xff 0x09 0x08 0x04 0x02 0xff 0x0a 0x0c 0x0b 0x06 0xff 0x0b 0xff 0x0c 0xff 0x0d 0x13 0x0c 0x11 0xff 0x0e 0x0f 0x0c 0x0b 0xff 0x0f 0xff
+CharacterSprite,aab0,aad0,33,
+Unknown,aad1,ac15,325, 0x1a 0x36 0x16 0xff 0x1c 0x02 0x1d 0x1e 0xff 0x1d 0xff 0x1e 0xff 0x1f 0xff 0x20 0x1f 0xff 0x21 0x1e 0x22 0x25 0xff 0x22 0x1d 0xff 0x23 0x22 0x24 0x25 0xff 0x24 0xff 0x25 0xff 0x26 0x24 0x25 0x28 0xff 0x27 0x24 0x29 0x28 0xff 0x28 0xff 0x29 0xff 0x2a 0xff 0x2b 0x29 0xff 0x2c 0x28 0x2d 0xff 0x2d 0xff 0x2e 0x2a 0x2d 0xff 0x2f 0x2d 0x30 0xff 0x30 0x31 0x2e 0xff 0x31 0xff 0x32 0x31 0x33 0x39 0xff 0x33 0xff 0x34 0x33 0x36 0xff 0x35 0xff 0x36 0xff 0x37 0xff 0x38 0x33 0x37 0x39 0xff 0x39 0xff 0xff 0x02 0xa3 0x02 0x1c 0x1c 0x02 0xa3 0x02 0xbd 0x1c 0xbd 0xa3 0xa3 0xbd 0x1c 0xbd 0x30 0xa0 0x1f 0x8f 0x1f 0x30 0x30 0x1f 0x8f 0x1f 0xa0 0x30 0xa0 0x8f 0x8f 0xa0 0x00 0x09 0x07 0x01 0xff 0x02 0x01 0x03 0x0b 0xff 0x04 0x03 0x05 0x0d 0xff 0x06 0x05 0x0f 0x07 0xff 0x08 0x07 0x09 0x0f 0xff 0x0a 0x01 0x09 0x0b 0xff 0x0c 0x03 0x0b 0x0d 0xff 0x0e 0x05 0x0d 0x0f 0xff 0xff 0x03 0x9c 0x03 0x23 0xbc 0x23 0xbc 0x9c 0x1f 0x80 0x1f 0x3f 0xa0 0x3f 0xa0 0x80 0x23 0x03 0x9c 0x03 0x9c 0xbc 0x23 0xbc 0x3f 0x1f 0x80 0x1f 0x80 0xa0 0x3f 0xa0 0x8a 0xba 0x08 0x04 0x35 0xbb 0x8a 0xbb 0xb7 0x04 0x38 0x28 0x38 0x3d 0x3d 0x3d 0x3d 0x51 0x41 0x51 0x41 0x63 0x45 0x63 0x45 0x73 0x48 0x73 0x48 0x81 0x4b 0x81 0x4b 0x8d 0x4e 0x8d 0x4e 0x97 0x50 0x97 0x50 0x9f 0x6f 0x9f 0x6f 0x97 0x71 0x97 0x71 0x8d 0x74 0x8d 0x74 0x81 0x77 0x81 0x77 0x73 0x7a 0x73 0x7a 0x63 0x7e 0x63 0x7e 0x51 0x82 0x51 0x82 0x3d 0x87 0x3d 0x87 0x28 0x35 0xba 0x01 0xff 0x02 0x03 0x01 0xff 0x03 0xff 0x04 0x01 0x03 0xff 0x05 0x01 0xff 0x06 0x23 0x05 0xff 0x07 0xff 0x08 0x21 0x07 0xff 0x09 0xff 0x0a 0x1f 0x09 0xff 0x0b 0xff 0x0c 0x1d 0x0b 0xff 0x0d 0xff 0x0e 0x1b 0x0d 0xff 0x0f 0xff
+CharacterSprite,ac16,ac36,33,
+Unknown,ac37,ad2d,247, 0xff 0x20 0x1f 0xff 0x21 0xff 0x22 0x21 0xff 0x23 0xff 0x24 0x04 0x05 0x23 0xff 0x25 0xff 0xff 0x8a 0x05 0x08 0xbb 0x38 0x04 0x8a 0x04 0xb7 0xbb 0x38 0x97 0x38 0x82 0x3d 0x82 0x3d 0x6e 0x41 0x6e 0x41 0x5c 0x45 0x5c 0x45 0x4c 0x48 0x4c 0x48 0x3e 0x4b 0x3e 0x4b 0x32 0x4e 0x32 0x4e 0x28 0x50 0x28 0x50 0x20 0x6f 0x20 0x6f 0x28 0x71 0x28 0x71 0x32 0x74 0x32 0x74 0x3e 0x77 0x3e 0x77 0x4c 0x7a 0x4c 0x7a 0x5c 0x7e 0x5c 0x7e 0x6e 0x82 0x6e 0x82 0x82 0x87 0x82 0x87 0x97 0x35 0x05 0x05 0x8a 0xbb 0x08 0x04 0x38 0x04 0x8a 0xbb 0xb7 0x97 0x38 0x82 0x38 0x82 0x3d 0x64 0x3d 0x6e 0x41 0x5c 0x41 0x5c 0x45 0x4c 0x45 0x4c 0x48 0x3e 0x48 0x3e 0x4b 0x32 0x4b 0x32 0x4e 0x28 0x4e 0x28 0x50 0x20 0x50 0x20 0x6f 0x28 0x6f 0x28 0x71 0x32 0x71 0x32 0x74 0x3e 0x74 0x3e 0x77 0x4c 0x77 0x4c 0x7a 0x5c 0x7a 0x5c 0x7e 0x6e 0x7e 0x6e 0x82 0x82 0x82 0x82 0x87 0x97 0x87 0x05 0x35 0xba 0x8a 0x04 0x08 0xbb 0x35 0xbb 0x8a 0x04 0xb7 0x28 0x38 0x3d 0x38 0x3d 0x3d 0x51 0x3d 0x51 0x41 0x63 0x41 0x63 0x45 0x73 0x45 0x73 0x48 0x81 0x48 0x81 0x4b 0x8d 0x4b 0x8d 0x4e 0x97 0x4e 0x97 0x50 0x9f 0x50 0x9f 0x6f 0x97 0x6f 0x97 0x71 0x8d 0x71 0x8d 0x74 0x81 0x74 0x81 0x77 0x73 0x77 0x73 0x7a 0x63 0x7a 0x63 0x7e 0x51 0x7e 0x51 0x82 0x3d 0x82 0x3d 0x87 0x28 0x87 0xba 0x35
+CharacterSprite,ad2e,aeea,445,
+BackgroundItemSprite,aeeb,aeeb,1,
+CharacterSprite,aeec,b039,334,
+Unknown,b03a,b1f9,448, 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x03 0x0f 0x1f 0x3d 0x7e 0x79 0x00 0x00 0xff 0xff 0xff 0xb4 0x4a 0x00 0x00 0x00 0x80 0xfe 0xff 0xd5 0xad 0x42 0x00 0x00 0x00 0x00 0xf0 0x7f 0x56 0x50 0x00 0x00 0x00 0x00 0x03 0xff 0xb5 0x44 0x00 0x00 0x01 0x1f 0xff 0xda 0x25 0x41 0x00 0x07 0xff 0xfe 0xfc 0xfc 0xd8 0x3f 0x00 0xf0 0x08 0x04 0x02 0x02 0x02 0xf1 0xd0 0xca 0xe0 0xc0 0xc0 0xc0 0x60 0x60 0x3b 0x1b 0x1b 0x1b 0x1b 0x19 0x0c 0x0c 0x89 0x89 0x85 0x85 0xfd 0x81 0x81 0x81 0x0c 0x06 0x03 0x03 0x03 0x01 0x01 0x01 0x41 0x42 0xfc 0x00 0x00 0x80 0x80 0x80 0x60 0x30 0x1c 0x06 0x3e 0x1c 0x0c 0x06 0x0c 0x18 0x18 0x18 0x0c 0x0c 0x0c 0x0c 0x06 0x06 0x06 0x06 0x06 0x06 0x06 0x06 0x06 0x06 0x06 0x06 0x06 0x06 0x0c 0x0c 0x0c 0x0c 0x0c 0x18 0x18 0x18 0x18 0x18 0x18 0x30 0x30 0x30 0x30 0x30 0x30 0x30 0x30 0x60 0x60 0x60 0x60 0x60 0x60 0x60 0x60 0x60 0x60 0x60 0x30 0x30 0x30 0x18 0x0c 0x18 0x18 0x18 0x30 0x30 0x18 0x30 0x30 0x38 0x0c 0x06 0x0c 0x18 0x18 0x18 0x0c 0x0c 0x0c 0x0c 0x0c 0x06 0x06 0x06 0x06 0x06 0x06 0x06 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x06 0x06 0x06 0x06 0x06 0x06 0x06 0x0c 0x0c 0x0c 0x0c 0x0c 0x18 0x18 0x18 0x18 0x30 0x30 0x30 0x30 0x60 0x60 0x60 0x7f 0x7e 0x0c 0x18 0x00 0x00 0x0c 0x1e 0x1d 0x0b 0x07 0x37 0x7f 0xff 0x80 0x7f 0xff 0xc1 0x80 0x00 0x00 0x80 0x98 0x3c 0xdc 0xe8 0xf0 0x76 0x01 0x03 0x03 0x03 0x06 0x06 0x0c 0x7f 0x80 0x00 0x00 0x00 0x00 0x00 0x00 0xfc 0x70 0xf0 0x18 0xfc 0xf8 0xc0 0xc0 0xc0 0x6e 0xec 0xec 0xec 0xec 0xec 0x6e 0x37 0x3e 0x49 0x49 0x49 0x49 0x2a 0x1c 0x08 0x3b 0x1b 0x1b 0x1b 0x1b 0x1b 0x3b 0x76 0x00 0x80 0x80 0x80 0x80 0x80 0x00 0x00 0x00 0x03 0x07 0x0e 0x07 0x01 0x00 0x00 0xfd 0xc3 0xdf 0x2f 0x97 0xeb 0x77 0x31 0xc2 0xc1 0x81 0x81 0x01 0xfd 0x05 0x05 0xc0 0x60 0x60 0x60 0x30 0x18 0x0f 0x07 0x07 0x0b 0x1d 0x1e 0x0c 0x00 0x00 0xff 0x80 0xc1 0xff 0x7f 0x80 0xff 0x7f 0x3e 0xf0 0xe8 0xdc 0x3c 0x9b 0x9f 0x7c 0xe0 0x00 0x00 0x00 0x3f 0xff 0xc0 0x00 0x00 0x00 0x00 0x00 0x00 0xf0 0xff 0x0f 0x00 0x30 0x3f 0x30 0x18 0x18 0x0c 0xfe 0xff 0x89 0xf1 0x01 0x01 0x02 0x04 0x08 0xf0 0xff 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0xff 0xff 0xff 0xff 0xff 0xff 0xff 0xff 0xff 0xff 0x7f 0x7b 0x7b 0x39 0x39 0x38 0x00 0x00 0x80 0x80 0x80 0x80 0xc0 0xc0
+CharacterSprite,b1fa,b21a,33,
+Unknown,b21b,b349,303, 0x0c 0x0c 0x0c 0x0c 0x0c 0x0c 0x0c 0x0c 0x0c 0x0c 0x0c 0x0c 0x0c 0x0c 0x0c 0x0c 0x0c 0x0c 0x0c 0x18 0x18 0x18 0x18 0x18 0x30 0x30 0x30 0x30 0x60 0x60 0x60 0x60 0x60 0x60 0xc0 0xc0 0xc0 0xc0 0xc0 0xc0 0xc0 0xc0 0xc0 0xc0 0xc0 0xc0 0xc0 0x60 0x60 0x60 0x60 0x60 0x30 0x30 0x30 0x18 0x18 0x18 0x0c 0x0c 0x0c 0x0c 0x06 0x06 0x06 0x06 0x06 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x03 0x06 0x06 0x06 0x06 0x06 0x0c 0x0c 0x0c 0x0c 0x18 0x18 0x18 0x18 0x30 0x30 0x30 0x60 0x60 0x60 0xc0 0xc0 0xc0 0x80 0x80 0x07 0x0f 0x0f 0x07 0x01 0x0f 0x07 0x00 0xc3 0xe7 0x0f 0xce 0xef 0xe7 0xc3 0x00 0xc3 0xe7 0x8f 0x0e 0x1f 0xe7 0xc3 0x00 0x8f 0xcf 0xee 0xef 0xef 0xce 0x8e 0x00 0xcf 0xef 0x6e 0xef 0xce 0xcf 0xef 0x00 0x80 0x80 0x00 0xc0 0x00 0xe0 0xe0 0x00 0x00 0x00 0x08 0x1e 0x27 0x23 0x71 0x5f 0x00 0x00 0x40 0x40 0x80 0x80 0x00 0xc3 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x16 0x00 0x00 0x00 0x05 0x03 0x03 0x03 0x33 0x00 0x00 0x00 0xac 0x18 0x18 0x18 0x18 0x4f 0x22 0x1f 0x05 0x7f 0x47 0x3b 0x00 0xef 0x6c 0x2c 0xac 0x4c 0xce 0x87 0x00 0xbe 0x18 0x18 0x18 0x18 0x9c 0x0c 0x00 0xfb 0xdb 0xdb 0xdb 0xdb 0xfb 0x61 0x00 0x18 0x18 0x18 0x18 0x18 0xde 0x8c 0x00 0xfe 0xfe 0xfe 0x38 0x38 0x38 0x38 0x00 0x7c 0x7c 0x38 0x38 0x38 0x7c 0x7c 0x00 0x82 0xee 0xfe 0xfe 0xd6 0xd6 0xd6 0x00 0xf8 0xf8 0xe0 0xfc 0xe0 0xfe 0xfe 0x00 0x00 0x18 0x18 0x00 0x00 0x18 0x18 0x00 0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x08 0x09 0x4f 0x50 0x51 0x52 0x53 0x0a 0x0b 0x0e 0x54 0x55 0x56 0x57 0x58 0x0c 0x0d 0x0f 0x00 0x00 0x00 0x00 0x00 0x00 0x3a
+CharacterSprite,b34a,b36a,33,
+Unknown,b36b,b3e9,127, 0x00 0x00 0x00 0x5d 0x00 0x00 0x3f 0x15 0x49 0x4a 0x4b 0x4c 0x4d 0x4e 0x40 0x16 0x00 0x00 0x00 0x00 0x00 0x00 0x41 0x17 0x00 0x00 0x00 0x00 0x00 0x00 0x42 0x18 0x00 0x00 0x00 0x00 0x00 0x00 0x43 0x19 0x00 0x00 0x00 0x00 0x00 0x00 0x44 0x1a 0x00 0x00 0x00 0x00 0x00 0x00 0x45 0x1b 0x00 0x00 0x00 0x00 0x00 0x00 0x46 0x1c 0x00 0x00 0x00 0x00 0x00 0x00 0x47 0x1d 0x00 0x00 0x00 0x00 0x00 0x00 0x48 0x1e 0x1f 0x20 0x21 0x00 0x00 0x22 0x23 0x24 0x25 0x26 0x27 0x28 0x29 0x2a 0x2b 0x2c 0x2d 0x2e 0x2f 0x30 0x31 0x32 0x33 0x00 0x34 0x35 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x36 0x37 0x00 0x00 0x00 0x00 0x00 0x00 0x38 0x39 0x00 0x00 0x00 0x00
+BackgroundItemSprite,b3ea,b4ab,194,
+BackgroundItemAttribute,b4ac,b4c5,26,
+BackgroundItemSprite,b4c6,b527,98,
+BackgroundItemAttribute,b528,b535,14,
+CharacterSprite,b536,b6f1,444,
+BackgroundItemSprite,b6f2,b773,130,
+BackgroundItemAttribute,b774,b785,18,
+CharacterSprite,b786,ba13,654,
+Unknown,ba14,ba15,2, 0x38 0x00
+CharacterSprite,ba16,bb9d,392,
+Unknown,bb9e,bba7,10, 0x0f 0x00 0x00 0x00 0x80 0x00 0x00 0x01 0x00 0x04
+CharacterSprite,bba8,bbc8,33,
+Unknown,bbc9,bbdb,19, 0x90 0x07 0x40 0x05 0xe2 0x17 0x68 0x03 0xc0 0x09 0xc0 0x00 0x02 0x01 0x00 0x00 0x00 0x00 0x00
+CharacterSprite,bbdc,bccd,242,
+BackgroundItemSprite,bcce,bd2f,98,
+CharacterSprite,bd30,bd7d,78,
+Unknown,bd7e,bdb2,53, 0x00 0x17 0x01 0x04 0xff 0x01 0xff 0x02 0x03 0x19 0x01 0xff 0x03 0xff 0x04 0xff 0x05 0x06 0x1b 0x03 0xff 0x06 0xff 0x07 0x08 0x06 0x1d 0xff 0x08 0xff 0x09 0x04 0x33 0x0a 0xff 0x0a 0xff 0x0b 0x0d 0x1f 0x08 0xff 0x0c 0xff 0x0d 0xff 0x0e 0x0f 0x0d 0x0c 0xff 0x0f 0xff
+CharacterSprite,bdb3,bdd3,33,
+Unknown,bdd4,bf4b,376, 0x01 0xff 0x19 0xff 0x1a 0x1b 0x19 0x03 0xff 0x1b 0xff 0x1c 0x1d 0x1b 0x06 0xff 0x1d 0xff 0x1e 0x1f 0x1d 0x08 0xff 0x1f 0xff 0x20 0x0d 0x1f 0xff 0x21 0xff 0x22 0x23 0x21 0x0f 0xff 0x23 0xff 0x24 0x25 0x23 0x12 0xff 0x25 0xff 0x26 0x25 0x27 0x15 0xff 0x27 0xff 0x28 0x27 0x29 0x3c 0xff 0x29 0xff 0x2a 0x2b 0x3a 0x29 0xff 0x2b 0xff 0x2c 0x2d 0x2b 0x38 0xff 0x2d 0xff 0x2e 0x2f 0x2d 0x36 0xff 0x2f 0xff 0x30 0x13 0x31 0x2f 0xff 0x31 0xff 0x32 0x33 0x31 0x0a 0xff 0x33 0xff 0x34 0xff 0x35 0x34 0xff 0x36 0xff 0x37 0x2d 0x38 0x36 0xff 0x38 0xff 0x39 0x2b 0x38 0x3a 0xff 0x3a 0xff 0x3b 0x3a 0x29 0x3c 0xff 0x3c 0xff 0x3d 0x15 0x3c 0x27 0xff 0xff 0x79 0x0a 0x86 0x04 0x91 0x04 0xa6 0x19 0x46 0x0a 0x9b 0x38 0xa7 0x4b 0x9a 0x58 0xaa 0x68 0x37 0x01 0x2a 0x07 0x9b 0x7e 0x9b 0x87 0x9b 0x8f 0xa8 0x8f 0x95 0xa1 0x2a 0x1e 0x95 0xb8 0x88 0xbe 0x24 0x30 0x79 0xb5 0x46 0xb5 0x4f 0x27 0x70 0x27 0x79 0x23 0x82 0x23 0x8f 0x30 0x84 0x47 0x89 0x52 0x80 0x5b 0x8b 0x66 0x85 0x74 0x85 0x7d 0x89 0x80 0x81 0x88 0x81 0x99 0x77 0x9d 0x70 0x98 0x4f 0x98 0x46 0x9c 0x3d 0x9c 0x30 0x8f 0x3b 0x78 0x36 0x6d 0x3f 0x64 0x34 0x59 0x3a 0x4c 0x3a 0x42 0x36 0x3f 0x3e 0x37 0x3e 0x26 0x47 0x22 0x24 0x38 0x18 0x30 0x24 0x41 0x15 0x57 0x25 0x67 0x18 0x74 0x24 0x87 0x18 0xa6 0x2e 0xbb 0x39 0xbb 0x0a 0x79 0x04 0x86 0x04 0x91 0x19 0xa6 0x0a 0x46 0x38 0x9b 0x4b 0xa7 0x58 0x9a 0x68 0xaa 0x01 0x37 0x07 0x2a 0x7e 0x9b 0x87 0x9b 0x8f 0x9b 0x8f 0xa8 0xa1 0x95 0x1e 0x2a 0xb8 0x95 0xbe 0x88 0x30 0x24 0xb5 0x79 0xb5 0x46 0x27 0x4f 0x27 0x70 0x23 0x79 0x23 0x82 0x30 0x8f 0x47 0x84 0x52 0x89 0x5b 0x80 0x66 0x8b 0x74 0x85 0x7d 0x85 0x80 0x89 0x88 0x81 0x99 0x81 0x9d 0x77 0x98 0x70 0x98 0x4f 0x9c 0x46 0x9c 0x3d 0x8f 0x30 0x78 0x3b 0x6d 0x36 0x64 0x3f 0x59 0x34 0x4c 0x3a 0x42 0x3a 0x3f 0x36 0x37 0x3e 0x26 0x3e 0x22 0x47 0x38 0x24 0x30 0x18 0x41 0x24 0x57 0x15 0x67 0x25 0x74 0x18 0x87 0x24 0xa6 0x18 0xbb 0x2e 0xbb 0x39
+Font,bf4c,c123,472,
+CharacterSprite,c124,c23d,282,
+Unknown,c23e,c252,21, 0x00 0x00 0x00 0x00 0x00 0x02 0x00 0x01 0x40 0x04 0x20 0x02 0x80 0x0a 0xa0 0x00 0x50 0x01 0x00 0x04 0x40
+CharacterSprite,c253,c2ad,91,
+BackgroundItemSprite,c2ae,c30f,98,
+CharacterSprite,c310,c48b,380,
+BackgroundItemSprite,c48c,c5f7,364,
+CharacterSprite,c5f8,c669,114,
+BackgroundItemSprite,c66a,c95f,758,
+BackgroundItemAttribute,c960,c9c9,106,
+BackgroundItemSprite,c9ca,ca4f,134,
+BackgroundItemAttribute,ca50,ca81,50,
+BackgroundItemSprite,ca82,cb45,196,
+CharacterSprite,cb46,cfd4,1167,
+BackgroundItemSprite,cfd5,d056,130,
+BackgroundItemAttribute,d057,d068,18,
+BackgroundItemSprite,d069,d1aa,322,
+BackgroundItemAttribute,d1ab,d1d4,42,
+CharacterSprite,d1d5,d252,126,
+BackgroundItemSprite,d253,d294,66,
+BackgroundItemAttribute,d295,d29e,10,
+CharacterSprite,d29f,d2ed,79,
+BackgroundItemSprite,d2ee,d3b7,202,
+BackgroundItemAttribute,d3b8,d3d2,27,
+CharacterSprite,d3d3,d465,147,
+BackgroundItemSprite,d466,d4ee,137,
+BackgroundItemAttribute,d4ef,d504,22,

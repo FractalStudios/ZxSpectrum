@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\AGdiGraphicElement.h" />
+    <ClInclude Include="Include\Gdi.h" />
+    <ClInclude Include="Include\GdiBitmap.h" />
+    <ClInclude Include="Include\GdiBufferedBitmap.h" />
+    <ClInclude Include="Include\GdiColour.h" />
+    <ClInclude Include="Include\GdiDiBitmap.h" />
+    <ClInclude Include="Include\GdiRasterFont.h" />
+    <ClInclude Include="Include\GdiRasterText.h" />
+    <ClInclude Include="Include\GraphicConstsAndTypes.h" />
+    <ClInclude Include="Include\GdiFont.h" />
+    <ClInclude Include="Include\Graphic.h" />
+    <ClInclude Include="Include\GraphicMacros.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\AGdiGraphicElement.cpp" />
+    <ClCompile Include="Source\Gdi.cpp" />
+    <ClCompile Include="Source\GdiBitmap.cpp" />
+    <ClCompile Include="Source\GdiBufferedBitmap.cpp" />
+    <ClCompile Include="Source\GdiColour.cpp" />
+    <ClCompile Include="Source\GdiDiBitmap.cpp" />
+    <ClCompile Include="Source\GdiFont.cpp" />
+    <ClCompile Include="Source\GdiRasterFont.cpp" />
+    <ClCompile Include="Source\GdiRasterText.cpp" />
+    <ClCompile Include="Source\Graphic.cpp" />
+    <ClCompile Include="Source\GraphicConstsAndTypes.cpp" />
+    <ClCompile Include="Source\GraphicMacros.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{75E26061-DAEA-4883-8B48-6A351072B564}</ProjectGuid>
+    <RootNamespace>Graphic</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\VsProps\FolioBase.props" />
+    <Import Project="..\..\..\VsProps\FolioLib.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\VsProps\FolioBaseDebug.props" />
+    <Import Project="..\..\..\VsProps\FolioLib.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>$(ProjectName)D</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\Base\Include;..\Trace\Include;..\Util\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\Base\Include;..\Trace\Include;..\Util\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

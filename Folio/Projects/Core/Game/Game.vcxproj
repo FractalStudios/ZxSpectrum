@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\ABossSprite.h" />
+    <ClInclude Include="Include\AStaticSprite.h" />
+    <ClInclude Include="Include\AItem.h" />
+    <ClInclude Include="Include\ANastySprite.h" />
+    <ClInclude Include="Include\APlayerSprite.h" />
+    <ClInclude Include="Include\ASprite.h" />
+    <ClInclude Include="Include\AWeaponSprite.h" />
+    <ClInclude Include="Include\CollisionGrid.h" />
+    <ClInclude Include="Include\DrawingElement.h" />
+    <ClInclude Include="Include\Gamepad.h" />
+    <ClInclude Include="Include\GraphicItem.h" />
+    <ClInclude Include="Include\Game.h" />
+    <ClInclude Include="Include\ResourceGraphic.h" />
+    <ClInclude Include="Include\SpriteDrawingElement.h" />
+    <ClInclude Include="Include\SpriteGraphicsAttributes.h" />
+    <ClInclude Include="Include\TextItem.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\ABossSprite.cpp" />
+    <ClCompile Include="Source\AStaticSprite.cpp" />
+    <ClCompile Include="Source\AItem.cpp" />
+    <ClCompile Include="Source\ANastySprite.cpp" />
+    <ClCompile Include="Source\APlayerSprite.cpp" />
+    <ClCompile Include="Source\ASprite.cpp" />
+    <ClCompile Include="Source\AWeaponSprite.cpp" />
+    <ClCompile Include="Source\CollisionGrid.cpp" />
+    <ClCompile Include="Source\DrawingElement.cpp" />
+    <ClCompile Include="Source\Gamepad.cpp" />
+    <ClCompile Include="Source\GraphicItem.cpp" />
+    <ClCompile Include="Source\Game.cpp" />
+    <ClCompile Include="Source\ResourceGraphic.cpp" />
+    <ClCompile Include="Source\SpriteDrawingElement.cpp" />
+    <ClCompile Include="Source\SpriteGraphicsAttributes.cpp" />
+    <ClCompile Include="Source\TextItem.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{536287D1-0949-4868-B9B1-8F2616B14D28}</ProjectGuid>
+    <RootNamespace>Graphic</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\VsProps\FolioBase.props" />
+    <Import Project="..\..\..\VsProps\FolioLib.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\VsProps\FolioBaseDebug.props" />
+    <Import Project="..\..\..\VsProps\FolioLib.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>$(ProjectName)D</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\Base\Include;..\Graphic\Include;..\Trace\Include;..\Util\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\Base\Include;..\Graphic\Include;..\Trace\Include;..\Util\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

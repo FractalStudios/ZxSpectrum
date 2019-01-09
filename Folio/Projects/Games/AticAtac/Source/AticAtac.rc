@@ -1,0 +1,309 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United Kingdom) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080904b0"
+        BEGIN
+            VALUE "CompanyName", "fractal studios"
+            VALUE "FileDescription", "AticAtac"
+            VALUE "FileVersion", "1, 0, 0, 0"
+            VALUE "InternalName", "AticAtac"
+            VALUE "LegalCopyright", "Copyright 2018"
+            VALUE "OriginalFilename", "AticAtac.exe"
+            VALUE "ProductName", "Folio"
+            VALUE "ProductVersion", "1, 0, 0, 0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x809, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP_CAVE_DOOR_FRAME                          BITMAP                  "Graphics\\01CaveDoorFrame.bmp"
+IDB_BITMAP_NORMAL_DOOR_FRAME                        BITMAP                  "Graphics\\02NormalDoorFrame.bmp"
+IDB_BITMAP_BIG_DOOR_FRAME                           BITMAP                  "Graphics\\03BigDoorFrame.bmp"
+IDB_BITMAP_RED_LOCKED_NORMAL_DOOR                   BITMAP                  "Graphics\\08RedLockedNormalDoor.bmp"
+IDB_BITMAP_GREEN_LOCKED_NORMAL_DOOR                 BITMAP                  "Graphics\\09GreenLockedNormalDoor.bmp"
+IDB_BITMAP_CYAN_LOCKED_NORMAL_DOOR                  BITMAP                  "Graphics\\10CyanLockedNormalDoor.bmp"
+IDB_BITMAP_YELLOW_LOCKED_NORMAL_DOOR                BITMAP                  "Graphics\\11YellowLockedNormalDoor.bmp"
+IDB_BITMAP_RED_LOCKED_CAVE_DOOR                     BITMAP                  "Graphics\\12RedLockedCaveDoor.bmp"
+IDB_BITMAP_GREEN_LOCKED_CAVE_DOOR                   BITMAP                  "Graphics\\13GreenLockedCaveDoor.bmp"
+IDB_BITMAP_CYAN_LOCKED_CAVE_DOOR                    BITMAP                  "Graphics\\14CyanLockedCaveDoor.bmp"
+IDB_BITMAP_YELLOW_LOCKED_CAVE_DOOR                  BITMAP                  "Graphics\\15YellowLockedCaveDoor.bmp"
+IDB_BITMAP_CLOCK                                    BITMAP                  "Graphics\\16Clock.bmp"
+IDB_BITMAP_PICTURE                                  BITMAP                  "Graphics\\17Picture.bmp"
+IDB_BITMAP_TABLE                                    BITMAP                  "Graphics\\18Table.bmp"
+IDB_BITMAP_FULL_TURKEY                              BITMAP                  "Graphics\\19FullTurkey.bmp"
+IDB_BITMAP_TURKEY_CARCASS                           BITMAP                  "Graphics\\20TurkeyCarcass.bmp"
+IDB_BITMAP_ANTLER_TROPHY                            BITMAP                  "Graphics\\21AntlerTrophy.bmp"
+IDB_BITMAP_TROPHY                                   BITMAP                  "Graphics\\22Trophy.bmp"
+IDB_BITMAP_BOOKCASE                                 BITMAP                  "Graphics\\23Bookcase.bmp"
+IDB_BITMAP_CLOSED_TRAP_DOOR                         BITMAP                  "Graphics\\24ClosedTrapDoor.bmp"
+IDB_BITMAP_OPEN_TRAP_DOOR                           BITMAP                  "Graphics\\25OpenTrapDoor.bmp"
+IDB_BITMAP_BARREL                                   BITMAP                  "Graphics\\26Barrel.bmp"
+IDB_BITMAP_RUG                                      BITMAP                  "Graphics\\27Rug.bmp"
+IDB_BITMAP_ACG_SHIELD                               BITMAP                  "Graphics\\28AcgShield.bmp"
+IDB_BITMAP_SHIELD                                   BITMAP                  "Graphics\\29Shield.bmp"
+IDB_BITMAP_KNIGHT                                   BITMAP                  "Graphics\\30Knight.bmp"
+IDB_BITMAP_CLOSED_NORMAL_DOOR                       BITMAP                  "Graphics\\32ClosedNormalDoor.bmp"
+IDB_BITMAP_OPEN_NORMAL_DOOR                         BITMAP                  "Graphics\\33OpenNormalDoor.bmp"
+IDB_BITMAP_CLOSED_CAVE_DOOR                         BITMAP                  "Graphics\\34ClosedCaveDoor.bmp"
+IDB_BITMAP_OPEN_CAVE_DOOR                           BITMAP                  "Graphics\\35OpenCaveDoor.bmp"
+IDB_BITMAP_ACG_EXIT_DOOR                            BITMAP                  "Graphics\\36AcgExitDoor.bmp"
+IDB_BITMAP_PICTURE_2                                BITMAP                  "Graphics\\37Picture.bmp"
+IDB_BITMAP_SKELETON                                 BITMAP                  "Graphics\\38Skeleton.bmp"
+IDB_BITMAP_BARRELS                                  BITMAP                  "Graphics\\39Barrels.bmp"
+IDB_BITMAP_ROOM_0                                   BITMAP                  "Graphics\\Room00.bmp"
+IDB_BITMAP_ROOM_1                                   BITMAP                  "Graphics\\Room01.bmp"
+IDB_BITMAP_ROOM_2                                   BITMAP                  "Graphics\\Room02.bmp"
+IDB_BITMAP_ROOM_3                                   BITMAP                  "Graphics\\Room03.bmp"
+IDB_BITMAP_ROOM_4                                   BITMAP                  "Graphics\\Room04.bmp"
+IDB_BITMAP_ROOM_5                                   BITMAP                  "Graphics\\Room05.bmp"
+IDB_BITMAP_ROOM_6                                   BITMAP                  "Graphics\\Room06.bmp"
+IDB_BITMAP_ROOM_7                                   BITMAP                  "Graphics\\Room07.bmp"
+IDB_BITMAP_ROOM_8                                   BITMAP                  "Graphics\\Room08.bmp"
+IDB_BITMAP_ROOM_9                                   BITMAP                  "Graphics\\Room09.bmp"
+IDB_BITMAP_ROOM_10                                  BITMAP                  "Graphics\\Room10.bmp"
+IDB_BITMAP_ROOM_11                                  BITMAP                  "Graphics\\Room11.bmp"
+IDB_BITMAP_SCROLL                                   BITMAP                  "Graphics\\Scroll.bmp"
+IDB_BITMAP_SCROLL_SEAL                              BITMAP                  "Graphics\\ScrollSeal.bmp"
+IDB_BITMAP_LEAF                                     BITMAP                  "Graphics\\af0dLeaf.bmp"
+IDB_BITMAP_KEY                                      BITMAP                  "Graphics\\af2eKey.bmp"
+IDB_BITMAP_BOTTLE                                   BITMAP                  "Graphics\\af6cBottle.bmp"
+IDB_BITMAP_MEDICINE_BOTTLE                          BITMAP                  "Graphics\\af43MedicineBottle.bmp"
+IDB_BITMAP_BROKEN                                   BITMAP                  "Graphics\\af95Broken.bmp"
+IDB_BITMAP_ROPE                                     BITMAP                  "Graphics\\afb6Rope.bmp"
+IDB_BITMAP_ARM                                      BITMAP                  "Graphics\\afd7Arm.bmp"
+IDB_BITMAP_BOWL                                     BITMAP                  "Graphics\\aff8Bowl.bmp"
+IDB_BITMAP_APPLE                                    BITMAP                  "Graphics\\b019Apple.bmp"
+IDB_BITMAP_CANDY_BAR                                BITMAP                  "Graphics\\c1aaCandyBar.bmp"
+IDB_BITMAP_HAM                                      BITMAP                  "Graphics\\c1cbHam.bmp"
+IDB_BITMAP_LOLLIPOP                                 BITMAP                  "Graphics\\c1f4Lollipop.bmp"
+IDB_BITMAP_MONEY_BAG                                BITMAP                  "Graphics\\c14dMoneyBag.bmp"
+IDB_BITMAP_GOBSTOPPER                               BITMAP                  "Graphics\\c16eGobstopper.bmp"
+IDB_BITMAP_AMULET                                   BITMAP                  "Graphics\\c18fAmulet.bmp"
+IDB_BITMAP_CAN                                      BITMAP                  "Graphics\\c124Can.bmp"
+IDB_BITMAP_ICE_CREAM_CONE                           BITMAP                  "Graphics\\c219IceCreamCone.bmp"
+IDB_BITMAP_CRUCIFIX                                 BITMAP                  "Graphics\\cdbdCrucifix.bmp"
+IDB_BITMAP_SKULL                                    BITMAP                  "Graphics\\cde2Skull.bmp"
+IDB_BITMAP_SPANNER                                  BITMAP                  "Graphics\\d29fSpanner.bmp"
+IDB_BITMAP_MUSHROOM                                 BITMAP                  "Graphics\\d232Mushroom.bmp"
+IDB_BITMAP_GRAVESTONE                               BITMAP                  "Graphics\\cd92Gravestone.bmp"
+IDB_BITMAP_ACG_KEY_LEFT                             BITMAP                  "Graphics\\d1d5ACGKeyLeft.bmp"
+IDB_BITMAP_ACG_KEY_MIDDLE                           BITMAP                  "Graphics\\d1ecACGKeyMiddle.bmp"
+IDB_BITMAP_ACG_KEY_RIGHT                            BITMAP                  "Graphics\\d20bACGKeyRight.bmp"
+IDB_BITMAP_KEYBOARD_LEFT_PANE                       BITMAP                  "Graphics\\bc2eKeyboardLeftPane.bmp"
+IDB_BITMAP_KEYBOARD_RIGHT_PANE                      BITMAP                  "Graphics\\bc4fKeyboardRightPane.bmp"
+IDB_BITMAP_CURSOR_DIRECTIONS_LEFT_PANE              BITMAP                  "Graphics\\bbdcCursorDirectionsLeftPane.bmp"
+IDB_BITMAP_CURSOR_DIRECTIONS_RIGHT_PANE             BITMAP                  "Graphics\\bc05CursorDirectionsRightPane.bmp"
+IDB_BITMAP_JOYSTICK_LEFT_PANE                       BITMAP                  "Graphics\\bc70JoystickLeftPane.bmp"
+IDB_BITMAP_JOYSTICK_RIGHT_PANE                      BITMAP                  "Graphics\\bc9fJoystickRightPane.bmp"
+IDB_BITMAP_KNIGHT_WALKING_DOWN_1                    BITMAP                  "Graphics\\ad2eKnightWalkingDown1.bmp"
+IDB_BITMAP_KNIGHT_WALKING_UP_1                      BITMAP                  "Graphics\\ad9dKnightWalkingUp1.bmp"
+IDB_BITMAP_KNIGHT_DOWN                              BITMAP                  "Graphics\\ad53KnightDown.bmp"
+IDB_BITMAP_KNIGHT_WALKING_DOWN_2                    BITMAP                  "Graphics\\ad78KnightWalkingDown2.bmp"
+IDB_BITMAP_KNIGHT_UP                                BITMAP                  "Graphics\\adc2KnightUp.bmp"
+IDB_BITMAP_KNIGHT_WALKING_UP_2                      BITMAP                  "Graphics\\ade7KnightWalkingUp2.bmp"
+IDB_BITMAP_KNIGHT_WALKING_LEFT_1                    BITMAP                  "Graphics\\ae0cKnightWalkingLeft1.bmp"
+IDB_BITMAP_KNIGHT_WALKING_RIGHT_1                   BITMAP                  "Graphics\\ae7bKnightWalkingRight1.bmp"
+IDB_BITMAP_KNIGHT_LEFT                              BITMAP                  "Graphics\\ae31KnightLeft.bmp"
+IDB_BITMAP_KNIGHT_WALKING_LEFT_2                    BITMAP                  "Graphics\\ae56KnightWalkingLeft2.bmp"
+IDB_BITMAP_KNIGHT_RIGHT                             BITMAP                  "Graphics\\aea0KnightRight.bmp"
+IDB_BITMAP_KNIGHT_WALKING_RIGHT_2                   BITMAP                  "Graphics\\aec5KnightWalkingRight2.bmp"
+IDB_BITMAP_WIZARD_WALKING_DOWN_1                    BITMAP                  "Graphics\\b786WizardWalkingDown1.bmp"
+IDB_BITMAP_WIZARD_WALKING_UP_1                      BITMAP                  "Graphics\\b801WizardWalkingUp1.bmp"
+IDB_BITMAP_WIZARD_DOWN                              BITMAP                  "Graphics\\b7afWizardDown.bmp"
+IDB_BITMAP_WIZARD_WALKING_DOWN_2                    BITMAP                  "Graphics\\b7d8WizardWalkingDown2.bmp"
+IDB_BITMAP_WIZARD_UP                                BITMAP                  "Graphics\\b82aWizardUp.bmp"
+IDB_BITMAP_WIZARD_WALKING_UP_2                      BITMAP                  "Graphics\\b853WizardWalkingUp2.bmp"
+IDB_BITMAP_WIZARD_WALKING_LEFT_1                    BITMAP                  "Graphics\\b87cWizardWalkingLeft1.bmp"
+IDB_BITMAP_WIZARD_WALKING_RIGHT_1                   BITMAP                  "Graphics\\b8f7WizardWalkingRight1.bmp"
+IDB_BITMAP_WIZARD_LEFT                              BITMAP                  "Graphics\\b8a5WizardLeft.bmp"
+IDB_BITMAP_WIZARD_WALKING_LEFT_2                    BITMAP                  "Graphics\\b8ceWizardWalkingLeft2.bmp"
+IDB_BITMAP_WIZARD_RIGHT                             BITMAP                  "Graphics\\b920WizardRight.bmp"
+IDB_BITMAP_WIZARD_WALKING_RIGHT_2                   BITMAP                  "Graphics\\b949WizardWalkingRight2.bmp"
+IDB_BITMAP_SERF_WALKING_DOWN_1                      BITMAP                  "Graphics\\b536SerfWalkingDown1.bmp"
+IDB_BITMAP_SERF_WALKING_UP_1                        BITMAP                  "Graphics\\b5a5SerfWalkingUp1.bmp"
+IDB_BITMAP_SERF_DOWN                                BITMAP                  "Graphics\\b55bSerfDown.bmp"
+IDB_BITMAP_SERF_WALKING_DOWN_2                      BITMAP                  "Graphics\\b580SerfWalkingDown2.bmp"
+IDB_BITMAP_SERF_UP                                  BITMAP                  "Graphics\\b5caSerfUp.bmp"
+IDB_BITMAP_SERF_WALKING_UP_2                        BITMAP                  "Graphics\\b5efSerfWalkingUp2.bmp"
+IDB_BITMAP_SERF_WALKING_LEFT_1                      BITMAP                  "Graphics\\b614SerfWalkingLeft1.bmp"
+IDB_BITMAP_SERF_WALKING_RIGHT_1                     BITMAP                  "Graphics\\b683SerfWalkingRight1.bmp"
+IDB_BITMAP_SERF_LEFT                                BITMAP                  "Graphics\\b639SerfLeft.bmp"
+IDB_BITMAP_SERF_WALKING_LEFT_2                      BITMAP                  "Graphics\\b65eSerfWalkingLeft2.bmp"
+IDB_BITMAP_SERF_RIGHT                               BITMAP                  "Graphics\\b6a8SerfRight.bmp"
+IDB_BITMAP_SERF_WALKING_RIGHT_2                     BITMAP                  "Graphics\\b6cdSerfWalkingRight2.bmp"
+IDB_BITMAP_FALLING_SIMULATION_01                    BITMAP                  "Graphics\\FallingSimulation01.bmp"
+IDB_BITMAP_FALLING_SIMULATION_02                    BITMAP                  "Graphics\\FallingSimulation02.bmp"
+IDB_BITMAP_FALLING_SIMULATION_03                    BITMAP                  "Graphics\\FallingSimulation03.bmp"
+IDB_BITMAP_FALLING_SIMULATION_04                    BITMAP                  "Graphics\\FallingSimulation04.bmp"
+IDB_BITMAP_FALLING_SIMULATION_05                    BITMAP                  "Graphics\\FallingSimulation05.bmp"
+IDB_BITMAP_FALLING_SIMULATION_06                    BITMAP                  "Graphics\\FallingSimulation06.bmp"
+IDB_BITMAP_PUMPKIN_1                                BITMAP                  "Graphics\\bd30Pumpkin1.bmp"
+IDB_BITMAP_PUMPKIN_2                                BITMAP                  "Graphics\\bd57Pumpkin2.bmp"
+IDB_BITMAP_SPIDER_1                                 BITMAP                  "Graphics\\c310Spider1.bmp"
+IDB_BITMAP_SPIDER_2                                 BITMAP                  "Graphics\\c32dSpider2.bmp"
+IDB_BITMAP_GHOST_1                                  BITMAP                  "Graphics\\c34aGhost1.bmp"
+IDB_BITMAP_GHOST_2                                  BITMAP                  "Graphics\\c36bGhost2.bmp"
+IDB_BITMAP_BOUNCY_1                                 BITMAP                  "Graphics\\c38cBouncy1.bmp"
+IDB_BITMAP_BOUNCY_2                                 BITMAP                  "Graphics\\c3a3Bouncy2.bmp"
+IDB_BITMAP_SMORPH_1                                 BITMAP                  "Graphics\\c3b6Smorph1.bmp"
+IDB_BITMAP_SMORPH_2                                 BITMAP                  "Graphics\\c3dfSmorph2.bmp"
+IDB_BITMAP_JELLY_GHOUL_1                            BITMAP                  "Graphics\\c408JellyGhoul1.bmp"
+IDB_BITMAP_JELLY_GHOUL_2                            BITMAP                  "Graphics\\c429JellyGhoul2.bmp"
+IDB_BITMAP_BAT_1                                    BITMAP                  "Graphics\\c44aBat1.bmp"
+IDB_BITMAP_BAT_2                                    BITMAP                  "Graphics\\c46fBat2.bmp"
+IDB_BITMAP_WITCH_FLYING_LEFT_1                      BITMAP                  "Graphics\\ce01WitchFlyingLeft1.bmp"
+IDB_BITMAP_WITCH_FLYING_LEFT_2                      BITMAP                  "Graphics\\ce2eWitchFlyingLeft2.bmp"
+IDB_BITMAP_WITCH_FLYING_RIGHT_1                     BITMAP                  "Graphics\\ce5bWitchFlyingRight1.bmp"
+IDB_BITMAP_WITCH_FLYING_RIGHT_2                     BITMAP                  "Graphics\\ce88WitchFlyingRight2.bmp"
+IDB_BITMAP_GHOUL_FLYING_LEFT_1                      BITMAP                  "Graphics\\ceb5GhoulFlyingLeft1.bmp"
+IDB_BITMAP_GHOUL_FLYING_LEFT_2                      BITMAP                  "Graphics\\cedcGhoulFlyingLeft2.bmp"
+IDB_BITMAP_GHOUL_FLYING_RIGHT_1                     BITMAP                  "Graphics\\cf03GhoulFlyingRight1.bmp"
+IDB_BITMAP_GHOUL_FLYING_RIGHT_2                     BITMAP                  "Graphics\\cf2aGhoulFlyingRight2.bmp"
+IDB_BITMAP_BAT_FLYING_LEFT_1                        BITMAP                  "Graphics\\cf51BatFlyingLeft1.bmp"
+IDB_BITMAP_BAT_FLYING_LEFT_2                        BITMAP                  "Graphics\\cf78BatFlyingLeft2.bmp"
+IDB_BITMAP_BAT_FLYING_RIGHT_1                       BITMAP                  "Graphics\\cf93BatFlyingRight1.bmp"
+IDB_BITMAP_BAT_FLYING_RIGHT_2                       BITMAP                  "Graphics\\cfaeBatFlyingRight2.bmp"
+IDB_BITMAP_GHOUL_1                                  BITMAP                  "Graphics\\d2c0Ghoul1.bmp"
+IDB_BITMAP_GHOUL_2                                  BITMAP                  "Graphics\\d2d7Ghoul2.bmp"
+IDB_BITMAP_NASTY_ALIVE_1                            BITMAP                      "Graphics\\0000NastyAlive1.bmp"
+IDB_BITMAP_NASTY_ALIVE_2                            BITMAP                      "Graphics\\c28dNastyAlive2.bmp"
+IDB_BITMAP_NASTY_ALIVE_3                            BITMAP                      "Graphics\\c26eNastyAlive3.bmp"
+IDB_BITMAP_NASTY_ALIVE_4                            BITMAP                      "Graphics\\c253NastyAlive4.bmp"
+IDB_BITMAP_NASTY_DEAD_1                             BITMAP                      "Graphics\\c5f8NastyDead1.bmp"
+IDB_BITMAP_NASTY_DEAD_2                             BITMAP                      "Graphics\\c649NastyDead2.bmp"
+IDB_BITMAP_NASTY_DEAD_3                             BITMAP                      "Graphics\\c62aNastyDead3.bmp"
+IDB_BITMAP_NASTY_DEAD_4                             BITMAP                      "Graphics\\c60fNastyDead4.bmp"
+IDB_BITMAP_KNIGHT_AXE_1                             BITMAP                      "Graphics\\ba9aKnightAxe1.bmp"
+IDB_BITMAP_KNIGHT_AXE_2                             BITMAP                      "Graphics\\ba79KnightAxe2.bmp"
+IDB_BITMAP_KNIGHT_AXE_3                             BITMAP                      "Graphics\\ba58KnightAxe3.bmp"
+IDB_BITMAP_KNIGHT_AXE_4                             BITMAP                      "Graphics\\bb3fKnightAxe4.bmp"
+IDB_BITMAP_KNIGHT_AXE_5                             BITMAP                      "Graphics\\bb1eKnightAxe5.bmp"
+IDB_BITMAP_KNIGHT_AXE_6                             BITMAP                      "Graphics\\bafdKnightAxe6.bmp"
+IDB_BITMAP_KNIGHT_AXE_7                             BITMAP                      "Graphics\\badcKnightAxe7.bmp"
+IDB_BITMAP_KNIGHT_AXE_8                             BITMAP                      "Graphics\\babbKnightAxe8.bmp"
+IDB_BITMAP_WIZARD_POTION_1                          BITMAP                      "Graphics\\bb60WizardPotion1.bmp"
+IDB_BITMAP_WIZARD_POTION_2                          BITMAP                      "Graphics\\bb7fWizardPotion2.bmp"
+IDB_BITMAP_WIZARD_POTION_3                          BITMAP                      "Graphics\\bbbdWizardPotion3.bmp"
+IDB_BITMAP_SERF_SWORD_1                             BITMAP                      "Graphics\\ba16SerfSword1.bmp"
+IDB_BITMAP_SERF_SWORD_2                             BITMAP                      "Graphics\\b9fbSerfSword2.bmp"
+IDB_BITMAP_SERF_SWORD_3                             BITMAP                      "Graphics\\b9e2SerfSword3.bmp"
+IDB_BITMAP_SERF_SWORD_4                             BITMAP                      "Graphics\\b98bSerfSword4.bmp"
+IDB_BITMAP_SERF_SWORD_5                             BITMAP                      "Graphics\\b9a6SerfSword5.bmp"
+IDB_BITMAP_SERF_SWORD_6                             BITMAP                      "Graphics\\b9c7SerfSword6.bmp"
+IDB_BITMAP_SERF_SWORD_7                             BITMAP                      "Graphics\\b972SerfSword7.bmp"
+IDB_BITMAP_SERF_SWORD_8                             BITMAP                      "Graphics\\ba37SerfSword8.bmp"
+IDB_BITMAP_MUMMY_1                                  BITMAP                      "Graphics\\cb46Mummy1.bmp"
+IDB_BITMAP_MUMMY_2                                  BITMAP                      "Graphics\\cb77Mummy2.bmp"
+IDB_BITMAP_MUMMY_3                                  BITMAP                      "Graphics\\cba8Mummy3.bmp"
+IDB_BITMAP_DRACULA_1                                BITMAP                      "Graphics\\ccffDracula1.bmp"
+IDB_BITMAP_DRACULA_2                                BITMAP                      "Graphics\\cd30Dracula2.bmp"
+IDB_BITMAP_DRACULA_3                                BITMAP                      "Graphics\\cd61Dracula3.bmp" 
+IDB_BITMAP_FRANKENSTEIN_1                           BITMAP                      "Graphics\\cbd9Frankenstein1.bmp" 
+IDB_BITMAP_FRANKENSTEIN_2                           BITMAP                      "Graphics\\cc0aFrankenstein2.bmp"
+IDB_BITMAP_FRANKENSTEIN_3                           BITMAP                      "Graphics\\cc3bFrankenstein3.bmp"
+IDB_BITMAP_HUNCHBACK_1                              BITMAP                      "Graphics\\d3d3Hunchback1.bmp"
+IDB_BITMAP_HUNCHBACK_2                              BITMAP                      "Graphics\\d404Hunchback2.bmp"
+IDB_BITMAP_HUNCHBACK_3                              BITMAP                      "Graphics\\d435Hunchback3.bmp"    
+IDB_BITMAP_DEVIL_1                                  BITMAP                      "Graphics\\cc6cDevil1.bmp"    
+IDB_BITMAP_DEVIL_2                                  BITMAP                      "Graphics\\cc9dDevil2.bmp"
+IDB_BITMAP_DEVIL_3                                  BITMAP                      "Graphics\\ccceDevil3.bmp"
+IDB_BITMAP_LOADING_SCREEN                           BITMAP                      "Graphics\\LoadingScreen.bmp"
+
+#endif    // English (United Kingdom) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

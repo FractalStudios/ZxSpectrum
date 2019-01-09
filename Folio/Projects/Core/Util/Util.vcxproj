@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Include\CriticalSection.h" />
+    <ClInclude Include="Include\DateTime.h" />
+    <ClInclude Include="Include\Descriptions.h" />
+    <ClInclude Include="Include\Event.h" />
+    <ClInclude Include="Include\Exception.h" />
+    <ClInclude Include="Include\File.h" />
+    <ClInclude Include="Include\Gdi.h" />
+    <ClInclude Include="Include\GdiBitmap.h" />
+    <ClInclude Include="Include\Heap.h" />
+    <ClInclude Include="Include\KeyInput.h" />
+    <ClInclude Include="Include\ModuleLoader.h" />
+    <ClInclude Include="Include\Mutex.h" />
+    <ClInclude Include="Include\Pointer.h" />
+    <ClInclude Include="Include\ProcessInfo.h" />
+    <ClInclude Include="Include\ProcessLoader.h" />
+    <ClInclude Include="Include\ProcessSingleton.h" />
+    <ClInclude Include="Include\Pulse.h" />
+    <ClInclude Include="Include\Random.h" />
+    <ClInclude Include="Include\Registry.h" />
+    <ClInclude Include="Include\ScopedLock.h" />
+    <ClInclude Include="Include\SecurityAttributes.h" />
+    <ClInclude Include="Include\Semaphore.h" />
+    <ClInclude Include="Include\SharedAtom.h" />
+    <ClInclude Include="Include\SharedMemory.h" />
+    <ClInclude Include="Include\SharedName.h" />
+    <ClInclude Include="Include\SharedTable.h" />
+    <ClInclude Include="Include\StaticMap.h" />
+    <ClInclude Include="Include\Sync.h" />
+    <ClInclude Include="Include\System.h" />
+    <ClInclude Include="Include\Thread.h" />
+    <ClInclude Include="Include\Timer.h" />
+    <ClInclude Include="Include\Tls.h" />
+    <ClInclude Include="Include\Util.h" />
+    <ClInclude Include="Include\ValueDescription.h" />
+    <ClInclude Include="Include\ValueDescriptor.h" />
+    <ClInclude Include="Include\VirtualMemory.h" />
+    <ClInclude Include="Include\WaitableTimer.h" />
+    <ClInclude Include="Include\WaitAny.h" />
+    <ClInclude Include="Include\Win32Exception.h" />
+    <ClInclude Include="Include\Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\CriticalSection.cpp" />
+    <ClCompile Include="Source\DateTime.cpp" />
+    <ClCompile Include="Source\Descriptions.cpp" />
+    <ClCompile Include="Source\Event.cpp" />
+    <ClCompile Include="Source\Exception.cpp" />
+    <ClCompile Include="Source\File.cpp" />
+    <ClCompile Include="Source\Gdi.cpp" />
+    <ClCompile Include="Source\GdiBitmap.cpp" />
+    <ClCompile Include="Source\Heap.cpp" />
+    <ClCompile Include="Source\KeyInput.cpp" />
+    <ClCompile Include="Source\ModuleLoader.cpp" />
+    <ClCompile Include="Source\Mutex.cpp" />
+    <ClCompile Include="Source\Pointer.cpp" />
+    <ClCompile Include="Source\ProcessInfo.cpp" />
+    <ClCompile Include="Source\ProcessLoader.cpp" />
+    <ClCompile Include="Source\ProcessSingleton.cpp" />
+    <ClCompile Include="Source\Pulse.cpp" />
+    <ClCompile Include="Source\Random.cpp" />
+    <ClCompile Include="Source\Registry.cpp" />
+    <ClCompile Include="Source\ScopedLock.cpp" />
+    <ClCompile Include="Source\SecurityAttributes.cpp" />
+    <ClCompile Include="Source\Semaphore.cpp" />
+    <ClCompile Include="Source\SharedAtom.cpp" />
+    <ClCompile Include="Source\SharedMemory.cpp" />
+    <ClCompile Include="Source\SharedName.cpp" />
+    <ClCompile Include="Source\SharedTable.cpp" />
+    <ClCompile Include="Source\StaticMap.cpp" />
+    <ClCompile Include="Source\Sync.cpp" />
+    <ClCompile Include="Source\System.cpp" />
+    <ClCompile Include="Source\Thread.cpp" />
+    <ClCompile Include="Source\Timer.cpp" />
+    <ClCompile Include="Source\Tls.cpp" />
+    <ClCompile Include="Source\Util.cpp" />
+    <ClCompile Include="Source\ValueDescription.cpp" />
+    <ClCompile Include="Source\ValueDescriptor.cpp" />
+    <ClCompile Include="Source\VirtualMemory.cpp" />
+    <ClCompile Include="Source\WaitableTimer.cpp" />
+    <ClCompile Include="Source\WaitAny.cpp" />
+    <ClCompile Include="Source\Win32Exception.cpp" />
+    <ClCompile Include="Source\Window.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DA9009F5-B88A-4801-8011-67FFBD1885DE}</ProjectGuid>
+    <RootNamespace>Util</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\VsProps\FolioBase.props" />
+    <Import Project="..\..\..\VsProps\FolioLib.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\VsProps\FolioBaseDebug.props" />
+    <Import Project="..\..\..\VsProps\FolioLib.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>$(ProjectName)D</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\Base\Include;..\Trace\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\Base\Include;..\Trace\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
