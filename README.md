@@ -1,2 +1,2 @@
-# AticAtac
-AticAtac on Windows
+# ZxSpectrum
+ZxSpectrum Games on Windows
