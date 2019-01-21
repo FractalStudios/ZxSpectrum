@@ -1,2 +1,2 @@
 # ZxSpectrum
-Zxpectrum Games on Windows
+ZxSpectrum Games on Windows
