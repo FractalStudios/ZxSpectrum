@@ -8,6 +8,7 @@
 // "Home-made" includes.
 #include    <Applet.h>
 #include    <Game.h>
+#include    <Util.h>
 #include    "SpriteGraphics.h"
 #include    "ZxSpectrum.h"
 
@@ -37,7 +38,7 @@ enum PLAYER_SPRITE_ID
 class PlayerSprite : public Folio::Core::Game::APlayerSprite
 {
 public:
-    static  const   UInt32  MAIN_PLAYER_SPEED = 6;  // Main player speed.
+    static  const   UInt32  MAIN_PLAYER_SPEED = 4;  // Main player speed.
 
     // Player sprite flags.
     static  const   UInt32  FLAGS_NONE                  = 0x00000000;
@@ -76,9 +77,16 @@ private:
     Direction           m_initialDirection;     // The initial direction of the player sprite.
     UInt32              m_playerSpriteFlags;    // The flags of the player sprite.
 
+    static  SpriteInitialisingSoundSamplesList  m_playerSpriteInitialisingSoundSamplesList; // The player sprite's initialising sound samples.
+    static  SpriteTerminatingSoundSamplesList   m_playerSpriteTerminatingSoundSamplesList;  // The player sprite's terminating sound samples.
+
+    FolioStatus SetMovementSoundSamples (PLAYER_SPRITE_ID playerSpriteId);
     FolioStatus SetInitialisingMode (UInt32 playerSpriteFlags);
     FolioStatus SetTerminatingMode (UInt32 playerSpriteFlags);
 
+    static  SpriteInitialisingSoundSamplesList  GetPlayerSpriteInitialisingSoundSamples (bool isBottomUpMode);
+    static  SpriteTerminatingSoundSamplesList   GetPlayerSpriteTerminatingSoundSamples (bool isBottomUpMode);
+    
     // Private copy constructor to prevent copying.
     PlayerSprite (const PlayerSprite& rhs);
 

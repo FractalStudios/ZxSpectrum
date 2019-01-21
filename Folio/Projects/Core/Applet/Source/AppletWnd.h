@@ -122,19 +122,6 @@ private:
     static  FolioStatus HandlePaintWndMsg (HWND     wndHandle,
                                            WPARAM   wParam,
                                            LPARAM   lParam);
-    static  FolioStatus HandleKeyboardMsg (HWND     wndHandle,
-                                           WPARAM   wParam,
-                                           LPARAM   lParam,
-                                           bool     keyDown);
-    static  FolioStatus HandleMouseMoveMsg (HWND    wndHandle,
-                                            WPARAM  wParam,
-                                            LPARAM  lParam);
-    static  FolioStatus HandleMouseButtonMsg (HWND      wndHandle,
-                                              WPARAM    wParam,
-                                              LPARAM    lParam);
-    static  FolioStatus HandleTimerMsg (HWND    wndHandle,
-                                        WPARAM  wParam,
-                                        LPARAM  lParam);
 
     /// Private copy constructor to prevent copying.
     AppletWnd (const AppletWnd& rhs);

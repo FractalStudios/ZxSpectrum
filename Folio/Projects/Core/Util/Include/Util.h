@@ -1,6 +1,7 @@
 #pragma once
 
 // "Home-made" includes.
+#include    "AsyncSound.h"
 #include    "CriticalSection.h"
 #include    "DateTime.h"
 #include    "Descriptions.h"
@@ -27,6 +28,8 @@
 #include    "SharedMemory.h"
 #include    "SharedName.h"
 #include    "SharedTable.h"
+#include    "Sound.h"
+#include    "SoundSample.h"
 #include    "StaticMap.h"
 #include    "Sync.h"
 #include    "System.h"
@@ -37,6 +40,7 @@
 #include    "VirtualMemory.h"
 #include    "WaitAny.h"
 #include    "WaitableTimer.h"
+#include    "WaveOut.h"
 #include    "Win32Exception.h"
 #include    "Window.h"
 

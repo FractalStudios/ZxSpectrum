@@ -16,7 +16,7 @@
     <ClInclude Include="Include\Applet.h" />
     <ClInclude Include="Include\AppletConstsAndTypes.h" />
     <ClInclude Include="Include\AScreen.h" />
-    <ClInclude Include="Include\CanvasBag.h" />
+    <ClInclude Include="Include\Canvas.h" />
     <ClInclude Include="Source\AppletWnd.h" />
     <ClInclude Include="Source\WinMain.h" />
   </ItemGroup>
@@ -27,7 +27,7 @@
     <ClCompile Include="Source\AppletConstsAndTypes.cpp" />
     <ClCompile Include="Source\AppletWnd.cpp" />
     <ClCompile Include="Source\AScreen.cpp" />
-    <ClCompile Include="Source\CanvasBag.cpp" />
+    <ClCompile Include="Source\Canvas.cpp" />
     <ClCompile Include="Source\WinMain.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -79,6 +79,7 @@ FolioStatus QueryClientRect (FolioHandle    wndHandle,
 FolioStatus InvalidateClientRect (FolioHandle   wndHandle,
                                   RECT*         rect = 0,
                                   bool          eraseBackground = false);
+FolioStatus ShowCursor (bool showCursor = true);
 
 } // Endnamespace.
 

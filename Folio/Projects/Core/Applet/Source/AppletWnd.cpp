@@ -88,13 +88,6 @@ FolioStatus AppletWnd::Process (FolioHandle         instanceHandle,
 
             do
             {
-                // Check gamepad.
-
-                if (m_gamepad)
-                {
-                    m_gamepad->CheckController (controllerId);
-                } // Endif.
-
                 // Peek for a message to any window.
 
                 status = Wnd::PeekWndMessage (0, 0, 0, PM_REMOVE, msg);
@@ -127,10 +120,17 @@ FolioStatus AppletWnd::Process (FolioHandle         instanceHandle,
 
             if (status != ERR_STOPPED)
             {
-                // Note previous tick count.
+                // Note previous frame tick count.
 
                 previousTickCount = currentTickCount;
             
+                // Check gamepad.
+
+                if (m_gamepad)
+                {
+                    m_gamepad->CheckController (controllerId);
+                } // Endif.
+
                 // Process a frame.
 
                 frameRateIncrement = 0; // Reset.
@@ -266,6 +266,8 @@ FolioStatus AppletWnd::Initialise ()
 {
     FolioStatus status = ERR_SUCCESS;
 
+    Folio::Core::Util::Wnd::ShowCursor (false);
+
     // Register with GDI+.
 
     status = RegisterGraphics ();
@@ -312,6 +314,8 @@ FolioStatus AppletWnd::Terminate()
     // Deregister from GDI+.
 
     DeregisterGraphics ();
+
+    Folio::Core::Util::Wnd::ShowCursor (true);
 
     return (ERR_SUCCESS);
 } // Endproc.
@@ -739,28 +743,6 @@ LRESULT CALLBACK    AppletWnd::AppletWndProc (HWND      wndHandle,
     case WM_PAINT:
         HandlePaintWndMsg (wndHandle, wParam, lParam);
         break;
- 
-    case WM_KEYDOWN:
-    case WM_KEYUP:
-        HandleKeyboardMsg (wndHandle, wParam, lParam, (msg == WM_KEYDOWN));
-        break;
-
-    case WM_MOUSEMOVE:
-        HandleMouseMoveMsg (wndHandle, wParam, lParam);
-        break;
- 
-    case WM_LBUTTONDOWN:
-    case WM_RBUTTONDOWN:
-    case WM_MBUTTONDOWN:
-    case WM_LBUTTONUP:
-    case WM_RBUTTONUP:
-    case WM_MBUTTONUP:
-        HandleMouseButtonMsg (wndHandle, wParam, lParam);
-        break;
- 
-    case WM_TIMER:
-        HandleTimerMsg (wndHandle, wParam, lParam);
-        break;
 
     default:
         break;
@@ -1076,293 +1058,6 @@ FolioStatus AppletWnd::HandlePaintWndMsg (HWND      wndHandle,
             if (status != ERR_SUCCESS)
             {
                 FOLIO_LOG_CALL_ERROR_3 (TXT("HandlePaintCanvasMsg"),
-                                        status,
-                                        wndHandle, 
-                                        wParam, 
-                                        lParam);
-            } // Endif.
-
-        } // Endelse.
-
-    } // Endelse.
-
-    return (status);
-} // Endproc.
-
-
-/**
- * Method that is used to handle a WM_KEYDOWN or WM_KEYUP message received by the 
- * applet window.
- *
- * @param [in] wndHandle
- * The handle of the applet window.
- *
- * @param [in] wParam
- * Contains additional data relevant to the message.
- *
- * @param [in] lParam
- * Contains additional data relevant to the message.
- *
- * @param [in] keyDown
- * <b>true</b> of the message was a WM_KEYDOW.
- *
- * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
- */
-FolioStatus AppletWnd::HandleKeyboardMsg (HWND      wndHandle,
-                                          WPARAM    wParam,
-                                          LPARAM    lParam,
-                                          bool      keyDown)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Obtain the applet window object from the window's extra data.
-
-    AppletWnd*  appletWnd = GetAppletWnd (wndHandle);
-
-    if (appletWnd == 0)
-    {
-        status = ERR_INTERNAL_ERROR;
-    } // Endif.
-
-    else
-    {
-        // Get the canvas message handler.
-
-        ACanvasMsgHandler*  canvasMsgHandler = appletWnd->GetCanvasMsgHandler ();
-
-        if (canvasMsgHandler == 0)
-        {
-            status = ERR_INTERNAL_ERROR;
-        } // Endif.
-
-        else
-        {
-            // Let the canvas message handler deal with the message.
-
-            status = canvasMsgHandler->HandleKeyboardMsg (wndHandle, 
-                                                          wParam, 
-                                                          lParam,
-                                                          keyDown);
-
-            if (status != ERR_SUCCESS)
-            {
-                FOLIO_LOG_CALL_ERROR_4 (TXT("HandleKeyboardMsg"),
-                                        status,
-                                        wndHandle, 
-                                        wParam, 
-                                        lParam,
-                                        keyDown);
-            } // Endif.
-
-        } // Endelse.
-
-    } // Endelse.
-
-    return (status);
-} // Endproc.
-
-
-/**
- * Method that is used to handle a WM_MOUSEMOVE message received by the applet 
- * window.
- *
- * @param [in] wndHandle
- * The handle of the applet window.
- *
- * @param [in] wParam
- * Contains additional data relevant to the message.
- *
- * @param [in] lParam
- * Contains additional data relevant to the message.
- *
- * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
- */
-FolioStatus AppletWnd::HandleMouseMoveMsg (HWND     wndHandle,
-                                           WPARAM   wParam,
-                                           LPARAM   lParam)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Obtain the applet window object from the window's extra data.
-
-    AppletWnd*  appletWnd = GetAppletWnd (wndHandle);
-
-    if (appletWnd == 0)
-    {
-        status = ERR_INTERNAL_ERROR;
-    } // Endif.
-
-    else
-    {
-        // Get the canvas message handler.
-
-        ACanvasMsgHandler*  canvasMsgHandler = appletWnd->GetCanvasMsgHandler ();
-
-        if (canvasMsgHandler == 0)
-        {
-            status = ERR_INTERNAL_ERROR;
-        } // Endif.
-
-        else
-        {
-            // Let the canvas message handler deal with the message.
-
-            status = canvasMsgHandler->HandleMouseMoveMsg (wndHandle, 
-                                                           wParam, 
-                                                           lParam);
-
-            if (status != ERR_SUCCESS)
-            {
-                FOLIO_LOG_CALL_ERROR_3 (TXT("HandleMouseMoveMsg"),
-                                        status,
-                                        wndHandle, 
-                                        wParam, 
-                                        lParam);
-            } // Endif.
-
-        } // Endelse.
-
-    } // Endelse.
-
-    return (status);
-} // Endproc.
-
-
-/**
- * Method that is used to handle a WM_LBUTTONDOWN, WM_LBUTTONUP, 
- * WM_RBUTTONDOWN, WM_RBUTTONUP, WM_MBUTTONDOWN, WM_MBUTTONUP message received 
- * by the applet window.
- *
- * @param [in] wndHandle
- * The handle of the applet window.
- *
- * @param [in] wParam
- * Contains additional data relevant to the message.
- *
- * @param [in] lParam
- * Contains additional data relevant to the message.
- *
- * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
- */
-FolioStatus AppletWnd::HandleMouseButtonMsg (HWND   wndHandle,
-                                             WPARAM wParam,
-                                             LPARAM lParam)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Obtain the applet window object from the window's extra data.
-
-    AppletWnd*  appletWnd = GetAppletWnd (wndHandle);
-
-    if (appletWnd == 0)
-    {
-        status = ERR_INTERNAL_ERROR;
-    } // Endif.
-
-    else
-    {
-        // Get the canvas message handler.
-
-        ACanvasMsgHandler*  canvasMsgHandler = appletWnd->GetCanvasMsgHandler ();
-
-        if (canvasMsgHandler == 0)
-        {
-            status = ERR_INTERNAL_ERROR;
-        } // Endif.
-
-        else
-        {
-            // Let the canvas message handler deal with the message.
-
-            status = canvasMsgHandler->HandleMouseButtonMsg (wndHandle, 
-                                                             wParam, 
-                                                             lParam);
-
-            if (status != ERR_SUCCESS)
-            {
-                FOLIO_LOG_CALL_ERROR_3 (TXT("HandleMouseButtonMsg"),
-                                        status,
-                                        wndHandle, 
-                                        wParam, 
-                                        lParam);
-            } // Endif.
-
-        } // Endelse.
-
-    } // Endelse.
-
-    return (status);
-} // Endproc.
-
-
-/**
- * Method that is used to handle a WM_TIMER message received by the applet 
- * window.
- *
- * @param [in] wndHandle
- * The handle of the applet window.
- *
- * @param [in] wParam
- * Contains additional data relevant to the message.
- *
- * @param [in] lParam
- * Contains additional data relevant to the message.
- *
- * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
- */
-FolioStatus AppletWnd::HandleTimerMsg (HWND     wndHandle,
-                                       WPARAM   wParam,
-                                       LPARAM   lParam)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Obtain the applet window object from the window's extra data.
-
-    AppletWnd*  appletWnd = GetAppletWnd (wndHandle);
-
-    if (appletWnd == 0)
-    {
-        status = ERR_INTERNAL_ERROR;
-    } // Endif.
-
-    else
-    {
-        // Get the canvas message handler.
-
-        ACanvasMsgHandler*  canvasMsgHandler = appletWnd->GetCanvasMsgHandler ();
-
-        if (canvasMsgHandler == 0)
-        {
-            status = ERR_INTERNAL_ERROR;
-        } // Endif.
-
-        else
-        {
-            // Let the canvas message handler deal with the message.
-
-            status = canvasMsgHandler->HandleTimerMsg (wndHandle, 
-                                                       wParam, 
-                                                       lParam);
-
-            if (status != ERR_SUCCESS)
-            {
-                FOLIO_LOG_CALL_ERROR_3 (TXT("HandleTimerMsg"),
                                         status,
                                         wndHandle, 
                                         wParam, 

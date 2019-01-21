@@ -18,6 +18,15 @@ namespace Util
 {
 
 /**
+ * The default class constructor.
+ */
+WaitAny::WaitAny ()
+:   m_signalIndex(NO_SIGNAL)
+{
+} // Endproc.
+
+
+/**
  * A class constructor.
  *
  * @param [in] syncList

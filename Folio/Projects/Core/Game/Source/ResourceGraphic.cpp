@@ -182,7 +182,8 @@ FolioStatus ResourceGraphic::QueryDrawingElements (FolioHandle                  
                                                    UInt32                           screenScale,
                                                    UInt32                           drawingFlags,
                                                    const DrawingElement::UserData&  drawingElementUserData,
-                                                   DrawingElementsList              &drawingElementsList)
+                                                   DrawingElementsList              &drawingElementsList,
+                                                   bool                             maskedDrawingElementRqd)
 {
     static  const   double PI = 3.14159265358979323846; // PI.
 
@@ -222,8 +223,8 @@ FolioStatus ResourceGraphic::QueryDrawingElements (FolioHandle                  
             // Yes. Rotate the device-independent GDI bitmap.
 
             status = gdiDiBitmap->Create (*m_gdiDiBitmap,
-                                                 s_rotationTable [(drawingFlags & ROTATION_MASK) >> 2].m_radians,
-                                                 Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR);
+                                          s_rotationTable [(drawingFlags & ROTATION_MASK) >> 2].m_radians,
+                                          Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR);
         } // Endif.
 
         else
@@ -245,7 +246,7 @@ FolioStatus ResourceGraphic::QueryDrawingElements (FolioHandle                  
             {
                 // Is a masked GDI bitmap required?
 
-                if (m_maskedGdiBitmapRqd)
+                if (m_maskedGdiBitmapRqd && maskedDrawingElementRqd)
                 {
                     // Yes. Create the masked GDI bitmap from the GDI bitmap.
 
@@ -337,7 +338,8 @@ FolioStatus ResourceGraphic::QueryDrawingElements (FolioHandle                  
                                                    Gdiplus::ARGB                    colour, 
                                                    UInt32                           drawingFlags,
                                                    const DrawingElement::UserData&  drawingElementUserData,
-                                                   DrawingElementsList              &drawingElementsList)
+                                                   DrawingElementsList              &drawingElementsList,
+                                                   bool                             maskedDrawingElementRqd)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -364,7 +366,8 @@ FolioStatus ResourceGraphic::QueryDrawingElements (FolioHandle                  
                                            screenScale,
                                            drawingFlags,
                                            drawingElementUserData,
-                                           drawingElementsList);
+                                           drawingElementsList,
+                                           maskedDrawingElementRqd);
         } // Endif.
 
         else

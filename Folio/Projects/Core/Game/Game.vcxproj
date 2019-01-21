@@ -26,6 +26,7 @@
     <ClInclude Include="Include\ResourceGraphic.h" />
     <ClInclude Include="Include\SpriteDrawingElement.h" />
     <ClInclude Include="Include\SpriteGraphicsAttributes.h" />
+    <ClInclude Include="Include\SpriteMovementSoundAttributes.h" />
     <ClInclude Include="Include\TextItem.h" />
   </ItemGroup>
   <ItemGroup>
@@ -44,6 +45,7 @@
     <ClCompile Include="Source\ResourceGraphic.cpp" />
     <ClCompile Include="Source\SpriteDrawingElement.cpp" />
     <ClCompile Include="Source\SpriteGraphicsAttributes.cpp" />
+    <ClCompile Include="Source\SpriteMovementSoundAttributes.cpp" />
     <ClCompile Include="Source\TextItem.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

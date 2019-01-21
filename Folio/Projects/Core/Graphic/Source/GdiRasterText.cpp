@@ -394,7 +394,9 @@ FolioStatus GdiRasterText::Draw (Gdiplus::Graphics& graphics,
 
     // Draw the text string.
 
-    for (UInt32 character = 0; character < m_textString.size (); ++character)
+    UInt32  textStringLength = m_textString.length ();
+
+    for (UInt32 character = 0; character < textStringLength; ++character)
     {
         // Draw each character in the string.
 

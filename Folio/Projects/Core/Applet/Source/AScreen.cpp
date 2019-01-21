@@ -11,7 +11,7 @@ namespace Applet
 {
 
 AScreen::AScreen ()
-:   m_canvasBag(0),
+:   m_canvas(0),
     m_controllerId(Folio::Core::Game::Gamepad::CONTROLLER_ID_UNDEFINED),
     m_minTimeToDisplay(0),
     m_isDisplaying(false),
@@ -26,23 +26,23 @@ AScreen::~AScreen ()
 } // Endproc.
 
 
-FolioStatus AScreen::Create (CanvasBag&             canvasBag,
+FolioStatus AScreen::Create (Canvas&                canvas,
                              const Gdiplus::Rect&   clearScreenRect,
                              UInt32                 minTimeToDisplay)
 {
     // Note the screen attributes.
 
-    m_canvasBag         = &(canvasBag);
+    m_canvas            = &(canvas);
     m_clearScreenRect   = clearScreenRect;
     m_minTimeToDisplay  = minTimeToDisplay;
 
     // Get the first connected controller.
 
-    m_controllerId = canvasBag.GetCanvasGamepad ()->GetFirstConnectedController ();
+    m_controllerId = canvas.GetCanvasGamepad ()->GetFirstConnectedController ();
 
     // Build the screen items.
 
-    return (BuildScreenItems (canvasBag.GetCanvasDcHandle (), canvasBag.GetAppletInstanceHandle ()));
+    return (BuildScreenItems (canvas.GetCanvasDcHandle (), canvas.GetAppletInstanceHandle ()));
 } // Endproc.
 
 
@@ -54,9 +54,17 @@ FolioStatus AScreen::HandleProcessFrame (UInt32* frameRateIncrement)
 
     if (m_isDisplaying)
     {
-        // Yes. Let the screen process the frame.
+        // Yes. Check the input.
 
-        status = ProcessScreenFrame (frameRateIncrement);
+        status = CheckInput ();
+
+        if (status == ERR_SUCCESS)
+        {
+            // Let the screen process the frame.
+
+            status = ProcessScreenFrame (frameRateIncrement);
+        } // Endif.
+
     } // Endif.
 
     else
@@ -65,25 +73,6 @@ FolioStatus AScreen::HandleProcessFrame (UInt32* frameRateIncrement)
         
         status = Display ();
     } // Endelse.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus AScreen::HandleProcessKeyboardMsg (UInt32   wParam,
-                                               UInt32   lParam,
-                                               bool     keyDown)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Has the screen been displayed for the minimum time required?
-
-    if ((Folio::Core::Util::DateTime::GetCurrentTickCount () - m_initialFrameTickCount) > m_minTimeToDisplay)
-    {
-        // Yes. Let the screen process the keyboard message.
-
-        status = ProcessScreenKeyboardMsg (wParam, lParam, keyDown);
-    } // Endif.
 
     return (status);
 } // Endproc.
@@ -103,47 +92,41 @@ bool    AScreen::IsComplete () const
 
 FolioStatus AScreen::Display ()
 {
-    // Clear the canvas bag.
+    FolioStatus status = ERR_SUCCESS;
 
-    FolioStatus status = m_canvasBag->ClearCanvas ();
+    // Is there a gamepad controller connected?
+
+    if (m_controllerId != Folio::Core::Game::Gamepad::CONTROLLER_ID_UNDEFINED)
+    {
+        // Yes. Setup the gamepad.
+
+        status = SetupGamepad (*m_canvas->GetCanvasGamepad ());
+    } // Endif.
 
     if (status == ERR_SUCCESS)
     {
-        // Is there a gamepad controller connected?
+        // Start displaying.
 
-        if (m_controllerId != Folio::Core::Game::Gamepad::CONTROLLER_ID_UNDEFINED)
-        {
-            // Yes. Setup the gamepad.
-
-            status = SetupGamepad (*m_canvasBag->GetCanvasGamepad ());
-        } // Endif.
+        status = StartDisplayingScreen ();
 
         if (status == ERR_SUCCESS)
         {
-            // Start displaying.
+            // Draw the screen items in the canvas.
 
-            status = StartDisplayingScreen ();
+            status = DrawInCanvas ();
 
             if (status == ERR_SUCCESS)
             {
-                // Add the screen items to the canvas bag.
+                // The screen is being displayed.
 
-                status = AddToCanvasBag ();
-
-                if (status == ERR_SUCCESS)
-                {
-                    // The screen is being displayed.
-
-                    m_isDisplaying = true;
+                m_isDisplaying = true;
                 
-                    // Set the initial and previous frame tick counts.
+                // Set the initial and previous frame tick counts.
 
-                    m_initialFrameTickCount     = Folio::Core::Util::DateTime::GetCurrentTickCount (); 
-                    m_previousFrameTickCount    = m_initialFrameTickCount;
-                } // Endif.
-    
+                m_initialFrameTickCount     = Folio::Core::Util::DateTime::GetCurrentTickCount (); 
+                m_previousFrameTickCount    = m_initialFrameTickCount;
             } // Endif.
-
+    
         } // Endif.
 
     } // Endif.
@@ -154,18 +137,11 @@ FolioStatus AScreen::Display ()
 
 FolioStatus AScreen::StopDisplaying ()
 {
-    // Clear the canvas bag.
+    // The screen is not being displayed.
 
-    FolioStatus status = m_canvasBag->ClearCanvas ();
+    m_isDisplaying = false;
 
-    if (status == ERR_SUCCESS)
-    {
-        // The screen is not being displayed.
-
-        m_isDisplaying = false;
-    } // Endif.
-
-    return (status);
+    return (ERR_SUCCESS);
 } // Endproc.
 
 
@@ -204,28 +180,17 @@ FolioStatus AScreen::QueryScreenDrawingElements (FolioHandle                    
 
 FolioStatus AScreen::SetupGamepad (Folio::Core::Game::Gamepad& gamepad)
 {
-    // Clear the gamepad controller's key mappings.
-
-    gamepad.ClearKeyMappings (m_controllerId);
-
-    // Set the gamepad controller's key mappings.
-
-    gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_START,          VK_RETURN);
-    gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_BACK,           VK_BACK);            
-    gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_LEFT_THUMB,     VK_LBUTTON);      
-    gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_RIGHT_THUMB,    VK_RBUTTON);     
-    gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_LEFT_SHOULDER,  VK_XBUTTON1);   
-    gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_RIGHT_SHOULDER, VK_XBUTTON2);  
-    gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_A,              'A');
-    gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_B,              'B');
-    gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_X,              'X');
-    gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_Y,              'Y');
-
     return (ERR_SUCCESS);
 } // Endproc.
 
 
 FolioStatus AScreen::StartDisplayingScreen ()
+{
+    return (ERR_SUCCESS);
+} // Endproc.
+
+
+FolioStatus AScreen::ProcessScreenInput ()
 {
     return (ERR_SUCCESS);
 } // Endproc.
@@ -237,43 +202,51 @@ FolioStatus AScreen::ProcessScreenFrame (UInt32* frameRateIncrement)
 } // Endproc.
 
 
-FolioStatus AScreen::ProcessScreenKeyboardMsg (UInt32   wParam,
-                                               UInt32   lParam,
-                                               bool     keyDown)
-{
-    return (ERR_SUCCESS);
-} // Endproc.
-
-
 FolioStatus AScreen::UpdateScreen ()
 {
     return (ERR_SUCCESS);
 } // Endproc.
 
 
-FolioStatus AScreen::AddToCanvasBag () const
+FolioStatus AScreen::DrawInCanvas () const
 {
     // Query the drawing elements of the screen.
 
     Folio::Core::Game::DrawingElementsList  drawingElementsList;
 
-    FolioStatus status = QueryScreenDrawingElements (m_canvasBag->GetCanvasDcHandle (), 
+    FolioStatus status = QueryScreenDrawingElements (m_canvas->GetCanvasDcHandle (), 
                                                      drawingElementsList);
 
     if (status == ERR_SUCCESS)
     {
         // Clear the canvas rect.
 
-        status = m_canvasBag->ClearCanvasRectangle (m_clearScreenRect);
+        status = m_canvas->ClearCanvasRectangle (m_clearScreenRect);
 
         if (status == ERR_SUCCESS)
         {
-            // Add the screen item's drawing elements to the canvas bag.
+            // Draw the screen item's drawing elements using the canvas.
 
-            status = m_canvasBag->AddDrawingElements (drawingElementsList,
-                                                      true);    // Draw into the canvas bag.
+            status = m_canvas->DrawDrawingElements (drawingElementsList, true); // Draw into the canvas.
         } // Endif.
 
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus AScreen::CheckInput ()
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Has the screen been displayed for the minimum time required?
+
+    if ((Folio::Core::Util::DateTime::GetCurrentTickCount () - m_initialFrameTickCount) > m_minTimeToDisplay)
+    {
+        // Yes. Let the screen process any input.
+
+        status = ProcessScreenInput ();
     } // Endif.
 
     return (status);

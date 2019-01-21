@@ -49,6 +49,9 @@
     <ClCompile Include="Source\SpriteDrawingElement.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SpriteMovementSoundAttributes.cpp">
+      <Filter>Source Files\SDK</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\AItem.h">
@@ -97,6 +100,9 @@
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
     <ClInclude Include="Include\SpriteDrawingElement.h">
+      <Filter>Header Files\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SpriteMovementSoundAttributes.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
   </ItemGroup>

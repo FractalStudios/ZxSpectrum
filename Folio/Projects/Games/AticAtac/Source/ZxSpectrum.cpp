@@ -140,6 +140,59 @@ Int32   CalculateScreenYBottom (Int32   screenYTop,
     return (screenYTop + screenWidth - 1);
 } // Endproc.
 
+
+UInt32  BeepDurationToMilliseconds (const float &beepDuration)
+{
+    // Beep duration is in seconds, convert to milliseconds.
+
+    return (std::max (static_cast<UInt32> (1), static_cast<UInt32> (beepDuration * 1000.0f + 0.5f)));
+} // Endproc.
+
+
+float   BeepPitchToFrequency (Int32 beepPitch)
+{
+    return (440.0f * std::powf (2.0f, (beepPitch + 40 - 49) / 12.0f)); 
+} // Endproc.
+
+
+Folio::Core::Util::Sound::SoundSample   MapBeep (const float    &beepDuration,
+                                                 Int32          beepPitch)
+{
+    return (Folio::Core::Util::Sound::SoundSample(BeepDurationToMilliseconds (beepDuration),
+                                                  BeepPitchToFrequency (beepPitch)));
+} // Endproc.
+
+
+UInt32  MapUltimateMakeSoundDuration (BYTE  frequency,
+                                      BYTE  numLoops)
+{
+    static  const   UInt32  TSTATE_DJNZ_B_ZERO      = 8;   
+    static  const   UInt32  TSTATE_DJNZ_B_NOT_ZERO  = 13;
+
+    float   numTStatesPerLoop = 91.0f + 2.0f * (TSTATE_DJNZ_B_ZERO + (TSTATE_DJNZ_B_NOT_ZERO * (frequency - 1)));
+
+    return (std::max(static_cast<UInt32> (1), static_cast<UInt32> (numTStatesPerLoop * numLoops / CLOCK_FREQUENCY * 1000.0f + 0.5f)));
+} // Endproc.
+
+
+float   MapUltimateMakeSoundFrequency (BYTE frequency)
+{
+    static  const   UInt32  TSTATE_DJNZ_B_ZERO      = 8;   
+    static  const   UInt32  TSTATE_DJNZ_B_NOT_ZERO  = 13;
+
+    float   numTStatesForFrequency = 47.0f + 2.0f * (TSTATE_DJNZ_B_ZERO + (TSTATE_DJNZ_B_NOT_ZERO * (frequency - 1)));
+
+    return (CLOCK_FREQUENCY / numTStatesForFrequency);
+} // Endproc.
+
+
+Folio::Core::Util::Sound::SoundSample   MapUltimateMakeSound (BYTE  frequency,
+                                                              BYTE  numLoops)
+{
+    return (Folio::Core::Util::Sound::SoundSample(MapUltimateMakeSoundDuration (frequency, numLoops),
+                                                  MapUltimateMakeSoundFrequency (frequency)));
+} // Endproc.
+
 } // Endnamespace.
 
 } // Endnamespace.

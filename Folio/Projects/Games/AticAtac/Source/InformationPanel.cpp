@@ -41,8 +41,24 @@ static  const   InformationPanelItemAttributes  g_informationPanelAttributesTabl
 };
 
 
+// Information panel static members.
+Folio::Core::Util::Sound::SoundSample   InformationPanel::m_startingSoundSample(80, 1026.69f);      // Starting sound sample.
+Folio::Core::Util::Sound::SoundSample   InformationPanel::m_collectedItemSoundSample(32, 3800.00f); // Collected item sound sample.
+Folio::Core::Util::Sound::SoundSample   InformationPanel::m_droppedItemSoundSample(32, 2000.00f);   // Dropped item sound sample.
+
+bool    InformationPanel::m_playIncrementMainPlayerHealthSound                  = false;    // Indicates if the increment main player health sound should be played.
+UInt32  InformationPanel::m_currentIncrementMainPlayerHealthSoundSampleIndex    = 0;        // The current increment main player health sound sample index.
+Folio::Core::Util::Sound::SoundSamplesList  InformationPanel::m_incrementMainPlayerHealthSoundSamplesList;  // The increment main player health sound samples.
+
+bool    InformationPanel::m_playDecrementMainPlayerHealthSound                  = false;    // Indicates if the decrement main player health sound should be played.
+UInt32  InformationPanel::m_currentDecrementMainPlayerHealthSoundSampleIndex    = 0;        // The current decrement main player health sound sample index.
+Folio::Core::Util::Sound::SoundSamplesList  InformationPanel::m_decrementMainPlayerHealthSoundSamplesList;  // The decrement main player health sound samples.
+
 InformationPanel::InformationPanel ()
-:   m_canvasBag(0),
+:   m_canvas(0),
+    m_startCount(0),
+    m_previousTimeFrameTickCount(0),
+    m_previousScoreFrameTickCount(0),
     m_timeInSeconds(0),
     m_score(0),
     m_health(MAX_HEALTH),
@@ -59,27 +75,34 @@ InformationPanel::~InformationPanel ()
 } // Endproc.
 
 
-FolioStatus InformationPanel::Create (Folio::Core::Applet::CanvasBag    &canvasBag,
-                                      UInt32                            totalNumRooms,
-                                      UInt16                            mainPlayerBitmapResourceId)
+FolioStatus InformationPanel::Create (Folio::Core::Applet::Canvas   &canvas,
+                                      UInt32                        totalNumRooms,
+                                      UInt16                        mainPlayerBitmapResourceId)
 {
     // Note the information panel attributes.
 
-    m_canvasBag             = &(canvasBag);
-    m_timeInSeconds         = 0;
-    m_score                 = 0;
-    m_health                = MAX_HEALTH;
-    m_lives                 = MAX_NUM_LIVES;
-    m_totalNumRooms         = totalNumRooms;
-    m_numRoomsVisited       = 0;
-    m_invertScoreColours    = false;
+    m_canvas                        = &(canvas);
+    m_startCount                    = 0;
+    m_previousTimeFrameTickCount    = 0;
+    m_previousScoreFrameTickCount   = 0;
+    m_timeInSeconds                 = 0;
+    m_score                         = 0;
+    m_health                        = MAX_HEALTH;
+    m_lives                         = MAX_NUM_LIVES;
+    m_totalNumRooms                 = totalNumRooms;
+    m_numRoomsVisited               = 0;
+    m_invertScoreColours            = false;
 
     m_heldItemsList.clear ();   // Initialise!
 
+    // Create the information panel sound samples.
+
+    CreateInformationPanelSoundSamples ();
+
     // Build the information panel items.
 
-    return (BuildItems (canvasBag.GetCanvasDcHandle (), 
-                        canvasBag.GetAppletInstanceHandle (), 
+    return (BuildItems (canvas.GetCanvasDcHandle (), 
+                        canvas.GetAppletInstanceHandle (), 
                         mainPlayerBitmapResourceId));
 } // Endproc.
 
@@ -176,6 +199,11 @@ FolioStatus InformationPanel::QueryDrawingElements (FolioHandle                 
                                     itemDrawingElementsList.end ()); 
     } // Endfor.
 
+    if (status != ERR_SUCCESS)
+    {
+        drawingElementsList.clear ();
+    } // Endif.
+
     return (status);
 } // Endproc.
 
@@ -183,13 +211,17 @@ FolioStatus InformationPanel::QueryDrawingElements (FolioHandle                 
 FolioStatus InformationPanel::HandleProcessFrame (bool  &isStarting,
                                                   bool  &mainPlayerIsDead)
 {
-    // Note if we were (ar) starting.
+    // Play the information panel sounds.
 
-    bool    wasStarting = isStarting;
+    PlayInformationPanelSounds ();
 
-    // Check time per frame.
+    // Get the current tick count
 
-    FolioStatus status = CheckTimePerFrame (isStarting, mainPlayerIsDead);
+    UInt32  currentTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
+
+    // Check time.
+
+    FolioStatus status = CheckTime (currentTickCount, isStarting, mainPlayerIsDead);
 
     if (status == ERR_SUCCESS)
     {
@@ -199,18 +231,8 @@ FolioStatus InformationPanel::HandleProcessFrame (bool  &isStarting,
         {
             // Yes. Check score.
 
-            status = CheckScorePerFrame ();
+            status = CheckScore (currentTickCount, isStarting);
         } // Endif.
-
-        // Were we starting?
-
-        else
-        if (wasStarting)
-        {
-            // Yes. Reset the information panel.
-
-            status = Reset ();
-        } // Endelseif.
 
     } // Endif.
 
@@ -223,7 +245,26 @@ FolioStatus InformationPanel::AddCollectedItem (const HeldItem  &heldItem,
 {
     // Add the collected (held) item to the information panel.
 
-    return (AddHeldItem (heldItem, droppedItem));
+    FolioStatus status = AddHeldItem (heldItem, droppedItem);
+
+    if (status == ERR_SUCCESS)
+    {
+         // Play collected item sound.
+
+        Folio::Core::Util::Sound::PlaySoundSample (m_collectedItemSoundSample);
+        
+        // Is an item dropped?
+
+        if ((status == ERR_SUCCESS) && droppedItem.IsPopulated ())
+        {
+            // Yes. Play dropped item sound.
+
+            Folio::Core::Util::Sound::PlaySoundSample (m_droppedItemSoundSample);
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
 } // Endproc.
 
 
@@ -231,7 +272,18 @@ FolioStatus InformationPanel::CycleCollectedItems (DroppedItem &droppedItem)
 {
     // Cycle the collected (held) items in the information panel.
 
-    return (CycleHeldItems (droppedItem));
+    FolioStatus status = CycleHeldItems (droppedItem);
+
+    // Is an item dropped?
+
+    if ((status == ERR_SUCCESS) && droppedItem.IsPopulated ())
+    {
+        // Yes. Play dropped item sound.
+
+        Folio::Core::Util::Sound::PlaySoundSample (m_droppedItemSoundSample);
+    } // Endif.
+
+    return (status);
 } // Endproc.
 
 
@@ -308,6 +360,11 @@ FolioStatus InformationPanel::IncrementScore (UInt32 scoreIncrement)
 
     m_score += scoreIncrement;
 
+    if (m_score > MAX_SCORE)
+    {
+        m_score = 0;
+    } // Endif.
+
     // Update the score.
 
     return (Update (UPDATE_SCORE));
@@ -320,37 +377,8 @@ void    InformationPanel::IncrementNumRoomsVisited ()
 } // Endproc.
 
 
-FolioStatus InformationPanel::DecrementMainPlayerHealth (UInt32 healthDecrement, 
-                                                         bool   &mainPlayerIsDead)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    mainPlayerIsDead = false;    // Initialise!
-
-    if (m_health >= MIN_HEALTH)
-    {
-        // Decrement the main player's current health.
-
-        m_health -= healthDecrement;
-
-        // Is the main player dead?
-
-        mainPlayerIsDead = (m_health < MIN_HEALTH);
-
-        if (!mainPlayerIsDead)
-        {
-            // No. Update the main player's health.
-
-            status = Update (UPDATE_HEALTH);
-        } // Endif.
-
-    } // Endif.
-
-    return (status);
-} // Endproc.
-    
-
-FolioStatus InformationPanel::IncrementMainPlayerHealth (UInt32 healthIncrement)
+FolioStatus InformationPanel::IncrementMainPlayerHealth (UInt32 healthIncrement,
+                                                         bool   playSound)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -368,6 +396,82 @@ FolioStatus InformationPanel::IncrementMainPlayerHealth (UInt32 healthIncrement)
         // Update the main player's health.
 
         status = Update (UPDATE_HEALTH);
+
+        if (!m_playIncrementMainPlayerHealthSound && 
+            (status == ERR_SUCCESS))
+        {
+            // Start playing the increment main player health sound.
+
+            m_playIncrementMainPlayerHealthSound                = true;
+            m_currentIncrementMainPlayerHealthSoundSampleIndex  = 0;
+
+            // Stop playing the decrement main player health sound.
+
+            m_playDecrementMainPlayerHealthSound                = false;
+            m_currentDecrementMainPlayerHealthSoundSampleIndex  = 0;
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+    
+
+FolioStatus InformationPanel::DecrementMainPlayerHealth (UInt32 healthDecrement, 
+                                                         bool   &mainPlayerIsDead,
+                                                         bool   playSound)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    mainPlayerIsDead = false;    // Initialise!
+
+    if (m_health >= MIN_HEALTH)
+    {
+        // Decrement the main player's current health.
+
+        m_health -= healthDecrement;
+
+        // Is the main player dead?
+
+        mainPlayerIsDead = (m_health < MIN_HEALTH);
+
+        if (mainPlayerIsDead)
+        {
+            // Yes. 
+               
+            // Stop playing the increment main player health sound.
+
+            m_playIncrementMainPlayerHealthSound                = false;
+            m_currentIncrementMainPlayerHealthSoundSampleIndex  = 0;
+
+            // Stop playing the decrement main player health sound.
+
+            m_playDecrementMainPlayerHealthSound                = false;
+            m_currentDecrementMainPlayerHealthSoundSampleIndex  = 0;
+        } // Endif.
+
+        else
+        {
+            // No. Update the main player's health.
+
+            status = Update (UPDATE_HEALTH);
+
+            if (playSound && !m_playDecrementMainPlayerHealthSound && 
+                (status == ERR_SUCCESS))
+            {
+                // Start playing the decrement main player health sound.
+
+                m_playDecrementMainPlayerHealthSound                = true;
+                m_currentDecrementMainPlayerHealthSoundSampleIndex  = 0;
+
+                // Stop playing the increment main player health sound.
+
+                m_playIncrementMainPlayerHealthSound                = false;
+                m_currentIncrementMainPlayerHealthSoundSampleIndex  = 0;
+            } // Endif.
+
+        } // Endelse.
+
     } // Endif.
 
     return (status);
@@ -602,16 +706,19 @@ FolioStatus InformationPanel::BuildItems (FolioHandle   dcHandle,
 } // Endproc.
 
 
-FolioStatus InformationPanel::CheckTimePerFrame (bool   &isStarting,
-                                                 bool   &mainPlayerIsDead)
+FolioStatus InformationPanel::CheckTime (UInt32 currentTickCount,
+                                         bool   isStarting,
+                                         bool   &mainPlayerIsDead)
 {
-    static  UInt32  previousFrameTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
-
     FolioStatus status = ERR_SUCCESS;
 
-    UInt32  currentTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
+    if (!m_previousTimeFrameTickCount)
+    {
+        m_previousTimeFrameTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
+    } // Endif.
 
-    if (currentTickCount >= (previousFrameTickCount + 1000))
+    else
+    if (currentTickCount >= (m_previousTimeFrameTickCount + 1000))
     {
         // Increment the time in seconds.
 
@@ -619,78 +726,81 @@ FolioStatus InformationPanel::CheckTimePerFrame (bool   &isStarting,
 
         if (status == ERR_SUCCESS)
         {
-            // Note the previous tick count.
+            // Note the previous time frame tick count.
 
-            previousFrameTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
+            m_previousTimeFrameTickCount = currentTickCount;
         } // Endif.
 
-    } // Endif.
+    } // Endelseif.
 
     return (status);
 } // Endproc.
 
 
-FolioStatus InformationPanel::CheckScorePerFrame ()
-{
-    static  UInt32  previousFrameTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
-
+FolioStatus InformationPanel::CheckScore (UInt32    currentTickCount, 
+                                          bool      &isStarting)
+{                                                            
     FolioStatus status = ERR_SUCCESS;
 
-    if (Folio::Core::Util::DateTime::GetCurrentTickCount () >= (previousFrameTickCount  + ZxSpectrum::FLASH_MS))
+    if (!m_previousScoreFrameTickCount)
+    {
+        m_previousScoreFrameTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
+    } // Endif.
+
+    else
+    if (currentTickCount >= (m_previousScoreFrameTickCount + ZxSpectrum::FLASH_MILLISECONDS))
     {
         // Update the information panel.
 
         status = Update (UPDATE_SCORE_COLOURS);
 
+        // Have we started?
+
+        if (++m_startCount >= 6)
+        {
+            // Yes. We are no longer starting.
+
+            isStarting = false;
+
+            m_startCount = 0;   // Reset start count.
+
+            // Reset the information panel.
+
+            status = Reset ();
+        } // Endif.
+        
+        else
         if (status == ERR_SUCCESS)
         {
-            // Note the previous tick count.
+            // Note the previous score frame tick count.
 
-            previousFrameTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
-        } // Endif.
+            m_previousScoreFrameTickCount = currentTickCount;
+        } // Endelseif.
 
-    } // Endif.
+    } // Endelseif.
 
     return (status);
 } // Endproc.
 
 
 FolioStatus InformationPanel::IncrementTimeInSeconds (UInt32    currentTickCount,
-                                                      bool      &isStarting,
+                                                      bool      isStarting,
                                                       bool      &mainPlayerIsDead)
 {
-    static  bool    s_isStarting                = false;
-    static  UInt32  s_previousStartingTickCount = 0;
-
-    static  const   UInt32  DEFAULT_START_TIME = 3 * 1000;  // 3 seconds.
-
-    // Starting?
-
-    if (isStarting)
-    {
-        if (!s_isStarting)
-        {
-            s_isStarting                = true;
-            s_previousStartingTickCount = currentTickCount;
-        } // Endif.
-
-        else
-        {
-            s_isStarting = (currentTickCount < (s_previousStartingTickCount + DEFAULT_START_TIME));
-        } // Endelse.
-
-        isStarting = s_isStarting;
-    } // Endif.
-
     // Increment the time in seconds.
 
     m_timeInSeconds++;
+
+    if (m_timeInSeconds > MAX_TIME_IN_SECONDS)
+    {   
+        m_timeInSeconds = 0;
+    } // Endif.
 
     // We periodically reduce the main player's health.
 
     if (!isStarting && (m_timeInSeconds % PLAYER_HEALTH_TIME_DECREMENT) == 0)
     {
-        DecrementMainPlayerHealth (PLAYER_HEALTH_TIME_DECREMENT, mainPlayerIsDead);
+        DecrementMainPlayerHealth (PLAYER_HEALTH_TIME_DECREMENT, mainPlayerIsDead, false);
     } // Endif.
 
     // Update the time.
@@ -721,14 +831,14 @@ FolioStatus InformationPanel::Update (UPDATE update)
 {
     FolioStatus status = ERR_SUCCESS;
 
-    // Get the canvas bag graphics.
+    // Get the canvas graphics.
 
-    Gdiplus::Graphics   *graphics = m_canvasBag->GetCanvasGraphics ();
+    Gdiplus::Graphics   *graphics = m_canvas->GetCanvasGraphics ();
 
     // Update the information panel items (depending on the type of update required).
 
     bool    finished        = false;   // Initialise!
-    bool    redrawCanvasBag = false;
+    bool    redrawCanvas    = false;
 
     for (ItemsList::iterator itr = m_itemsList.begin ();
          !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
@@ -743,7 +853,7 @@ FolioStatus InformationPanel::Update (UPDATE update)
         case INFORMATION_PANEL_ITEM_HELD_ITEM_1:
         case INFORMATION_PANEL_ITEM_HELD_ITEM_2:
         case INFORMATION_PANEL_ITEM_HELD_ITEM_3:
-            if (update == UPDATE_HELD_ITEMS)
+            if (update == UPDATE_HELD_ITEMS)          
             {
                 // Get the information panel graphic item.
 
@@ -759,7 +869,7 @@ FolioStatus InformationPanel::Update (UPDATE update)
 
                     status = item->Draw (*graphics);
 
-                    redrawCanvasBag = true;
+                    redrawCanvas = true;
                 } // Endif.
 
                 finished = (itemId == m_heldItemsList.front ().m_itemId);
@@ -781,7 +891,7 @@ FolioStatus InformationPanel::Update (UPDATE update)
 
                 status = item->Draw (*graphics);
 
-                redrawCanvasBag = true;
+                redrawCanvas    = true;
                 finished        = true;
             } // Endif.
             break;
@@ -801,7 +911,7 @@ FolioStatus InformationPanel::Update (UPDATE update)
 
                 status = item->Draw (*graphics);
 
-                redrawCanvasBag = true;
+                redrawCanvas    = true;
                 finished        = true;
             } // Endif.
 
@@ -819,7 +929,16 @@ FolioStatus InformationPanel::Update (UPDATE update)
                 status = UpdateTextItem (*item,
                                          m_invertScoreColours,
                                          *graphics, 
-                                         redrawCanvasBag);
+                                         redrawCanvas);
+
+                if (status == ERR_SUCCESS)
+                {
+                    // Play starting sound.
+
+                    Folio::Core::Util::Sound::PlaySoundSample (m_startingSoundSample);
+                } // Endif.
+
+                finished = true;
             } // Endelse.
             break;
 
@@ -834,7 +953,7 @@ FolioStatus InformationPanel::Update (UPDATE update)
 
                 status = item->Draw (*graphics);
 
-                redrawCanvasBag = true;
+                redrawCanvas = true;
             } // Endif.
             break;
 
@@ -853,7 +972,7 @@ FolioStatus InformationPanel::Update (UPDATE update)
 
                     status = item->Draw (*graphics);
                     
-                    redrawCanvasBag = true;
+                    redrawCanvas = true;
                 } // Endif.
 
                 finished = true;
@@ -879,7 +998,7 @@ FolioStatus InformationPanel::Update (UPDATE update)
 
                     status = item->Draw (*graphics);
                     
-                    redrawCanvasBag = true;
+                    redrawCanvas = true;
                 } // Endif.
 
                 finished = true;
@@ -896,11 +1015,11 @@ FolioStatus InformationPanel::Update (UPDATE update)
 
     } // Endfor.
 
-    if (redrawCanvasBag && (status == ERR_SUCCESS))
+    if (redrawCanvas && (status == ERR_SUCCESS))
     {
-        // The canvas bag should be redrawn on the next draw.
+        // The canvas should be redrawn on the next draw.
 
-        m_canvasBag->SetRedrawRqd ();
+        m_canvas->SetRedrawRqd ();
     } // Endif.
 
     return (status);
@@ -911,14 +1030,14 @@ FolioStatus InformationPanel::Reset ()
 {                   
     FolioStatus status = ERR_SUCCESS;
 
-    // Get the canvas bag graphics.
+    // Get the canvas graphics.
 
-    Gdiplus::Graphics   *graphics = m_canvasBag->GetCanvasGraphics ();
+    Gdiplus::Graphics   *graphics = m_canvas->GetCanvasGraphics ();
 
     // Reset the information panel items.
 
     bool    finished        = false;   // Initialise!
-    bool    redrawCanvasBag = false;
+    bool    redrawCanvas    = false;
 
     for (ItemsList::iterator itr = m_itemsList.begin ();
          !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
@@ -941,7 +1060,7 @@ FolioStatus InformationPanel::Reset ()
                 status = UpdateTextItem (*item,
                                          false, // Don't invert colours.
                                          *graphics, 
-                                         redrawCanvasBag);
+                                         redrawCanvas);
 
                 // Finished?
             
@@ -955,11 +1074,11 @@ FolioStatus InformationPanel::Reset ()
 
     } // Endfor.
 
-    if (redrawCanvasBag && (status == ERR_SUCCESS))
+    if (redrawCanvas && (status == ERR_SUCCESS))
     {
-        // The canvas bag should be redrawn on the next draw.
+        // The canvas should be redrawn on the next draw.
 
-        m_canvasBag->SetRedrawRqd ();
+        m_canvas->SetRedrawRqd ();
     } // Endif.
 
     return (status);
@@ -1016,8 +1135,8 @@ FolioStatus InformationPanel::AddHeldItem  (const HeldItem  &heldItem,
 
         Folio::Core::Game::GraphicItemPtr   item(new Folio::Core::Game::GraphicItemPtr::element_type);
             
-        status = item->Create (m_canvasBag->GetCanvasDcHandle (),
-                               m_canvasBag->GetAppletInstanceHandle (),
+        status = item->Create (m_canvas->GetCanvasDcHandle (),
+                               m_canvas->GetAppletInstanceHandle (),
                                DRAWING_ELEMENT_INFORMATION_PANEL_ITEM,
                                heldItem.m_staticSprite->GetSpriteGraphic ()->GetBitmapResourceId (),
                                itemId,
@@ -1033,23 +1152,15 @@ FolioStatus InformationPanel::AddHeldItem  (const HeldItem  &heldItem,
 
             m_itemsList.push_back (item);
 
-            // Add the information panel graphic item's drawing elements to the canvas bag.
+            // Clear the held items rectangle in the information panel.
 
-            status = m_canvasBag->AddDrawingElements (item->GetDrawingElementsList ());
+            status = ClearHeldItemsRectangle ();
 
             if (status == ERR_SUCCESS)
             {
-                // Clear the held items rectangle in the information panel.
+                // Update the held items.
 
-                status = ClearHeldItemsRectangle ();
-
-                if (status == ERR_SUCCESS)
-                {
-                    // Update the held items.
-
-                    status = Update (UPDATE_HELD_ITEMS);
-                } // Endif.
-
+                status = Update (UPDATE_HELD_ITEMS);
             } // Endif.
 
         } // Endif.
@@ -1135,17 +1246,9 @@ FolioStatus InformationPanel::RemoveLastHeldItem (DroppedItem &droppedItem)
 
             if (itr != m_itemsList.end ())
             {
-                // Remove the dropped item's drawing elements from the canvas bag.
+                // Remove the information panel item from the information panel items list.
 
-                status = m_canvasBag->RemoveDrawingElements (itr->get ()->GetDrawingElementsList ());
-
-                if (status == ERR_SUCCESS)
-                {
-                    // Remove the information panel item from the information panel items list.
-
-                    m_itemsList.erase (itr);
-                } // Endif.
-
+                m_itemsList.erase (itr);
             } // Endif.
         
         } // Endif.
@@ -1158,10 +1261,10 @@ FolioStatus InformationPanel::RemoveLastHeldItem (DroppedItem &droppedItem)
 
 FolioStatus InformationPanel::ClearHeldItemsRectangle ()
 {
-    return (m_canvasBag->ClearCanvasRectangle (Gdiplus::Rect(HELD_ITEM_ORIGIN_X_LEFT, 
-                                                             HELD_ITEM_ORIGIN_Y_TOP, 
-                                                             MAX_NUM_HELD_ITEMS * MAX_HELD_ITEM_WIDTH,
-                                                             MAX_HELD_ITEM_HEIGHT)));
+    return (m_canvas->ClearCanvasRectangle (Gdiplus::Rect(HELD_ITEM_ORIGIN_X_LEFT, 
+                                                          HELD_ITEM_ORIGIN_Y_TOP, 
+                                                          MAX_NUM_HELD_ITEMS * MAX_HELD_ITEM_WIDTH,
+                                                          MAX_HELD_ITEM_HEIGHT)));
 } // Endproc.
 
 
@@ -1223,7 +1326,7 @@ InformationPanel::HeldItemsList::const_iterator InformationPanel::FindHeldItem (
 FolioStatus InformationPanel::UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type  &item,
                                               bool                                          invertColours,
                                               Gdiplus::Graphics                             &graphics, 
-                                              bool                                          &redrawCanvasBag)
+                                              bool                                          &redrawCanvas)
 {                   
     FolioStatus status = ERR_SUCCESS;
 
@@ -1245,7 +1348,7 @@ FolioStatus InformationPanel::UpdateTextItem (Folio::Core::Game::TextItemPtr::el
 
         if (status == ERR_SUCCESS)
         {
-            redrawCanvasBag = true;
+            redrawCanvas = true;
         } // Endif.
 
     } // Endif.
@@ -1263,7 +1366,7 @@ FolioStatus InformationPanel::UpdateTextItem (Folio::Core::Game::TextItemPtr::el
 
         if (status == ERR_SUCCESS)
         {
-            redrawCanvasBag = true;
+            redrawCanvas = true;
         } // Endif.
 
     } // Endelseif.
@@ -1367,6 +1470,139 @@ ZxSpectrum::COLOUR  InformationPanel::GetScrollItemColour (INFORMATION_PANEL_ITE
     } // Endswitch.
 
     return (itemColour);
+} // Endproc.
+
+
+void    InformationPanel::CreateInformationPanelSoundSamples ()
+{
+    // Create the increment main player health sound samples.
+    
+    CreateIncrementMainPlayerHealthSoundSamples ();
+
+    // Create the decrement main player health sound samples.
+    
+    CreateDecrementMainPlayerHealthSoundSamples ();
+} // Endproc.
+
+
+void    InformationPanel::CreateIncrementMainPlayerHealthSoundSamples ()
+{
+    if (m_incrementMainPlayerHealthSoundSamplesList.empty ())
+    {
+        // Create each sound sample representing the required sound.
+    
+        for (ZxSpectrum::BYTE frequency = 0x10; frequency <= 0x90; frequency += 0x10)
+        {
+            m_incrementMainPlayerHealthSoundSamplesList.push_back (ZxSpectrum::MapUltimateMakeSound (frequency, 0x08));
+        } // Endfor.
+        
+        for (UInt32 count = 0; count < 3; ++count)
+        {
+            m_incrementMainPlayerHealthSoundSamplesList.push_back (ZxSpectrum::MapUltimateMakeSound (0x80, 0x08));
+            m_incrementMainPlayerHealthSoundSamplesList.push_back (ZxSpectrum::MapUltimateMakeSound (0x90, 0x08));
+        } // Endfor.
+
+        m_incrementMainPlayerHealthSoundSamplesList.push_back (ZxSpectrum::MapUltimateMakeSound (0x80, 0x08));
+    } // Endif.
+
+} // Endproc.
+
+
+void    InformationPanel::CreateDecrementMainPlayerHealthSoundSamples ()
+{
+    if (m_decrementMainPlayerHealthSoundSamplesList.empty ())
+    {
+        // Create each sound sample representing the required sound.
+
+        ZxSpectrum::BYTE    frequency = 0x4c;
+
+        for (ZxSpectrum::BYTE numLoops = 0x0f; numLoops >= 0x01; --numLoops)
+        {
+            m_decrementMainPlayerHealthSoundSamplesList.push_back (ZxSpectrum::MapUltimateMakeSound (frequency, numLoops));
+
+            frequency++;
+
+            if ((frequency % 0x04) == 0)
+            {
+                frequency -= 0x08;
+            } // Endif.
+
+        } // Endfor.
+
+    } // Endif.
+
+} // Endproc.
+
+
+void    InformationPanel::PlayInformationPanelSounds ()
+{
+    // Play the increment main player health sound.
+
+    if (!PlayIncrementMainPlayerHealthSound ())
+    {
+        // Play the decrement main player health sound.
+
+        PlayDecrementMainPlayerHealthSound ();
+    } // Endif.
+
+} // Endproc.
+
+
+bool    InformationPanel::PlayIncrementMainPlayerHealthSound ()
+{
+    bool    playedIncrementMainPlayerHealthSound = false;   // Initialise!
+
+    // Should an increment main player health sound be played?
+
+    if (m_playIncrementMainPlayerHealthSound)
+    {
+        // Yes. Play the increment main player health sound.
+
+        Folio::Core::Util::Sound::PlaySoundSample (m_incrementMainPlayerHealthSoundSamplesList [m_currentIncrementMainPlayerHealthSoundSampleIndex]);
+
+        // All increment main player health sounds played?
+
+        if (++m_currentIncrementMainPlayerHealthSoundSampleIndex >= m_incrementMainPlayerHealthSoundSamplesList.size ())
+        {
+            // Yes.
+
+            m_playIncrementMainPlayerHealthSound                = false;
+            m_currentIncrementMainPlayerHealthSoundSampleIndex  = 0;
+        } // Endif.
+
+        playedIncrementMainPlayerHealthSound = true;
+    } // Endif.
+
+    return (playedIncrementMainPlayerHealthSound);
+} // Endproc.
+
+
+bool    InformationPanel::PlayDecrementMainPlayerHealthSound ()
+{
+    bool    playedDecrementMainPlayerHealthSound = false;   // Initialise!
+
+    // Should a decrement main player health sound be played?
+
+    if (m_playDecrementMainPlayerHealthSound)
+    {
+        // Yes. Play the decrement main player health sound.
+
+        Folio::Core::Util::Sound::PlaySoundSample (m_decrementMainPlayerHealthSoundSamplesList [m_currentDecrementMainPlayerHealthSoundSampleIndex]);
+
+        // All decrement main player health sounds played?
+
+        if (++m_currentDecrementMainPlayerHealthSoundSampleIndex >= m_decrementMainPlayerHealthSoundSamplesList.size ())
+        {
+            // Yes.
+
+            m_playDecrementMainPlayerHealthSound                = false;
+            m_currentDecrementMainPlayerHealthSoundSampleIndex  = 0;
+        } // Endif.
+
+        playedDecrementMainPlayerHealthSound = true;
+    } // Endif.
+
+    return (playedDecrementMainPlayerHealthSound);
 } // Endproc.
 
 } // Endnamespace.

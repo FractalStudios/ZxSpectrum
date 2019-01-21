@@ -5,6 +5,7 @@
 #include    <vector>
 
 // "Home-made" includes.
+#include    <Util.h>
 #include    "ASprite.h"
 
 #pragma pack(push, 1)
@@ -26,17 +27,20 @@ public:
     // Colour list.
     typedef std::vector<Gdiplus::ARGB>  ColourList;
 
-    FolioStatus SetBottomUpInitialisingMode (const ColourList& initialisingColourList);
-    FolioStatus SetTopDownInitialisingMode (const ColourList& initialisingColourList);
+    FolioStatus SetBottomUpInitialisingMode (const ColourList&                          initialisingColourList, 
+                                             const SpriteInitialisingSoundSamplesList&  initialisingSoundSamplesList);
+    FolioStatus SetTopDownInitialisingMode (const ColourList&                           initialisingColourList,
+                                            const SpriteInitialisingSoundSamplesList&   initialisingSoundSamplesList);
     UInt32      GetInitialisingPauseTime () const;
 
-    FolioStatus SetBottomUpTerminatingMode (const ColourList& terminatingColourList);
-    FolioStatus SetTopDownTerminatingMode (const ColourList& terminatingColourList);
+    FolioStatus SetBottomUpTerminatingMode (const ColourList&                           terminatingColourList,
+                                            const SpriteTerminatingSoundSamplesList&    terminatingSoundSamplesList);
+    FolioStatus SetTopDownTerminatingMode (const ColourList&                            terminatingColourList,
+                                           const SpriteTerminatingSoundSamplesList&     terminatingSoundSamplesList);
     UInt32      GetTerminatingPauseTime () const;
 
     Direction   UpdateDirection (Direction  direction, 
-                                 bool       keyDown,
-                                 bool       otherKeyDown = false);
+                                 bool       keyDown);
 
     void    SetCanFireWeapon (bool canFireWeapon);
     bool    CanFireWeapon () const;
@@ -73,7 +77,7 @@ private:
     
     ColourList  m_initialisingColourList;   // The initialising colour list (used in DM_BOTTOM_UP and DM_TOP_DOWN). 
     ColourList  m_terminatingColourList;    // The terminating colour list (used in DM_BOTTOM_UP and DM_TOP_DOWN). 
-
+    
     virtual FolioStatus HandleInitialiseSprite (Gdiplus::Graphics&  graphics,
                                                 RectList*           rects = 0);
     virtual FolioStatus HandleTerminateSprite (Gdiplus::Graphics&   graphics,

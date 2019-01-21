@@ -5,7 +5,7 @@
 #include    "ACanvasMsgHandler.h"
 #include    "AppletConstsAndTypes.h"
 #include    "AScreen.h"
-#include    "CanvasBag.h"
+#include    "Canvas.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "AppletD.lib")

@@ -80,17 +80,10 @@ public:
 
     UInt16  GetMainPlayerResourceId () const;
     
-    bool    IsPauseGameKey (UInt32  virtualKey, 
-                            bool    keyDown) const;
-    bool    IsFireWeaponKey (UInt32 virtualKey, 
-                             bool   keyDown) const;
-    bool    IsCollectItemsKey (UInt32   virtualKey,
-                               bool     keyDown) const;
-    bool    IsOtherKeyDown (Folio::Core::Game::APlayerSprite::Direction mainPlayerDirection,
-                            Folio::Core::Game::APlayerSprite::Direction direction,
-                            bool                                        keyDown) const;
-
-    Folio::Core::Game::APlayerSprite::Direction GetMainPlayerDirection (UInt32 virtualKey) const;
+    bool    IsPauseGameKeyDown () const;
+    bool    IsMainPlayerFireWeaponKeyDown () const;
+    bool    IsMainPlayerCollectItemsKeyDown () const;
+    bool    IsMainPlayerDirectionKeyDown (Folio::Core::Game::APlayerSprite::Direction &direction) const;
 
 private:
     GAME_CONTROL    m_gameControl;  // The game control.
@@ -99,26 +92,22 @@ private:
     // AScreen method(s).
     virtual FolioStatus BuildScreenItems (FolioHandle dcHandle, 
                                           FolioHandle instanceHandle);
-    virtual FolioStatus SetupGamepad (Folio::Core::Game::Gamepad& gamepad);
     virtual FolioStatus StartDisplayingScreen ();
+    virtual FolioStatus ProcessScreenInput ();    
     virtual FolioStatus ProcessScreenFrame (UInt32 *frameRateIncrement);
-    virtual FolioStatus ProcessScreenKeyboardMsg (UInt32    wParam,
-                                                  UInt32    lParam,
-                                                  bool      keyDown);    
     virtual FolioStatus UpdateScreen ();
 
     FolioStatus ResetScreen ();
     FolioStatus UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type    &item,
                                 bool                                            invertColours,
                                 Gdiplus::Graphics                               &graphics, 
-                                bool                                            &redrawCanvasBag);
+                                bool                                            &redrawCanvas);
 
     void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
 
     FolioStatus StartGame ();
 
     FolioStatus ProcessGamepad ();
-    void    ConfigureGamepad ();
 
     // Private copy constructor to prevent copying.
     SelectionScreen (const SelectionScreen& rhs);

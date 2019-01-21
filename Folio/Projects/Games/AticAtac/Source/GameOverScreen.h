@@ -51,9 +51,7 @@ private:
     // AScreen method(s).
     virtual FolioStatus BuildScreenItems (FolioHandle dcHandle, 
                                           FolioHandle instanceHandle);
-    virtual FolioStatus ProcessScreenKeyboardMsg (UInt32    wParam,
-                                                  UInt32    lParam,
-                                                  bool      keyDown); 
+    virtual FolioStatus ProcessScreenInput (); 
 
     void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
 

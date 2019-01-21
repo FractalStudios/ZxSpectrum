@@ -220,6 +220,100 @@ FolioStatus Thread::QueryThreadExitCode (FolioStatus& exitCode) const
 
 
 /**
+ * Method that will set the minimum resolution for periodic timers.
+ *
+ * @param [in] thresholdRqd
+ * Minimum timer resolution, in milliseconds, for the application or device 
+ * driver. A lower value specifies a higher (more accurate) resolution.nds).
+ */
+FolioStatus Thread::SetTimeThreshold (UInt32 thresholdRqd)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    TIMECAPS    timeCaps = {0}; // Initialise!
+
+    MMRESULT    mmResult = ::timeGetDevCaps (&(timeCaps), sizeof(timeCaps));
+    
+    if (mmResult == TIMERR_NOERROR) 
+    {
+        UInt32  timerResolution = min(max(timeCaps.wPeriodMin, thresholdRqd), timeCaps.wPeriodMax);
+
+        mmResult = ::timeBeginPeriod (timerResolution);
+
+        if (mmResult != TIMERR_NOERROR) 
+        {
+            // Build and log an error.
+
+            status = FOLIO_MAKE_OS_ERROR(mmResult);
+
+            FOLIO_LOG_CALL_ERROR (TXT("timeBeginPeriod"),
+                                  status);
+        } // Endif.
+
+    } // Endif.
+
+    else
+    {
+        // Build and log an error.
+
+        status = FOLIO_MAKE_OS_ERROR(mmResult);
+
+        FOLIO_LOG_CALL_ERROR (TXT("timeGetDevCaps"),
+                              status);
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+/**
+ * Method that will reset the minimum resolution for periodic timers.
+ *
+ * @param [in] thresholdRqd
+ * Minimum timer resolution, in milliseconds, for the application or device 
+ * driver. A lower value specifies a higher (more accurate) resolution.nds).
+ */
+FolioStatus Thread::ResetTimeThreshold (UInt32 thresholdRqd)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    TIMECAPS    timeCaps = {0}; // Initialise!
+
+    MMRESULT    mmResult = ::timeGetDevCaps (&(timeCaps), sizeof(timeCaps));
+    
+    if (mmResult == TIMERR_NOERROR) 
+    {
+        UInt32  timerResolution = min(max(timeCaps.wPeriodMin, thresholdRqd), timeCaps.wPeriodMax);
+
+        mmResult = ::timeEndPeriod (timerResolution);
+
+        if (mmResult != TIMERR_NOERROR) 
+        {
+            // Build and log an error.
+
+            status = FOLIO_MAKE_OS_ERROR(mmResult);
+
+            FOLIO_LOG_CALL_ERROR (TXT("timeEndPeriod"),
+                                  status);
+        } // Endif.
+
+    } // Endif.
+
+    else
+    {
+        // Build and log an error.
+
+        status = FOLIO_MAKE_OS_ERROR(mmResult);
+
+        FOLIO_LOG_CALL_ERROR (TXT("timeGetDevCaps"),
+                              status);
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+/**
  * Method that will suspend the execution of the current thread for at least
  * the specified interval.
  *

@@ -48,6 +48,8 @@ public:
     FolioStatus Move (Gdiplus::Graphics                 &graphics,
                       Folio::Core::Game::CollisionGrid  &collisionGrid);
 
+    void    PlayWeaponsSpriteSound () const;
+
     WEAPON_SPRITE_ID    GetWeaponSpriteId () const;
 
 private:
@@ -55,11 +57,29 @@ private:
 
     WEAPON_SPRITE_ID    m_weaponSpriteId;   // The identifier of the weapon sprite.
 
+    FolioStatus SetReboundSoundSamples (WEAPON_SPRITE_ID weaponSpriteId);
+
+    static  Folio::Core::Util::Sound::SoundSample   m_knightWeaponSpriteInitialisedSoundSample; // The knight weapon sprite initialised sound sample.
+    static  Folio::Core::Util::Sound::SoundSample   m_wizardWeaponSpriteInitialisedSoundSample; // The wizard weapon sprite initialised sound sample.
+    static  Folio::Core::Util::Sound::SoundSample   m_serfWeaponSpriteInitialisedSoundSample;   // The serf weapon sprite initialised sound sample.
+    static  Folio::Core::Util::Sound::SoundSample   m_weaponSpriteTerminatedSoundSample;        // The weapon sprite terminated sound sample.
+    static  Folio::Core::Util::Sound::SoundSample   m_weaponSpriteReboundSoundSample;           // The weapon sprite rebound sound sample.
+
     static  Int32               GetInitialScreenXLeft (const Gdiplus::Rect    &mainPlayerRect,
                                                        Int32                  weaponSpriteWidth);
     static  Int32               GetInitialScreenYTop (const Gdiplus::Rect &mainPlayerRect,
                                                       Int32               weaponSpriteHeight);
     static  ZxSpectrum::COLOUR  GetColour (WEAPON_SPRITE_ID weaponSpriteId);
+
+    static  void    CreateWeaponSpriteSoundSamples (WEAPON_SPRITE_ID weaponSpriteId);
+    static  void    CreateKnightWeaponSpriteInitialisedSoundSample ();
+    static  void    CreateWizardWeaponSpriteInitialisedSoundSample ();
+    static  void    CreateSerfWeaponSpriteInitialisedSoundSample ();
+    static  void    CreateWeaponSpriteTerminatedSoundSample ();
+    static  void    CreateWeaponSpriteReboundSoundSample ();
+
+    static  void    PlayWeaponSpriteInitialisedSound (WEAPON_SPRITE_ID weaponSpriteId);
+    static  void    PlayWeaponSpriteTerminatedSound (WEAPON_SPRITE_ID weaponSpriteId);
 
     // Private copy constructor to prevent copying.
     WeaponSprite (const WeaponSprite& rhs);

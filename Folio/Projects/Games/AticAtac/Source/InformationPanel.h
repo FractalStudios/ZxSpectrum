@@ -7,6 +7,7 @@
 // "Home-made" includes.
 #include    <Applet.h>
 #include    <Game.h>
+#include    <Util.h>
 #include    "RoomGraphics.h"
 #include    "StaticSprites.h"
 #include    "ZxSpectrum.h"
@@ -60,9 +61,9 @@ public:
     InformationPanel ();
     ~InformationPanel ();
 
-    FolioStatus Create (Folio::Core::Applet::CanvasBag  &canvasBag,
-                        UInt32                          totalNumRooms,
-                        UInt16                          mainPlayerBitmapResourceId);
+    FolioStatus Create (Folio::Core::Applet::Canvas &canvas,
+                        UInt32                      totalNumRooms,
+                        UInt16                      mainPlayerBitmapResourceId);
     FolioStatus QueryDrawingElements (FolioHandle                               dcHandle,
                                       ZxSpectrum::COLOUR                        roomColour,
                                       Folio::Core::Game::DrawingElementsList    &drawingElementsList);
@@ -108,10 +109,11 @@ public:
 
     void    IncrementNumRoomsVisited ();
     
+    FolioStatus IncrementMainPlayerHealth (UInt32   healthIncrement,
+                                           bool     playSound = true);
     FolioStatus DecrementMainPlayerHealth (UInt32   healthDecrement, 
-                                           bool     &mainPlayerIsDead);
-    FolioStatus IncrementMainPlayerHealth (UInt32 healthIncrement);
-
+                                           bool     &mainPlayerIsDead,
+                                           bool     playSound = true);
     FolioStatus DecrementMainPlayerLife (bool &gameOver);
 
     UInt32          GetTimeInSeconds () const;
@@ -133,12 +135,18 @@ private:
     static  const   Int32   MAX_HELD_ITEM_HEIGHT        = 20;
     static  const   Int32   HELD_ITEM_ORIGIN_Y_BOTTOM   = HELD_ITEM_ORIGIN_Y_TOP + MAX_HELD_ITEM_HEIGHT;
 
-    static  const   UInt32  MAX_NUM_HELD_ITEMS  = 3;    // The maximum number of items that can be held by the main player.
-    static  const   Int32   MIN_HEALTH          = 0;    // The maximum health the main player can have.
-    static  const   Int32   MAX_HEALTH          = 90;   // The maximum health the main player can have.
-    static  const   Int32   MAX_NUM_LIVES       = 4;    // The maximum number of lives the main player can have.
+    static  const   UInt32  MAX_NUM_HELD_ITEMS  = 3;                // The maximum number of items that can be held by the main player.
+    static  const   Int32   MIN_HEALTH          = 0;                // The maximum health the main player can have.
+    static  const   Int32   MAX_HEALTH          = 90;               // The maximum health the main player can have.
+    static  const   Int32   MAX_NUM_LIVES       = 4;                // The maximum number of lives the main player can have.
+    static  const   Int32   MAX_TIME_IN_SECONDS = 999 * 60 + 59;    // The maximum time in seconds.
+    static  const   Int32   MAX_SCORE           = 999999;           // The maximum health the main player can have.
 
-    Folio::Core::Applet::CanvasBag* m_canvasBag;   // The canvas bag.
+    Folio::Core::Applet::Canvas*    m_canvas;   // The canvas.
+
+    UInt32  m_startCount;                   // The start count.
+    UInt32  m_previousTimeFrameTickCount;   // The previous time frame tick count.
+    UInt32  m_previousScoreFrameTickCount;  // The previous score frame tick count.
 
     // Held items list.
     typedef std::list<HeldItem>   HeldItemsList;
@@ -155,6 +163,18 @@ private:
 
     bool    m_invertScoreColours;   // Indicates if the score colours should be inverted. 
                              
+    static  Folio::Core::Util::Sound::SoundSample   m_startingSoundSample;      // Starting sound sample.
+    static  Folio::Core::Util::Sound::SoundSample   m_collectedItemSoundSample; // Collected item sound sample.
+    static  Folio::Core::Util::Sound::SoundSample   m_droppedItemSoundSample;   // Dropped item sound sample.
+
+    static  bool    m_playIncrementMainPlayerHealthSound;               // Indicates if the increment main player health sound should be played.
+    static  UInt32  m_currentIncrementMainPlayerHealthSoundSampleIndex; // The current entered increment main player health sample index.
+    static  Folio::Core::Util::Sound::SoundSamplesList  m_incrementMainPlayerHealthSoundSamplesList;    // The increment main player health sound samples.
+
+    static  bool    m_playDecrementMainPlayerHealthSound;               // Indicates if the decrement main player health sound should be played.
+    static  UInt32  m_currentDecrementMainPlayerHealthSoundSampleIndex; // The current entered decrement main player health sample index.
+    static  Folio::Core::Util::Sound::SoundSamplesList  m_decrementMainPlayerHealthSoundSamplesList;    // The decrement main player health sound samples.
+
     // Information panel item.
     typedef std::shared_ptr<Folio::Core::Game::AItem>    Item;
 
@@ -166,12 +186,14 @@ private:
     FolioStatus BuildItems (FolioHandle dcHandle, 
                             FolioHandle instanceHandle,
                             UInt16      mainPlayerBitmapResourceId);
-    FolioStatus CheckTimePerFrame (bool &isStarting, 
-                                   bool &mainPlayerIsDead);
-    FolioStatus CheckScorePerFrame ();
-
+    FolioStatus CheckTime (UInt32   currentTickCount,
+                           bool     isStarting,
+                           bool     &mainPlayerIsDead);
+    FolioStatus CheckScore (UInt32  currentTickCount,
+                           bool     &isStarting);
+                                                        
     FolioStatus IncrementTimeInSeconds (UInt32  currentTickCount,
-                                        bool    &isStarting, 
+                                        bool    isStarting,
                                         bool    &mainPlayerIsDead);
     FolioStatus ResetMainPlayerHealth ();
     
@@ -210,7 +232,7 @@ private:
     FolioStatus UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type    &item,
                                 bool                                            invertColours,
                                 Gdiplus::Graphics                               &graphics, 
-                                bool                                            &redrawCanvasBag);
+                                bool                                            &redrawCanvas);
 
     void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
     bool    SetGraphicItemHeight (Folio::Core::Game::GraphicItemPtr::element_type &item);
@@ -219,6 +241,14 @@ private:
     
     ZxSpectrum::COLOUR  GetScrollItemColour (INFORMATION_PANEL_ITEM_ID  itemId,
                                              ZxSpectrum::COLOUR         roomColour) const;
+
+    static  void    CreateInformationPanelSoundSamples ();
+    static  void    CreateIncrementMainPlayerHealthSoundSamples ();
+    static  void    CreateDecrementMainPlayerHealthSoundSamples ();
+
+    static  void    PlayInformationPanelSounds ();
+    static  bool    PlayIncrementMainPlayerHealthSound ();
+    static  bool    PlayDecrementMainPlayerHealthSound ();
 
     // Private copy constructor to prevent copying.
     InformationPanel (const InformationPanel& rhs);

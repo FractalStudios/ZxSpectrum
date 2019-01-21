@@ -756,7 +756,8 @@ Int32   BackgroundItem::GetScreenHeight () const
 
 FolioStatus BackgroundItem::QueryDrawingElements (FolioHandle                               dcHandle,
                                                   ZxSpectrum::COLOUR                        roomColour,
-                                                  Folio::Core::Game::DrawingElementsList    &drawingElementsList) const
+                                                  Folio::Core::Game::DrawingElementsList    &drawingElementsList,
+                                                  bool                                      maskedDrawingElementRqd) const
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -778,7 +779,8 @@ FolioStatus BackgroundItem::QueryDrawingElements (FolioHandle                   
                                                                 ZxSpectrum::MapInkColour (roomColour),
                                                                 m_drawingFlags,
                                                                 const_cast<BackgroundItem *> (this),    // Drawing element user data.
-                                                                drawingElementsList);
+                                                                drawingElementsList,
+                                                                maskedDrawingElementRqd);
 
         if (status != ERR_SUCCESS)
         {

@@ -2,6 +2,7 @@
 
 // "Home-made" includes.
 #include    <Game.h>
+#include    <Util.h>
 
 #pragma pack(push, 1)
 
@@ -21,6 +22,10 @@ typedef unsigned    WORD;   // WORD type.
 
 const   unsigned    UNDEFINED = -1;
 
+// Clock frequency.
+const   UInt32  CLOCK_FREQUENCY         = 3500000;
+const   UInt32  TV_REFRESH_FREQUENCY    = 50;
+
 // Screen size.
 const   BYTE    MAX_SCREEN_X_PIXELS = 256;
 const   BYTE    MAX_SCREEN_Y_PIXELS = 192;
@@ -33,8 +38,9 @@ const   BYTE    MAX_NUM_ROWS    = MAX_SCREEN_Y_PIXELS / NUM_PIXELS_PER_TEXT_POSI
 // Screen scale.
 const   BYTE    DEFAULT_SCREEN_SCALE = 4;
 
-// Timings.
-const   BYTE    FLASH_MS = 250; // Flash time (in milliseconds).
+// Flash .
+const   BYTE    FLASH_FRAME_RATE    = 16;                                               // Flash frame rate.
+const   BYTE    FLASH_MILLISECONDS  = 1000 * FLASH_FRAME_RATE / TV_REFRESH_FREQUENCY;   // Flash time (in milliseconds).
 
 // Masks.
 const   BYTE    INK_COLOUR_MASK     = 0x07;
@@ -74,6 +80,15 @@ extern  Int32   CalculateScreenYBottom (Int32   screenYTop,
                                         Int32   screenWidth,
                                         Int32   screenHeight,
                                         UInt32  drawingFlags = Folio::Core::Game::ResourceGraphic::NO_DRAWING_FLAGS);
+
+extern  UInt32  BeepDurationToMilliseconds (const float &beepDuration);
+extern  float   BeepPitchToFrequency (Int32 beepPitch);
+
+extern  UInt32  MapUltimateMakeSoundDuration (BYTE  frequency,
+                                              BYTE  numLoops);
+extern  float   MapUltimateMakeSoundFrequency (BYTE frequency);
+extern  Folio::Core::Util::Sound::SoundSample   MapUltimateMakeSound (BYTE  frequency,
+                                                                      BYTE  numLoops);
 
 } // Endnamespace.
 

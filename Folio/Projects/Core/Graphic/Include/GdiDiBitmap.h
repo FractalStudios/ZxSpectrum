@@ -60,6 +60,7 @@ private:
 
     FolioStatus InitialiseBitmap ();
 
+    void    Destroy ();
     bool    IsCreated () const;
 }; // Endclass.
 

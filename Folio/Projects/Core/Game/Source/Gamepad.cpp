@@ -2,6 +2,7 @@
 #include    <algorithm>
 
 // "Home-made" includes.
+#include    <Trace.h>
 #include    <Util.h>
 #include    "Gamepad.h"
 
@@ -622,9 +623,16 @@ FolioStatus Gamepad::QueryControllerState (CONTROLLER_ID    controllerId,
 
     UInt32  win32Error = ::XInputGetState (controllerId, &(controllerState));
     
-    if (win32Error != ERROR_SUCCESS)
+    if ((win32Error != ERROR_SUCCESS) &&
+        (win32Error != ERROR_DEVICE_NOT_CONNECTED))
     {
+        // Build and log an error.
+
         status = FOLIO_MAKE_OS_ERROR(win32Error);
+
+        FOLIO_LOG_CALL_ERROR_1 (TXT("XInputGetState"),
+                                status,
+                                controllerId);
     } // Endif.
 
     return (status);

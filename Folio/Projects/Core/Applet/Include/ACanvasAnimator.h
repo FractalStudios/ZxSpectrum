@@ -18,7 +18,7 @@ namespace Applet
 /// The canvas animator abstract class.
 /**
  * This class provides for an animator. It is used to animate drawing elements 
- * held within a canvas bag.
+ * held within a canvas.
  *
  * This class does not support copy construction or assignment.
  */

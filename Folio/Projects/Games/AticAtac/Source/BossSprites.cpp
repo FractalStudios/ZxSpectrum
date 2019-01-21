@@ -27,6 +27,9 @@ static  const   BossSpriteGraphicAttributes g_bossSpriteGraphicAttributesTable [
 };
 
 
+// Boss sprite static members.
+BossSprite::SpriteTerminatingSoundSamplesList  BossSprite::m_bossSpriteTerminatingSoundSamplesList;  // The boss sprite's terminating sound samples.
+
 BossSprite::BossSprite ()
 :   m_bossSpriteId(BOSS_SPRITE_UNDEFINED),
     m_bossSpriteFlags(NastySprite::FLAGS_NONE)
@@ -281,7 +284,8 @@ FolioStatus BossSprite::SetTerminatingMode (FolioHandle             dcHandle,
 
             status = SetGraphicTerminatingMode (dcHandle,
                                                 m_bossSpriteTerminatingGraphics,
-                                                MAX_SEQUENCE_COUNT);
+                                                MAX_SEQUENCE_COUNT,
+                                                GetBossSpriteTerminatingSoundSamples ());
         } // Endif.
 
     } // Endif.
@@ -837,6 +841,23 @@ bool    BossSprite::IsAttractedToStaticSprite (BOSS_SPRITE_ID       bossSpriteId
     } // Endswitch.
 
     return (isAttractedToStaticSprite);
+} // Endproc.
+
+
+BossSprite::SpriteTerminatingSoundSamplesList   BossSprite::GetBossSpriteTerminatingSoundSamples ()
+{
+    if (m_bossSpriteTerminatingSoundSamplesList.empty ())
+    {
+        // Create each sound sample representing the required sound.
+    
+        for (ZxSpectrum::BYTE frequency = 0x3f; frequency >= 0x21; frequency -= 2)
+        {
+            m_bossSpriteTerminatingSoundSamplesList.push_back (ZxSpectrum::MapUltimateMakeSound (frequency, 0x01));
+        } // Endfor.
+
+    } // Endif.
+    
+    return (m_bossSpriteTerminatingSoundSamplesList);
 } // Endproc.
 
 

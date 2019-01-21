@@ -126,12 +126,12 @@ enum
 
 // Macros to set/get an Operating System error.
 #define FOLIO_OS_ERROR              (0x20000000 | FOLIO_MAKE_MAJOR_FACILITY(FOLIO_FACILITY_OS))
-#define FOLIO_MAKE_OS_ERROR(x)      (x | FOLIO_OS_ERROR)
+#define FOLIO_MAKE_OS_ERROR(x)      (x | FOLIO_OS_ERROR); FOLIO_DEBUG_BREAK;
 #define FOLIO_IS_OS_ERROR(x)        (x & FOLIO_OS_ERROR)
 
 // Macros to set/get an GDI+ error.
 #define FOLIO_GDI_ERROR             (0x20000000 | FOLIO_MAKE_MAJOR_FACILITY(FOLIO_FACILITY_GDI))
-#define FOLIO_MAKE_GDI_ERROR(x)     (x | FOLIO_GDI_ERROR)
+#define FOLIO_MAKE_GDI_ERROR(x)     (x | FOLIO_GDI_ERROR); FOLIO_DEBUG_BREAK;
 #define FOLIO_IS_GDI_ERROR(x)       (x & FOLIO_GDI_ERROR)
 
 

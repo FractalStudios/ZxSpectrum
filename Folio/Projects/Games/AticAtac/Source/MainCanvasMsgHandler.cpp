@@ -53,67 +53,13 @@ FolioStatus MainCanvasMsgHandler::HandleCreateCanvasMsg (FolioHandle    wndHandl
                                                          UInt32         wParam,
                                                          UInt32         lParam)
 {
-    // Set the canvas bag's window text.
+    // Set the canvas's window text.
 
     Folio::Core::Util::Wnd::SetWndText (wndHandle, TXT("ATICATAC by fractal studios"));
 
     // Initialise.
 
     return (Initialise ());
-} // Endproc.
-
-
-FolioStatus MainCanvasMsgHandler::HandleKeyboardMsg (FolioHandle    wndHandle,
-                                                     UInt32         wParam,
-                                                     UInt32         lParam,
-                                                     bool           keyDown)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Lock the canvas bag.
-
-    m_canvasBag->Lock ();
-
-    // Handling the keyboard message is dependent on our state.
-
-    switch (m_state)
-    {
-    case STATE_LOADING:
-        status = HandleLoadingStateKeyboardMsg (wndHandle, wParam, lParam, keyDown);
-        break;
-
-    case STATE_SELECTING:
-        status = HandleSelectingStateKeyboardMsg (wndHandle, wParam, lParam, keyDown);
-        break;
-
-    case STATE_PLAYING:
-        status = HandlePlayingStateKeyboardMsg (wndHandle, wParam, lParam, keyDown);
-        break;
-
-    case STATE_PAUSED:
-        status = HandlePausedStateKeyboardMsg (wndHandle, wParam, lParam, keyDown);
-        break;
-
-    case STATE_GAME_OVER:
-        status = HandleGameOverStateKeyboardMsg (wndHandle, wParam, lParam, keyDown);
-        break;
-
-    default:
-        break;
-    } // Endswitch.
-
-    if (status == ERR_SUCCESS)
-    {
-        // Draw the canvas bag.
-
-        m_canvasBag->DrawCanvas (m_canvasBag->IsRedrawRqd ());
-    } // Endif.
-    
-    // Unlock the canvas bag.
-
-    m_canvasBag->Unlock ();
-
-    return (status);
 } // Endproc.
 
 
@@ -127,10 +73,6 @@ FolioStatus MainCanvasMsgHandler::HandleProcessFrame (FolioHandle   wndHandle,
     FolioStatus status = ERR_SUCCESS;
 
     frameRateIncrement = 0; // Initialise!
-
-    // Lock the canvas bag.
-
-    m_canvasBag->Lock ();
 
     // Processing the frame is dependent on our state.
 
@@ -156,6 +98,10 @@ FolioStatus MainCanvasMsgHandler::HandleProcessFrame (FolioHandle   wndHandle,
         status = HandleProcessMainPlayerFallingStateFrame (wndHandle, &(frameRateIncrement));
         break;
 
+    case STATE_PAUSED:
+        status = HandleProcessPausedStateFrame (wndHandle, &(frameRateIncrement));
+        break;
+
     case STATE_GAME_OVER:
         status = HandleProcessGameOverStateFrame (wndHandle, &(frameRateIncrement));
         break;
@@ -166,27 +112,21 @@ FolioStatus MainCanvasMsgHandler::HandleProcessFrame (FolioHandle   wndHandle,
 
     if (status == ERR_SUCCESS)
     {
-        // Draw the canvas bag.
+        // Draw the canvas.
 
-        m_canvasBag->DrawCanvas (m_canvasBag->IsRedrawRqd ());
+        status = m_canvas->DrawCanvas (m_canvas->IsRedrawRqd ());
     } // Endif.
     
-    // Unlock the canvas bag.
-
-    m_canvasBag->Unlock ();
-
     return (status);
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleLoadingStateKeyboardMsg (FolioHandle    wndHandle,
-                                                                 UInt32         wParam,
-                                                                 UInt32         lParam,
-                                                                 bool           keyDown)
+FolioStatus MainCanvasMsgHandler::HandleProcessLoadingStateFrame (FolioHandle   wndHandle,
+                                                                  UInt32        *frameRateIncrement)
 {
-    // Let the loading screen process the keyboard message.
+    // Let the loading screen process the frame.
 
-    FolioStatus status = m_loadingScreen.HandleProcessKeyboardMsg (wParam, lParam, keyDown);
+    FolioStatus status = m_loadingScreen.HandleProcessFrame (frameRateIncrement);
 
     // Is the loading screen complete?
 
@@ -198,202 +138,6 @@ FolioStatus MainCanvasMsgHandler::HandleLoadingStateKeyboardMsg (FolioHandle    
     } // Endif.
 
     return (status);
-} // Endproc.
-
-
-FolioStatus MainCanvasMsgHandler::HandleSelectingStateKeyboardMsg (FolioHandle  wndHandle,
-                                                                   UInt32       wParam,
-                                                                   UInt32       lParam,
-                                                                   bool         keyDown)
-{
-    // Let the selection screen process the keyboard message.
-
-    FolioStatus status = m_selectionScreen.HandleProcessKeyboardMsg (wParam, lParam, keyDown);
-
-    // Is the selection screen complete?
-
-    if ((status == ERR_SUCCESS) && m_selectionScreen.IsComplete ())
-    {
-        // Yes. Start playing.
-
-        status = StartPlaying ();
-    } // Endif.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus MainCanvasMsgHandler::HandlePlayingStateKeyboardMsg (FolioHandle    wndHandle,
-                                                                 UInt32         wParam,
-                                                                 UInt32         lParam,
-                                                                 bool           keyDown)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Is the main player ready?
-
-    if (m_mainPlayer->IsReady ())
-    {
-        // Yes. Fire weapon key?  
-
-        if (m_selectionScreen.IsFireWeaponKey (wParam, keyDown))
-        {
-            // Yes. The main player can fire a weapon.
-
-            m_mainPlayer->SetCanFireWeapon (true);
-
-            // Process the playing state frame.
-
-            status = HandleProcessPlayingStateFrame (wndHandle);
-
-            // The main player can no longer fire a weapon.
-
-            m_mainPlayer->SetCanFireWeapon (false);
-        } // Endif.
-
-        // Collect items key?  
-
-        else
-        if (m_selectionScreen.IsCollectItemsKey (wParam, keyDown))
-        {
-            // Yes. The main player can collect items.
-
-            m_mainPlayer->SetCanCollectItems (true);
-
-            // Process the playing state frame.
-
-            status = HandleProcessPlayingStateFrame (wndHandle);
-
-            // The main player can no longer collect items.
-
-            m_mainPlayer->SetCanCollectItems (false);
-        } // Endelseif.
-
-        // Pause game key?  
-
-        else
-        if (m_selectionScreen.IsPauseGameKey (wParam, keyDown))
-        {
-            // Yes. Pause game.
-
-            m_state = STATE_PAUSED;
-        } // Endelseif.
-
-        else
-        {
-            // No. Get the main player's direction.
-
-            Folio::Core::Game::APlayerSprite::Direction     direction = 
-                m_selectionScreen.GetMainPlayerDirection (wParam);
-
-            if (direction != Folio::Core::Game::APlayerSprite::NO_DIRECTION)
-            {
-                if (keyDown)
-                {
-                    // Update the main player's direction.
-
-                    m_mainPlayer->UpdateDirection (direction, keyDown);
-                } // Endif.
-
-                else
-                {
-                    // Get the main player's direction.
-
-                    Folio::Core::Game::APlayerSprite::Direction mainPlayerDirection = m_mainPlayer->GetDirection ();
-
-                    switch (mainPlayerDirection)
-                    {
-                    case PlayerSprite::N:
-                    case PlayerSprite::S:
-                    case PlayerSprite::E:
-                    case PlayerSprite::W:
-                        // Update the main player's direction.
-
-                        m_mainPlayer->UpdateDirection (direction, keyDown);
-                        break;
-
-                    case PlayerSprite::NE:
-                    case PlayerSprite::NW:
-                    case PlayerSprite::SE:
-                    case PlayerSprite::SW:
-                        // Update the main player's direction.
-
-                        m_mainPlayer->UpdateDirection (direction, 
-                                                       keyDown, 
-                                                       m_selectionScreen.IsOtherKeyDown (mainPlayerDirection, direction, keyDown));
-                        break;
-
-                    default:
-                        break;
-                    } // Endswitch.
-                
-                } // Endelse.
-
-                // Process the playing state frame.
-
-                status = HandleProcessPlayingStateFrame (wndHandle);
-            } // Endif.
-
-        } // Endelse.
-
-    } // Endif.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus MainCanvasMsgHandler::HandlePausedStateKeyboardMsg (FolioHandle wndHandle,
-                                                                UInt32      wParam,
-                                                                UInt32      lParam,
-                                                                bool        keyDown)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Pause game key?  
-
-    if (m_selectionScreen.IsPauseGameKey (wParam, keyDown))
-    {
-        // Yes. We're back playing.
-
-        m_state = STATE_PLAYING;
-    } // Endif.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus MainCanvasMsgHandler::HandleGameOverStateKeyboardMsg (FolioHandle   wndHandle,
-                                                                  UInt32        wParam,
-                                                                  UInt32        lParam,
-                                                                  bool          keyDown)
-{
-    // Let the game over screen process the keyboard message.
-
-    FolioStatus status = m_gameOverScreen->HandleProcessKeyboardMsg (wParam, lParam, keyDown);
-
-    // Is the game over screen complete?
-
-    if ((status == ERR_SUCCESS) && m_gameOverScreen->IsComplete ())
-    {
-        // Yes. Remove the game over screen. 
-        
-        m_gameOverScreen.reset ();
-
-        // We're selecting.
-
-        m_state = STATE_SELECTING;
-    } // Endif.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus MainCanvasMsgHandler::HandleProcessLoadingStateFrame (FolioHandle   wndHandle,
-                                                                  UInt32        *frameRateIncrement)
-{
-    // Let the loading screen process the frame.
-
-    return (m_loadingScreen.HandleProcessFrame (frameRateIncrement));
 } // Endproc.
 
 
@@ -446,95 +190,110 @@ FolioStatus MainCanvasMsgHandler::HandleProcessStartingStateFrame (FolioHandle  
 FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   wndHandle,
                                                                   UInt32        *frameRateIncrement)
 {
-    // Let the current screen process the frame.
+    // Check input.
 
-    bool    isStarting = false; // Initialise!
+    FolioStatus status = CheckPlayingStateInput ();
 
-    FolioStatus status = m_currentScreen->HandleProcessFrame (isStarting, frameRateIncrement);
-        
     if (status == ERR_SUCCESS)
     {
-        // Has the main player completed the game?
+        // Let the current screen process the frame.
 
-        if (m_mainPlayer->CompletedGame ())
-        {
-            // Yes. Display the game over screen.
+        bool    isStarting = false; // Initialise!
 
-            status = DisplayGameOverScreen (true);
-        } // Endif.
-
-        // Has the main player exited a screen?
+        status = m_currentScreen->HandleProcessFrame (isStarting, frameRateIncrement);
         
-        else
-        if (m_mainPlayer->IsExitedScreen ())
+        if (status == ERR_SUCCESS)
         {
-            // Yes. Is the main player falling?
+            // Has the main player completed the game?
 
-            if (m_mainPlayer->IsFalling ())
+            if (m_mainPlayer->CompletedGame ())
             {
-                // Yes. We're falling.
+                // Yes. Display the game over screen.
 
-                m_state = STATE_MAIN_PLAYER_FALLING;
+                status = DisplayGameOverScreen (true);
             } // Endif.
 
-            else
-            {
-                // No. Display the new screen.
-
-                status = DisplayScreen (m_currentScreen->MoveToNewScreen (m_backgroundItemsList));
-            } // Endelse.
-
-        } // Endelseif.
-
-        // Is the main player dead?
+            // Has the main player exited a screen?
         
-        else
-        if (m_mainPlayer->IsDead ())
-        {
-            // Yes. Add a gravestone to the current screen.
-
-            status = m_currentScreen->AddGravestone ();
-
-            if (status == ERR_SUCCESS)
+            else
+            if (m_mainPlayer->IsExitedScreen ())
             {
-                // Decrement a main player life in the information panel.
+                // Yes. Is the main player falling?
 
-                bool    isGameOver = false;     // Initialise!
+                if (m_mainPlayer->IsFalling ())
+                {
+                    // Yes. We're falling.
 
-                status = m_informationPanel.DecrementMainPlayerLife (isGameOver);
+                    m_state = STATE_MAIN_PLAYER_FALLING;
+                } // Endif.
+
+                else
+                {
+                    // No. Display the new screen.
+
+                    status = DisplayScreen (m_currentScreen->MoveToNewScreen (m_backgroundItemsList));
+                } // Endelse.
+
+            } // Endelseif.
+
+            // Is the main player dead?
+        
+            else
+            if (m_mainPlayer->IsDead ())
+            {
+                // Yes. Add a gravestone to the current screen.
+
+                status = m_currentScreen->AddGravestone ();
 
                 if (status == ERR_SUCCESS)
                 {
-                    // Is the games over?
+                    // Decrement a main player life in the information panel.
 
-                    if (isGameOver)
+                    bool    isGameOver = false;     // Initialise!
+
+                    status = m_informationPanel.DecrementMainPlayerLife (isGameOver);
+
+                    if (status == ERR_SUCCESS)
                     {
-                        // Yes. Display the game over screen.
+                        // Is the games over?
 
-                        status = DisplayGameOverScreen (false);
-                    } // Endif.
-
-                    else
-                    {
-                        // No. Restart the main player.
-
-                        status = m_mainPlayer->Restart ();
-
-                        if (status == ERR_SUCCESS)
+                        if (isGameOver)
                         {
-                            // We're starting.
+                            // Yes. Display the game over screen.
 
-                            m_state = STATE_STARTING;
+                            status = DisplayGameOverScreen (false);
                         } // Endif.
 
-                    } // Endelse.
+                        else
+                        {
+                            // No. Restart the main player.
 
-                } // Endif.
+                            status = m_mainPlayer->Restart ();
+
+                            if (status == ERR_SUCCESS)
+                            {
+                                // We're starting.
+
+                                m_state = STATE_STARTING;
+                            } // Endif.
+
+                        } // Endelse.
+
+                    } // Endif.
             
-            } // Endif.
+                } // Endif.
 
-        } // Endelseif.
+            } // Endelseif.
 
+        } // Endif.
+    
+        // The main player can no longer fire a weapon.
+
+        m_mainPlayer->SetCanFireWeapon (false);
+
+        // The main player can no longer collect items.
+
+        m_mainPlayer->SetCanCollectItems (false);
     } // Endif.
 
     return (status);
@@ -583,12 +342,114 @@ FolioStatus MainCanvasMsgHandler::HandleProcessMainPlayerFallingStateFrame (Foli
 } // Endproc.
 
 
+FolioStatus MainCanvasMsgHandler::HandleProcessPausedStateFrame (FolioHandle    wndHandle,
+                                                                 UInt32         *frameRateIncrement)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Pause game key down?  
+
+    if (m_selectionScreen.IsPauseGameKeyDown ())
+    {
+        // Yes. We're back playing.
+
+        m_state = STATE_PLAYING;
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
 FolioStatus MainCanvasMsgHandler::HandleProcessGameOverStateFrame (FolioHandle  wndHandle,
                                                                    UInt32       *frameRateIncrement)
 {
     // Let the game over screen process the frame.
 
-    return (m_gameOverScreen->HandleProcessFrame (frameRateIncrement));
+    FolioStatus status = m_gameOverScreen->HandleProcessFrame (frameRateIncrement);
+
+    // Is the game over screen complete?
+
+    if ((status == ERR_SUCCESS) && m_gameOverScreen->IsComplete ())
+    {
+        // Yes. Remove the game over screen. 
+        
+        m_gameOverScreen.reset ();
+
+        // We're selecting.
+
+        m_state = STATE_SELECTING;
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus MainCanvasMsgHandler::CheckPlayingStateInput ()
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Is the main player ready?
+
+    if (m_mainPlayer->IsReady ())
+    {
+        // Yes. Main player fire weapon key down?  
+
+        if (m_selectionScreen.IsMainPlayerFireWeaponKeyDown ())
+        {
+            // Yes. The main player can fire a weapon.
+
+            m_mainPlayer->SetCanFireWeapon (true);
+        } // Endif.
+
+        // Main player collect items key down?  
+
+        else
+        if (m_selectionScreen.IsMainPlayerCollectItemsKeyDown ())
+        {
+            // Yes. The main player can collect items.
+
+            m_mainPlayer->SetCanCollectItems (true);
+        } // Endelseif.
+
+        // Pause game key down?  
+
+        else
+        if (m_selectionScreen.IsPauseGameKeyDown ())
+        {
+            // Yes. Pause game.
+
+            m_state = STATE_PAUSED;
+        } // Endelseif.
+
+        else
+        {
+            // Is a main player's direction key down?
+
+            Folio::Core::Game::APlayerSprite::Direction direction =  
+                Folio::Core::Game::APlayerSprite::NO_DIRECTION; // Initialise!
+
+            if (m_selectionScreen.IsMainPlayerDirectionKeyDown (direction))
+            {
+                // Yes. Update the main player's direction.
+
+                m_mainPlayer->UpdateDirection (direction, true);
+            } // Endif.
+
+            // Is the main player moving?
+
+            else
+            if (m_mainPlayer->IsMoving ())
+            {
+                // Yes. Update the main player's direction.
+
+                m_mainPlayer->UpdateDirection (direction, false);
+            } // Endelseif.
+
+        } // Endelse.
+
+    } // Endif.
+
+    return (status);
 } // Endproc.
 
 
@@ -606,7 +467,7 @@ FolioStatus MainCanvasMsgHandler::StartPlaying ()
     {
         // Create the information panel.
 
-        status = m_informationPanel.Create (*m_canvasBag,
+        status = m_informationPanel.Create (*m_canvas,
                                             Screen::GetTotalNumRooms (),
                                             m_selectionScreen.GetMainPlayerResourceId ());
 
@@ -620,7 +481,7 @@ FolioStatus MainCanvasMsgHandler::StartPlaying ()
             {
                 // Build the screens.
 
-                status = BuildScreens (*m_canvasBag,
+                status = BuildScreens (*m_canvas,
                                        m_roomGraphicsMap, 
                                        m_backgroundItemGraphicsMap,
                                        m_spriteGraphicsMap,
@@ -658,9 +519,9 @@ FolioStatus MainCanvasMsgHandler::StartPlaying ()
 
 FolioStatus MainCanvasMsgHandler::DisplayInitialScreen (UInt32 screenNumber)
 {
-    // Set the background colour of the canvas bag.
+    // Set the background colour of the canvas.
 
-    FolioStatus status = SetCanvasBagBackground ();
+    FolioStatus status = SetCanvasBackground ();
 
     if (status == ERR_SUCCESS)
     {
@@ -691,19 +552,15 @@ FolioStatus MainCanvasMsgHandler::DisplayScreen (UInt32 screenNumber)
 
     if (status == ERR_SUCCESS)
     {
-        // Clear the canvas bag.
+        // Draw the current screen's drawing elements in the canvas.
 
-        m_canvasBag->ClearCanvas ();
-
-        // Add the current screen's drawing elements to the canvas bag.
-
-        status = m_canvasBag->AddDrawingElements (drawingElementsList, true); // Draw into the canvas bag.
+        status = m_canvas->DrawDrawingElements (drawingElementsList, true); // Draw into the canvas.
 
         if (status == ERR_SUCCESS)
         {
-            // Get the canvas bag graphics.
+            // Get the canvas graphics.
 
-            Gdiplus::Graphics   *graphics = m_canvasBag->GetCanvasGraphics ();
+            Gdiplus::Graphics   *graphics = m_canvas->GetCanvasGraphics ();
     
             // Store the current screen's sprite backgrounds.
 
@@ -733,7 +590,7 @@ FolioStatus MainCanvasMsgHandler::DisplayGameOverScreen (bool mainPlayerComplete
                                                m_informationPanel.GetScore (),
                                                m_informationPanel.GetPercentageCompleted ()));
 
-    FolioStatus status = m_gameOverScreen->Create (*m_canvasBag,
+    FolioStatus status = m_gameOverScreen->Create (*m_canvas,
                                                    Gdiplus::Rect(0, 0, MAX_ROOM_WIDTH, MAX_ROOM_HEIGHT),
                                                    10 * 1000);
 
@@ -748,11 +605,13 @@ FolioStatus MainCanvasMsgHandler::DisplayGameOverScreen (bool mainPlayerComplete
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::SetCanvasBagBackground (const Gdiplus::Region *clippingRegion)
+FolioStatus MainCanvasMsgHandler::SetCanvasBackground (const Gdiplus::Region *clippingRegion)
 {
     // Fill the canvas background.
 
-    return (m_canvasBag->FillCanvasBackground (Gdiplus::SolidBrush(Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR), false, clippingRegion));
+    return (m_canvas->FillCanvasBackground (Gdiplus::SolidBrush(Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR), 
+                                            false, 
+                                            clippingRegion));
 } // Endproc.
 
 
@@ -762,29 +621,29 @@ FolioStatus MainCanvasMsgHandler::Initialise ()
 
     Folio::Core::Util::Random::SetRandomSeed ();
 
-    // Get the canvas bag device context.
+    // Get the canvas device context.
 
-    FolioHandle dcHandle = m_canvasBag->GetCanvasDcHandle ();
+    FolioHandle dcHandle = m_canvas->GetCanvasDcHandle ();
     
-    // Get the canvas bag application instance.
+    // Get the canvas application instance.
     
-    FolioHandle instanceHandle = m_canvasBag->GetAppletInstanceHandle ();
+    FolioHandle instanceHandle = m_canvas->GetAppletInstanceHandle ();
 
     // Create loading screen.
 
-    FolioStatus status = m_loadingScreen.Create (*m_canvasBag, m_canvasBag->GetCanvasScreenRect (), 2 * 1000);
+    FolioStatus status = m_loadingScreen.Create (*m_canvas, m_canvas->GetCanvasScreenRect (), 2 * 1000);
 
     if (status == ERR_SUCCESS)
     {
         // Create selection screen.
 
-        status = m_selectionScreen.Create (*m_canvasBag, m_canvasBag->GetCanvasScreenRect ());
+        status = m_selectionScreen.Create (*m_canvas, m_canvas->GetCanvasScreenRect ());
 
         if (status == ERR_SUCCESS)
         {
             // Create falling simulation screen.
 
-            status = m_fallingSimulationScreen.Create (*m_canvasBag,
+            status = m_fallingSimulationScreen.Create (*m_canvas,
                                                        Gdiplus::Rect(0, 0, MAX_ROOM_WIDTH, MAX_ROOM_HEIGHT));
 
             if (status == ERR_SUCCESS)
@@ -870,7 +729,7 @@ void    MainCanvasMsgHandler::DisplayFrameRate () const
         str << TXT("FrameRate: ") << frameRate
             << TXT(" FrameCount: ") << s_frameCount
             << TXT(" ScreenNumber: ") << m_currentScreenNumber; 
-        Folio::Core::Util::Wnd::SetWndText (m_canvasBag->GetCanvasWndHandle (), str.str ().c_str ());
+        Folio::Core::Util::Wnd::SetWndText (m_canvas->GetCanvasWndHandle (), str.str ().c_str ());
     
         str << std::endl;
         ::OutputDebugString (str.str ().c_str ());

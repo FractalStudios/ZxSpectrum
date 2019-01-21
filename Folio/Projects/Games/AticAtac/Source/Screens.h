@@ -30,7 +30,7 @@ namespace Games
 namespace AticAtac
 {
 
-// Initial  screen number.
+// Initial screen number.
 const   UInt32  INITIAL_SCREEN_NUMBER = 0;
 
 // Undefined screen number.
@@ -46,7 +46,7 @@ public:
             ZxSpectrum::COLOUR  roomColour);
     ~Screen ();
 
-    void    SetCanvasBag (Folio::Core::Applet::CanvasBag &canvasBag);
+    void    SetCanvas (Folio::Core::Applet::Canvas &canvas);
     void    SetRoomGraphic (const RoomGraphicsMap &roomGraphicsMap);
     void    SetSpriteGraphicsMap (const SpriteGraphicsMap &spriteGraphicsMap);
     void    SetInformationPanel (const InformationPanel &informationPanel);
@@ -76,8 +76,9 @@ public:
 private:
     static  const   UInt32  MAX_NUM_NASTY_SPRITES               = 3;            // The maximum number of nasty sprites that can be displayed on a screen.
     static  const   UInt32  MAX_REMOVE_NASTY_SPRITES_TICK_COUNT = 10 * 1000;    // The maximum tick count to remove the nasty sprites.
+    static  const   UInt32  MAX_OPEN_CLOSE_DOORS_TICK_COUNT     = 20 * 1000;    // The maximum tick count to open/close the screen's doors.
     
-    Folio::Core::Applet::CanvasBag* m_canvasBag;            // The canvas bag.
+    Folio::Core::Applet::Canvas*    m_canvas;               // The canvas.
     SpriteGraphicsMap*              m_spriteGraphicsMap;    // The sprite graphics map.
     InformationPanel*               m_informationPanel;     // The information panel.
     PlayerSpritePtr                 m_mainPlayer;           // The main player.
@@ -99,15 +100,25 @@ private:
     WeaponSpriteDrawingElement              m_weaponSpriteDrawingElement;       // The screen's weapon sprite drawing element.
     Folio::Core::Game::CollisionGrid        m_collisionGrid;                    // The screen's collision grid.
 
+    static  bool    m_playEnteredScreenSound;               // Indicates if the entered screen sound should be played.
+    static  UInt32  m_currentEnteredScreenSoundSampleIndex; // The current entered screen sound sample index.
+    static  Folio::Core::Util::Sound::SoundSamplesList  m_enteredScreenSoundSamples;  // The entered screen sound samples.
+
+    static  Folio::Core::Util::Sound::SoundSample   m_openDoorSoundSample;  // The open door sound sample.
+    static  Folio::Core::Util::Sound::SoundSample   m_closeDoorSoundSample; // The close door sound sample.
+
     FolioStatus InitialiseScreen ();
     FolioStatus UpdateScreen ();
 
     FolioStatus InitialiseDoors ();
     FolioStatus CheckDoors (bool buildingScreen = false);
-    FolioStatus OpenDoor (BackgroundItem &backgroundItem);
-    FolioStatus CloseDoor (BackgroundItem &backgroundItem);
+    FolioStatus OpenDoor (BackgroundItem    &backgroundItem,
+                          bool              buildingScreen = false);
+    FolioStatus CloseDoor (BackgroundItem   &backgroundItem,
+                           bool             buildingScreen = false);
     FolioStatus UpdateDoor (BackgroundItem  &backgroundItem,
-                            bool            openDoor);
+                            bool            openDoor,
+                            bool            buildingScreen = false);
     bool    Screen::IsDoor(const BackgroundItem &backgroundItem) const;
     Folio::Core::Game::CollisionGrid::ScreenExit::STATE     GetDoorState (const BackgroundItem &backgroundItem) const;
     bool    CanDoorBeUnlocked (const BackgroundItem &backgroundItem) const;
@@ -166,16 +177,27 @@ private:
     FolioStatus InitialiseCollisionGrid ();
     FolioStatus AddCollisionGridDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList);
     FolioStatus AddCollisionGridDrawingElement (const Folio::Core::Game::DrawingElement &drawingElement);
+    FolioStatus RemoveCollisionGridDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList);
     FolioStatus RemoveCollisionGridDrawingElement (const Folio::Core::Game::DrawingElement &drawingElement);
     FolioStatus UpdateCollisionGridDrawingElement (const Folio::Core::Game::DrawingElement &drawingElement);
 
     FolioStatus AddBackgroundItemDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList);
+    FolioStatus RemoveBackgroundItemDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList);
 
     FolioStatus BuildScreenDrawingElements ();
+    FolioStatus RemoveScreenDrawingElements (const Folio::Core::Game::DrawingElementsList   &drawingElementsList,
+                                             bool                                           removeFromCollisionGrid = true);
     FolioStatus RemoveScreenDrawingElements (Folio::Core::Game::DrawingElement::UserData userData);
     FolioStatus RemoveScreenDrawingElements (DRAWING_ELEMENT_ID drawingElementId);
 
-    UInt32  GetFrameRateIncrement () const;
+    Folio::Core::Game::DrawingElementsList  FindScreenDrawingElements (Folio::Core::Game::DrawingElement::UserData userData) const;
+    Folio::Core::Game::DrawingElementsList  FindScreenDrawingElements (DRAWING_ELEMENT_ID drawingElementId) const;
+
+    static  void    CreateScreenSoundSamples ();
+    static  void    CreateEnteredScreenSoundSamples ();
+
+    static  void    PlayScreenSounds ();
+    static  bool    PlayEnteredScreenSound ();
 }; // Endclass.
 
 // Screens list.
@@ -184,7 +206,7 @@ typedef std::vector<Screen> ScreensList;
 
 // Routines.
 
-extern  FolioStatus BuildScreens (Folio::Core::Applet::CanvasBag    &canvasBag,
+extern  FolioStatus BuildScreens (Folio::Core::Applet::Canvas       &canvas,
                                   const RoomGraphicsMap             &roomGraphicsMap,
                                   const BackgroundItemGraphicsMap   &backgroundItemGraphicsMap,
                                   const SpriteGraphicsMap           &spriteGraphicsMap,

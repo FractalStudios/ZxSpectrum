@@ -165,10 +165,18 @@ static  const   Screen  g_screensTable [] =
     {   147,            ROOM_1,     ZxSpectrum::BRIGHT | ZxSpectrum::WHITE,     },
     {   148,            ROOM_1,     ZxSpectrum::BRIGHT | ZxSpectrum::YELLOW,    },
 };
-          
-          
+  
+
+// Screen static members.
+bool    Screen::m_playEnteredScreenSound                = false;    // Indicates if the entered screen sound should be played.
+UInt32  Screen::m_currentEnteredScreenSoundSampleIndex  = 0;        // The current entered screen sound sample index.
+Folio::Core::Util::Sound::SoundSamplesList  Screen::m_enteredScreenSoundSamples;    // The entered screen sound samples.
+
+Folio::Core::Util::Sound::SoundSample   Screen::m_openDoorSoundSample(16, 8883.25f); // The open door sound sample.
+Folio::Core::Util::Sound::SoundSample   Screen::m_closeDoorSoundSample(16, 8883.25f); // The close door sound sample.
+
 Screen::Screen ()
-:   m_canvasBag(0),
+:   m_canvas(0),
     m_informationPanel(0),
     m_spriteGraphicsMap(0),
     m_screenNumber(SCREEN_NUMBER_UNDEFINED),
@@ -183,7 +191,7 @@ Screen::Screen ()
 Screen::Screen (UInt32              screenNumber,
                 ROOM_ID             roomId,
                 ZxSpectrum::COLOUR  roomColour)
-:   m_canvasBag(0),
+:   m_canvas(0),
     m_spriteGraphicsMap(0),
     m_informationPanel(0),
     m_screenNumber(screenNumber),
@@ -200,9 +208,9 @@ Screen::~Screen ()
 } // Endproc.
 
 
-void    Screen::SetCanvasBag (Folio::Core::Applet::CanvasBag &canvasBag)
+void    Screen::SetCanvas (Folio::Core::Applet::Canvas &canvas)
 {
-    m_canvasBag = &(canvasBag);
+    m_canvas = &(canvas);
 } // Endproc.
 
 
@@ -282,7 +290,7 @@ FolioStatus Screen::QueryDrawingElements (const PlayerSpritePtr                 
         // No. Note the main player.
 
         m_mainPlayer = mainPlayer;
-        
+
         // Initialise the screen.
 
         status = InitialiseScreen ();
@@ -303,14 +311,6 @@ FolioStatus Screen::QueryDrawingElements (const PlayerSpritePtr                 
         // Update the screen.
 
         status = UpdateScreen ();
-
-        if (status == ERR_SUCCESS)
-        {
-            // Open or close the screen's doors.
-
-            status = CheckDoors (true); // We're building the screen.
-        } // Endif.
-
     } // Endelse.
 
     if (status == ERR_SUCCESS)
@@ -340,9 +340,13 @@ FolioStatus Screen::QueryDrawingElements (const PlayerSpritePtr                 
 FolioStatus Screen::HandleProcessFrame (bool    &isStarting,
                                         UInt32  *frameRateIncrement)
 {
-    // Get the canvas bag graphics.
+    // Play the screen sounds.
 
-    Gdiplus::Graphics   *graphics = m_canvasBag->GetCanvasGraphics ();
+    PlayScreenSounds ();
+
+    // Get the canvas graphics.
+
+    Gdiplus::Graphics   *graphics = m_canvas->GetCanvasGraphics ();
 
     // Restore the sprite backgrounds.
 
@@ -362,15 +366,6 @@ FolioStatus Screen::HandleProcessFrame (bool    &isStarting,
 
             if (status == ERR_SUCCESS)
             {
-                // Get the frame rate increment?
-
-                if (frameRateIncrement)
-                {
-                    // Yes.
-
-                    *frameRateIncrement = GetFrameRateIncrement ();
-                } // Endif.
-
                 // Let the information panel process the frame.
 
                 bool    mainPlayerIsDead = false;    // Initialise!
@@ -475,6 +470,11 @@ UInt32  Screen::MoveToNewScreen (const BackgroundItemsList &backgroundItemsList)
 
     m_exitScreenTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
 
+    // Start playing the entered screen sound.
+
+    m_playEnteredScreenSound                = true;
+    m_currentEnteredScreenSoundSampleIndex  = 0;
+    
     return (screenNumber);
 } // Endproc.
 
@@ -599,9 +599,9 @@ FolioStatus Screen::DrawSprites (Gdiplus::Graphics &graphics)
 
                     if (status == ERR_SUCCESS)
                     {
-                        // The canvas bag should be redrawn on the next draw.
+                        // The canvas should be redrawn on the next draw.
 
-                        m_canvasBag->SetRedrawRqd ();
+                        m_canvas->SetRedrawRqd ();
                     } // Endif.
     
                 } // Endif.
@@ -632,6 +632,10 @@ UInt32  Screen::GetTotalNumRooms ()
 
 FolioStatus Screen::InitialiseScreen ()
 {                      
+    // Create the screen's sound samples.
+
+    CreateScreenSoundSamples ();
+
     // Initialise the screen's doors.
 
     FolioStatus status = InitialiseDoors ();
@@ -688,21 +692,17 @@ FolioStatus Screen::UpdateScreen ()
 
             m_weaponSpriteDrawingElement.Reset ();
         
-            // Remove the information panel's drawing elements.
+            // Remove the information panel's drawing elements from the screen's drawing elements.
 
             status = RemoveScreenDrawingElements (DRAWING_ELEMENT_INFORMATION_PANEL_ITEM);
 
             if (status == ERR_SUCCESS)
             {
-                // Get the canvas bag device context.
-
-                FolioHandle dcHandle = m_canvasBag->GetCanvasDcHandle ();
-
                 // Get the information panel's drawing elements.
 
                 Folio::Core::Game::DrawingElementsList  informationPanelDrawingElementsList;
 
-                status = m_informationPanel->QueryDrawingElements (dcHandle,
+                status = m_informationPanel->QueryDrawingElements (m_canvas->GetCanvasDcHandle (),
                                                                    m_roomColour, 
                                                                    informationPanelDrawingElementsList);
 
@@ -712,6 +712,10 @@ FolioStatus Screen::UpdateScreen ()
 
                     m_drawingElementsSet.insert (informationPanelDrawingElementsList.begin (),
                                                  informationPanelDrawingElementsList.end ());
+
+                    // Open or close the screen's doors.
+
+                    status = CheckDoors (true); // We're building the screen.
                 } // Endif.
 
             } // Endif.
@@ -819,12 +823,12 @@ FolioStatus Screen::CheckDoors (bool buildingScreen)
 
                 if (buildingScreen)
                 {
-                    // Just restart the door transition.
+                    // Yes. Just restart the door transition.
 
                     backgroundItem.SetDoorTransitionTickCount (Folio::Core::Util::DateTime::GetCurrentTickCount ());
                 } // Endif.
                 
-                // Should it be closed? 
+                // Should the door be closed? 
 
                 else
                 if (backgroundItem.IsDoorTransition (Folio::Core::Util::DateTime::GetCurrentTickCount ()))
@@ -842,10 +846,10 @@ FolioStatus Screen::CheckDoors (bool buildingScreen)
                     {
                         // Close the door.
                 
-                       status = CloseDoor (backgroundItem);
+                       status = CloseDoor (backgroundItem, buildingScreen);
                     } // Endelse.
 
-                } // Endif.
+                } // Endelseif.
 
             } // Endif.
 
@@ -854,21 +858,29 @@ FolioStatus Screen::CheckDoors (bool buildingScreen)
             else
             if (BackgroundItem::IsClosedDoor (backgroundItemflags))
             {
-                // Yes. The door cannot be closed if the screen is being built or 
-                // the main player is in it.
+                // Yes. Is the screen being built?
 
-                if (buildingScreen ||
-                    m_mainPlayer->IsInScreenExit (backgroundItem.GetScreenRect ()))
+                if (buildingScreen)
                 {
-                    backgroundItem.SetDoorTransitionTickCount (buildingScreen ? 0 : Folio::Core::Util::DateTime::GetCurrentTickCount ());
+                    // Yes. Close the door.
+                
+                    status = CloseDoor (backgroundItem, buildingScreen);
                 } // Endif.
+
+                // The door cannot be closed if the main player is in it.
+
+                else
+                if (m_mainPlayer->IsInScreenExit (backgroundItem.GetScreenRect ()))
+                {
+                    backgroundItem.SetDoorTransitionTickCount (Folio::Core::Util::DateTime::GetCurrentTickCount ());
+                } // Endelseif.
 
                 else
                 if (backgroundItem.IsDoorTransition (Folio::Core::Util::DateTime::GetCurrentTickCount ()))
                 {
                     // Open the door.
                 
-                    status = OpenDoor (backgroundItem);
+                    status = OpenDoor (backgroundItem, buildingScreen);
                 } // Endelseif.
 
             } // Endelseif.
@@ -878,20 +890,9 @@ FolioStatus Screen::CheckDoors (bool buildingScreen)
             else
             if (BackgroundItem::IsUnlockedDoor (backgroundItemflags))
             {
-                // Yes. 
-
-                if (buildingScreen)
-                {
-                    backgroundItem.SetDoorTransitionTickCount (0);
-                } // Endif.
-
-                else
-                {
-                    // Open the door.
+                // Yes. Open the door.
                 
-                    status = OpenDoor (backgroundItem);
-                } // Endelse.
-
+                status = OpenDoor (backgroundItem, buildingScreen);
             } // Endelseif.
         
         } // Endif.
@@ -902,28 +903,31 @@ FolioStatus Screen::CheckDoors (bool buildingScreen)
 } // Endproc.
 
 
-FolioStatus Screen::OpenDoor (BackgroundItem &backgroundItem)
+FolioStatus Screen::OpenDoor (BackgroundItem    &backgroundItem, 
+                              bool              buildingScreen)
 {
     // Open the door.
 
-    return (UpdateDoor (backgroundItem, true));
+    return (UpdateDoor (backgroundItem, true, buildingScreen));
 } // Endproc.
 
 
-FolioStatus Screen::CloseDoor (BackgroundItem &backgroundItem)
+FolioStatus Screen::CloseDoor (BackgroundItem   &backgroundItem, 
+                               bool             buildingScreen)
 {
     // Close the door.
 
-    return (UpdateDoor (backgroundItem, false));
+    return (UpdateDoor (backgroundItem, false, buildingScreen));
 } // Endproc.
 
 
 FolioStatus Screen::UpdateDoor (BackgroundItem  &backgroundItem,
-                                bool            openDoor)
+                                bool            openDoor,
+                                bool            buildingScreen)
 {
-    // Remove the background item's drawing element from the screen's drawing elements.
+    // Remove the background item's drawing elements from the screen's drawing elements.
 
-    FolioStatus status = RemoveScreenDrawingElements (&(backgroundItem)); 
+    FolioStatus status = RemoveBackgroundItemDrawingElements (FindScreenDrawingElements (&(backgroundItem))); 
 
     if (status == ERR_SUCCESS)
     {
@@ -955,9 +959,10 @@ FolioStatus Screen::UpdateDoor (BackgroundItem  &backgroundItem,
 
             Folio::Core::Game::DrawingElementsList  drawingElementsList;
 
-            FolioStatus status = backgroundItem.QueryDrawingElements (m_canvasBag->GetCanvasDcHandle (),
+            FolioStatus status = backgroundItem.QueryDrawingElements (m_canvas->GetCanvasDcHandle (),
                                                                       m_roomColour,
-                                                                      drawingElementsList);
+                                                                      drawingElementsList,
+                                                                      openDoor || !buildingScreen ? true : false);  // If the door is closed and the screen is being built, the mask is not required.
 
             if ((status == ERR_SUCCESS) && !drawingElementsList.empty ())
             {
@@ -970,6 +975,21 @@ FolioStatus Screen::UpdateDoor (BackgroundItem  &backgroundItem,
                     // Set the door transition tick count.
 
                     backgroundItem.SetDoorTransitionTickCount (Folio::Core::Util::DateTime::GetCurrentTickCount ());
+
+                    if (openDoor)
+                    {
+                        // Play the open door sound.
+
+                        Folio::Core::Util::Sound::PlaySoundSample (m_openDoorSoundSample);
+                    } // Endif.
+
+                    else
+                    {
+                        // Play the close door sound.
+
+                        Folio::Core::Util::Sound::PlaySoundSample (m_closeDoorSoundSample);
+                    } // Endelse.
+
                 } // Endif.
 
             } // Endif.
@@ -994,12 +1014,6 @@ bool    Screen::IsDoor(const BackgroundItem  &backgroundItem) const
 
     switch (m_mainPlayer->GetPlayerSpriteId ())
     {
-    case PLAYER_SPRITE_KNIGHT:
-        isDoor = BackgroundItem::IsDoor (backgroundItemflags) && 
-                 (!BackgroundItem::IsWizardDoor (backgroundItemflags) ||
-                  !BackgroundItem::IsSerfDoor (backgroundItemflags));
-        break;
-
     case PLAYER_SPRITE_WIZARD:
         isDoor = BackgroundItem::IsDoor (backgroundItemflags) && 
                  (!BackgroundItem::IsKnightDoor (backgroundItemflags) ||
@@ -1012,7 +1026,11 @@ bool    Screen::IsDoor(const BackgroundItem  &backgroundItem) const
                   !BackgroundItem::IsWizardDoor (backgroundItemflags));
         break;
 
+    case PLAYER_SPRITE_KNIGHT:
     default:
+        isDoor = BackgroundItem::IsDoor (backgroundItemflags) && 
+                 (!BackgroundItem::IsWizardDoor (backgroundItemflags) ||
+                  !BackgroundItem::IsSerfDoor (backgroundItemflags));
         break;
     } // Endswitch.
 
@@ -1059,13 +1077,6 @@ Folio::Core::Game::CollisionGrid::ScreenExit::STATE Screen::GetDoorState (const 
 
         switch (m_mainPlayer->GetPlayerSpriteId ())
         {
-        case PLAYER_SPRITE_KNIGHT:
-            if (BackgroundItem::IsKnightDoor (backgroundItemflags))
-            {
-                doorState = Folio::Core::Game::CollisionGrid::ScreenExit::OPEN;
-            } // Endif.
-            break;
-
         case PLAYER_SPRITE_WIZARD:
             if (BackgroundItem::IsWizardDoor (backgroundItemflags))
             {
@@ -1080,7 +1091,12 @@ Folio::Core::Game::CollisionGrid::ScreenExit::STATE Screen::GetDoorState (const 
             } // Endif.
             break;
 
+        case PLAYER_SPRITE_KNIGHT:
         default:
+            if (BackgroundItem::IsKnightDoor (backgroundItemflags))
+            {
+                doorState = Folio::Core::Game::CollisionGrid::ScreenExit::OPEN;
+            } // Endif.
             break;
         } // Endswitch.
 
@@ -1248,7 +1264,7 @@ FolioStatus Screen::AddStaticSprite (STATIC_SPRITE_ID       staticSpriteId,
 
     StaticSpritePtr staticSprite(new StaticSpritePtr::element_type);
     
-    FolioStatus status = staticSprite->Create (m_canvasBag->GetCanvasDcHandle (),
+    FolioStatus status = staticSprite->Create (m_canvas->GetCanvasDcHandle (),
                                                staticSpriteId,
                                                *m_spriteGraphicsMap,
                                                m_screenNumber,
@@ -1258,9 +1274,9 @@ FolioStatus Screen::AddStaticSprite (STATIC_SPRITE_ID       staticSpriteId,
 
     if (status == ERR_SUCCESS)
     {
-        // Get the canvas bag graphics.
+        // Get the canvas graphics.
 
-        Gdiplus::Graphics   *graphics = m_canvasBag->GetCanvasGraphics ();
+        Gdiplus::Graphics   *graphics = m_canvas->GetCanvasGraphics ();
 
         // Restore the static sprites' underlying backgrounds.
     
@@ -1493,7 +1509,7 @@ FolioStatus Screen::AddNastySprite (NASTY_SPRITE_ID nastySpriteId)
 
     NastySpritePtr  nastySprite(new NastySpritePtr::element_type);
     
-    FolioStatus status = nastySprite->Create (m_canvasBag->GetCanvasDcHandle (),
+    FolioStatus status = nastySprite->Create (m_canvas->GetCanvasDcHandle (),
                                               nastySpriteId,
                                               *m_spriteGraphicsMap,
                                               m_collisionGrid);
@@ -1527,7 +1543,7 @@ FolioStatus Screen::RemoveNastySprites ()
 
         NastySpriteDrawingElementsList::iterator    itr = m_nastySpriteDrawingElementsList.begin ();
 
-        while ((status == ERR_SUCCESS) && (itr != m_nastySpriteDrawingElementsList.end ()))
+        do
         {
             // Remove the nasty sprite from the screen's collision grid.
 
@@ -1540,8 +1556,8 @@ FolioStatus Screen::RemoveNastySprites ()
                 itr = m_nastySpriteDrawingElementsList.erase (itr);
             } // Endif.
 
-        } // Endwhile.
-    
+        } // Enddo.
+        while ((status == ERR_SUCCESS) && (itr != m_nastySpriteDrawingElementsList.end ()));
     } // Endif.
 
     return (status);
@@ -1568,7 +1584,7 @@ FolioStatus Screen::KillNastySprites ()
             {
                 // The nasty sprite is dead.
 
-                itr->m_sprite->SetDead ();
+                itr->m_sprite->SetDead (false); // Don't play its terminating sound.
             } // Endif.
 
         } // Endfor.
@@ -1711,7 +1727,7 @@ FolioStatus Screen::AddBossSprite (BOSS_SPRITE_ID bossSpriteId)
 
     BossSpritePtr   bossSprite(new BossSpritePtr::element_type);
     
-    FolioStatus status = bossSprite->Create (m_canvasBag->GetCanvasDcHandle (),
+    FolioStatus status = bossSprite->Create (m_canvas->GetCanvasDcHandle (),
                                              bossSpriteId,
                                              *m_spriteGraphicsMap,
                                              m_mainPlayer,
@@ -1754,12 +1770,26 @@ FolioStatus Screen::CheckWeaponSprite (Gdiplus::Graphics &graphics)
         case WeaponSprite::STATE_TERMINATED:
             // The weapon sprite is terminated.
 
+            // Play the weapon sprite terminated sound.
+
+            weaponSprite->PlayWeaponsSpriteSound ();
+          
             // Reset the weapon sprite
 
             m_weaponSpriteDrawingElement.Reset ();
             break;
 
         case WeaponSprite::STATE_INITIALISED:
+            // The weapon sprite is initialised.
+
+            // Play the weapon sprite initialised sound.
+
+            weaponSprite->PlayWeaponsSpriteSound ();
+            
+            // Carefull.
+            //          .
+            //          .
+
         case WeaponSprite::STATE_STATIC:
         case WeaponSprite::STATE_MOVING:
             // Move the weapon sprite.
@@ -1813,7 +1843,7 @@ FolioStatus Screen::AddWeaponSprite (WEAPON_SPRITE_ID weaponSpriteId)
 
     WeaponSpritePtr   weaponSprite(new WeaponSpritePtr::element_type);
     
-    FolioStatus status = weaponSprite->Create (m_canvasBag->GetCanvasDcHandle (),
+    FolioStatus status = weaponSprite->Create (m_canvas->GetCanvasDcHandle (),
                                                weaponSpriteId,
                                                *m_spriteGraphicsMap,
                                                m_mainPlayer->GetScreenRect (),
@@ -1821,9 +1851,9 @@ FolioStatus Screen::AddWeaponSprite (WEAPON_SPRITE_ID weaponSpriteId)
 
     if (status == ERR_SUCCESS)
     {
-        // The weapon sprite is movinge.
+        // The weapon sprite is initialised.
 
-        weaponSprite->SetState (WeaponSprite::STATE_MOVING);
+        weaponSprite->SetState (WeaponSprite::STATE_INITIALISED);
 
         // Create a weapon sprite drawing element.
 
@@ -2743,6 +2773,47 @@ FolioStatus Screen::AddCollisionGridDrawingElement (const Folio::Core::Game::Dra
 } // Endproc.
 
 
+FolioStatus Screen::RemoveCollisionGridDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Remove the drawing elements from the screen's collision grid.
+
+    bool    finished = false;   // Initialise!
+
+    for (Folio::Core::Game::DrawingElementsList::const_iterator itr = drawingElementsList.begin ();
+         !finished && (status == ERR_SUCCESS) && (itr != drawingElementsList.end ());
+         ++itr)
+    {
+        switch (itr->GetDrawingElementId ())
+        {
+        case DRAWING_ELEMENT_BACKGROUND_ITEM:
+            // Is the background item's collision grid cell value empty?
+
+            if (!Folio::Core::Game::CollisionGrid::IsEmpty (itr->GetCollisionGridCellValue ()))
+            {
+                // No. Remove the background item from the collision grid.
+
+                status = RemoveCollisionGridDrawingElement (*itr);
+            } // Endif.
+            break;                            
+
+        case DRAWING_ELEMENT_INFORMATION_PANEL_ITEM:
+            // No more drawing elements to remove from the collision grid.
+            
+            finished = true;
+            break;                            
+
+        default:
+            break;
+        } // Endswitch.
+
+    } // Endfor.
+
+    return (status);
+} // Endproc.
+
+
 FolioStatus Screen::RemoveCollisionGridDrawingElement (const Folio::Core::Game::DrawingElement &drawingElement)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -2855,20 +2926,29 @@ FolioStatus Screen::AddBackgroundItemDrawingElements (const Folio::Core::Game::D
 
     if (status == ERR_SUCCESS)
     {
-        // Add the drawing elements to the canvas bag.
+        // Draw the drawing elements in the canvas.
 
-        status = m_canvasBag->AddDrawingElements (drawingElementsList, true);   // Draw into the canvas bag.
+        status = m_canvas->DrawDrawingElements (drawingElementsList);
     } // Endif.
 
     return (status);
 } // Endif.
 
 
+FolioStatus Screen::RemoveBackgroundItemDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList)
+{
+    // Remove the background item's drawing elements from the screen's drawing elements.
+    // But don't remove from the screen's collision grid.
+
+    return (RemoveScreenDrawingElements (drawingElementsList, false)); 
+} // Endif.
+
+
 FolioStatus Screen::BuildScreenDrawingElements ()
 {
-    // Get the canvas bag device context.
+    // Get the canvas device context.
 
-    FolioHandle dcHandle = m_canvasBag->GetCanvasDcHandle ();
+    FolioHandle dcHandle = m_canvas->GetCanvasDcHandle ();
 
     // Query the room's drawing elements.
 
@@ -2936,6 +3016,39 @@ FolioStatus Screen::BuildScreenDrawingElements ()
 } // Endproc.
 
 
+FolioStatus Screen::RemoveScreenDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList, 
+                                                 bool                                         removeFromCollisionGrid)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Remove the drawing elements from the screen's collision grid?
+
+    if (removeFromCollisionGrid)
+    {
+        // Yes.
+
+        status = RemoveCollisionGridDrawingElements (drawingElementsList);
+    } // Endif.
+
+    if (status == ERR_SUCCESS)
+    {
+        // Remove the drawing elements from the screen's drawing elements.
+
+        for (Folio::Core::Game::DrawingElementsList::const_iterator itr = drawingElementsList.begin ();
+             (status == ERR_SUCCESS) && (itr != drawingElementsList.end ());
+             ++itr)
+        {
+            // Remove the drawing elements that match the user data.
+
+            status = RemoveScreenDrawingElements (itr->GetUserData ());
+        } // Endfor.
+
+    } // Endif.
+
+    return (status);
+} // Endif.
+
+
 FolioStatus Screen::RemoveScreenDrawingElements (Folio::Core::Game::DrawingElement::UserData userData)
 {
     // Remove the drawing elements that match the user data.
@@ -2963,7 +3076,7 @@ FolioStatus Screen::RemoveScreenDrawingElements (Folio::Core::Game::DrawingEleme
 
 
 FolioStatus Screen::RemoveScreenDrawingElements (DRAWING_ELEMENT_ID drawingElementId)
-{    
+{
     // Remove the drawing elements that match the drawing element identifier.
 
     Folio::Core::Game::DrawingElementsSet::iterator itr = m_drawingElementsSet.begin ();
@@ -2988,34 +3101,119 @@ FolioStatus Screen::RemoveScreenDrawingElements (DRAWING_ELEMENT_ID drawingEleme
 } // Endproc.
 
 
-UInt32  Screen::GetFrameRateIncrement () const
+Folio::Core::Game::DrawingElementsList  Screen::FindScreenDrawingElements (Folio::Core::Game::DrawingElement::UserData userData) const
 {
-    UInt32  frameRateIncrement = 0; // Initialise!
+    Folio::Core::Game::DrawingElementsList  drawingElementsList;
 
-    // Get the state of the main player.
-
-    switch (m_mainPlayer->GetState ())
+    for (Folio::Core::Game::DrawingElementsSet::iterator itr = m_drawingElementsSet.begin ();
+         itr != m_drawingElementsSet.end ();
+         ++itr)
     {
-    case PlayerSprite::STATE_INITIALISE_RQD:
-    case PlayerSprite::STATE_INITIALISING:
-        frameRateIncrement = m_mainPlayer->GetInitialisingPauseTime ();
-        break;
+        if (itr->GetUserData () == userData)
+        {
+            drawingElementsList.push_back (*itr);
+        } // Endif.
 
-    case PlayerSprite::STATE_TERMINATE_RQD:
-    case PlayerSprite::STATE_TERMINATING:
-        frameRateIncrement = m_mainPlayer->GetTerminatingPauseTime ();
-        break;
+    } // Endfor.
 
-    default:
-        frameRateIncrement = 0;
-        break;
-    } // Endswitch.
+    return (drawingElementsList);
+} // Endfor.
 
-    return (frameRateIncrement);
+
+Folio::Core::Game::DrawingElementsList  Screen::FindScreenDrawingElements (DRAWING_ELEMENT_ID drawingElementId) const
+{
+    Folio::Core::Game::DrawingElementsList  drawingElementsList;
+
+    for (Folio::Core::Game::DrawingElementsSet::iterator itr = m_drawingElementsSet.begin ();
+         itr != m_drawingElementsSet.end ();
+         ++itr)
+    {
+        if (itr->GetDrawingElementId () == drawingElementId)
+        {
+            drawingElementsList.push_back (*itr);
+        } // Endif.
+
+    } // Endfor.
+
+    return (drawingElementsList);
+} // Endfor.
+
+
+void    Screen::CreateScreenSoundSamples ()
+{
+    // Create the screen's entered screen sound samples.
+
+    CreateEnteredScreenSoundSamples ();
 } // Endproc.
 
 
-FolioStatus BuildScreens (Folio::Core::Applet::CanvasBag    &canvasBag,
+void    Screen::CreateEnteredScreenSoundSamples ()
+{
+    if (m_enteredScreenSoundSamples.empty ())
+    {
+        // Create each sound sample representing the required sound.
+    
+        ZxSpectrum::BYTE    frequency = 0xf7;
+
+        for (ZxSpectrum::BYTE numLoops = 0x09; numLoops >= 0x01; --numLoops)
+        {
+            m_enteredScreenSoundSamples.push_back (ZxSpectrum::MapUltimateMakeSound (frequency, numLoops));
+
+            if (frequency == 0xff)
+            {
+                frequency = 0x87;
+            } // Endif.
+
+            else
+            {
+                frequency += 0x8;
+            } // Endelse.
+
+        } // Endfor.
+
+    } // Endif.
+
+} // Endproc.
+
+
+void    Screen::PlayScreenSounds ()
+{
+    // Play the entered screen sound.
+
+    PlayEnteredScreenSound ();
+} // Endproc.
+
+
+bool    Screen::PlayEnteredScreenSound ()
+{
+    bool    playedEnteredScreenSound = false;   // Initialise!
+
+    // Should an entered screen sound be played?
+
+    if (m_playEnteredScreenSound)
+    {
+        // Yes. Play the entered screen sound.
+
+        Folio::Core::Util::Sound::PlaySoundSample (m_enteredScreenSoundSamples [m_currentEnteredScreenSoundSampleIndex]);
+
+        // All entered screen sounds played?
+
+        if (++m_currentEnteredScreenSoundSampleIndex >= m_enteredScreenSoundSamples.size ())
+        {
+            // Yes.
+
+            m_playEnteredScreenSound                = false;
+            m_currentEnteredScreenSoundSampleIndex  = 0;
+        } // Endif.
+
+        playedEnteredScreenSound = true;
+    } // Endif.
+
+    return (playedEnteredScreenSound);
+} // Endproc.
+
+
+FolioStatus BuildScreens (Folio::Core::Applet::Canvas       &canvas,
                           const RoomGraphicsMap             &roomGraphicsMap,
                           const BackgroundItemGraphicsMap   &backgroundItemGraphicsMap,
                           const SpriteGraphicsMap           &spriteGraphicsMap,
@@ -3038,9 +3236,9 @@ FolioStatus BuildScreens (Folio::Core::Applet::CanvasBag    &canvasBag,
          itr != screensList.end ();
          ++itr)
     {
-        // Set the canvas bag.
+        // Set the canvas.
 
-        itr->SetCanvasBag (canvasBag);
+        itr->SetCanvas (canvas);
 
         // Set the screen's room graphic.
 

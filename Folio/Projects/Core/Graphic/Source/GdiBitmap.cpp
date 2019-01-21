@@ -1617,15 +1617,6 @@ void    GdiBitmap::Destroy ()
 
     DestroyGraphics ();
 
-    // Destroy the bitmap?
-
-    if (m_bitmapHandle != FOLIO_INVALID_HANDLE)
-    {
-        // Yes.
-
-        DestroyBitmap (m_bitmapHandle);
-    } // Endif.
-
     // Select the old bitmap in the memory device context?
 
     if (m_oldBitmapHandle != FOLIO_INVALID_HANDLE)
@@ -1642,6 +1633,15 @@ void    GdiBitmap::Destroy ()
         // Yes.
 
         DestroyMemoryDC (m_memoryDcHandle);
+    } // Endif.
+
+    // Destroy the bitmap?
+
+    if (m_bitmapHandle != FOLIO_INVALID_HANDLE)
+    {
+        // Yes.
+
+        DestroyBitmap (m_bitmapHandle);
     } // Endif.
 
 } // Endproc.

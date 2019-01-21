@@ -36,11 +36,18 @@ static  const   FallingSimulationScreenItemAttributes   g_fallingSimulationScree
 };
 
 
+// Falling screen static members.
+Folio::Core::Util::Sound::SoundSamplesList  FallingSimulationScreen::m_soundSamplesList;    // The sound samples list.
+
 FallingSimulationScreen::FallingSimulationScreen ()
 {
     // Create the screen sequence.
 
     CreateScreenSequence ();
+
+    // Create the sound samples.
+
+    CreateSoundSamples ();
 } // Endproc.
 
 
@@ -158,9 +165,13 @@ FolioStatus FallingSimulationScreen::QueryScreenDrawingElements (FolioHandle    
 
 FolioStatus FallingSimulationScreen::StartDisplayingScreen ()
 {
-    // Start from the begining of the screen sequence.
+    // Start from the beginning of the screen sequence.
             
     m_currentScreenSequenceListItr = m_screenSequenceList.begin ();
+
+    // Play the sound samples.
+
+    Folio::Core::Util::Sound::PlayAsyncSoundSamples (m_soundSamplesList);
 
     return (ERR_SUCCESS);
 } // Endproc.
@@ -168,43 +179,25 @@ FolioStatus FallingSimulationScreen::StartDisplayingScreen ()
 
 FolioStatus FallingSimulationScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
 {
-    static  const   UInt32  FALLING_SIMULATION_FRAME_RATE = 0;
-
     FolioStatus status = ERR_SUCCESS;
 
-    // Get the current tick count.
+    // Have we completed the screen sequence?
 
-    UInt32  currentTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
-
-    if (currentTickCount >= (m_previousFrameTickCount + FALLING_SIMULATION_FRAME_RATE))
+    if (++m_currentScreenSequenceListItr == m_screenSequenceList.end ())
     {
-        // Have we completed the screen sequence?
+        // Yes. The falling simulation is complete.
 
-        if (++m_currentScreenSequenceListItr == m_screenSequenceList.end ())
-        {
-            // Yes. The falling simulation is complete.
+        // Stop displaying the falling simulation screen.
 
-            // Stop displaying the falling simulation screen.
-
-            StopDisplaying ();
-        } // Endif.
-
-        else
-        {
-            // No. Update the falling simulation screen.
-
-            status = UpdateScreen ();
-
-            if (status == ERR_SUCCESS)
-            {
-                // Note the previous tick count.
-
-                m_previousFrameTickCount = currentTickCount;
-            } // Endif.
-
-        } // Endelse.
-
+        StopDisplaying ();
     } // Endif.
+
+    else
+    {
+        // No. Update the falling simulation screen.
+
+        status = UpdateScreen ();
+    } // Endelse.
 
     return (status);
 } // Endproc.
@@ -214,14 +207,14 @@ FolioStatus FallingSimulationScreen::UpdateScreen ()
 {
     FolioStatus status = ERR_SUCCESS;
 
-    // Get the canvas bag graphics.
+    // Get the canvas graphics.
 
-    Gdiplus::Graphics   *graphics = m_canvasBag->GetCanvasGraphics ();
+    Gdiplus::Graphics   *graphics = m_canvas->GetCanvasGraphics ();
 
     // Update the falling simulation screen items.
 
     bool    finished        = false;   // Initialise!
-    bool    redrawCanvasBag = false;
+    bool    redrawCanvas    = false;
 
     for (ItemsList::iterator itr = m_itemsList.begin ();
          !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
@@ -240,17 +233,17 @@ FolioStatus FallingSimulationScreen::UpdateScreen ()
 
             status = item->Draw (*graphics);
             
-            redrawCanvasBag = true;
+            redrawCanvas    = true;
             finished        = true;
         } // Endif.
 
     } // Endfor.
 
-    if (redrawCanvasBag && (status == ERR_SUCCESS))
+    if (redrawCanvas && (status == ERR_SUCCESS))
     {
-        // The canvas bag should be redrawn on the next draw.
+        // The canvas should be redrawn on the next draw.
 
-        m_canvasBag->SetRedrawRqd ();
+        m_canvas->SetRedrawRqd ();
     } // Endif.
 
     return (status);
@@ -264,7 +257,7 @@ void    FallingSimulationScreen::CreateScreenSequence ()
     m_screenSequenceList.push_back (FALLING_SIMULATION_SCREEN_ITEM_01);  
     m_screenSequenceList.push_back (FALLING_SIMULATION_SCREEN_ITEM_02);  
 
-    for (UInt32 index = 0; index < 15; ++index)
+    for (UInt32 index = 0; index < 42; ++index)
     {
         m_screenSequenceList.push_back (FALLING_SIMULATION_SCREEN_ITEM_03);
         m_screenSequenceList.push_back (FALLING_SIMULATION_SCREEN_ITEM_04);
@@ -272,9 +265,25 @@ void    FallingSimulationScreen::CreateScreenSequence ()
         m_screenSequenceList.push_back (FALLING_SIMULATION_SCREEN_ITEM_06);
     } // Endfor.
 
-    // Start from the begining of the screen sequence.
+    // Start from the beginning of the screen sequence.
 
     m_currentScreenSequenceListItr = m_screenSequenceList.begin ();
+} // Endproc.
+
+
+void    FallingSimulationScreen::CreateSoundSamples ()
+{
+    if (m_soundSamplesList.empty ())
+    {
+        // Create each sound sample representing the required sound.
+
+        for (ZxSpectrum::BYTE frequency = 0x80; frequency <= 0xff; ++frequency)
+        {
+            m_soundSamplesList.push_back (ZxSpectrum::MapUltimateMakeSound (frequency, 0x08));
+        } // Endfor.
+        
+    } // Endif.
+
 } // Endproc.
 
 } // Endnamespace.

@@ -57,6 +57,10 @@ static  const   PlayerSpriteGraphicAttributes   g_playerSpriteGraphicAttributesT
 };
 
 
+// Player sprite static members.
+PlayerSprite::SpriteInitialisingSoundSamplesList    PlayerSprite::m_playerSpriteInitialisingSoundSamplesList;   // The player sprite's initialising sound samples.
+PlayerSprite::SpriteTerminatingSoundSamplesList     PlayerSprite::m_playerSpriteTerminatingSoundSamplesList;    // The player sprite's terminating sound samples.
+
 PlayerSprite::PlayerSprite ()
 :   m_playerSpriteId(PLAYER_SPRITE_UNDEFINED),
     m_initialScreenXLeft(ZxSpectrum::UNDEFINED),
@@ -111,30 +115,38 @@ FolioStatus PlayerSprite::Create (FolioHandle               dcHandle,
 
         if (status == ERROR_SUCCESS)
         {
-            // Set the player sprite's initialising mode.
-            
-            status = SetInitialisingMode (playerSpriteFlags);
+            // Set the player sprite's movement sound samples.
+
+            status = SetMovementSoundSamples (playerSpriteId);
 
             if (status == ERROR_SUCCESS)
             {
-                // Set the player sprite's terminating mode.
-
-                status = SetTerminatingMode (playerSpriteFlags);
+                // Set the player sprite's initialising mode.
+            
+                status = SetInitialisingMode (playerSpriteFlags);
 
                 if (status == ERROR_SUCCESS)
                 {
-                    // Note the player sprite's attributes.
+                    // Set the player sprite's terminating mode.
 
-                    m_playerSpriteId        = playerSpriteId;
-                    m_initialScreenXLeft    = initialScreenXLeft;
-                    m_initialScreenYTop     = initialScreenYTop;
-                    m_playerSpriteColour    = playerSpriteColour;
-                    m_initialDirection      = initialDirection;
-                    m_playerSpriteFlags     = playerSpriteFlags;
-                } // Endif.
+                    status = SetTerminatingMode (playerSpriteFlags);
+
+                    if (status == ERROR_SUCCESS)
+                    {
+                        // Note the player sprite's attributes.
+
+                        m_playerSpriteId        = playerSpriteId;
+                        m_initialScreenXLeft    = initialScreenXLeft;
+                        m_initialScreenYTop     = initialScreenYTop;
+                        m_playerSpriteColour    = playerSpriteColour;
+                        m_initialDirection      = initialDirection;
+                        m_playerSpriteFlags     = playerSpriteFlags;
+                    } // Endif.
             
-            } // Endif.
+                } // Endif.
 
+            } // Endif.
+        
         } // Endif.
 
     } // Endif.
@@ -193,6 +205,22 @@ bool    PlayerSprite::IsTerminatedTopDown (UInt32 playerSpriteflags)
 } // Endproc.
 
 
+FolioStatus PlayerSprite::SetMovementSoundSamples (PLAYER_SPRITE_ID playerSpriteId)
+{
+    // Player sprite movement sound sample list.
+    static  const   SpriteMovementSoundSamplesList  s_playerSpriteMovementSoundSampleList =
+    {
+        {   SpriteMovementSoundSample(new SpriteMovementSoundSample::element_type(ZxSpectrum::MapUltimateMakeSound (0x30, 0x08))),  },
+        {   SpriteMovementSoundSample(new SpriteMovementSoundSample::element_type(ZxSpectrum::MapUltimateMakeSound (0x40, 0x08))),  },
+    };
+
+    // Set the player sprite's movement sound samples.
+
+    return (SetSpriteMovementSoundSamples (SpriteMovementSoundAttributesList(1, 
+                                                                             SpriteMovementSoundAttributes(ALL_DIRECTIONS, s_playerSpriteMovementSoundSampleList))));
+} // Endproc.
+
+
 FolioStatus PlayerSprite::SetInitialisingMode (UInt32 playerSpriteFlags)
 {
     // The initialising colour list.
@@ -215,7 +243,8 @@ FolioStatus PlayerSprite::SetInitialisingMode (UInt32 playerSpriteFlags)
     {
         // Yes. Set bottom up initialising mode.
 
-        status = SetBottomUpInitialisingMode (s_initialisingColourList);
+        status = SetBottomUpInitialisingMode (s_initialisingColourList,     
+                                              GetPlayerSpriteInitialisingSoundSamples (true));
     } // Endif.
 
     // Is the player sprite initialised from the top down?
@@ -225,7 +254,8 @@ FolioStatus PlayerSprite::SetInitialisingMode (UInt32 playerSpriteFlags)
     {
         // Yes. Set to down initialising mode.
               
-        status = SetTopDownInitialisingMode (s_initialisingColourList);
+        status = SetTopDownInitialisingMode (s_initialisingColourList,
+                                             GetPlayerSpriteInitialisingSoundSamples (false));
     } // Endelseif.
 
     return (status);
@@ -254,7 +284,8 @@ FolioStatus PlayerSprite::SetTerminatingMode (UInt32 playerSpriteFlags)
     {
         // Yes. Set bottom up terminating mode.
 
-        status = SetBottomUpTerminatingMode (s_terminatingColourList);
+        status = SetBottomUpTerminatingMode (s_terminatingColourList,
+                                             GetPlayerSpriteTerminatingSoundSamples (true));
     } // Endif.
 
     // Is the player sprite terminated from the top down?
@@ -264,10 +295,71 @@ FolioStatus PlayerSprite::SetTerminatingMode (UInt32 playerSpriteFlags)
     {
         // Yes. Set top down terminating mode.
               
-        status = SetTopDownTerminatingMode (s_terminatingColourList);
+        status = SetTopDownTerminatingMode (s_terminatingColourList,
+                                            GetPlayerSpriteTerminatingSoundSamples (false));
     } // Endelseif.
 
     return (status);
+} // Endproc.
+
+
+PlayerSprite::SpriteInitialisingSoundSamplesList    PlayerSprite::GetPlayerSpriteInitialisingSoundSamples (bool isBottomUpMode)
+{
+    if (m_playerSpriteInitialisingSoundSamplesList.empty ())
+    {
+        // Create each sound sample representing the required sound.
+
+        if (isBottomUpMode)
+        {
+            for (ZxSpectrum::BYTE frequency = 0x7f; frequency >= 0x5d; frequency -= 0x02)
+            {
+                m_playerSpriteInitialisingSoundSamplesList.push_back (SpriteInitialisingSoundSample(ZxSpectrum::MapUltimateMakeSound (frequency, 0x10), 4));
+            } // Endfor.
+    
+        } // Endif.
+    
+        else
+        {
+            for (ZxSpectrum::BYTE frequency = 0x5d; frequency <= 0x7f; frequency += 0x02)
+            {
+                m_playerSpriteInitialisingSoundSamplesList.push_back (SpriteInitialisingSoundSample(ZxSpectrum::MapUltimateMakeSound (frequency, 0x10), 4));
+            } // Endfor.
+    
+        } // Endelse.
+    
+    } // Endif.
+    
+    return (m_playerSpriteInitialisingSoundSamplesList);
+} // Endproc.
+
+
+PlayerSprite::SpriteTerminatingSoundSamplesList PlayerSprite::GetPlayerSpriteTerminatingSoundSamples (bool isBottomUpMode)
+{
+    if (m_playerSpriteTerminatingSoundSamplesList.empty ())
+    {
+        // Create each sound sample representing the required sound.
+
+        if (isBottomUpMode)
+        {
+            for (ZxSpectrum::BYTE frequency = 0x7f; frequency >= 0x5d; frequency -= 0x02)
+            {
+                m_playerSpriteTerminatingSoundSamplesList.push_back (SpriteTerminatingSoundSample(ZxSpectrum::MapUltimateMakeSound (frequency, 0x10)));
+            } // Endfor.
+    
+        } // Endif.
+    
+        else
+        {
+            for (ZxSpectrum::BYTE frequency = 0x5d; frequency <= 0x7f; frequency += 0x02)
+            {
+                m_playerSpriteTerminatingSoundSamplesList.push_back (SpriteTerminatingSoundSample(ZxSpectrum::MapUltimateMakeSound (frequency, 0x10)));
+            } // Endfor.
+    
+        } // Endelse.
+    
+    } // Endif.
+    
+    return (m_playerSpriteTerminatingSoundSamplesList);
 } // Endproc.
 
 

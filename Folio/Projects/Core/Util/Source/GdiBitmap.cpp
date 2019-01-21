@@ -1292,22 +1292,7 @@ FolioStatus ScaleBitmap (FolioHandle    destinationDcHandle,
  */
 FolioStatus DestroyBitmap (FolioHandle bitmapHandle)
 {
-    FolioStatus status = ERR_SUCCESS;
-
-    // Delete the object.
-
-    if (!::DeleteObject (bitmapHandle))
-    {
-        // Build and log an error.
-
-        status = FOLIO_MAKE_OS_ERROR(::GetLastError ());
-
-        FOLIO_LOG_CALL_ERROR_1 (TXT("DeleteObject"),
-                                status,
-                                bitmapHandle);
-    } // Endif.
-
-    return (status);
+    return (DestroyObject (bitmapHandle));
 } // Endproc.
 
 } // Endnamespace.

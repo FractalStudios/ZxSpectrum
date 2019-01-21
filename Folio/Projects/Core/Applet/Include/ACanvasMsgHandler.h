@@ -4,7 +4,7 @@
 #include    "memory"
 
 // "Home-made" includes.
-#include    "CanvasBag.h"
+#include    "Canvas.h"
 
 #pragma pack(push, 1)
 
@@ -29,7 +29,7 @@ class ACanvasMsgHandler
 public:
     virtual ~ACanvasMsgHandler ();
 
-    CanvasBag*          GetCanvasBag ();
+    Canvas*             GetCanvas ();
     Gdiplus::Region*    GetClippingRegion ();
 
     virtual FolioStatus HandleCreateCanvasMsg (FolioHandle  wndHandle,
@@ -44,24 +44,11 @@ public:
     virtual FolioStatus HandlePaintCanvasMsg (FolioHandle   wndHandle,
                                               UInt32        wParam,
                                               UInt32        lParam);
-    virtual FolioStatus HandleKeyboardMsg (FolioHandle  wndHandle,
-                                           UInt32       wParam,
-                                           UInt32       lParam,
-                                           bool         keyDown);
-    virtual FolioStatus HandleMouseMoveMsg (FolioHandle wndHandle,
-                                            UInt32      wParam,
-                                            UInt32      lParam);
-    virtual FolioStatus HandleMouseButtonMsg (FolioHandle   wndHandle,
-                                              UInt32        wParam,
-                                              UInt32        lParam);
-    virtual FolioStatus HandleTimerMsg (FolioHandle wndHandle,
-                                        UInt32      wParam,
-                                        UInt32      lParam);
     virtual FolioStatus HandleProcessFrame (FolioHandle wndHandle,
                                             UInt32&     frameRateIncrement);
 
 protected:
-    std::unique_ptr<CanvasBag>  m_canvasBag;    ///< The canvas bag.
+    std::unique_ptr<Canvas> m_canvas;   ///< The canvas.
 
     Gdiplus::Region m_clippingRegion;   ///< The clipping region.
     

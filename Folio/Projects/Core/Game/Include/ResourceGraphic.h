@@ -82,7 +82,8 @@ public:
                                       UInt32                            screenScale,
                                       UInt32                            drawingFlags,
                                       const DrawingElement::UserData&   drawingElementUserData,
-                                      DrawingElementsList&              drawingElementsList);
+                                      DrawingElementsList&              drawingElementsList,
+                                      bool                              maskedDrawingElementRqd = true);
     FolioStatus QueryDrawingElements (FolioHandle                       dcHandle,
                                       Int32                             screenXLeft,
                                       Int32                             screenYTop,
@@ -90,7 +91,8 @@ public:
                                       Gdiplus::ARGB                     colour,
                                       UInt32                            drawingFlags,
                                       const DrawingElement::UserData&   drawingElementUserData,
-                                      DrawingElementsList&              drawingElementsList);
+                                      DrawingElementsList&              drawingElementsList,
+                                      bool                              maskedDrawingElementRqd = true);
 
     DrawingElement::Id          GetDrawingElementId () const;
     UInt16                      GetBitmapResourceId () const;

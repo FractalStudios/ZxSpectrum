@@ -206,7 +206,7 @@ FolioStatus ACanvasAnimator::StartThread ()
 
             if (status == ERR_SUCCESS)
             {
-                // Wait a finite time for the animator thread to iinitialize.
+                // Wait a finite time for the animator thread to initialize.
 
                 status = m_threadInitializedPulse.Wait (FOLIO_FINITE);
             } // Endif.
@@ -302,7 +302,7 @@ FolioStatus FOLIO_CALL  ACanvasAnimator::ThreadEntry (void* args)
 
 
 /**
- * Method that will iinitialize the animator thread.
+ * Method that will initialize the animator thread.
  *
  * @return
  * The possible return values are:<ul>

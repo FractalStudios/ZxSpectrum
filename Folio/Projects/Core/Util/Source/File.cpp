@@ -506,7 +506,7 @@ FolioStatus File::SetFilePointer (UInt32 distanceFromStart) const
 
     else
     {
-        // Set the file pointer to the begining of the file.
+        // Set the file pointer to the beginning of the file.
 
         if ((::SetFilePointer (m_fileHandle,
                                distanceFromStart,
@@ -560,7 +560,7 @@ FolioStatus File::SetEndOfFile (UInt32 distanceFromStart) const
 
     else
     {
-        // Set the file pointer (from the begining of the file).
+        // Set the file pointer (from the beginning of the file).
 
         status = SetFilePointer (distanceFromStart);
 

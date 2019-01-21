@@ -76,12 +76,14 @@ public:
                                                              SpriteGraphicsList         &nastySpriteTerminatingGraphics);
 
 private:
-    NASTY_SPRITE_ID     m_nastySpriteId;        // The identifier of the nasty sprite.
-    UInt32              m_nastySpriteFlags;     // The flags of the nasty sprite.
-    UInt32              m_speed;                // The speed of the nasty sprite.
+    NASTY_SPRITE_ID m_nastySpriteId;    // The identifier of the nasty sprite.
+    UInt32          m_nastySpriteFlags; // The flags of the nasty sprite.
+    UInt32          m_nastySpriteSpeed; // The speed of the nasty sprite.
 
     SpriteGraphicsList  m_nastySpriteInitialisingGraphics;  // The initialising graphics of the nasty sprite.
     SpriteGraphicsList  m_nastySpriteTerminatingGraphics;   // The terminating graphics of the nasty sprite.
+
+    static  SpriteTerminatingSoundSamplesList   m_nastySpriteTerminatingSoundSamplesList;   // The nasty sprite's terminating sound samples.
 
     FolioStatus SetInitialisingMode (FolioHandle                dcHandle,
                                      const SpriteGraphicsMap    &spriteGraphicsMap,
@@ -98,6 +100,8 @@ private:
     static  bool                IsUpdateDirectionRqd (NASTY_SPRITE_ID nastySpriteId);
     static  Direction           GetDirection (NASTY_SPRITE_ID nastySpriteId);
     static  UInt32              GetSpeed (NASTY_SPRITE_ID nastySpriteId);
+
+    static  SpriteTerminatingSoundSamplesList   GetNastySpriteTerminatingSoundSamples ();
 
     // Private copy constructor to prevent copying.
     NastySprite (const NastySprite& rhs);

@@ -19,6 +19,7 @@ namespace KeyInput
 
 // Routines.
 
+bool    IsAnyKeyDown ();
 bool    IsKeyDown (Int32 virtualKey);
 bool    IsKeyUp (Int32 virtualKey);
 

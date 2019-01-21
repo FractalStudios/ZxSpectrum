@@ -211,15 +211,22 @@ FolioStatus QuerySpriteGraphics (FolioHandle                                    
 
     // Build the sprite's bitmaps.
 
+    bool    complete    = false;   // Initialise!
+    bool    foundSprite = false;
+
     for (UInt32 index = 0; 
-         (status == ERR_SUCCESS) && (index < numSpriteGraphicAttributes);
+         !complete && (status == ERR_SUCCESS) && (index < numSpriteGraphicAttributes);
          ++index)
     {              
         // Does this sprite match the sprite in the sprite graphics atttribute table?
 
         if (spriteGraphicAttributesTable [index].m_spriteId == spriteId)
         {
-            // Yes. Add the sprite graphics.
+            // Yes. 
+            
+            foundSprite = true; // We've found the sprite.
+
+            // Add the sprite graphics.
 
             Folio::Core::Game::ASprite::SpriteGraphicsList  spriteGraphicsList;
 
@@ -237,9 +244,12 @@ FolioStatus QuerySpriteGraphics (FolioHandle                                    
 
                     SpriteGraphic   spriteGraphic(spriteGraphicsMapItr->second);
 
-                    // Change the colour of the sprite graphic.
+                    if (spriteColour != ZxSpectrum::UNDEFINED)
+                    {
+                        // Change the colour of the sprite graphic.
 
-                    status = spriteGraphic->ChangeColour (mappedSpriteColour);
+                        status = spriteGraphic->ChangeColour (mappedSpriteColour);
+                    } // Endif.
 
                     if (status == ERR_SUCCESS)
                     {
@@ -266,6 +276,12 @@ FolioStatus QuerySpriteGraphics (FolioHandle                                    
             } // Endif.
 
         } // Endif.
+
+        else
+        if (foundSprite)
+        {
+            complete = true;    // We've found all the sprite's directions.
+        } // Endelseif.
 
     } // Endfor.
 

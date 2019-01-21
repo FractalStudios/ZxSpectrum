@@ -49,25 +49,6 @@ static  const   SelectionScreenItemAttributes   g_selectionScreenAttributesTable
 };
 
 
-// The main player controls map.
-static  const   Folio::Core::Game::APlayerSprite::SpriteControlsMap g_mainPlayerControlsMap =
-{
-//      virtualKey          control                                             direction
-    {   'A',            {   SelectionScreen::GAME_CONTROL_KEMPSTON_JOYSTICK,    Folio::Core::Game::APlayerSprite::N,    },  },
-    {   'Z',            {   SelectionScreen::GAME_CONTROL_KEMPSTON_JOYSTICK,    Folio::Core::Game::APlayerSprite::S,    },  },
-    {   'P',            {   SelectionScreen::GAME_CONTROL_KEMPSTON_JOYSTICK,    Folio::Core::Game::APlayerSprite::E,    },  },
-    {   'O',            {   SelectionScreen::GAME_CONTROL_KEMPSTON_JOYSTICK,    Folio::Core::Game::APlayerSprite::W,    },  },
-    {   VK_UP,          {   SelectionScreen::GAME_CONTROL_CURSOR_JOYSTICK,      Folio::Core::Game::APlayerSprite::N,    },  },
-    {   VK_DOWN,        {   SelectionScreen::GAME_CONTROL_CURSOR_JOYSTICK,      Folio::Core::Game::APlayerSprite::S,    },  },
-    {   VK_RIGHT,       {   SelectionScreen::GAME_CONTROL_CURSOR_JOYSTICK,      Folio::Core::Game::APlayerSprite::E,    },  },
-    {   VK_LEFT,        {   SelectionScreen::GAME_CONTROL_CURSOR_JOYSTICK,      Folio::Core::Game::APlayerSprite::W,    },  },
-    {   'R',            {   SelectionScreen::GAME_CONTROL_KEYBOARD,             Folio::Core::Game::APlayerSprite::N,    },  },
-    {   'E',            {   SelectionScreen::GAME_CONTROL_KEYBOARD,             Folio::Core::Game::APlayerSprite::S,    },  },
-    {   'W',            {   SelectionScreen::GAME_CONTROL_KEYBOARD,             Folio::Core::Game::APlayerSprite::E,    },  },
-    {   'Q',            {   SelectionScreen::GAME_CONTROL_KEYBOARD,             Folio::Core::Game::APlayerSprite::W,    },  },
-};
-
-
 SelectionScreen::SelectionScreen ()
 :   m_gameControl(GAME_CONTROL_DEFAULT),
     m_mainPlayer(MAIN_PLAYER_DEFAULT)
@@ -200,103 +181,118 @@ UInt16  SelectionScreen::GetMainPlayerResourceId () const
 } // Endproc.
 
 
-bool    SelectionScreen::IsPauseGameKey (UInt32 virtualKey, 
-                                         bool   keyDown) const
+bool    SelectionScreen::IsPauseGameKeyDown () const
 {
-    return (!keyDown &&
-            (((m_gameControl == GAME_CONTROL_KEMPSTON_JOYSTICK) && (virtualKey == VK_SPACE))    ||
-             ((m_gameControl == GAME_CONTROL_CURSOR_JOYSTICK)   && (virtualKey == VK_SPACE))    ||
-             ((m_gameControl == GAME_CONTROL_KEYBOARD)          && (virtualKey == VK_SPACE))));
+    return (((m_gameControl == GAME_CONTROL_KEMPSTON_JOYSTICK)  && (m_canvas->GetCanvasGamepad ()->IsBackButtonDown (m_controllerId)))  ||
+            ((m_gameControl == GAME_CONTROL_CURSOR_JOYSTICK)    && (Folio::Core::Util::KeyInput::IsKeyDown (VK_SPACE)))                 ||
+            ((m_gameControl == GAME_CONTROL_KEYBOARD)           && (Folio::Core::Util::KeyInput::IsKeyDown (VK_SPACE))));
 } // Endproc.
 
 
-bool    SelectionScreen::IsFireWeaponKey (UInt32    virtualKey, 
-                                          bool      keyDown) const
+bool    SelectionScreen::IsMainPlayerFireWeaponKeyDown () const
 {
-    return (keyDown &&
-            (((m_gameControl == GAME_CONTROL_KEMPSTON_JOYSTICK) && (virtualKey == 'M')) ||
-             ((m_gameControl == GAME_CONTROL_CURSOR_JOYSTICK)   && (virtualKey == '0')) ||
-             ((m_gameControl == GAME_CONTROL_KEYBOARD)          && (virtualKey == 'T'))));
+    return (((m_gameControl == GAME_CONTROL_KEMPSTON_JOYSTICK)  && (m_canvas->GetCanvasGamepad ()->IsXButtonDown (m_controllerId))) ||
+            ((m_gameControl == GAME_CONTROL_CURSOR_JOYSTICK)    && (Folio::Core::Util::KeyInput::IsKeyDown ('0')))                  ||
+            ((m_gameControl == GAME_CONTROL_KEYBOARD)           && (Folio::Core::Util::KeyInput::IsKeyDown ('T'))));
 } // Endproc.
 
 
-bool    SelectionScreen::IsCollectItemsKey (UInt32  virtualKey, 
-                                            bool    keyDown) const
+bool    SelectionScreen::IsMainPlayerCollectItemsKeyDown() const
 {
-    return (!keyDown &&
-            (((m_gameControl == GAME_CONTROL_KEMPSTON_JOYSTICK) && (virtualKey == 'X')) ||
-             ((m_gameControl == GAME_CONTROL_CURSOR_JOYSTICK)   && (virtualKey == 'Z')) ||
-             ((m_gameControl == GAME_CONTROL_KEYBOARD)          && (virtualKey == 'Z'))));
+    return (((m_gameControl == GAME_CONTROL_KEMPSTON_JOYSTICK)  && (m_canvas->GetCanvasGamepad ()->IsAButtonDown (m_controllerId))) ||
+            ((m_gameControl == GAME_CONTROL_CURSOR_JOYSTICK)    && (Folio::Core::Util::KeyInput::IsKeyDown ('Z')))                  ||
+            ((m_gameControl == GAME_CONTROL_KEYBOARD)           && (Folio::Core::Util::KeyInput::IsKeyDown ('Z'))));
 } // Endproc.
 
 
-bool    SelectionScreen::IsOtherKeyDown (Folio::Core::Game::APlayerSprite::Direction    mainPlayerDirection,
-                                         Folio::Core::Game::APlayerSprite::Direction    direction,
-                                         bool                                           keyDown) const
+bool    SelectionScreen::IsMainPlayerDirectionKeyDown (Folio::Core::Game::APlayerSprite::Direction &direction) const
 {
-    bool    isOtherKeyDown = false; // Initialise!
+    direction = Folio::Core::Game::APlayerSprite::NO_DIRECTION; // Initialise!
 
-    switch (mainPlayerDirection)
+    switch (m_gameControl)
     {
-    case PlayerSprite::NE:
-    case PlayerSprite::NW:
-    case PlayerSprite::SE:
-    case PlayerSprite::SW:
+    case GAME_CONTROL_KEMPSTON_JOYSTICK:
         {
-            // Get the other direction.
+            // Get the gamepad.
 
-            Folio::Core::Game::APlayerSprite::Direction otherDirection = mainPlayerDirection & ~direction;
-
-            // Find the other direction in the main player controls map.
-
-            Folio::Core::Game::APlayerSprite::SpriteControlsMap::const_iterator itr =
-                std::find_if (g_mainPlayerControlsMap.begin (), g_mainPlayerControlsMap.end (), 
-                              [this, otherDirection](const std::pair<UInt32, Folio::Core::Game::APlayerSprite::SpriteControl> &arg)
-                              {return ((arg.second.m_direction    == otherDirection) &&
-                                       (arg.second.m_controlType  == m_gameControl));});
-
-            if (itr != g_mainPlayerControlsMap.end ())
+            Folio::Core::Game::Gamepad  &gamepad(*m_canvas->GetCanvasGamepad ());
+    
+            if (gamepad.IsDPadUpButtonDown (m_controllerId))
             {
-                // Is the other key down?
-
-                isOtherKeyDown = Folio::Core::Util::KeyInput::IsKeyDown (itr->first);
+                direction = Folio::Core::Game::APlayerSprite::N;
             } // Endif.
 
+            else
+            if (gamepad.IsDPadDownButtonDown (m_controllerId))
+            {
+                direction = Folio::Core::Game::APlayerSprite::S;
+            } // Endelseif.
+
+            if (gamepad.IsDPadRightButtonDown (m_controllerId))
+            {
+                direction |= Folio::Core::Game::APlayerSprite::E;
+            } // Endif.
+
+            else
+            if (gamepad.IsDPadLeftButtonDown (m_controllerId))
+            {
+                direction |= Folio::Core::Game::APlayerSprite::W;
+            } // Endelseif.
+    
         } // Endscope.
         break;
 
-    case PlayerSprite::N:
-    case PlayerSprite::S:
-    case PlayerSprite::E:
-    case PlayerSprite::W:
+    case GAME_CONTROL_CURSOR_JOYSTICK:
+        if (Folio::Core::Util::KeyInput::IsKeyDown (VK_UP))
+        {
+            direction = Folio::Core::Game::APlayerSprite::N;
+        } // Endif.
+
+        else
+        if (Folio::Core::Util::KeyInput::IsKeyDown (VK_DOWN))
+        {
+            direction = Folio::Core::Game::APlayerSprite::S;
+        } // Endelseif.
+
+        if (Folio::Core::Util::KeyInput::IsKeyDown (VK_RIGHT))
+        {
+            direction |= Folio::Core::Game::APlayerSprite::E;
+        } // Endif.
+
+        else
+        if (Folio::Core::Util::KeyInput::IsKeyDown (VK_LEFT))
+        {
+            direction |= Folio::Core::Game::APlayerSprite::W;
+        } // Endelseif.
+        break;
+
+    case GAME_CONTROL_KEYBOARD:
     default:
-        isOtherKeyDown = false;
+        if (Folio::Core::Util::KeyInput::IsKeyDown ('R'))
+        {
+            direction = Folio::Core::Game::APlayerSprite::N;
+        } // Endif.
+
+        else
+        if (Folio::Core::Util::KeyInput::IsKeyDown ('E'))
+        {
+            direction = Folio::Core::Game::APlayerSprite::S;
+        } // Endelseif.
+
+        if (Folio::Core::Util::KeyInput::IsKeyDown ('W'))
+        {
+            direction |= Folio::Core::Game::APlayerSprite::E;
+        } // Endif.
+
+        else
+        if (Folio::Core::Util::KeyInput::IsKeyDown ('Q'))
+        {
+            direction |= Folio::Core::Game::APlayerSprite::W;
+        } // Endelseif.
         break;
     } // Endswitch.
-    
-    return (isOtherKeyDown);
-} // Endproc.
 
-
-Folio::Core::Game::APlayerSprite::Direction SelectionScreen::GetMainPlayerDirection (UInt32 virtualKey) const
-{
-    Folio::Core::Game::APlayerSprite::Direction direction = Folio::Core::Game::APlayerSprite::NO_DIRECTION; // Initialise!
-
-    // Find the virtual key in the main player controls map.
-
-    Folio::Core::Game::APlayerSprite::SpriteControlsMap::const_iterator itr = g_mainPlayerControlsMap.find (virtualKey);
-
-    // Is the virtual key valid?
-
-    if ((itr != g_mainPlayerControlsMap.end ()) &&
-        (itr->second.m_controlType == m_gameControl))
-    {
-        // Yes. Get the direction.
-
-        direction = itr->second.m_direction;
-    } // Endif.
-
-    return (direction);
+    return (direction != Folio::Core::Game::APlayerSprite::NO_DIRECTION);
 } // Endproc.
 
 
@@ -398,16 +394,6 @@ FolioStatus SelectionScreen::BuildScreenItems (FolioHandle  dcHandle,
 } // Endproc.
 
 
-FolioStatus SelectionScreen::SetupGamepad (Folio::Core::Game::Gamepad& gamepad)
-{
-    // Clear the gamepad controller's key mappings.
-
-    gamepad.ClearKeyMappings (m_controllerId);
-
-    return (ERR_SUCCESS);
-} // Endproc.
-
-
 FolioStatus SelectionScreen::StartDisplayingScreen ()
 {
     // Reset the selection screen.
@@ -416,80 +402,84 @@ FolioStatus SelectionScreen::StartDisplayingScreen ()
 } // Endproc.
 
 
-FolioStatus SelectionScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
+FolioStatus SelectionScreen::ProcessScreenInput ()
 {
-    // Process the gamepad.
+    FolioStatus status = ERR_SUCCESS;
 
-    FolioStatus status = ProcessGamepad ();
-
-    if (status == ERR_SUCCESS)
+    if (Folio::Core::Util::KeyInput::IsKeyDown ('0'))
     {
-        // Get the current tick count.
-
-        UInt32  currentTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
-
-        if (currentTickCount >= (m_previousFrameTickCount + ZxSpectrum::FLASH_MS))
-        {
-            // Update the selection screen.
-
-            status = UpdateScreen ();
-
-            if (status == ERR_SUCCESS)
-            {
-                // Note the previous tick count.
-
-                m_previousFrameTickCount = currentTickCount;
-            } // Endif.
-
-        } // Endif.
-
+        status = StartGame ();
     } // Endif.
+
+    else
+    if (Folio::Core::Util::KeyInput::IsKeyDown ('1'))
+    {
+        status = SetGameControl (GAME_CONTROL_KEYBOARD);
+    } // Endelseif.
+
+    else
+    if (Folio::Core::Util::KeyInput::IsKeyDown ('2'))
+    {
+        status = SetGameControl (GAME_CONTROL_KEMPSTON_JOYSTICK);
+    } // Endelseif.
+
+    else
+    if (Folio::Core::Util::KeyInput::IsKeyDown ('3'))
+    {
+        status = SetGameControl (GAME_CONTROL_CURSOR_JOYSTICK);
+    } // Endelseif.
+
+    else
+    if (Folio::Core::Util::KeyInput::IsKeyDown ('4'))
+    {
+        status = SetMainPlayer (MAIN_PLAYER_KNIGHT);
+    } // Endelseif.
+
+    else
+    if (Folio::Core::Util::KeyInput::IsKeyDown ('5'))
+    {
+        status = SetMainPlayer (MAIN_PLAYER_WIZARD);
+    } // Endelseif.
+
+    else
+    if (Folio::Core::Util::KeyInput::IsKeyDown ('6'))
+    {
+        status = SetMainPlayer (MAIN_PLAYER_SERF);
+    } // Endelseif.
+
+    else
+    {
+        // Process the gamepad.
+
+        status = ProcessGamepad ();
+    } // Endelse.
 
     return (status);
 } // Endproc.
 
 
-FolioStatus SelectionScreen::ProcessScreenKeyboardMsg (UInt32   wParam,
-                                                       UInt32   lParam,
-                                                       bool     keyDown)
+FolioStatus SelectionScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
 {
     FolioStatus status = ERR_SUCCESS;
 
-    // Process the keyboard message.
+    // Get the current tick count.
 
-    switch (wParam) 
-    { 
-    case '0':
-        status = StartGame ();
-        break;
+    UInt32  currentTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
 
-    case '1':
-        status = SetGameControl (GAME_CONTROL_KEYBOARD);
-        break; 
+    if (currentTickCount >= (m_previousFrameTickCount + ZxSpectrum::FLASH_MILLISECONDS))
+    {
+        // Update the selection screen.
 
-    case '2':
-        status = SetGameControl (GAME_CONTROL_KEMPSTON_JOYSTICK);
-        break; 
+        status = UpdateScreen ();
 
-    case '3':
-        status = SetGameControl (GAME_CONTROL_CURSOR_JOYSTICK);
-        break; 
+        if (status == ERR_SUCCESS)
+        {
+            // Note the previous frame tick count.
 
-    case '4':
-        status = SetMainPlayer (MAIN_PLAYER_KNIGHT);
-        break; 
+            m_previousFrameTickCount = currentTickCount;
+        } // Endif.
 
-    case '5':
-        status = SetMainPlayer (MAIN_PLAYER_WIZARD);
-        break; 
-
-    case '6':
-        status = SetMainPlayer (MAIN_PLAYER_SERF);
-        break; 
-
-    default:
-        break;
-    } // Endswitch.
+    } // Endif.
 
     return (status);
 } // Endproc.
@@ -499,14 +489,14 @@ FolioStatus SelectionScreen::UpdateScreen ()
 {
     FolioStatus status = ERR_SUCCESS;
 
-    // Get the canvas bag graphics.
+    // Get the canvas graphics.
 
-    Gdiplus::Graphics   *graphics = m_canvasBag->GetCanvasGraphics ();
+    Gdiplus::Graphics   *graphics = m_canvas->GetCanvasGraphics ();
 
     // Update the selection screen items.
 
     bool    finished        = false;   // Initialise!
-    bool    redrawCanvasBag = false;
+    bool    redrawCanvas    = false;
 
     for (ItemsList::iterator itr = m_itemsList.begin ();
          !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
@@ -547,7 +537,7 @@ FolioStatus SelectionScreen::UpdateScreen ()
                 status = UpdateTextItem (*item,
                                          invertColours,
                                          *graphics,
-                                         redrawCanvasBag);
+                                         redrawCanvas);
             } // Endscope.
             break;
 
@@ -580,7 +570,7 @@ FolioStatus SelectionScreen::UpdateScreen ()
                 status = UpdateTextItem (*item,
                                          invertColours,
                                          *graphics,
-                                         redrawCanvasBag);
+                                         redrawCanvas);
 
                 // Finished?
 
@@ -594,11 +584,11 @@ FolioStatus SelectionScreen::UpdateScreen ()
 
     } // Endfor.
 
-    if (redrawCanvasBag && (status == ERR_SUCCESS))
+    if (redrawCanvas && (status == ERR_SUCCESS))
     {
-        // The canvas bag should be redrawn on the next draw.
+        // The canvas should be redrawn on the next draw.
 
-        m_canvasBag->SetRedrawRqd ();
+        m_canvas->SetRedrawRqd ();
     } // Endif.
     
     return (status);
@@ -609,14 +599,14 @@ FolioStatus SelectionScreen::ResetScreen ()
 {                   
     FolioStatus status = ERR_SUCCESS;
 
-    // Get the canvas bag graphics.
+    // Get the canvas graphics.
 
-    Gdiplus::Graphics   *graphics = m_canvasBag->GetCanvasGraphics ();
+    Gdiplus::Graphics   *graphics = m_canvas->GetCanvasGraphics ();
 
     // Reset the selection screen items.
 
     bool    finished        = false;   // Initialise!
-    bool    redrawCanvasBag = false;
+    bool    redrawCanvas    = false;
 
     for (ItemsList::iterator itr = m_itemsList.begin ();
          !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
@@ -644,7 +634,7 @@ FolioStatus SelectionScreen::ResetScreen ()
                 status = UpdateTextItem (*item,
                                          false, // Don't invert colours.
                                          *graphics,
-                                         redrawCanvasBag);
+                                         redrawCanvas);
 
                 // Finished?
             
@@ -658,11 +648,11 @@ FolioStatus SelectionScreen::ResetScreen ()
 
     } // Endfor.
 
-    if (redrawCanvasBag && (status == ERR_SUCCESS))
+    if (redrawCanvas && (status == ERR_SUCCESS))
     {
-        // The canvas bag should be redrawn on the next draw.
+        // The canvas should be redrawn on the next draw.
 
-        m_canvasBag->SetRedrawRqd ();
+        m_canvas->SetRedrawRqd ();
     } // Endif.
 
     return (status);
@@ -672,7 +662,7 @@ FolioStatus SelectionScreen::ResetScreen ()
 FolioStatus SelectionScreen::UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type   &item,
                                              bool                                           invertColours,
                                              Gdiplus::Graphics                              &graphics, 
-                                             bool                                           &redrawCanvasBag)
+                                             bool                                           &redrawCanvas)
 {                   
     FolioStatus status = ERR_SUCCESS;
 
@@ -694,7 +684,7 @@ FolioStatus SelectionScreen::UpdateTextItem (Folio::Core::Game::TextItemPtr::ele
 
         if (status == ERR_SUCCESS)
         {
-            redrawCanvasBag = true;
+            redrawCanvas = true;
         } // Endif.
 
     } // Endif.
@@ -712,7 +702,7 @@ FolioStatus SelectionScreen::UpdateTextItem (Folio::Core::Game::TextItemPtr::ele
 
         if (status == ERR_SUCCESS)
         {
-            redrawCanvasBag = true;
+            redrawCanvas = true;
         } // Endif.
 
     } // Endelseif.
@@ -770,10 +760,6 @@ void    SelectionScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_ty
 
 FolioStatus SelectionScreen::StartGame ()
 {
-    // Configure the gamepad.
-
-    ConfigureGamepad ();
-
     // Stop displaying the selection screen.
 
     StopDisplaying ();
@@ -788,7 +774,7 @@ FolioStatus SelectionScreen::ProcessGamepad ()
 
     // Get the gamepad.
 
-    Folio::Core::Game::Gamepad  &gamepad(*m_canvasBag->GetCanvasGamepad ());
+    Folio::Core::Game::Gamepad  &gamepad(*m_canvas->GetCanvasGamepad ());
 
     if (gamepad.IsStartButtonDown (m_controllerId))
     {
@@ -866,32 +852,6 @@ FolioStatus SelectionScreen::ProcessGamepad ()
     } // Endelseif.
 
     return (status);
-} // Endproc.
-
-
-void    SelectionScreen::ConfigureGamepad ()
-{
-    if (m_gameControl == GAME_CONTROL_KEMPSTON_JOYSTICK)
-    {
-        // Get the gamepad.
-
-        Folio::Core::Game::Gamepad  &gamepad(*m_canvasBag->GetCanvasGamepad ());
-    
-        // Clear the gamepad controller's key mappings.
-
-        gamepad.ClearKeyMappings (m_controllerId);
-
-        // Set the gamepad controller's new key mappings.
-
-        gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_BACK,         VK_SPACE);  // Pause.
-        gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_DPAD_UP,      'A');
-        gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_DPAD_DOWN,    'Z');
-        gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_DPAD_LEFT,    'O');
-        gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_DPAD_RIGHT,   'P');
-        gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_X,            'M');       // Fire.
-        gamepad.AddKeyMapping (m_controllerId, Folio::Core::Game::Gamepad::BUTTON_B,            'X');       // Collect.
-    } // Endif.
-
 } // Endproc.
 
 } // Endnamespace.

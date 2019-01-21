@@ -27,6 +27,7 @@ FolioStatus DestroyMemoryDC (FolioHandle memoryDcHandle);
 FolioStatus SelectObjectIntoDC (FolioHandle     dcHandle,
                                 FolioHandle     newObjectHandle,
                                 FolioHandle*    oldObjectHandle = 0);
+FolioStatus DestroyObject (FolioHandle objectHandle);
 FolioStatus SelectClippingRegion (FolioHandle   dcHandle,
                                   FolioHandle   clippingRegionHandle);
 FolioStatus DestroyClippingRegion (FolioHandle clippingRegionHandle);

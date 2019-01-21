@@ -60,13 +60,17 @@ public:
                               RectList*             rects = 0);
 
 private:
-    Gdiplus::Rect   m_bufferedBitmapRect;   ///< The rect of the buffered bitmap.
     FolioHandle     m_dcHandle;             ///< The device context handle.
+    Gdiplus::Rect   m_bufferedBitmapRect;   ///< The rect of the buffered bitmap.
     FolioHandle     m_memoryDcHandle;       ///< The handle to the display compatible memory device context associated with the buffered bitmap.
     FolioHandle     m_bitmapHandle;         ///< The handle to the buffered bitmap.
     FolioHandle     m_oldBitmapHandle;      ///< The old handle to the buffered bitmap.
 
     std::unique_ptr<Gdiplus::Graphics>  m_graphics; ///< The GDI+ graphics object associated with the buffered bitmap.
+
+    FolioStatus InitialiseBitmap (FolioHandle           dcHandle,
+                                  const Gdiplus::Rect&  bufferedBitmapRect,
+                                  bool                  drawToRequired);
 
     void    Destroy ();
     bool    IsCreated () const;

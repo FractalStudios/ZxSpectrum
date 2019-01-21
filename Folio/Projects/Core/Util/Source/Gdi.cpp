@@ -142,6 +142,38 @@ FolioStatus SelectObjectIntoDC (FolioHandle     dcHandle,
         *oldObjectHandle = objectHandle;
     } // Endelse.
 
+    return (status);
+} // Endproc.
+
+
+/**
+ * Function that will destroy a object.
+ *
+ * @param [in] objectHandle
+ * The object handle.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if the object was successfully destroyed.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus DestroyObject (FolioHandle objectHandle)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Delete the object.
+
+    if (!::DeleteObject (objectHandle))
+    {
+        // Build and log an error.
+
+        status = FOLIO_MAKE_OS_ERROR(::GetLastError ());
+
+        FOLIO_LOG_CALL_ERROR_1 (TXT("DeleteObject"),
+                                status,
+                                objectHandle);
+    } // Endif.
 
     return (status);
 } // Endproc.
@@ -200,22 +232,7 @@ FolioStatus SelectClippingRegion (FolioHandle   dcHandle,
  */
 FolioStatus DestroyClippingRegion (FolioHandle clippingRegionHandle)
 {
-    FolioStatus status = ERR_SUCCESS;
-
-    // Delete the object.
-
-    if (!::DeleteObject (clippingRegionHandle))
-    {
-        // Build and log an error.
-
-        status = FOLIO_MAKE_OS_ERROR(::GetLastError ());
-
-        FOLIO_LOG_CALL_ERROR_1 (TXT("DeleteObject"),
-                                status,
-                                clippingRegionHandle);
-    } // Endif.
-
-    return (status);
+    return (DestroyObject (clippingRegionHandle));
 } // Endproc.
 
 
@@ -318,11 +335,18 @@ FolioStatus ClearRectangle (FolioHandle dcHandle,
                 SelectObjectIntoDC (dcHandle, oldBrushObjectHandle);  
             } // Endif.
 
+            // Destroy the brush.
+
+            DestroyObject (brushHandle);
+
             // Reselect the old pen into the DC.
         
             SelectObjectIntoDC (dcHandle, oldPenObjectHandle);  
         } // Endif.
     
+        // Destroy the pen.
+
+        DestroyObject (penHandle);
     } // Endif.
 
     else
@@ -443,6 +467,9 @@ FolioStatus DrawLine (FolioHandle dcHandle,
             SelectObjectIntoDC (dcHandle, oldPenObjectHandle);  
         } // Endif.
 
+        // Destroy the pen.
+
+        DestroyObject (penHandle);
     } // Endif.
 
     else

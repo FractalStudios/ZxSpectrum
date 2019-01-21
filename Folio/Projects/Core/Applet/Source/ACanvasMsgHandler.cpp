@@ -16,7 +16,7 @@ namespace Applet
 ACanvasMsgHandler::ACanvasMsgHandler (Int32     maxScreenXPixels,
                                       Int32     maxScreenYPixels,
                                       UInt32    screenScale)
-:   m_canvasBag(new CanvasBag(maxScreenXPixels, maxScreenYPixels, screenScale))
+:   m_canvas(new Canvas(maxScreenXPixels, maxScreenYPixels, screenScale))
 {
 } // Endproc.
 
@@ -30,15 +30,14 @@ ACanvasMsgHandler::~ACanvasMsgHandler ()
 
 
 /**
- * Method that is used to get the canvas bag of the canvas message
- * handler.
+ * Method that is used to get the canvas of the canvas message handler.
  *
  * @return
- * The canvas bag of the canvas message handler.
+ * The canvas of the canvas message handler.
  */
-CanvasBag*  ACanvasMsgHandler::GetCanvasBag ()
+Canvas* ACanvasMsgHandler::GetCanvas ()
 {
-    return (m_canvasBag.get ());
+    return (m_canvas.get ());
 } // Endproc.
 
 
@@ -140,9 +139,9 @@ FolioStatus ACanvasMsgHandler::HandleSizeMsg (FolioHandle   wndHandle,
                                               UInt32        wParam,
                                               UInt32        lParam)
 {
-    // Resize the canvas bag.
+    // Resize the canvas.
 
-    return (m_canvasBag->ResizeCanvas (wParam, LOWORD(lParam), HIWORD(lParam)));
+    return (m_canvas->ResizeCanvas (wParam, LOWORD(lParam), HIWORD(lParam)));
 
     FOLIO_UNREFERENCED(wndHandle);
     FOLIO_UNREFERENCED(wParam);
@@ -173,139 +172,9 @@ FolioStatus ACanvasMsgHandler::HandlePaintCanvasMsg (FolioHandle    wndHandle,
                                                      UInt32         wParam,
                                                      UInt32         lParam)
 {
-    // Paint the canvas bag.
+    // Paint the canvas.
 
-    return (m_canvasBag->PaintCanvas ());
-
-    FOLIO_UNREFERENCED(wndHandle);
-    FOLIO_UNREFERENCED(wParam);
-    FOLIO_UNREFERENCED(lParam);
-} // Endproc.
-
-
-/**
- * Method that is used to handle a WM_KEYDOWN or WM_KEYUP message received by the 
- * applet window.
- *
- * @param [in] wndHandle
- * The handle of the applet window.
- *
- * @param [in] wParam
- * Contains additional data relevant to the message.
- *
- * @param [in] lParam
- * Contains additional data relevant to the message.
- *
- * @param [in] keyDown
- * <b>true</b> of the message was WM_KEYDOW .
- *
- * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
- */
-FolioStatus ACanvasMsgHandler::HandleKeyboardMsg (FolioHandle   wndHandle,
-                                                  UInt32        wParam,
-                                                  UInt32        lParam,
-                                                  bool          keyDown)
-{
-    return (ERR_SUCCESS);
-
-    FOLIO_UNREFERENCED(wndHandle);
-    FOLIO_UNREFERENCED(wParam);
-    FOLIO_UNREFERENCED(lParam);
-    FOLIO_UNREFERENCED(keyDown);
-} // Endproc.
-
-
-/**
- * Method that is used to handle a WM_MOUSEMOVE message received by the applet 
- * window.
- *
- * @param [in] wndHandle
- * The handle of the applet window.
- *
- * @param [in] wParam
- * Contains additional data relevant to the message.
- *
- * @param [in] lParam
- * Contains additional data relevant to the message.
- *
- * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
- */
-FolioStatus ACanvasMsgHandler::HandleMouseMoveMsg (FolioHandle  wndHandle,
-                                                   UInt32       wParam,
-                                                   UInt32       lParam)
-{
-    return (ERR_SUCCESS);
-
-    FOLIO_UNREFERENCED(wndHandle);
-    FOLIO_UNREFERENCED(wParam);
-    FOLIO_UNREFERENCED(lParam);
-} // Endproc.
-
-
-/**
- * Method that is used to handle a WM_LBUTTONDOWN, WM_LBUTTONUP, 
- * WM_RBUTTONDOWN, WM_RBUTTONUP, WM_MBUTTONDOWN, WM_MBUTTONUP message received 
- * by the applet window.
- *
- * @param [in] wndHandle
- * The handle of the applet window.
- *
- * @param [in] wParam
- * Contains additional data relevant to the message.
- *
- * @param [in] lParam
- * Contains additional data relevant to the message.
- *
- * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
- */
-FolioStatus ACanvasMsgHandler::HandleMouseButtonMsg (FolioHandle    wndHandle,
-                                                     UInt32         wParam,
-                                                     UInt32         lParam)
-{
-    return (ERR_SUCCESS);
-
-    FOLIO_UNREFERENCED(wndHandle);
-    FOLIO_UNREFERENCED(wParam);
-    FOLIO_UNREFERENCED(lParam);
-} // Endproc.
-
-
-/**
- * Method that is used to handle a WM_TIMER message received by the applet 
- * window.
- *
- * @param [in] wndHandle
- * The handle of the applet window.
- *
- * @param [in] wParam
- * Contains additional data relevant to the message.
- *
- * @param [in] lParam
- * Contains additional data relevant to the message.
- *
- * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
- */
-FolioStatus ACanvasMsgHandler::HandleTimerMsg (FolioHandle  wndHandle,
-                                               UInt32       wParam,
-                                               UInt32       lParam)
-{
-    return (ERR_SUCCESS);
+    return (m_canvas->PaintCanvas ());
 
     FOLIO_UNREFERENCED(wndHandle);
     FOLIO_UNREFERENCED(wParam);

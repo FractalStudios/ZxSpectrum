@@ -6,6 +6,7 @@
 // "Home-made" includes.
 #include    <Applet.h>
 #include    <Game.h>
+#include    <Util.h>
 
 #pragma pack(push, 1)
 
@@ -45,6 +46,8 @@ private:
     ScreenSequenceList              m_screenSequenceList;           // The screen sequence list.
     ScreenSequenceList::iterator    m_currentScreenSequenceListItr; // The current screen sequence.
 
+    static  Folio::Core::Util::Sound::SoundSamplesList  m_soundSamplesList; // The sound samples list.
+
     // AScreen method(s).
     virtual FolioStatus BuildScreenItems (FolioHandle dcHandle, 
                                           FolioHandle instanceHandle);
@@ -55,6 +58,8 @@ private:
     virtual FolioStatus UpdateScreen ();
 
     void    CreateScreenSequence ();
+   
+    static  void    CreateSoundSamples ();
 
     // Private copy constructor to prevent copying.
     FallingSimulationScreen (const FallingSimulationScreen& rhs);

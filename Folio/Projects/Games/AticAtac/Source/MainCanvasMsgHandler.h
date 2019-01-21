@@ -40,10 +40,6 @@ public:
     virtual FolioStatus HandleCreateCanvasMsg (FolioHandle  wndHandle,
                                                UInt32       wParam,
                                                UInt32       lParam);
-    virtual FolioStatus HandleKeyboardMsg (FolioHandle  wndHandle,
-                                           UInt32       wParam,
-                                           UInt32       lParam,
-                                           bool         keyDown);
     virtual FolioStatus HandleProcessFrame (FolioHandle wndHandle,
                                             UInt32      &frameRateIncrement);
 
@@ -56,8 +52,8 @@ private:
         STATE_SELECTING,
         STATE_STARTING,
         STATE_PLAYING,
-        STATE_PAUSED,
         STATE_MAIN_PLAYER_FALLING,
+        STATE_PAUSED,
         STATE_GAME_OVER,
     }; // Endenum.
 
@@ -81,27 +77,6 @@ private:
 
     PlayerSpritePtr m_mainPlayer;    // The main player.
 
-    FolioStatus HandleLoadingStateKeyboardMsg (FolioHandle  wndHandle,
-                                               UInt32       wParam,
-                                               UInt32       lParam,
-                                               bool         keyDown);
-    FolioStatus HandleSelectingStateKeyboardMsg (FolioHandle    wndHandle,
-                                                 UInt32         wParam,
-                                                 UInt32         lParam,
-                                                 bool           keyDown);
-    FolioStatus HandlePlayingStateKeyboardMsg (FolioHandle  wndHandle,
-                                               UInt32       wParam,
-                                               UInt32       lParam,
-                                               bool         keyDown);
-    FolioStatus HandlePausedStateKeyboardMsg (FolioHandle   wndHandle,
-                                              UInt32        wParam,
-                                              UInt32        lParam,
-                                              bool          keyDown);
-    FolioStatus HandleGameOverStateKeyboardMsg (FolioHandle wndHandle,
-                                                UInt32      wParam,
-                                                UInt32      lParam,
-                                                bool        keyDown);
-
     FolioStatus HandleProcessLoadingStateFrame (FolioHandle wndHandle,
                                                 UInt32      *frameRateIncrement = 0);
     FolioStatus HandleProcessSelectingStateFrame (FolioHandle   wndHandle,
@@ -112,15 +87,19 @@ private:
                                                 UInt32      *frameRateIncrement = 0);
     FolioStatus HandleProcessMainPlayerFallingStateFrame (FolioHandle   wndHandle,
                                                           UInt32        *frameRateIncrement = 0);
+    FolioStatus HandleProcessPausedStateFrame (FolioHandle  wndHandle,
+                                               UInt32       *frameRateIncrement = 0);
     FolioStatus HandleProcessGameOverStateFrame (FolioHandle    wndHandle,
                                                  UInt32         *frameRateIncrement = 0);
+
+    FolioStatus CheckPlayingStateInput ();
 
     FolioStatus StartPlaying ();
     FolioStatus DisplayInitialScreen (UInt32 screenNumber);
     FolioStatus DisplayScreen (UInt32 screenNumber);
     FolioStatus DisplayGameOverScreen (bool mainPlayerCompletedGame);
 
-    FolioStatus SetCanvasBagBackground (const Gdiplus::Region *clippingRegion = 0);
+    FolioStatus SetCanvasBackground (const Gdiplus::Region *clippingRegion = 0);
     FolioStatus Initialise ();
 
     void    DisplayFrameRate () const;

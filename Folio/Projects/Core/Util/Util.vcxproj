@@ -37,6 +37,8 @@
     <ClInclude Include="Include\SharedMemory.h" />
     <ClInclude Include="Include\SharedName.h" />
     <ClInclude Include="Include\SharedTable.h" />
+    <ClInclude Include="Include\Sound.h" />
+    <ClInclude Include="Include\SoundSample.h" />
     <ClInclude Include="Include\StaticMap.h" />
     <ClInclude Include="Include\Sync.h" />
     <ClInclude Include="Include\System.h" />
@@ -49,6 +51,8 @@
     <ClInclude Include="Include\VirtualMemory.h" />
     <ClInclude Include="Include\WaitableTimer.h" />
     <ClInclude Include="Include\WaitAny.h" />
+    <ClInclude Include="Include\WaveOut.h" />
+    <ClInclude Include="Include\AsyncSound.h" />
     <ClInclude Include="Include\Win32Exception.h" />
     <ClInclude Include="Include\Window.h" />
   </ItemGroup>
@@ -79,6 +83,8 @@
     <ClCompile Include="Source\SharedMemory.cpp" />
     <ClCompile Include="Source\SharedName.cpp" />
     <ClCompile Include="Source\SharedTable.cpp" />
+    <ClCompile Include="Source\Sound.cpp" />
+    <ClCompile Include="Source\SoundSample.cpp" />
     <ClCompile Include="Source\StaticMap.cpp" />
     <ClCompile Include="Source\Sync.cpp" />
     <ClCompile Include="Source\System.cpp" />
@@ -91,6 +97,8 @@
     <ClCompile Include="Source\VirtualMemory.cpp" />
     <ClCompile Include="Source\WaitableTimer.cpp" />
     <ClCompile Include="Source\WaitAny.cpp" />
+    <ClCompile Include="Source\WaveOut.cpp" />
+    <ClCompile Include="Source\AsyncSound.cpp" />
     <ClCompile Include="Source\Win32Exception.cpp" />
     <ClCompile Include="Source\Window.cpp" />
   </ItemGroup>
@@ -135,11 +143,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\Base\Include;..\Trace\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>..\Base\Include;..\Trace\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

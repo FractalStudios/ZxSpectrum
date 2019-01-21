@@ -19,7 +19,8 @@ using   namespace   Folio::Core::Util::Gdi;
  * The default class constructor.
  */
 GdiBufferedBitmap::GdiBufferedBitmap ()
-:   m_memoryDcHandle(FOLIO_INVALID_HANDLE),
+:   m_dcHandle(FOLIO_INVALID_HANDLE),
+    m_memoryDcHandle(FOLIO_INVALID_HANDLE),
     m_bitmapHandle(FOLIO_INVALID_HANDLE),
     m_oldBitmapHandle(FOLIO_INVALID_HANDLE)
 {
@@ -74,59 +75,18 @@ FolioStatus GdiBufferedBitmap::Create (FolioHandle          dcHandle,
 
     else
     {
-        // No. Set the buffered bitmap's attributes.
+        // No. Create a display compatible bitmap.
 
-        m_bufferedBitmapRect    = bufferedBitmapRect;
-        m_dcHandle              = dcHandle;
-
-        // Create a display compatible memory DC.
-
-        status = CreateCompatibleMemoryDC (m_dcHandle, m_memoryDcHandle);
+        status = CreateCompatibleBitmap (dcHandle,
+                                         bufferedBitmapRect.Width,
+                                         bufferedBitmapRect.Height,
+                                         m_bitmapHandle);
 
         if (status == ERR_SUCCESS)
         {
-            // Create a display compatible bitmap.
+            // Initialise the bitmap.
 
-            status = CreateCompatibleBitmap (m_dcHandle,
-                                             m_bufferedBitmapRect.Width,
-                                             m_bufferedBitmapRect.Height,
-                                             m_bitmapHandle);
-
-            if (status == ERR_SUCCESS)
-            {
-                // Select the bitmap into the memory device context.
-
-                status = SelectObjectIntoDC (m_memoryDcHandle, m_bitmapHandle, &(m_oldBitmapHandle));
-
-                if (status == ERR_SUCCESS)
-                {
-                    // Copy the bitmap from the device context to the memory 
-                    // device context.
-            
-                    status = CopyBitmap (m_memoryDcHandle,
-                                         0,
-                                         0,
-                                         m_bufferedBitmapRect.Width,
-                                         m_bufferedBitmapRect.Height,
-                                         m_dcHandle,
-                                         m_bufferedBitmapRect.X,
-                                         m_bufferedBitmapRect.Y,
-                                         SRCCOPY);
-
-                    // If the buffered bitmap is to be drawn to then we must 
-                    // create its graphics object.
-
-                    if (drawToRequired && (status == ERR_SUCCESS))
-                    {
-                        // Create the graphics object.
-
-                        status = CreateGraphics ();
-                    } // Endif.
-
-                } // Endif.
-
-            } // Endif.
-
+            status = InitialiseBitmap (dcHandle, bufferedBitmapRect, drawToRequired);
         } // Endif.
 
     } // Endelse.
@@ -328,53 +288,61 @@ FolioStatus GdiBufferedBitmap::Buffer (Gdiplus::Graphics&   graphics,
 
     if (IsCreated ())
     {
-        // Yes. Destroy the buffered bitmap.
+        // Yes. Select the old bitmap into the memory device context.
 
-        status = DestroyBitmap (m_bitmapHandle);
+        status = SelectObjectIntoDC (m_memoryDcHandle, m_oldBitmapHandle);
 
         if (status == ERR_SUCCESS)
         {
-            // Note the buffered bitmap rect.
+            // Destroy the buffered bitmap.
 
-            m_bufferedBitmapRect = bufferedBitmapRect;
-
-            // Create a display compatible bitmap.
-
-            status = CreateCompatibleBitmap (m_dcHandle,
-                                             bufferedBitmapRect.Width,
-                                             bufferedBitmapRect.Height,
-                                             m_bitmapHandle);
+            status = DestroyBitmap (m_bitmapHandle);
 
             if (status == ERR_SUCCESS)
             {
-                // Select the bitmap into the memory device context.
+                // Create a display compatible bitmap.
 
-                status = SelectObjectIntoDC (m_memoryDcHandle, m_bitmapHandle, &(m_oldBitmapHandle));
+                status = CreateCompatibleBitmap (m_dcHandle,
+                                                 bufferedBitmapRect.Width,
+                                                 bufferedBitmapRect.Height,
+                                                 m_bitmapHandle);
 
                 if (status == ERR_SUCCESS)
                 {
-                    HDC graphicsDcHandle = graphics.GetHDC ();
-                 
-                    // Copy the bitmap from the graphics device context to the memory 
-                    // device context.
-            
-                    status = CopyBitmap (m_memoryDcHandle,
-                                         0,
-                                         0,
-                                         m_bufferedBitmapRect.Width,
-                                         m_bufferedBitmapRect.Height,
-                                         graphicsDcHandle,
-                                         m_bufferedBitmapRect.X,
-                                         m_bufferedBitmapRect.Y,
-                                         SRCCOPY);
-            
-                    // Release the graphics device context.
-             
-                    graphics.ReleaseHDC (graphicsDcHandle);
-                } // Endif.
+                    // Select the bitmap into the memory device context.
 
-            } // Endif.
+                    status = SelectObjectIntoDC (m_memoryDcHandle, m_bitmapHandle, &(m_oldBitmapHandle));
+
+                    if (status == ERR_SUCCESS)
+                    {
+                        // Note the buffered bitmap rect.
+
+                        m_bufferedBitmapRect = bufferedBitmapRect;
+                
+                        HDC graphicsDcHandle = graphics.GetHDC ();
+                 
+                        // Copy the bitmap from the graphics device context to the memory 
+                        // device context.
+            
+                        status = CopyBitmap (m_memoryDcHandle,
+                                             0,
+                                             0,
+                                             m_bufferedBitmapRect.Width,
+                                             m_bufferedBitmapRect.Height,
+                                             graphicsDcHandle,
+                                             m_bufferedBitmapRect.X,
+                                             m_bufferedBitmapRect.Y,
+                                             SRCCOPY);
+            
+                        // Release the graphics device context.
+             
+                        graphics.ReleaseHDC (graphicsDcHandle);
+                    } // Endif.
+
+                } // Endif.
         
+            } // Endif.
+
         } // Endif.
 
     } // Endif.
@@ -629,6 +597,74 @@ FolioStatus GdiBufferedBitmap::Draw (Gdiplus::Graphics& graphics,
 
 
 /**
+ * Method that is used to initialise the buffered bitmap.
+ *
+ * @param [in] dcHandle
+ * The device context handle.
+ *
+ * @param [in] bufferedBitmapRect
+ * The rect of the buffered bitmap.
+ *
+ * @param [in] drawToRequired
+ * Indicates if it is required to draw into the buffered bitmap.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if successful.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus GdiBufferedBitmap::InitialiseBitmap (FolioHandle            dcHandle,
+                                                 const Gdiplus::Rect&   bufferedBitmapRect,
+                                                 bool                   drawToRequired)
+{
+    // Create a display compatible memory DC.
+
+    FolioStatus status = CreateCompatibleMemoryDC (dcHandle, m_memoryDcHandle);
+
+    if (status == ERR_SUCCESS)
+    {
+        // Select the bitmap into the memory device context.
+
+        status = SelectObjectIntoDC (m_memoryDcHandle, m_bitmapHandle, &(m_oldBitmapHandle));
+
+        if (status == ERR_SUCCESS)
+        {          
+            // Set the bitmap's attributes.
+
+            m_dcHandle              = dcHandle;
+            m_bufferedBitmapRect    = bufferedBitmapRect;
+
+            // Copy the bitmap from the device context to the memory device context.
+            
+            status = CopyBitmap (m_memoryDcHandle,
+                                 0,
+                                 0,
+                                 m_bufferedBitmapRect.Width,
+                                 m_bufferedBitmapRect.Height,
+                                 m_dcHandle,
+                                 m_bufferedBitmapRect.X,
+                                 m_bufferedBitmapRect.Y,
+                                 SRCCOPY);
+
+            // If the buffered bitmap is to be drawn to then we must create its graphics object.
+
+            if (drawToRequired && (status == ERR_SUCCESS))
+            {
+                // Create the graphics object.
+
+                status = CreateGraphics ();
+            } // Endif.
+
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+/**
  * Method that is used to destroy the buffered bitmap.
  */
 void    GdiBufferedBitmap::Destroy ()
@@ -637,15 +673,6 @@ void    GdiBufferedBitmap::Destroy ()
     // context.
 
     DestroyGraphics ();
-
-    // Destroy the bitmap?
-
-    if (m_bitmapHandle != FOLIO_INVALID_HANDLE)
-    {
-        // Yes.
-
-        DestroyBitmap (m_bitmapHandle);
-    } // Endif.
 
     // Select the old bitmap in the memory device context?
 
@@ -663,6 +690,15 @@ void    GdiBufferedBitmap::Destroy ()
         // Yes.
 
         DestroyMemoryDC (m_memoryDcHandle);
+    } // Endif.
+
+    // Destroy the bitmap?
+
+    if (m_bitmapHandle != FOLIO_INVALID_HANDLE)
+    {
+        // Yes.
+
+        DestroyBitmap (m_bitmapHandle);
     } // Endif.
 
 } // Endproc.

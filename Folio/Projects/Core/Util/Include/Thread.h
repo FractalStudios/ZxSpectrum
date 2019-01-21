@@ -59,6 +59,9 @@ public:
     UInt32      GetThreadId () const;
     FolioStatus QueryThreadExitCode (FolioStatus& exitCode) const;
 
+    static  FolioStatus SetTimeThreshold (UInt32 thresholdRqd);
+    static  FolioStatus ResetTimeThreshold (UInt32 thresholdRqd);
+
     static  void    Sleep (UInt32 numMilliseconds);
 
 private:

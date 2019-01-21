@@ -39,6 +39,7 @@ public:
     /// Wait any synchronization list type.
     typedef std::vector<Sync*>  SyncList;
 
+    WaitAny ();
     explicit WaitAny (SyncList& syncList);
     ~WaitAny ();
 

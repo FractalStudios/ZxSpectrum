@@ -163,13 +163,14 @@ FolioStatus GameOverScreen::BuildScreenItems (FolioHandle   dcHandle,
 } // Endproc.
 
 
-FolioStatus GameOverScreen::ProcessScreenKeyboardMsg (UInt32    wParam,
-                                                      UInt32    lParam,
-                                                      bool      keyDown)
+FolioStatus GameOverScreen::ProcessScreenInput ()
 {
-    // Stop displaying the game over screen.
+    if (Folio::Core::Util::KeyInput::IsAnyKeyDown ())
+    {
+        // Stop displaying the game over screen.
 
-    StopDisplaying ();
+        StopDisplaying ();
+    } // Endif.
 
     return (ERR_SUCCESS);
 } // Endproc.

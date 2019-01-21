@@ -39,10 +39,13 @@ static  const   NastySpriteGraphicAttributes    g_nastySpriteGraphicAttributesTa
 };
 
 
+// Nasty sprite static members.
+NastySprite::SpriteTerminatingSoundSamplesList  NastySprite::m_nastySpriteTerminatingSoundSamplesList;  // The nasty sprite's terminating sound samples.
+
 NastySprite::NastySprite ()
 :   m_nastySpriteId(NASTY_SPRITE_UNDEFINED),
     m_nastySpriteFlags(FLAGS_NONE),
-    m_speed(STATIC_SPEED)
+    m_nastySpriteSpeed(STATIC_SPEED)
 {
 } // Endproc.
 
@@ -110,7 +113,7 @@ FolioStatus NastySprite::Create (FolioHandle                            dcHandle
 
                     m_nastySpriteId     = nastySpriteId;
                     m_nastySpriteFlags  = nastySpriteFlags;
-                    m_speed             = GetSpeed (nastySpriteId);
+                    m_nastySpriteSpeed  = GetSpeed (nastySpriteId);
                 } // Endif.
 
             } // Endif.
@@ -137,7 +140,7 @@ FolioStatus NastySprite::Move (Gdiplus::Graphics                 &graphics,
 
     // Move the nasty sprite.
 
-    return (Folio::Core::Game::ANastySprite::Move (graphics, m_speed, collisionGrid));
+    return (Folio::Core::Game::ANastySprite::Move (graphics, m_nastySpriteSpeed, collisionGrid));
 } // Endproc.
 
 
@@ -338,7 +341,8 @@ FolioStatus NastySprite::SetTerminatingMode (FolioHandle                dcHandle
 
             status = SetGraphicTerminatingMode (dcHandle,
                                                 m_nastySpriteTerminatingGraphics,
-                                                MAX_SEQUENCE_COUNT);
+                                                MAX_SEQUENCE_COUNT,
+                                                GetNastySpriteTerminatingSoundSamples ());
         } // Endif.
 
     } // Endif.
@@ -491,6 +495,23 @@ UInt32  NastySprite::GetSpeed (NASTY_SPRITE_ID nastySpriteId)
         return (STATIC_SPEED);
     } // Endswitch.
 
+} // Endproc.
+
+
+NastySprite::SpriteTerminatingSoundSamplesList  NastySprite::GetNastySpriteTerminatingSoundSamples ()
+{
+    if (m_nastySpriteTerminatingSoundSamplesList.empty ())
+    {
+        // Create each sound sample representing the required sound.
+    
+        for (ZxSpectrum::BYTE frequency = 0x3f; frequency >= 0x21; frequency -= 2)
+        {
+            m_nastySpriteTerminatingSoundSamplesList.push_back (ZxSpectrum::MapUltimateMakeSound (frequency, 0x01));
+        } // Endfor.
+
+    } // Endif.
+    
+    return (m_nastySpriteTerminatingSoundSamplesList);
 } // Endproc.
 
 } // Endnamespace.

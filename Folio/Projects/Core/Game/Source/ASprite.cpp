@@ -14,8 +14,9 @@ ASprite::ASprite ()
 :   m_state(STATE_UNKNOWN),
     m_spriteWidth(FOLIO_UNDEFINED),
     m_spriteHeight(FOLIO_UNDEFINED),
-    m_direction(NO_DIRECTION),
     m_spriteInkColour(Folio::Core::Graphic::DEFAULT_FOREGROUND_COLOUR),
+    m_direction(NO_DIRECTION),
+    m_speed(STATIC_SPEED),
     m_maxNumAutoMoves(0),
     m_remainingNumAutoMoves(0),
     m_initialisingDrawingMode(DM_NONE),
@@ -26,11 +27,17 @@ ASprite::ASprite ()
     m_initialisingCurrentSequenceCount(0),
     m_terminatingMaxSequenceCount(0),
     m_terminatingCurrentSequenceCount(0),
+    m_playSpriteInitialisingSound(true),
+    m_initialisingCurrentSoundSamplesListIndex(0),
+    m_playSpriteTerminatingSound(true),
+    m_terminatingCurrentSoundSamplesListIndex(0),
     m_isAtLockedScreenExit(false),
     m_isInScreenExit(false),
     m_isExitedScreen(false),
     m_isEnteringScreen(false),
-    m_currentSpriteDrawingAttributes(0)
+    m_currentSpriteDrawingAttributes(0),
+    m_spriteMovementAudioCount(0),
+    m_currentSpriteMovementAudioAttributes(0)
 {
 } // Endproc.
 
@@ -108,6 +115,22 @@ FolioStatus ASprite::Create (FolioHandle                        dcHandle,
     } // Endelse.
 
     return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::SetSpriteMovementSoundSamples (const SpriteMovementSoundAttributesList& spriteMovementSoundSamplesAttributesList)
+{
+    // Create the sprite's movement audio attributes.
+
+    return (CreateSpriteMovementAudioAttributes (spriteMovementSoundSamplesAttributesList, m_direction));
+} // Endproc.
+
+
+FolioStatus ASprite::SetSpriteReboundSoundSamples (const SpriteReboundSoundAttributesList& spriteReboundSoundSamplesAttributesList)
+{
+    m_spriteReboundAudioAttributesList = spriteReboundSoundSamplesAttributesList;
+
+    return (ERR_SUCCESS);
 } // Endproc.
 
 
@@ -205,8 +228,10 @@ ASprite::STATE  ASprite::GetState () const
 } // Endproc.
 
 
-void    ASprite::SetAlive ()
+void    ASprite::SetAlive (bool playSpriteInitialisingSound)
 {
+    m_playSpriteInitialisingSound = playSpriteInitialisingSound;
+   
     SetState (STATE_INITIALISE_RQD);
 } // Endproc.
 
@@ -230,8 +255,10 @@ bool    ASprite::IsAlive () const
 } // Endproc.
 
 
-void    ASprite::SetDead ()
+void    ASprite::SetDead (bool playSpriteTerminatingSound)
 {
+    m_playSpriteTerminatingSound = playSpriteTerminatingSound;
+
     SetState (STATE_TERMINATE_RQD);
 } // Endproc.
 
@@ -345,9 +372,10 @@ bool    ASprite::IsFalling () const
 } // Endproc.
 
 
-FolioStatus ASprite::SetGraphicInitialisingMode (FolioHandle                dcHandle,
-                                                 const SpriteGraphicsList&  initialisingSpriteGraphics,
-                                                 UInt32                     initialisingMaxSequenceCount)
+FolioStatus ASprite::SetGraphicInitialisingMode (FolioHandle                                dcHandle,
+                                                 const SpriteGraphicsList&                  initialisingSpriteGraphics,
+                                                 UInt32                                     initialisingMaxSequenceCount,
+                                                 const SpriteInitialisingSoundSamplesList&  initialisingSoundSamplesList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -367,9 +395,12 @@ FolioStatus ASprite::SetGraphicInitialisingMode (FolioHandle                dcHa
         {
             // Note the sprite's initialising attributes.
 
-            m_initialisingDrawingMode           = DM_GRAPHIC;
-            m_initialisingMaxSequenceCount      = initialisingMaxSequenceCount * m_initialisingSpriteDrawingAttributes.m_maxNumSpriteBitmaps;
-            m_initialisingCurrentSequenceCount  = 0;
+            m_initialisingDrawingMode                   = DM_GRAPHIC;
+            m_initialisingMaxSequenceCount              = initialisingMaxSequenceCount * m_initialisingSpriteDrawingAttributes.m_maxNumSpriteBitmaps;
+            m_initialisingCurrentSequenceCount          = 0;
+            m_initialisingSoundSamplesList              = initialisingSoundSamplesList;
+            m_initialisingCurrentSoundSamplesListIndex  = 0;
+            m_playSpriteInitialisingSound               = true;
         } // Endif.
         break;
 
@@ -382,9 +413,10 @@ FolioStatus ASprite::SetGraphicInitialisingMode (FolioHandle                dcHa
 } // Endproc.
 
 
-FolioStatus ASprite::SetGraphicTerminatingMode (FolioHandle                 dcHandle,
-                                                const SpriteGraphicsList&   terminatingSpriteGraphics,
-                                                UInt32                      terminatingMaxSequenceCount)
+FolioStatus ASprite::SetGraphicTerminatingMode (FolioHandle                                 dcHandle,
+                                                const SpriteGraphicsList&                   terminatingSpriteGraphics,
+                                                UInt32                                      terminatingMaxSequenceCount,
+                                                const SpriteTerminatingSoundSamplesList&    terminatingSoundSamplesList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -409,9 +441,12 @@ FolioStatus ASprite::SetGraphicTerminatingMode (FolioHandle                 dcHa
         {
             // Note the sprite's terminating attributes.
 
-            m_terminatingDrawingMode            = DM_GRAPHIC;
-            m_terminatingMaxSequenceCount       = terminatingMaxSequenceCount * m_terminatingSpriteDrawingAttributes.m_maxNumSpriteBitmaps;
-            m_terminatingCurrentSequenceCount   = 0;
+            m_terminatingDrawingMode                    = DM_GRAPHIC;
+            m_terminatingMaxSequenceCount               = terminatingMaxSequenceCount * m_terminatingSpriteDrawingAttributes.m_maxNumSpriteBitmaps;
+            m_terminatingCurrentSequenceCount           = 0;
+            m_terminatingSoundSamplesList               = terminatingSoundSamplesList;
+            m_terminatingCurrentSoundSamplesListIndex   = 0;
+            m_playSpriteTerminatingSound                = true;
         } // Endif.
         break;
 
@@ -421,6 +456,18 @@ FolioStatus ASprite::SetGraphicTerminatingMode (FolioHandle                 dcHa
     } // Endswitch.
 
     return (status);
+} // Endproc.
+
+
+void    ASprite::SetPlaySpriteInitialisingSound (bool playSpriteInitialisingSound)
+{
+    m_playSpriteInitialisingSound = playSpriteInitialisingSound;
+} // Endproc.
+
+
+void    ASprite::SetPlaySpriteTerminatingSound (bool playSpriteTerminatingSound)
+{
+    m_playSpriteTerminatingSound = playSpriteTerminatingSound;
 } // Endproc.
 
 
@@ -760,11 +807,20 @@ FolioStatus ASprite::Move (Gdiplus::Graphics&   graphics,
     {
         // Yes. The sprite is moving.
         
-        m_state = STATE_MOVING; 
+        m_state = STATE_MOVING;
+        m_speed = speed;
         
         // Let our sub-class handle it.
 
         status = HandleMoveSprite (graphics, speed, collisionGrid);
+
+        if (status == ERR_SUCCESS)
+        {
+            // Play sprite movement sound.
+
+            PlaySpriteMovementSound ();
+        } // Endif.
+
     } // Endif.
 
     else
@@ -790,6 +846,7 @@ FolioStatus ASprite::Static (Gdiplus::Graphics&     graphics,
         // Yes. The sprite is static.
         
         m_state = STATE_STATIC; 
+        m_speed = STATIC_SPEED;
         
         // Let our sub-class handle it.
 
@@ -992,6 +1049,168 @@ FolioStatus ASprite::UpdateSpriteDrawingAttributes (Direction direction)
         if ((itr->m_direction & direction) == direction)
         {
             m_currentSpriteDrawingAttributes = &(*itr);
+
+            status = ERR_SUCCESS;
+
+            break;  // Get-outta-here!
+        } // Endif.
+
+    } // Endfor.
+
+    return (status);
+} // Endproc.
+
+
+void    ASprite::PlaySpriteInitialisingSound (UInt32 initialisingSoundSamplesListIndex) const
+{
+    if (m_playSpriteInitialisingSound && 
+        (initialisingSoundSamplesListIndex < m_initialisingSoundSamplesList.size ())) 
+    {
+        // Play the sound samples.
+
+        for (UInt32 index = 0; 
+             index < m_initialisingSoundSamplesList [initialisingSoundSamplesListIndex].m_numSoundSamplesPerFrame;
+             ++index)
+        {
+            Folio::Core::Util::Sound::PlayAsyncSoundSample (m_initialisingSoundSamplesList [initialisingSoundSamplesListIndex].m_soundSample);
+        } // Endfor.
+
+    } // Endif.
+
+} // Endproc.
+
+
+void    ASprite::PlaySpriteTerminatingSound (UInt32 terminatingSoundSamplesListIndex) const
+{
+    if (m_playSpriteTerminatingSound && 
+        (terminatingSoundSamplesListIndex < m_terminatingSoundSamplesList.size ()))
+     {
+        // Play the sound samples.
+        
+         for (UInt32 index = 0; 
+             index < m_terminatingSoundSamplesList [terminatingSoundSamplesListIndex].m_numSoundSamplesPerFrame;
+             ++index)
+        {
+            Folio::Core::Util::Sound::PlayAsyncSoundSample (m_terminatingSoundSamplesList [terminatingSoundSamplesListIndex].m_soundSample);
+        } // Endfor.
+
+    } // Endif.
+
+} // Endproc.
+
+
+FolioStatus ASprite::PlaySpriteMovementSound ()
+{
+    FolioStatus status = ERR_SUCCESS;
+    
+    switch (m_state)
+    {
+    case STATE_MOVING:
+        // Does the sprite support sound when moving?
+
+        if (IsSpriteMovementSoundSupported ())
+        {
+            // Yes.
+
+            SpriteMovementSoundSample   spriteMovementSoundSample;
+            
+            if (QueryCurrentSpriteMovementSoundSample (spriteMovementSoundSample) == ERR_SUCCESS)
+            {
+                status = Folio::Core::Util::Sound::PlayAsyncSoundSample (*spriteMovementSoundSample);
+            } // Endif.
+
+        } // Endif.
+        break;
+
+    default:
+        break;
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+bool    ASprite::IsSpriteMovementSoundSupported ()
+{
+    return (((++m_spriteMovementAudioCount % m_speed) == 0) && !m_spriteMovementAudioAttributesList.empty ());
+} // Endproc.
+
+
+FolioStatus ASprite::SetInitialSpriteMovementSoundSample (Direction initialDirection,
+                                                          UInt32    initialSpriteSoundSampleIndex)
+{
+    FolioStatus status = ERR_NOT_FOUND;
+
+    // Find the sprite movement audio samples that relate to the initial sprite sound sample index and direction.
+
+    for (SpriteMovementAudioAttributesList::iterator itr = m_spriteMovementAudioAttributesList.begin ();
+         itr != m_spriteMovementAudioAttributesList.end ();
+         ++itr)
+    {
+        if ((itr->m_direction & initialDirection) == initialDirection)
+        {
+            if (initialSpriteSoundSampleIndex < itr->m_maxNumSpriteSoundSamples)
+            {
+                itr->m_currentSpriteSoundSampleIndex = initialSpriteSoundSampleIndex;
+            } // Endif.
+
+            m_currentSpriteMovementAudioAttributes = &(*itr);
+
+            status = ERR_SUCCESS;
+
+            break;  // Get-outta-here!
+        } // Endif.
+
+    } // Endfor.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::QueryCurrentSpriteMovementSoundSample (SpriteMovementSoundSample& spriteMovementSoundSample)
+{
+
+    FolioStatus status = ERR_NOT_FOUND;
+
+    if (m_currentSpriteMovementAudioAttributes)
+    {
+        if (m_currentSpriteMovementAudioAttributes->m_currentSpriteSoundSampleIndex >= m_currentSpriteMovementAudioAttributes->m_maxNumSpriteSoundSamples)
+        {
+            m_currentSpriteMovementAudioAttributes->m_currentSpriteSoundSampleIndex = 0;
+        } // Endif.
+
+        spriteMovementSoundSample = m_currentSpriteMovementAudioAttributes->m_spriteMovementSoundSamples [m_currentSpriteMovementAudioAttributes->m_currentSpriteSoundSampleIndex];
+
+        switch (m_state)
+        {
+        case STATE_MOVING:
+            m_currentSpriteMovementAudioAttributes->m_currentSpriteSoundSampleIndex++; // Next.
+            break;
+
+        default:
+            break;
+        } // Endswitch.
+
+        status = ERR_SUCCESS;
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::UpdateSpriteMovementAudioAttributes (Direction direction)
+{
+    FolioStatus status = ERR_NOT_FOUND;
+
+    // Find the sprite's movement audio attributes that relate to the direction.
+
+    for (SpriteMovementAudioAttributesList::iterator itr = m_spriteMovementAudioAttributesList.begin ();
+         itr != m_spriteMovementAudioAttributesList.end ();
+         ++itr)
+    {
+        if ((itr->m_direction & direction) == direction)
+        {
+            m_currentSpriteMovementAudioAttributes = &(*itr);
 
             status = ERR_SUCCESS;
 
@@ -1288,6 +1507,102 @@ void    ASprite::AddSpriteDrawingAttributes (Direction                  directio
 } // Endproc.
 
 
+FolioStatus ASprite::CreateSpriteMovementAudioAttributes (const SpriteMovementSoundSamplesList& spriteMovementSoundSamples,
+                                                          SpriteMovementAudioAttributes&        spriteMovementAudioAttributes)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Get the sprite's movement sound sample.
+
+    for (SpriteMovementSoundSamplesList::const_iterator spriteMovementSoundSamplesItr = spriteMovementSoundSamples.begin ();
+        (status == ERR_SUCCESS) && (spriteMovementSoundSamplesItr != spriteMovementSoundSamples.end ());
+        ++spriteMovementSoundSamplesItr)
+    {
+        // Add to the sprite's movement audio attributes.
+
+        spriteMovementAudioAttributes.m_spriteMovementSoundSamples.push_back (*spriteMovementSoundSamplesItr);
+    } // Endfor.
+
+    // Note the maximum number of sprite movement audio samples.
+
+    spriteMovementAudioAttributes.m_maxNumSpriteSoundSamples = spriteMovementAudioAttributes.m_spriteMovementSoundSamples.size ();
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::CreateSpriteMovementAudioAttributes (const SpriteMovementSoundAttributesList&  spriteMovementSoundSamplesAttributesList,
+                                                          Direction                                 initialDirection)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Create the sprite's movement audio attributes.
+
+    for (SpriteMovementSoundAttributesList::const_iterator spriteMovementSoundSamplesAttributesItr = spriteMovementSoundSamplesAttributesList.begin ();
+         (status == ERR_SUCCESS) && (spriteMovementSoundSamplesAttributesItr != spriteMovementSoundSamplesAttributesList.end ());
+         ++spriteMovementSoundSamplesAttributesItr)
+    {
+        // Get the sprite's movement sound samples.
+
+        for (SpriteMovementSoundSamplesList::const_iterator spriteMovementSoundSamplesItr = spriteMovementSoundSamplesAttributesItr->m_spriteMovementSoundSamples.begin ();
+             (status == ERR_SUCCESS) && (spriteMovementSoundSamplesItr != spriteMovementSoundSamplesAttributesItr->m_spriteMovementSoundSamples.end ());
+             ++spriteMovementSoundSamplesItr)
+        {
+            // Add to the sprite's movement audio attributes.
+
+            AddSpriteMovementAudioAttributes (spriteMovementSoundSamplesAttributesItr->m_direction, *spriteMovementSoundSamplesItr);
+        } // Endfor.
+
+    } // Endfor.
+
+    if ((status == ERR_SUCCESS) && !m_spriteMovementAudioAttributesList.empty ())
+    {
+        // Set the initial sprite movement audio sound samples.
+
+        status = SetInitialSpriteMovementSoundSample (initialDirection, 0);
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+void    ASprite::AddSpriteMovementAudioAttributes (Direction                        direction,
+                                                   const SpriteMovementSoundSample& spriteMovementSoundSample)
+{
+    bool    found = false;  // Initialise!
+
+    // Find the sprite's movement audio attributes for the specified direction.
+
+    for (SpriteMovementAudioAttributesList::iterator itr = m_spriteMovementAudioAttributesList.begin ();
+         itr != m_spriteMovementAudioAttributesList.end ();
+         ++itr)
+    {
+        if ((itr->m_direction & direction) == direction)
+        {
+            // Store the sprite movement audio sound samples.
+
+            itr->m_spriteMovementSoundSamples.push_back (spriteMovementSoundSample);
+            
+            itr->m_maxNumSpriteSoundSamples++;
+
+            found = true;
+
+            break;  // Get-outta-here!
+        } // Endif.
+
+    } // Endfor.
+
+    // If we didn't find the sprite's movement audio attributes for the specified 
+    // direction, then add a new one.
+ 
+    if (!found)
+    {
+        m_spriteMovementAudioAttributesList.push_back (SpriteMovementAudioAttributes(direction, spriteMovementSoundSample));
+    } // Endif.
+
+} // Endproc.
+
+
 FolioStatus ASprite::PerformGraphicInitialising (Gdiplus::Graphics& graphics,
                                                  RectList*          rects)
 {
@@ -1327,6 +1642,15 @@ FolioStatus ASprite::PerformGraphicInitialising (Gdiplus::Graphics& graphics,
                             
                 if (status == ERR_SUCCESS)
                 {
+                    // Play the sprite's initialising sound.
+
+                    PlaySpriteInitialisingSound (m_initialisingCurrentSoundSamplesListIndex);
+
+                    if (++m_initialisingCurrentSoundSamplesListIndex >= m_initialisingSoundSamplesList.size ())
+                    {
+                        m_initialisingCurrentSoundSamplesListIndex = 0;
+                    } // Endif.
+
                     // We are initialising until the maximum sequence count is reached.
 
                     m_state = (++m_initialisingCurrentSequenceCount < m_initialisingMaxSequenceCount)
@@ -1396,6 +1720,15 @@ FolioStatus ASprite::PerformGraphicTerminating (Gdiplus::Graphics&  graphics,
                             
                 if (status == ERR_SUCCESS)
                 {
+                    // Play the sprite's terminating sound.
+
+                    PlaySpriteTerminatingSound (m_terminatingCurrentSoundSamplesListIndex);
+
+                    if (++m_terminatingCurrentSoundSamplesListIndex >= m_terminatingSoundSamplesList.size ())
+                    {
+                        m_terminatingCurrentSoundSamplesListIndex = 0;
+                    } // Endif.
+                    
                     // We are terminating until the maximum sequence count is reached.
 
                     m_state = (++m_terminatingCurrentSequenceCount < m_terminatingMaxSequenceCount)
@@ -1610,9 +1943,37 @@ void    ASprite::CheckFloorBound (const CollisionGrid&      collisionGrid,
 
     if (collisionGrid.IsOutwithFloorBound (collisionGridDirection, spriteScreenRect))
     {
-        // Yes. Update the sprite's direction.
+        // Yes. Play the rebound sound
+
+        PlayReboundSound (direction);
+
+        // Update the sprite's direction.
 
         direction = UpdateDirection (GetFloorBoundDirection (collisionGridDirection));
+    } // Endif.
+
+} // Endproc.
+
+
+void    ASprite::PlayReboundSound (Direction& direction) const
+{
+    if (!m_spriteReboundAudioAttributesList.empty ())
+    {
+        // Find the sprite's rebound audio attributes that relate to the direction.
+
+        for (SpriteReboundAudioAttributesList::const_iterator itr = m_spriteReboundAudioAttributesList.begin ();
+             itr != m_spriteReboundAudioAttributesList.end ();
+             ++itr)
+        {
+            if ((itr->m_direction & direction) == direction)
+            {
+                Folio::Core::Util::Sound::PlayAsyncSoundSample (*(itr->m_spriteReboundSoundSample));
+
+                break;  // Get-outta-here!
+            } // Endif.
+
+        } // Endfor.
+    
     } // Endif.
 
 } // Endproc.

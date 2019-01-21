@@ -29,15 +29,9 @@ GdiDiBitmap::GdiDiBitmap ()
  */
 GdiDiBitmap::~GdiDiBitmap ()
 {
-    // Destroy the bitmap?
+    // Destroy the bitmap.
 
-    if (m_bitmapHandle != FOLIO_INVALID_HANDLE)
-    {
-        // Yes.
-
-        DestroyBitmap (m_bitmapHandle);
-    } // Endif.
-
+    Destroy ();
 } // Endproc.
 
 
@@ -316,16 +310,17 @@ UInt32  GdiDiBitmap::GetColourTableIndex (const Gdiplus::Color& colour)
 
         FolioHandle memoryDcHandle = FOLIO_INVALID_HANDLE;
 
-        FolioStatus status = CreateCompatibleMemoryDC (0, memoryDcHandle);
-
-        if (status == ERR_SUCCESS)
+        if (CreateCompatibleMemoryDC (0, memoryDcHandle) == ERR_SUCCESS)
         {
             // Query the colour table index in the bitmap colour table.
 
-            status = QueryColourTableIndexInDiBitmap (memoryDcHandle,
-                                                      m_bitmapHandle,
-                                                      colour.ToCOLORREF (),
-                                                      colourTableIndex);
+            if (QueryColourTableIndexInDiBitmap (memoryDcHandle,
+                                                 m_bitmapHandle,
+                                                 colour.ToCOLORREF (),
+                                                 colourTableIndex) != ERR_SUCCESS)
+            {
+                colourTableIndex = FOLIO_INVALID_INDEX; // Initialise!
+            } // Endif.
 
             // Destroy the memory device context.
 
@@ -560,6 +555,23 @@ FolioStatus GdiDiBitmap::InitialiseBitmap ()
     } // Endif.
 
     return (status);
+} // Endproc.
+
+
+/**
+ * Method that is used to destroy the bitmap.
+ */
+void    GdiDiBitmap::Destroy ()
+{
+    // Destroy the bitmap?
+
+    if (m_bitmapHandle != FOLIO_INVALID_HANDLE)
+    {
+        // Yes.
+
+        DestroyBitmap (m_bitmapHandle);
+    } // Endif.
+
 } // Endproc.
 
 

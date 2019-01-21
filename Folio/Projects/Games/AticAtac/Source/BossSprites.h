@@ -72,6 +72,8 @@ private:
     SpriteGraphicsList  m_bossSpriteInitialisingGraphics;   // The initialising graphics of the boss sprite.
     SpriteGraphicsList  m_bossSpriteTerminatingGraphics;    // The terminating graphics of the boss sprite.
 
+    static  SpriteTerminatingSoundSamplesList   m_bossSpriteTerminatingSoundSamplesList;    // The boss sprite's terminating sound samples.
+
     FolioStatus SetInitialisingMode (FolioHandle                dcHandle,
                                      const SpriteGraphicsMap    &spriteGraphicsMap,
                                      ZxSpectrum::COLOUR         bossSpriteColour,
@@ -102,6 +104,8 @@ private:
     static  UInt32              GetBossSpriteFlags (BOSS_SPRITE_ID bossSpriteId);
     static  bool                IsAttractedToStaticSprite (BOSS_SPRITE_ID       bossSpriteId,
                                                            const StaticSprite   &staticSprite);
+
+    static  SpriteTerminatingSoundSamplesList   GetBossSpriteTerminatingSoundSamples ();
 
     // Private copy constructor to prevent copying.
     BossSprite (const BossSprite& rhs);

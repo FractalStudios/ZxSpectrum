@@ -6,7 +6,7 @@
 // "Home-made" includes.
 #include    <Game.h>
 #include    <Graphic.h>
-#include    <CanvasBag.h>
+#include    "Canvas.h"
 
 #pragma pack(push, 1)
 
@@ -24,19 +24,16 @@ class AScreen
 public:
     virtual ~AScreen ();
 
-    FolioStatus Create (CanvasBag&              canvasBag,
+    FolioStatus Create (Canvas&                 canvas,
                         const Gdiplus::Rect&    clearRect,
                         UInt32                  minTimeToDisplay = 0);
     FolioStatus HandleProcessFrame (UInt32* frameRateIncrement = 0);
-    FolioStatus HandleProcessKeyboardMsg (UInt32    wParam,
-                                          UInt32    lParam,
-                                          bool      keyDown);
 
     bool    IsDisplaying () const;
     bool    IsComplete () const;
 
 protected:
-    CanvasBag*      m_canvasBag;        // The canvas bag.
+    Canvas*         m_canvas;           // The canvas.
     Gdiplus::Rect   m_clearScreenRect;  // The screen rect to clear when displaying the screen.
 
     Folio::Core::Game::Gamepad::CONTROLLER_ID   m_controllerId; // The controller identifier of the first connected controller.
@@ -65,14 +62,13 @@ protected:
                                                     Folio::Core::Game::DrawingElementsList& drawingElementsList) const;
     virtual FolioStatus SetupGamepad (Folio::Core::Game::Gamepad& gamepad);
     virtual FolioStatus StartDisplayingScreen ();
+    virtual FolioStatus ProcessScreenInput ();
     virtual FolioStatus ProcessScreenFrame (UInt32* frameRateIncrement);
-    virtual FolioStatus ProcessScreenKeyboardMsg (UInt32    wParam,
-                                                  UInt32    lParam,
-                                                  bool      keyDown);
     virtual FolioStatus UpdateScreen ();
 
 private:
-    FolioStatus AddToCanvasBag () const;
+    FolioStatus DrawInCanvas () const;
+    FolioStatus CheckInput ();
 }; // Endclass.
 
 } // Endnamespace.

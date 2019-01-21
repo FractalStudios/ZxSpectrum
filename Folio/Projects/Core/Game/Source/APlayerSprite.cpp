@@ -24,7 +24,8 @@ APlayerSprite::~APlayerSprite ()
 } // Endproc.
 
 
-FolioStatus APlayerSprite::SetBottomUpInitialisingMode (const ColourList& initialisingColourList)
+FolioStatus APlayerSprite::SetBottomUpInitialisingMode (const ColourList&                           initialisingColourList,
+                                                        const SpriteInitialisingSoundSamplesList&   initialisingSoundSamplesList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -36,8 +37,11 @@ FolioStatus APlayerSprite::SetBottomUpInitialisingMode (const ColourList& initia
     case STATE_INITIALISE_RQD:
         // Note the sprite's initialising attributes.
 
-        m_initialisingDrawingMode   = DM_BOTTOM_UP;
-        m_initialisingColourList    = initialisingColourList;
+        m_initialisingDrawingMode                   = DM_BOTTOM_UP;
+        m_initialisingColourList                    = initialisingColourList;
+        m_initialisingSoundSamplesList              = initialisingSoundSamplesList;
+        m_initialisingCurrentSoundSamplesListIndex  = 0;
+        m_playSpriteInitialisingSound               = true;
         break;
 
     default:
@@ -49,7 +53,8 @@ FolioStatus APlayerSprite::SetBottomUpInitialisingMode (const ColourList& initia
 } // Endproc.
 
 
-FolioStatus APlayerSprite::SetTopDownInitialisingMode (const ColourList& initialisingColourList)
+FolioStatus APlayerSprite::SetTopDownInitialisingMode (const ColourList&                            initialisingColourList,
+                                                       const SpriteInitialisingSoundSamplesList&    initialisingSoundSamplesList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -61,8 +66,11 @@ FolioStatus APlayerSprite::SetTopDownInitialisingMode (const ColourList& initial
     case STATE_INITIALISE_RQD:
         // Note the sprite's initialising attributes.
         
-        m_initialisingDrawingMode   = DM_TOP_DOWN;
-        m_initialisingColourList    = initialisingColourList;
+        m_initialisingDrawingMode                   = DM_TOP_DOWN;
+        m_initialisingColourList                    = initialisingColourList;
+        m_initialisingSoundSamplesList              = initialisingSoundSamplesList;
+        m_initialisingCurrentSoundSamplesListIndex  = 0;
+        m_playSpriteInitialisingSound               = true;
         break;
 
     default:
@@ -80,7 +88,8 @@ UInt32  APlayerSprite::GetInitialisingPauseTime () const
 } // Endproc.
 
 
-FolioStatus APlayerSprite::SetBottomUpTerminatingMode (const ColourList& terminatingColourList)
+FolioStatus APlayerSprite::SetBottomUpTerminatingMode (const ColourList&                        terminatingColourList,
+                                                       const SpriteTerminatingSoundSamplesList& terminatingSoundSamplesList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -97,8 +106,11 @@ FolioStatus APlayerSprite::SetBottomUpTerminatingMode (const ColourList& termina
     case STATE_FALLING:
         // Note the sprite's terminating attributes.
         
-        m_terminatingDrawingMode    = DM_BOTTOM_UP;
-        m_terminatingColourList     = terminatingColourList;
+        m_terminatingDrawingMode                    = DM_BOTTOM_UP;
+        m_terminatingColourList                     = terminatingColourList;
+        m_terminatingSoundSamplesList               = terminatingSoundSamplesList;
+        m_terminatingCurrentSoundSamplesListIndex   = 0;
+        m_playSpriteTerminatingSound                = true;
         break;
 
     default:
@@ -110,7 +122,8 @@ FolioStatus APlayerSprite::SetBottomUpTerminatingMode (const ColourList& termina
 } // Endproc.
 
 
-FolioStatus APlayerSprite::SetTopDownTerminatingMode (const ColourList& terminatingColourList)
+FolioStatus APlayerSprite::SetTopDownTerminatingMode (const ColourList&                         terminatingColourList,
+                                                      const SpriteTerminatingSoundSamplesList&  terminatingSoundSamplesList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -127,8 +140,11 @@ FolioStatus APlayerSprite::SetTopDownTerminatingMode (const ColourList& terminat
     case STATE_FALLING:
         // Note the sprite's terminating attributes.
 
-        m_terminatingDrawingMode    = DM_TOP_DOWN;
-        m_terminatingColourList     = terminatingColourList;
+        m_terminatingDrawingMode                    = DM_TOP_DOWN;
+        m_terminatingColourList                     = terminatingColourList;
+        m_terminatingSoundSamplesList               = terminatingSoundSamplesList;
+        m_terminatingCurrentSoundSamplesListIndex   = 0;
+        m_playSpriteTerminatingSound                = true;
         break;
 
     default:
@@ -147,180 +163,36 @@ UInt32  APlayerSprite::GetTerminatingPauseTime () const
 
 
 APlayerSprite::Direction  APlayerSprite::UpdateDirection (Direction direction, 
-                                                          bool      keyDown,
-                                                          bool      otherKeyDown)
+                                                          bool      keyDown)
 {
-    Direction   orgDirection = m_direction; // Note original direction.
-
-    // Is the key down?
+    // Is a key down?
 
     if (keyDown)
     {
-        // Yes. Is the player sprite static?
+        // Yes. Has the player sprite's direction changed?
 
-        if (m_state == STATE_STATIC)
+        if (direction != m_direction)
         {
-            // Yes. The player sprite is moving in the direction.
+            // Yes. Update the current sprite drawing attributes.
 
-            m_direction = direction;
+            UpdateSpriteDrawingAttributes (direction);
         } // Endif.
 
-        else
-        {
-            // No. The player sprite is moving.
-
-            switch (direction)
-            {
-            case N:
-                switch (m_direction)
-                {
-                case S:
-                    // Player sprite is moving North.
-
-                    m_direction &= ~S;
-                    m_direction |= direction;
-                    break;
-                case E:
-                case W:
-                    // Player sprite is moving North-East or North-West.
-
-                    m_direction |= direction;
-                    break;
-                default:
-                    break;
-                } // Endswitch.
-                break;
-
-            case S:
-                switch (m_direction)
-                {
-                case N:
-                    // Player sprite is moving South.
-
-                    m_direction &= ~N;
-                    m_direction |= direction;
-                    break;
-                case E:
-                case W:
-                    // Player sprite is moving South-East or South-West.
-                
-                    m_direction |= direction;
-                    break;
-                default:
-                    break;
-                } // Endswitch.
-                break;
-
-            case E:
-                switch (m_direction)
-                {
-                case W:
-                    // Player sprite is moving East.
-                
-                    m_direction &= ~W;
-                    m_direction |= direction;
-                    break;
-                case N:
-                case S:
-                    // Player sprite is moving North-East or South-East.
-
-                    m_direction |= direction;
-                    break;
-                default:
-                    break;
-                } // Endswitch.
-                break;
-
-            case W:
-                switch (m_direction)
-                {
-                case E:
-                    // Player sprite is moving West.
-                
-                    m_direction &= ~E;
-                    m_direction |= direction;
-                    break;
-                case N:
-                case S:
-                    // Player sprite is moving North-West or South-West.
-                
-                    m_direction |= direction;
-                    break;
-                default:
-                    break;
-                } // Endswitch.
-                break;
-
-            default:
-                break;
-            } // Endswitch.
+        // The player sprite is moving in the direction.
         
-        } // Endelse.
-
-        // Player sprite is moving.
-
-        m_state = STATE_MOVING; 
+        m_direction = direction;
+        m_state     = STATE_MOVING; 
     } // Endif.
+
+    // All keys are up. In auto-move mode?
 
     else
+    if (!m_inAutoMoveMode)
     {
-        // No. The key is up.
-
-        switch (m_direction)
-        {
-        case N:
-        case S:
-        case E:
-        case W:
-            if (m_direction == direction)
-            {
-                // Get the auto-move state.
-
-                m_state = GetAutoMoveState ();
-            } // Endif.
-            break;
-
-        case NE:
-        case NW:
-        case SE:
-        case SW:
-            // Is the other key down?
-
-            if (otherKeyDown)
-            {
-                // Yes. No longer moving in the direction.
-
-                m_direction &= ~direction;
-
-                // Player sprite is moving.
+        // No. Get the auto-move state.
         
-                m_state = STATE_MOVING; 
-            } // Endif.
-
-            else
-            {
-                // Yes. Both keys are up.
-                
-                // Get the auto-move state.
-
-                m_state = GetAutoMoveState ();
-            } // Endelse.
-            break;
-
-        default:
-            break;
-        } // Endswitch.
-
-    } // Endelse.
-
-    // Has the player sprite's direction changed?
-
-    if (orgDirection != m_direction)
-    {
-        // Yes. Update the current sprite drawing attributes.
-
-        UpdateSpriteDrawingAttributes (m_direction);
-    } // Endif.
+        m_state = GetAutoMoveState ();
+    } // Endelseif.
 
     return (m_direction);
 } // Endproc.
@@ -560,6 +432,10 @@ FolioStatus APlayerSprite::PerformBottomUpOrTopDownInitialising (Gdiplus::Graphi
 
                 if (status == ERR_SUCCESS)
                 {
+                    // Get the the player sprite's drawing bitmap height asjustment.
+
+                    Int32   drawingHeightAsjustment = spriteDrawingBitmap->GetDrawingHeightAdjustment ();
+
                     // Increment the player sprite's drawing bitmap height.
 
                     status = spriteDrawingBitmap->IncrementDrawingHeight (m_initialisingDrawingMode);
@@ -584,12 +460,20 @@ FolioStatus APlayerSprite::PerformBottomUpOrTopDownInitialising (Gdiplus::Graphi
 
                             status = spriteDrawingBitmap->Draw (graphics, rects);
 
-                            if ((status == ERR_SUCCESS) && (m_state == STATE_INITIALISED))
+                            if (status == ERR_SUCCESS) 
                             {
-                                // Important to reset the drawing adjustment mode of the 
-                                // player sprite's masked drawing bitmap.
+                                // Play the player sprite's initialising sound.
+
+                                PlaySpriteInitialisingSound (std::abs (drawingHeightAsjustment));
+
+                                if (m_state == STATE_INITIALISED)
+                                {
+                                    // Important to reset the drawing adjustment mode of the 
+                                    // player sprite's masked drawing bitmap.
                                     
-                                spriteMaskedDrawingBitmap->ResetDrawingAdjustmentMode ();
+                                    spriteMaskedDrawingBitmap->ResetDrawingAdjustmentMode ();
+                                } // Endif.
+
                             } // Endif.
 
                         } // Endif.
@@ -678,6 +562,10 @@ FolioStatus APlayerSprite::PerformBottomUpOrTopDownTerminating (Gdiplus::Graphic
 
                 if (status == ERR_SUCCESS)
                 {
+                    // Get the the player sprite's drawing bitmap height asjustment.
+
+                    Int32   drawingHeightAsjustment = spriteDrawingBitmap->GetDrawingHeightAdjustment ();
+
                     // Decrement the player sprite's drawing bitmap height.
 
                     status = spriteDrawingBitmap->DecrementDrawingHeight (-m_terminatingDrawingMode);
@@ -703,16 +591,24 @@ FolioStatus APlayerSprite::PerformBottomUpOrTopDownTerminating (Gdiplus::Graphic
 
                                 m_state = spriteDrawingBitmap->IsBitmapNoLongerDrawn () ? STATE_TERMINATED : STATE_TERMINATING;
                             
-                                if ((status == ERR_SUCCESS) && (m_state == STATE_TERMINATED))
+                                if (status == ERR_SUCCESS)
                                 {
-                                    // Important to reset the drawing adjustment mode of the 
-                                    // player sprite's masked drawing bitmap.
+                                    // Play the player sprite's terminating sound.
+
+                                    PlaySpriteTerminatingSound (std::abs (drawingHeightAsjustment));
+
+                                    if (m_state == STATE_TERMINATED)
+                                    {
+                                        // Important to reset the drawing adjustment mode of the 
+                                        // player sprite's masked drawing bitmap.
                                     
-                                    spriteMaskedDrawingBitmap->ResetDrawingAdjustmentMode ();
+                                        spriteMaskedDrawingBitmap->ResetDrawingAdjustmentMode ();
 
-                                    // Set back the default player colour.
+                                        // Set back the default player colour.
 
-                                    status = spriteDrawingBitmap->ChangeColour (newColour, m_spriteInkColour);
+                                        status = spriteDrawingBitmap->ChangeColour (newColour, m_spriteInkColour);
+                                    } // Endif.
+
                                 } // Endif.
                             
                             } // Endif.

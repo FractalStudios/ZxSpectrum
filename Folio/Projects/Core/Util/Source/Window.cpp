@@ -902,6 +902,26 @@ FolioStatus InvalidateClientRect (FolioHandle   wndHandle,
     return (status);
 } // Endproc.
 
+
+/**
+ * Function that shows/hides the cursor.
+ *
+ * @param [in] showCursor
+ * Indicates if the cursoer should be shown.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if successful.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus ShowCursor (bool showCursor)
+{
+    ::ShowCursor (showCursor);
+
+    return (ERR_SUCCESS);
+} // Endproc.
+
 } // Endnamespace.
 
 } // Endnamespace.

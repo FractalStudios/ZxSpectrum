@@ -67,7 +67,8 @@ public:
 
     FolioStatus QueryDrawingElements (FolioHandle                               dcHandle,
                                       ZxSpectrum::COLOUR                        roomColour,
-                                      Folio::Core::Game::DrawingElementsList    &drawingElementsList) const;
+                                      Folio::Core::Game::DrawingElementsList    &drawingElementsList,
+                                      bool                                      maskedDrawingElementRqd = true) const;
 
     Folio::Core::Game::CollisionGrid::ScreenExit::ORIENTATION    GetDoorOrientation () const;
 

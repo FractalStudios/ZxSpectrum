@@ -15,6 +15,7 @@
 #include    "ResourceGraphic.h"
 #include    "SpriteDrawingElement.h"
 #include    "SpriteGraphicsAttributes.h"
+#include    "SpriteMovementSoundAttributes.h"
 #include    "TextItem.h"
 
 #ifdef _DEBUG
