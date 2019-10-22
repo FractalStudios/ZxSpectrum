@@ -2,6 +2,7 @@
 
 // STL includes.
 #include    <memory>
+#include    <vector>
 
 // "Home-made" includes.
 #include    <Graphic.h>
@@ -43,10 +44,14 @@ public:
 
     Folio::Core::Graphic::GdiGraphicElementPtr  GetGdiGraphicElement () const;
 
-    FolioStatus    SetScreenTopLeft (Int32 screenXLeft,    
-                                      Int32 screenYTop);
-    FolioStatus    Draw (Gdiplus::Graphics&                                     graphics,
-                         Folio::Core::Graphic::AGdiGraphicElement::RectList*    rects = 0);
+    FolioStatus SetScreenTopLeft (Int32 screenXLeft,    
+                                  Int32 screenYTop);
+    FolioStatus Draw (Gdiplus::Graphics&                                    graphics,
+                      Folio::Core::Graphic::AGdiGraphicElement::RectList*   rects = 0);
+    FolioStatus Draw (Int32                                                 screenXLeft,    
+                      Int32                                                 screenYTop,
+                      Gdiplus::Graphics&                                    graphics,
+                      Folio::Core::Graphic::AGdiGraphicElement::RectList*   rects = 0);
 
 protected:
     Id                  m_itemId;               // The identifier of the item.
@@ -62,6 +67,9 @@ protected:
 
 // Item pointer.
 typedef std::shared_ptr<Folio::Core::Game::AItem>   ItemPtr;
+
+// Items list.
+typedef std::vector<ItemPtr>    ItemsList;
 
 } // Endnamespace.
 

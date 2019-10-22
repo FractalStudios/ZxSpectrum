@@ -482,52 +482,13 @@ FolioStatus GdiBufferedBitmap::Draw (Gdiplus::Graphics&     graphics,
 
 
 /**
- * Method that is used to set the top-left hand corner of the buffered bitmap's 
- * screen point.
+ * Method that is used to draw the buffered bitmap.
  *
  * @param [in] screenXLeft
- * The screen X left positoin of the graphic element.
+ * The screen X left position of the graphic element.
  *
  * @param [in] screenYTop
- * The screen Y top positoin of the graphic element.
- *
- * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_NOT_INITIALISED</b> if the graphic element is not initialised.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
- */
-FolioStatus GdiBufferedBitmap::SetScreenTopLeft (Int32  screenXLeft,
-                                                 Int32  screenYTop)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Have we created a buffered bitmap?
-
-    if (IsCreated ())
-    {
-        // Yes. Set the screen rect.
-
-        SetScreenRect (Gdiplus::Rect(screenXLeft, 
-                                     screenYTop,
-                                     m_bufferedBitmapRect.Width,
-                                     m_bufferedBitmapRect.Height));
-    } // Endif.
-
-    else
-    {
-        // No.
-
-        status = ERR_NOT_INITIALISED;
-    } // Endelse.
-
-    return (status);
-} // Endproc.
-
-
-/**
- * Method that is used to draw the buffered bitmap.
+ * The screen Y top position of the graphic element.
  *
  * @param [in, out] graphics
  * The graphics object to draw to.
@@ -544,7 +505,9 @@ FolioStatus GdiBufferedBitmap::SetScreenTopLeft (Int32  screenXLeft,
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus GdiBufferedBitmap::Draw (Gdiplus::Graphics& graphics,
+FolioStatus GdiBufferedBitmap::Draw (Int32              screenXLeft,
+                                     Int32              screenYTop,
+                                     Gdiplus::Graphics& graphics,
                                      RectList*          rects)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -634,6 +597,11 @@ FolioStatus GdiBufferedBitmap::InitialiseBitmap (FolioHandle            dcHandle
 
             m_dcHandle              = dcHandle;
             m_bufferedBitmapRect    = bufferedBitmapRect;
+
+            // Set the graphic element's width and height.
+
+            SetScreenWidth (m_bufferedBitmapRect.Width);
+            SetScreenHeight (m_bufferedBitmapRect.Height);
 
             // Copy the bitmap from the device context to the memory device context.
             

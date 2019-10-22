@@ -1,6 +1,7 @@
 #pragma once
 
 // STL includes.
+#include    <memory>
 #include    <set>
 #include    <vector>
 
@@ -30,6 +31,8 @@ public:
     typedef void*   UserData;
 
     DrawingElement (Id                                                  id,
+                    Int32                                               screenXLeft,
+                    Int32                                               screenYTop,
                     const Folio::Core::Graphic::GdiGraphicElementPtr&   gdiGraphicElement,
                     UserData                                            userData = 0,
                     UInt32                                              collisionGridCellValue = 0);
@@ -39,15 +42,13 @@ public:
                                   Int32 screenYTop);
     FolioStatus Draw (Gdiplus::Graphics&                                    graphics,
                       Folio::Core::Graphic::AGdiGraphicElement::RectList*   rects = 0);
+    FolioStatus Draw (Int32                                                 screenXLeft,    
+                      Int32                                                 screenYTop,
+                      Gdiplus::Graphics&                                    graphics,
+                      Folio::Core::Graphic::AGdiGraphicElement::RectList*   rects = 0);
 
     Id                                          GetDrawingElementId () const;
     Folio::Core::Graphic::GdiGraphicElementPtr  GetGdiGraphicElement () const;
-
-    void    SetCollisionGridCellValue (UInt32 collisionGridCellValue);
-    UInt32  GetCollisionGridCellValue () const;
-
-    void        SetUserData (const UserData& userData);
-    UserData    GetUserData () const;
 
     Gdiplus::Rect   GetScreenRect () const;
     Int32           GetScreenXLeft () const;
@@ -57,17 +58,27 @@ public:
     Int32           GetScreenWidth () const;
     Int32           GetScreenHeight () const;
 
+    void        SetUserData (const UserData& userData);
+    UserData    GetUserData () const;
+
+    void    SetCollisionGridCellValue (UInt32 collisionGridCellValue);
+    UInt32  GetCollisionGridCellValue () const;
+
     bool    IsOverlap (const Gdiplus::Rect& screenRect) const;
 
     bool    operator < (const DrawingElement &rhs) const;
 
 private:
-    Id                          m_id;                       // The identifier of the drawing element.
-    UserData                    m_userData;                 // User defined data applicable to the drawing element.
-    UInt32    m_collisionGridCellValue;   // The collision grid cell value of the drawing element.
+    Id              m_id;                       // The identifier of the drawing element.
+    Gdiplus::Rect   m_screenRect;               // The screen rect of the drawing element.
+    UserData        m_userData;                 // User defined data applicable to the drawing element.
+    UInt32          m_collisionGridCellValue;   // The collision grid cell value of the drawing element.
 
     Folio::Core::Graphic::GdiGraphicElementPtr  m_gdiGraphicElement;    // The GDI graphic element.
 }; // Endclass.
+
+// Drawing element pointer.
+typedef std::shared_ptr<DrawingElement> DrawingElementPtr;
 
 // Drawing elements list.
 typedef std::vector<DrawingElement> DrawingElementsList;

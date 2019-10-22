@@ -22,27 +22,29 @@ template <typename T>
 class SpriteDrawingElement
 {
 public:
-    // Drawing element pointer.
-    typedef std::shared_ptr<DrawingElement> DrawingElementPtr;
-
     SpriteDrawingElement ()
     :   m_reset(false)
     {} // Endproc.
 
-    SpriteDrawingElement (const T&              sprite,
-                          DrawingElement::Id    id,
-                          UInt32                collisionGridCellValue = CollisionGrid::CELL_VALUE_EMPTY)
+    SpriteDrawingElement (DrawingElement::Id        id,
+                          const T&                  sprite,
+                          ACollisionGrid::CellValue cellValue = ACollisionGrid::CELL_VALUE_EMPTY)
     :   m_sprite(sprite),
-        m_drawingElement(new DrawingElement(id, sprite, sprite.get (), collisionGridCellValue)),
+        m_drawingElement(new DrawingElement(id, 
+                                            sprite->GetCollisionXLeft (), 
+                                            sprite->GetCollisionYTop (), 
+                                            sprite, 
+                                            sprite.get (), 
+                                            cellValue)),
         m_reset(false)
     {} // Endproc.
 
     ~SpriteDrawingElement ()
     {} // Endproc.
 
-    FolioStatus Create  (const T&              sprite,
-                         DrawingElement::Id    id,
-                         UInt32                collisionGridCellValue = CollisionGrid::CELL_VALUE_EMPTY)
+    FolioStatus Create  (DrawingElement::Id         id,
+                         const T&                   sprite,
+                         ACollisionGrid::CellValue  cellValue = ACollisionGrid::CELL_VALUE_EMPTY)
     {
         FolioStatus status = ERR_SUCCESS;
 
@@ -62,7 +64,12 @@ public:
             m_reset     = false;
             m_sprite    = sprite;
             
-            m_drawingElement.reset (new DrawingElement(id, sprite, sprite.get (), collisionGridCellValue));
+            m_drawingElement.reset (new DrawingElement(id, 
+                                                       sprite->GetCollisionXLeft (), 
+                                                       sprite->GetCollisionYTop (), 
+                                                       sprite, 
+                                                       sprite.get (), 
+                                                       cellValue));
         } // Endelse.
 
         return (status);

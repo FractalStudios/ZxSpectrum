@@ -69,9 +69,9 @@ public:
                                        Gdiplus::Rect&           textBoundingArea);
 
     // AGdiGraphicElement method(s).
-    virtual FolioStatus SetScreenTopLeft (Int32 screenXLeft,    
-                                          Int32 screenYTop);
-    virtual FolioStatus Draw (Gdiplus::Graphics&    graphics,
+    virtual FolioStatus Draw (Int32                 screenXLeft,
+                              Int32                 screenYTop,
+                              Gdiplus::Graphics&    graphics,
                               RectList*             rects = 0);
 
 private:

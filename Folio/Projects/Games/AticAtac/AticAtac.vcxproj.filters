@@ -4,19 +4,10 @@
     <ClCompile Include="Source\RoomGraphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ZxSpectrum.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\StdAfx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\BackgroundItemGraphics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Screens.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\BackgroundItems.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\InformationPanel.cpp">
@@ -40,25 +31,37 @@
     <ClCompile Include="Source\SelectionScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\NastySprites.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\PlayerSprites.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\WeaponSprites.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\BossSprites.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\LoadingScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\SpriteGraphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\StaticSprites.cpp">
+    <ClCompile Include="Source\Ultimate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\BackgroundItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\BossSprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NastySprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PlayerSprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\StaticSprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\WeaponSprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\CollisionGrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Screen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -69,19 +72,10 @@
     <ClInclude Include="Source\RoomGraphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ZxSpectrum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\StdAfx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\BackgroundItemGraphics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Screens.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\BackgroundItems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\InformationPanel.h">
@@ -105,25 +99,37 @@
     <ClInclude Include="Source\SelectionScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\NastySprites.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\PlayerSprites.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\WeaponSprites.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\BossSprites.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\LoadingScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\SpriteGraphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\StaticSprites.h">
+    <ClInclude Include="Source\Ultimate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\BackgroundItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\BossSprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NastySprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PlayerSprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Screen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\StaticSprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\WeaponSprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CollisionGrid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

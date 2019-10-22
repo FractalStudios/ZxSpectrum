@@ -39,30 +39,27 @@ public:
                                            const SpriteTerminatingSoundSamplesList&     terminatingSoundSamplesList);
     UInt32      GetTerminatingPauseTime () const;
 
-    Direction   UpdateDirection (Direction  direction, 
-                                 bool       keyDown);
+    virtual Direction   UpdateDirection (Direction  direction, 
+                                         bool       keyDown);
 
-    void    SetCanFireWeapon (bool canFireWeapon);
-    bool    CanFireWeapon () const;
+    void    SetGameOver ();
+    bool    IsGameOver () const;
 
-    void    SetCanCollectItems (bool canCollectItems);
-    bool    CanCollectItems () const;
-
-    void    SetCompletedGame ();
-    bool    CompletedGame () const;
+    void    SetGameCompleted ();
+    bool    IsGameCompleted () const;
 
 protected:
     bool    m_inAutoMoveMode;   // Indicates if the player sprite is in auto-move mode.
-    bool    m_canFireWeapon;    // Indicates if the player sprite can fire a weapon.
-    bool    m_canCollectItems;  // Indicates if the player sprite can collect an item.
-    bool    m_completedGame;    // Indicates if the player sprite has completed the game.
+    bool    m_isGameOver;       // Indicates if the player sprite's game is over.
+    bool    m_isGameCompleted;  // Indicates if the player sprite has completed the game.
 
     APlayerSprite ();
 
-    FolioStatus Recreate (Int32     initialScreenXLeft,
-                          Int32     initialScreenYTop,
-                          Direction initialDirection = E,
-                          UInt32    initialSpriteBitmapIndex = 0);
+    FolioStatus Recreate (Int32     screenXLeft,
+                          Int32     screenYTop,
+                          Direction direction = E);
+
+    STATE    GetAutoMoveState (bool keyUp = true);
 
 private:
     static  const   UInt32  DEFAULT_INITIALISING_PAUSE_TIME = 50;   // The default initialising pause time.
@@ -85,9 +82,9 @@ private:
 
     virtual FolioStatus HandleMoveSprite (Gdiplus::Graphics&    graphics,
                                           UInt32                speed, 
-                                          const CollisionGrid&  collisionGrid);
+                                          const ACollisionGrid& collisionGrid);
     virtual FolioStatus HandleStaticSprite (Gdiplus::Graphics&      graphics,
-                                            const CollisionGrid&    collisionGrid);
+                                            const ACollisionGrid&   collisionGrid);
 
     FolioStatus PerformBottomUpOrTopDownInitialising (Gdiplus::Graphics&    graphics,
                                                       RectList*             rects);
@@ -97,39 +94,17 @@ private:
                                                      RectList*          rects);
     Gdiplus::ARGB   GetNewTerminatingColour (Gdiplus::ARGB& currentColour) const;
 
-    STATE    GetAutoMoveState (bool keyUp = true);
-
     bool    CalculateScreenRect (UInt32                 speed,
-                                 const CollisionGrid&   collisionGrid);
+                                 const ACollisionGrid&  collisionGrid);
 
-    static  bool    MoveUp (UInt32                      speed,
-                            const CollisionGrid&        collisionGrid,
-                            Gdiplus::Rect&              spriteScreenRect,
-                            bool&                       isEnteringScreen,
-                            bool&                       isAtLockedScreenExit,
-                            bool&                       IsInScreenExit,
-                            CollisionGrid::ScreenExit&  screenExit);
-    static  bool    MoveDown (UInt32                        speed,
-                              const CollisionGrid&          collisionGrid,
-                              Gdiplus::Rect&                spriteScreenRect,
-                              bool&                         isEnteringScreen,
-                              bool&                         isAtLockedScreenExit,
-                              bool&                         IsInScreenExit,
-                              CollisionGrid::ScreenExit&    screenExit);
-    static  bool    MoveLeft (UInt32                        speed,
-                              const CollisionGrid&          collisionGrid,
-                              Gdiplus::Rect&                spriteScreenRect,
-                              bool&                         isEnteringScreen,
-                              bool&                         isAtLockedScreenExit,
-                              bool&                         IsInScreenExit,
-                              CollisionGrid::ScreenExit&    screenExit);
-    static  bool    MoveRight (UInt32                       speed,
-                               const CollisionGrid&         collisionGrid,
-                               Gdiplus::Rect&               spriteScreenRect,
-                               bool&                        isEnteringScreen,
-                               bool&                        isAtLockedScreenExit,
-                               bool&                        IsInScreenExit,
-                               CollisionGrid::ScreenExit&   screenExit);
+    bool    MoveUp (UInt32                  speed,
+                    const ACollisionGrid&   collisionGrid);
+    bool    MoveDown (UInt32                speed,
+                      const ACollisionGrid& collisionGrid);
+    bool    MoveLeft (UInt32                speed,
+                      const ACollisionGrid& collisionGrid);
+    bool    MoveRight (UInt32               speed,
+                      const ACollisionGrid& collisionGrid);
 }; // Endclass.
 
 // Player sprite pointer.

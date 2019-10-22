@@ -53,10 +53,10 @@ public:
                       const Gdiplus::Point& destinationPoint,              
                       RectList*             rects = 0);
 
-    // AGdiGraphicElement method(s).;
-    virtual FolioStatus SetScreenTopLeft (Int32 screenXLeft,    
-                                          Int32 screenYTop);
-    virtual FolioStatus Draw (Gdiplus::Graphics&    graphics,
+    // AGdiGraphicElement method(s).
+    virtual FolioStatus Draw (Int32                 screenXLeft,
+                              Int32                 screenYTop,
+                              Gdiplus::Graphics&    graphics,
                               RectList*             rects = 0);
 
 private:

@@ -19,6 +19,7 @@
     <ClInclude Include="Include\File.h" />
     <ClInclude Include="Include\Gdi.h" />
     <ClInclude Include="Include\GdiBitmap.h" />
+    <ClInclude Include="Include\HandleMonitor.h" />
     <ClInclude Include="Include\Heap.h" />
     <ClInclude Include="Include\KeyInput.h" />
     <ClInclude Include="Include\ModuleLoader.h" />
@@ -65,6 +66,7 @@
     <ClCompile Include="Source\File.cpp" />
     <ClCompile Include="Source\Gdi.cpp" />
     <ClCompile Include="Source\GdiBitmap.cpp" />
+    <ClCompile Include="Source\HandleMonitor.cpp" />
     <ClCompile Include="Source\Heap.cpp" />
     <ClCompile Include="Source\KeyInput.cpp" />
     <ClCompile Include="Source\ModuleLoader.cpp" />

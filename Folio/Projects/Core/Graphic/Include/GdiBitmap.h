@@ -96,9 +96,9 @@ public:
                       Int32                 destinationHeight);
 
     // AGdiGraphicElement method(s).
-    virtual FolioStatus SetScreenTopLeft (Int32 screenXLeft,    
-                                          Int32 screenYTop);
-    virtual FolioStatus Draw (Gdiplus::Graphics&    graphics,
+    virtual FolioStatus Draw (Int32                 screenXLeft,
+                              Int32                 screenYTop,
+                              Gdiplus::Graphics&    graphics,
                               RectList*             rects = 0);
 
 private:
@@ -131,8 +131,12 @@ private:
     FolioStatus InitialiseBitmap (FolioHandle   dcHandle, 
                                   bool          isMonochrome = false);
     FolioStatus DrawPartialBitmap (HDC              graphicsDcHandle,
+                                   Int32            screenXLeft,
+                                   Int32            screenYTop,
                                    Gdiplus::Rect    &drawingRect) const;
     FolioStatus DrawFullBitmap (HDC             graphicsDcHandle,
+                                Int32           screenXLeft,
+                                Int32           screenYTop,
                                 Gdiplus::Rect   &drawingRect) const;
 
     void    Destroy ();

@@ -30,33 +30,33 @@ public:
 
     virtual ~AGdiGraphicElement ();
 
-    virtual FolioStatus SetScreenTopLeft (Int32 screenXLeft,    
-                                          Int32 screenYTop) = 0;
-    virtual FolioStatus Draw (Gdiplus::Graphics&    graphics,
+    virtual FolioStatus Draw (Int32                 screenXLeft,    
+                              Int32                 screenYTop,
+                              Gdiplus::Graphics&    graphics,
                               RectList*             rects) = 0;
 
-    Gdiplus::Rect   GetScreenRect () const;
-    Int32           GetScreenXLeft () const;
-    Int32           GetScreenYTop () const;
-    Int32           GetScreenXRight () const;
-    Int32           GetScreenYBottom () const;
-    Int32           GetScreenWidth () const;
-    Int32           GetScreenHeight () const;
+    Int32   GetScreenWidth () const;
+    Int32   GetScreenHeight() const;
 
     void    SetScreenScale (UInt32 screenScale);
     UInt32  GetScreenScale () const;
 
-    bool    IsOverlap (const Gdiplus::Rect& screenRect) const;
+    Gdiplus::Rect   GetScaledRect  (Int32   screenXLeft,
+                                    Int32   screenYTop) const;
+    Int32   GetScaledWidth () const;
+    Int32   GetScaledHeight() const;
 
 protected:
-    Gdiplus::Rect   m_screenRect;   ///< The screen rect of the graphic element (not scaled).
-    UInt32          m_screenScale;  ///< The screen scale of the graphic element.
-    Gdiplus::Rect   m_scaledRect;   ///< The scaled rect of the graphic element.
+    Int32   m_screenWidth;  ///< The screen width of the graphic element.
+    Int32   m_screenHeight; ///< The screen height of the graphic element.
+    UInt32  m_screenScale;  ///< The screen scale of the graphic element.
+    Int32   m_scaledWidth;  ///< The scaled width of the graphic element.
+    Int32   m_scaledHeight; ///< The scaled height of the graphic element.
 
     AGdiGraphicElement ();
 
-    virtual void    SetScreenRect (const Gdiplus::Rect& screenRect);
-    virtual void    SetScreenScaledRect ();
+    void    SetScreenWidth (Int32 screenWidth);
+    void    SetScreenHeight (Int32 screenHeight);
 
     void    Clone (const AGdiGraphicElement& rhs);
 }; // Endclass.

@@ -12,51 +12,53 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\BackgroundItemGraphics.cpp" />
-    <ClCompile Include="Source\BackgroundItems.cpp" />
-    <ClCompile Include="Source\BossSprites.cpp" />
+    <ClCompile Include="Source\BackgroundItem.cpp" />
+    <ClCompile Include="Source\BossSprite.cpp" />
+    <ClCompile Include="Source\CollisionGrid.cpp" />
     <ClCompile Include="Source\LoadingScreen.cpp" />
-    <ClCompile Include="Source\PlayerSprites.cpp" />
+    <ClCompile Include="Source\PlayerSprite.cpp" />
     <ClCompile Include="Source\FallingSimulationScreen.cpp" />
     <ClCompile Include="Source\Font.cpp" />
     <ClCompile Include="Source\GameOverScreen.cpp" />
     <ClCompile Include="Source\InformationPanel.cpp" />
     <ClCompile Include="Source\MainCanvasMsgHandler.cpp" />
     <ClCompile Include="Source\SpriteGraphics.cpp" />
-    <ClCompile Include="Source\NastySprites.cpp" />
+    <ClCompile Include="Source\NastySprite.cpp" />
     <ClCompile Include="Source\RoomGraphics.cpp" />
     <ClCompile Include="Source\DrawingElement.cpp" />
-    <ClCompile Include="Source\Screens.cpp" />
+    <ClCompile Include="Source\Screen.cpp" />
     <ClCompile Include="Source\SelectionScreen.cpp" />
-    <ClCompile Include="Source\StaticSprites.cpp" />
+    <ClCompile Include="Source\StaticSprite.cpp" />
     <ClCompile Include="Source\StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source\WeaponSprites.cpp" />
-    <ClCompile Include="Source\ZxSpectrum.cpp" />
+    <ClCompile Include="Source\WeaponSprite.cpp" />
+    <ClCompile Include="Source\Ultimate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\BackgroundItemGraphics.h" />
-    <ClInclude Include="Source\BackgroundItems.h" />
-    <ClInclude Include="Source\BossSprites.h" />
+    <ClInclude Include="Source\BackgroundItem.h" />
+    <ClInclude Include="Source\BossSprite.h" />
+    <ClInclude Include="Source\CollisionGrid.h" />
     <ClInclude Include="Source\LoadingScreen.h" />
-    <ClInclude Include="Source\PlayerSprites.h" />
+    <ClInclude Include="Source\PlayerSprite.h" />
     <ClInclude Include="Source\FallingSimulationScreen.h" />
     <ClInclude Include="Source\Font.h" />
     <ClInclude Include="Source\GameOverScreen.h" />
     <ClInclude Include="Source\InformationPanel.h" />
     <ClInclude Include="Source\MainCanvasMsgHandler.h" />
     <ClInclude Include="Source\SpriteGraphics.h" />
-    <ClInclude Include="Source\NastySprites.h" />
+    <ClInclude Include="Source\NastySprite.h" />
     <ClInclude Include="Source\resource.h" />
     <ClInclude Include="Source\RoomGraphics.h" />
     <ClInclude Include="Source\DrawingElement.h" />
-    <ClInclude Include="Source\Screens.h" />
+    <ClInclude Include="Source\Screen.h" />
     <ClInclude Include="Source\SelectionScreen.h" />
-    <ClInclude Include="Source\StaticSprites.h" />
+    <ClInclude Include="Source\StaticSprite.h" />
     <ClInclude Include="Source\StdAfx.h" />
-    <ClInclude Include="Source\WeaponSprites.h" />
-    <ClInclude Include="Source\ZxSpectrum.h" />
+    <ClInclude Include="Source\WeaponSprite.h" />
+    <ClInclude Include="Source\Ultimate.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Source\AticAtac.rc" />

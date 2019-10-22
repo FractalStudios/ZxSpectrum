@@ -10,6 +10,7 @@
 #include    "File.h"
 #include    "Gdi.h"
 #include    "GdiBitmap.h"
+#include    "HandleMonitor.h"
 #include    "Heap.h"
 #include    "KeyInput.h"
 #include    "ModuleLoader.h"

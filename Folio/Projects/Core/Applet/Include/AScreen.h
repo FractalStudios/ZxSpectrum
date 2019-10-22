@@ -43,13 +43,7 @@ protected:
     UInt32  m_initialFrameTickCount;    // The initial frame tick count.
     UInt32  m_previousFrameTickCount;   // The previous frame tick count.
 
-    // Screen item.
-    typedef Folio::Core::Game::ItemPtr  Item;
-
-    // Screen items list.
-    typedef std::vector<Item>   ItemsList;
-
-    ItemsList   m_itemsList; // The screen items.
+    Folio::Core::Game::ItemsList    m_itemsList; // The screen items.
 
     AScreen ();
 

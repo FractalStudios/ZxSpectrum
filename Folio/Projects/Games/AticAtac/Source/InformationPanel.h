@@ -9,8 +9,7 @@
 #include    <Game.h>
 #include    <Util.h>
 #include    "RoomGraphics.h"
-#include    "StaticSprites.h"
-#include    "ZxSpectrum.h"
+#include    "StaticSprite.h"
 
 #pragma pack(push, 1)
 
@@ -65,7 +64,7 @@ public:
                         UInt32                      totalNumRooms,
                         UInt16                      mainPlayerBitmapResourceId);
     FolioStatus QueryDrawingElements (FolioHandle                               dcHandle,
-                                      ZxSpectrum::COLOUR                        roomColour,
+                                      Folio::Core::Game::ZxSpectrum::COLOUR     roomColour,
                                       Folio::Core::Game::DrawingElementsList    &drawingElementsList);
     FolioStatus HandleProcessFrame (bool    &isStarting,
                                     bool    &mainPlayerIsDead);
@@ -140,7 +139,7 @@ private:
     static  const   Int32   MAX_HEALTH          = 90;               // The maximum health the main player can have.
     static  const   Int32   MAX_NUM_LIVES       = 4;                // The maximum number of lives the main player can have.
     static  const   Int32   MAX_TIME_IN_SECONDS = 999 * 60 + 59;    // The maximum time in seconds.
-    static  const   Int32   MAX_SCORE           = 999999;           // The maximum health the main player can have.
+    static  const   Int32   MAX_SCORE           = 999999;           // The maximum score the main player can have.
 
     Folio::Core::Applet::Canvas*    m_canvas;   // The canvas.
 
@@ -175,13 +174,7 @@ private:
     static  UInt32  m_currentDecrementMainPlayerHealthSoundSampleIndex; // The current entered decrement main player health sample index.
     static  Folio::Core::Util::Sound::SoundSamplesList  m_decrementMainPlayerHealthSoundSamplesList;    // The decrement main player health sound samples.
 
-    // Information panel item.
-    typedef std::shared_ptr<Folio::Core::Game::AItem>    Item;
-
-    // Information panel items list.
-    typedef std::vector<Item>   ItemsList;
-
-    ItemsList   m_itemsList; // The information panel items.
+    Folio::Core::Game::ItemsList    m_itemsList; // The information panel items.
 
     FolioStatus BuildItems (FolioHandle dcHandle, 
                             FolioHandle instanceHandle,
@@ -226,8 +219,8 @@ private:
     bool    IsAnyHeldItem () const;
 
     HeldItemsList::iterator FindHeldItem (INFORMATION_PANEL_ITEM_ID itemId);
-    HeldItemsList::const_iterator   FindHeldItem (STATIC_SPRITE_ID      staticSpriteId,
-                                                  ZxSpectrum::COLOUR    colour) const;
+    HeldItemsList::const_iterator   FindHeldItem (STATIC_SPRITE_ID                      staticSpriteId,
+                                                  Folio::Core::Game::ZxSpectrum::COLOUR colour) const;
 
     FolioStatus UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type    &item,
                                 bool                                            invertColours,
@@ -237,10 +230,10 @@ private:
     void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
     bool    SetGraphicItemHeight (Folio::Core::Game::GraphicItemPtr::element_type &item);
     
-    ItemsList::iterator FindItem (INFORMATION_PANEL_ITEM_ID itemId);
+    Folio::Core::Game::ItemsList::iterator  FindItem (INFORMATION_PANEL_ITEM_ID itemId);
     
-    ZxSpectrum::COLOUR  GetScrollItemColour (INFORMATION_PANEL_ITEM_ID  itemId,
-                                             ZxSpectrum::COLOUR         roomColour) const;
+    Folio::Core::Game::ZxSpectrum::COLOUR   GetScrollItemColour (INFORMATION_PANEL_ITEM_ID              itemId,
+                                                                 Folio::Core::Game::ZxSpectrum::COLOUR  roomColour) const;
 
     static  void    CreateInformationPanelSoundSamples ();
     static  void    CreateIncrementMainPlayerHealthSoundSamples ();

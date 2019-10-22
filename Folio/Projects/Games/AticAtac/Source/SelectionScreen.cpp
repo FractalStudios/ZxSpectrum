@@ -3,7 +3,6 @@
 #include    "DrawingElement.h"
 #include    "Font.h"
 #include    "SelectionScreen.h"
-#include    "ZxSpectrum.h"
 
 namespace Folio
 {
@@ -15,37 +14,30 @@ namespace AticAtac
 {
 
 // Selection screen item attributes.
-struct SelectionScreenItemAttributes
-{
-    SELECTION_SCREEN_ITEM_ID    m_itemId;           // The identifier of the selection screen item.
-    UInt16                      m_bitmapResourceId; // The selection screen item's bitmap resource identifier (if it's a graphic item).
-    Int32                       m_screenXLeft;      // The screen X left of the selection screen item.
-    Int32                       m_screenYTop;       // The screen Y top of the selection screen item.
-    ZxSpectrum::COLOUR          m_colour;           // The colour of the selection screen item.
- }; // Endstruct.
+typedef Folio::Core::Game::ItemAttributes<SELECTION_SCREEN_ITEM_ID> SelectionScreenItemAttributes;
 
 // Selection screen item attributes table.
 static  const   SelectionScreenItemAttributes   g_selectionScreenAttributesTable [] =
 {
 //      m_itemId                                            m_bitmapResourceId                          m_screenXLeft   m_screenYTop    m_colour
-    {   SELECTION_SCREEN_ITEM_TITLE_TEXT,                   0,                                          32,               0,            ZxSpectrum::BRIGHT | ZxSpectrum::WHITE,     },
-    {   SELECTION_SCREEN_ITEM_KEYBOARD_LEFT_PANE,           IDB_BITMAP_KEYBOARD_LEFT_PANE,              32,              13,            ZxSpectrum::BRIGHT | ZxSpectrum::MAGENTA,   },
-    {   SELECTION_SCREEN_ITEM_KEYBOARD_RIGHT_PANE,          IDB_BITMAP_KEYBOARD_RIGHT_PANE,             48,              13,            ZxSpectrum::BRIGHT | ZxSpectrum::MAGENTA,   },
-    {   SELECTION_SCREEN_ITEM_KEYBOARD_TEXT,                0,                                          88,              16,            ZxSpectrum::BRIGHT | ZxSpectrum::CYAN,      },
-    {   SELECTION_SCREEN_ITEM_JOYSTICK_LEFT_PANE,           IDB_BITMAP_JOYSTICK_LEFT_PANE,              32,              33,            ZxSpectrum::BRIGHT | ZxSpectrum::GREEN,     },
-    {   SELECTION_SCREEN_ITEM_JOYSTICK_RIGHT_PANE,          IDB_BITMAP_JOYSTICK_RIGHT_PANE,             48,              33,            ZxSpectrum::BRIGHT | ZxSpectrum::GREEN,     },
-    {   SELECTION_SCREEN_ITEM_KEMPSTON_JOYSTICK_TEXT,       0,                                          88,              40,            ZxSpectrum::BRIGHT | ZxSpectrum::CYAN,      },
-    {   SELECTION_SCREEN_ITEM_CURSOR_DIRECTIONS_LEFT_PANE,  IDB_BITMAP_CURSOR_DIRECTIONS_LEFT_PANE,     32,              60,            ZxSpectrum::BRIGHT | ZxSpectrum::YELLOW,    },
-    {   SELECTION_SCREEN_ITEM_CURSOR_DIRECTIONS_RIGHT_PANE, IDB_BITMAP_CURSOR_DIRECTIONS_RIGHT_PANE,    48,              60,            ZxSpectrum::BRIGHT | ZxSpectrum::YELLOW,    },
-    {   SELECTION_SCREEN_ITEM_CURSOR_JOYSTICK_TEXT,         0,                                          88,              64,            ZxSpectrum::BRIGHT | ZxSpectrum::CYAN,      },
-    {   SELECTION_SCREEN_ITEM_KNIGHT,                       IDB_BITMAP_KNIGHT_WALKING_LEFT_1,           40,              86,            ZxSpectrum::BRIGHT | ZxSpectrum::WHITE,     },
-    {   SELECTION_SCREEN_ITEM_KNIGHT_TEXT,                  0,                                          88,              88,            ZxSpectrum::BRIGHT | ZxSpectrum::CYAN,      },
-    {   SELECTION_SCREEN_ITEM_WIZARD,                       IDB_BITMAP_WIZARD_WALKING_LEFT_1,           40,             108,            ZxSpectrum::BRIGHT | ZxSpectrum::WHITE,     },
-    {   SELECTION_SCREEN_ITEM_WIZARD_TEXT,                  0,                                          88,             112,            ZxSpectrum::BRIGHT | ZxSpectrum::CYAN,      },
-    {   SELECTION_SCREEN_ITEM_SERF,                         IDB_BITMAP_SERF_WALKING_LEFT_1,             40,             134,            ZxSpectrum::BRIGHT | ZxSpectrum::WHITE,     },
-    {   SELECTION_SCREEN_ITEM_SERF_TEXT,                    0,                                          88,             136,            ZxSpectrum::BRIGHT | ZxSpectrum::CYAN,      },
-    {   SELECTION_SCREEN_ITEM_START_GAME_TEXT,              0,                                          88,             160,            ZxSpectrum::BRIGHT | ZxSpectrum::WHITE,     },
-    {   SELECTION_SCREEN_ITEM_COPYRIGHT_TEXT,               0,                                           0,             184,            ZxSpectrum::BRIGHT | ZxSpectrum::WHITE,     },
+    {   SELECTION_SCREEN_ITEM_TITLE_TEXT,                   0,                                          32,               0,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   SELECTION_SCREEN_ITEM_KEYBOARD_LEFT_PANE,           IDB_BITMAP_KEYBOARD_LEFT_PANE,              32,              13,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::MAGENTA, },
+    {   SELECTION_SCREEN_ITEM_KEYBOARD_RIGHT_PANE,          IDB_BITMAP_KEYBOARD_RIGHT_PANE,             48,              13,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::MAGENTA, },
+    {   SELECTION_SCREEN_ITEM_KEYBOARD_TEXT,                0,                                          88,              16,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    },
+    {   SELECTION_SCREEN_ITEM_JOYSTICK_LEFT_PANE,           IDB_BITMAP_JOYSTICK_LEFT_PANE,              32,              33,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::GREEN,   },
+    {   SELECTION_SCREEN_ITEM_JOYSTICK_RIGHT_PANE,          IDB_BITMAP_JOYSTICK_RIGHT_PANE,             48,              33,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::GREEN,   },
+    {   SELECTION_SCREEN_ITEM_KEMPSTON_JOYSTICK_TEXT,       0,                                          88,              40,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    },
+    {   SELECTION_SCREEN_ITEM_CURSOR_DIRECTIONS_LEFT_PANE,  IDB_BITMAP_CURSOR_DIRECTIONS_LEFT_PANE,     32,              60,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::YELLOW,  },
+    {   SELECTION_SCREEN_ITEM_CURSOR_DIRECTIONS_RIGHT_PANE, IDB_BITMAP_CURSOR_DIRECTIONS_RIGHT_PANE,    48,              60,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::YELLOW,  },
+    {   SELECTION_SCREEN_ITEM_CURSOR_JOYSTICK_TEXT,         0,                                          88,              64,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    },
+    {   SELECTION_SCREEN_ITEM_KNIGHT,                       IDB_BITMAP_KNIGHT_WALKING_LEFT_1,           40,              86,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   SELECTION_SCREEN_ITEM_KNIGHT_TEXT,                  0,                                          88,              88,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    },
+    {   SELECTION_SCREEN_ITEM_WIZARD,                       IDB_BITMAP_WIZARD_WALKING_LEFT_1,           40,             108,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   SELECTION_SCREEN_ITEM_WIZARD_TEXT,                  0,                                          88,             112,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    },
+    {   SELECTION_SCREEN_ITEM_SERF,                         IDB_BITMAP_SERF_WALKING_LEFT_1,             40,             134,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   SELECTION_SCREEN_ITEM_SERF_TEXT,                    0,                                          88,             136,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    },
+    {   SELECTION_SCREEN_ITEM_START_GAME_TEXT,              0,                                          88,             160,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   SELECTION_SCREEN_ITEM_COPYRIGHT_TEXT,               0,                                           0,             184,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
 };
 
 
@@ -331,8 +323,8 @@ FolioStatus SelectionScreen::BuildScreenItems (FolioHandle  dcHandle,
                                        g_selectionScreenAttributesTable [index].m_itemId,
                                        g_selectionScreenAttributesTable [index].m_screenXLeft, 
                                        g_selectionScreenAttributesTable [index].m_screenYTop,
-                                       ZxSpectrum::DEFAULT_SCREEN_SCALE, 
-                                       ZxSpectrum::MapInkColour (g_selectionScreenAttributesTable [index].m_colour));
+                                       Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE, 
+                                       Folio::Core::Game::ZxSpectrum::MapInkColour (g_selectionScreenAttributesTable [index].m_colour));
 
                 if (status == ERR_SUCCESS)
                 {
@@ -369,9 +361,9 @@ FolioStatus SelectionScreen::BuildScreenItems (FolioHandle  dcHandle,
                                        g_selectionScreenAttributesTable [index].m_itemId,
                                        g_selectionScreenAttributesTable [index].m_screenXLeft, 
                                        g_selectionScreenAttributesTable [index].m_screenYTop,
-                                       ZxSpectrum::DEFAULT_SCREEN_SCALE, 
-                                       ZxSpectrum::GetBitmapChangeColour (),
-                                       ZxSpectrum::MapInkColour (g_selectionScreenAttributesTable [index].m_colour));
+                                       Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE, 
+                                       Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour (),
+                                       Folio::Core::Game::ZxSpectrum::MapInkColour (g_selectionScreenAttributesTable [index].m_colour));
 
                 if (status == ERR_SUCCESS)
                 {
@@ -466,7 +458,7 @@ FolioStatus SelectionScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
 
     UInt32  currentTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
 
-    if (currentTickCount >= (m_previousFrameTickCount + ZxSpectrum::FLASH_MILLISECONDS))
+    if (currentTickCount >= (m_previousFrameTickCount + Folio::Core::Game::ZxSpectrum::FLASH_MILLISECONDS))
     {
         // Update the selection screen.
 
@@ -498,7 +490,7 @@ FolioStatus SelectionScreen::UpdateScreen ()
     bool    finished        = false;   // Initialise!
     bool    redrawCanvas    = false;
 
-    for (ItemsList::iterator itr = m_itemsList.begin ();
+    for (Folio::Core::Game::ItemsList::iterator itr = m_itemsList.begin ();
          !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
          ++itr)
     {
@@ -608,7 +600,7 @@ FolioStatus SelectionScreen::ResetScreen ()
     bool    finished        = false;   // Initialise!
     bool    redrawCanvas    = false;
 
-    for (ItemsList::iterator itr = m_itemsList.begin ();
+    for (Folio::Core::Game::ItemsList::iterator itr = m_itemsList.begin ();
          !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
          ++itr)
     {
@@ -680,7 +672,9 @@ FolioStatus SelectionScreen::UpdateTextItem (Folio::Core::Game::TextItemPtr::ele
 
         // Draw it.
 
-        status = gdiRasterText->Draw (graphics);
+        status = gdiRasterText->Draw (item.GetScreenXLeft (), 
+                                      item.GetScreenYTop (), 
+                                      graphics);
 
         if (status == ERR_SUCCESS)
         {
@@ -698,7 +692,9 @@ FolioStatus SelectionScreen::UpdateTextItem (Folio::Core::Game::TextItemPtr::ele
 
         // Draw it.
 
-        status = gdiRasterText->Draw (graphics);
+        status = gdiRasterText->Draw (item.GetScreenXLeft (), 
+                                      item.GetScreenYTop (), 
+                                      graphics);
 
         if (status == ERR_SUCCESS)
         {

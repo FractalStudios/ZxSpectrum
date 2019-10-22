@@ -14,7 +14,7 @@ ResourceGraphic::ResourceGraphic ()
 :   m_drawingElementId(DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED),
     m_bitmapResourceId(FOLIO_UNDEFINED),
     m_colourTableIndex(FOLIO_INVALID_INDEX),
-    m_collisionGridCellValue(CollisionGrid::CELL_VALUE_EMPTY),
+    m_collisionGridCellValue(ACollisionGrid::CELL_VALUE_EMPTY),
     m_maskedGdiBitmapRqd(false),
     m_maskColour(Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR)
 {
@@ -31,7 +31,7 @@ FolioStatus ResourceGraphic::Create (FolioHandle                dcHandle,
                                      DrawingElement::Id         drawingElementId,
                                      UInt16                     bitmapResourceId,
                                      bool                       maskedGdiBitmapRqd,
-                                     CollisionGrid::CellValue   collisionGridCellValue,
+                                     ACollisionGrid::CellValue  collisionGridCellValue,
                                      Gdiplus::ARGB              maskColour)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -78,7 +78,7 @@ FolioStatus ResourceGraphic::Create (FolioHandle                dcHandle,
                                      UInt16                     bitmapResourceId,
                                      Gdiplus::ARGB              changeColour, 
                                      bool                       maskedGdiBitmapRqd,
-                                     CollisionGrid::CellValue   collisionGridCellValue,
+                                     ACollisionGrid::CellValue  collisionGridCellValue,
                                      Gdiplus::ARGB              maskColour)
 {
     // Create the resource graphic.
@@ -115,7 +115,7 @@ FolioStatus ResourceGraphic::Create (FolioHandle                dcHandle,
                                      Gdiplus::ARGB              changeColour, 
                                      Gdiplus::ARGB              newColour, 
                                      bool                       maskedGdiBitmapRqd,
-                                     CollisionGrid::CellValue   collisionGridCellValue,
+                                     ACollisionGrid::CellValue  collisionGridCellValue,
                                      Gdiplus::ARGB              maskColour)
 {
     // Create the resource graphic.
@@ -160,6 +160,14 @@ FolioStatus ResourceGraphic::ChangeColour (Gdiplus::ARGB changeColour)
             // Change the colour of the device-independent GDI bitmap.
 
             status = m_gdiDiBitmap->ChangeColour (m_colourTableIndex, changeColour);
+
+            if ((status == ERR_SUCCESS) && m_gdiBitmap)
+            {
+                // Destroy the GDI bitmap.
+
+                m_gdiBitmap.reset ();
+            } // Endif.
+
         } // Endif. 
 
     } // Endif.
@@ -185,25 +193,6 @@ FolioStatus ResourceGraphic::QueryDrawingElements (FolioHandle                  
                                                    DrawingElementsList              &drawingElementsList,
                                                    bool                             maskedDrawingElementRqd)
 {
-    static  const   double PI = 3.14159265358979323846; // PI.
-
-    // Rotation.
-    struct Rotation
-    {
-        UInt32  m_rotation;
-        double  m_radians;
-    }; // Endstruct.
-
-    // Rotation table.
-    static  const   Rotation    s_rotationTable [] =
-    {
-    //      m_rotation          m_radians
-        {   ROTATION_NONE,      0,          },
-        {   ROTATION_180,       PI,         },
-        {   ROTATION_LEFT_90,   PI / 2,     },
-        {   ROTATION_RIGHT_90,  -PI / 2,    },
-    }; 
-
     FolioStatus status = ERR_SUCCESS;
 
     drawingElementsList.clear ();   // Initialise!
@@ -212,110 +201,91 @@ FolioStatus ResourceGraphic::QueryDrawingElements (FolioHandle                  
 
     if (IsCreated ())
     {
-        // Yes. Create a device-independent GDI bitmap.
+        // Yes. Is a new drawing element required?
+        
+        bool    isNewDrawingElementRqd = IsNewDrawingElementRqd (drawingFlags);
+        
+        Folio::Core::Graphic::GdiBitmapPtr  gdiBitmap;
 
-        Folio::Core::Graphic::GdiDiBitmapPtr    gdiDiBitmap(new Folio::Core::Graphic::GdiDiBitmapPtr::element_type);
-
-        // Should the GDI bitmap be rotated?
-
-        if (IsRotated (drawingFlags))
+        if (!isNewDrawingElementRqd)
         {
-            // Yes. Rotate the device-independent GDI bitmap.
+            // Use the existing GDI bitmap.
 
-            status = gdiDiBitmap->Create (*m_gdiDiBitmap,
-                                          s_rotationTable [(drawingFlags & ROTATION_MASK) >> 2].m_radians,
-                                          Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR);
+            gdiBitmap = m_gdiBitmap;
         } // Endif.
 
-        else
+        // Create the GDI bitmap from the device-independent GDI bitmap.
+
+        status = CreateGdiBitmap (dcHandle,
+                                  screenScale,
+                                  drawingFlags,
+                                  m_gdiDiBitmap,
+                                  gdiBitmap);
+
+        // Is a masked GDI bitmap required?
+
+        if ((status == ERR_SUCCESS) && m_maskedGdiBitmapRqd && maskedDrawingElementRqd)
         {
-            // No. Copy the device-independent GDI bitmap.
+            // Yes.
 
-            *gdiDiBitmap = *m_gdiDiBitmap;
-        } // Endelse.
+            Folio::Core::Graphic::GdiBitmapPtr  maskedGdiBitmap;
 
-        if (status == ERR_SUCCESS)
-        {
-            // Create the GDI bitmap from the device-independent GDI bitmap.
+            if (!isNewDrawingElementRqd)
+            {
+                // Use the existing masked GDI bitmap.
 
-            Folio::Core::Graphic::GdiBitmapPtr  gdiBitmap(new Folio::Core::Graphic::GdiBitmapPtr::element_type);
+                maskedGdiBitmap = m_maskedGdiBitmap;
+            } // Endif.
 
-            status = gdiBitmap->Create (dcHandle, *gdiDiBitmap);
+            // Create the masked GDI bitmap from the GDI bitmap.
+
+            status = CreateMaskedGdiBitmap (dcHandle, 
+                                            m_maskColour,
+                                            screenScale,
+                                            drawingFlags,
+                                            gdiBitmap,
+                                            maskedGdiBitmap);
 
             if (status == ERR_SUCCESS)
             {
-                // Is a masked GDI bitmap required?
+                // Add the masked GDI bitmap to the list of drawing elements.
 
-                if (m_maskedGdiBitmapRqd && maskedDrawingElementRqd)
+                drawingElementsList.push_back (DrawingElement(m_drawingElementId,
+                                                              screenXLeft,
+                                                              screenYTop,
+                                                              maskedGdiBitmap,
+                                                              drawingElementUserData,
+                                                              m_collisionGridCellValue));
+
+                if (!isNewDrawingElementRqd && !m_maskedGdiBitmap)
                 {
-                    // Yes. Create the masked GDI bitmap from the GDI bitmap.
+                    // Set the masked GDI bitmap.
 
-                    Folio::Core::Graphic::GdiBitmapPtr  maskedBitmapDrawingElement;
-
-                    status = CreateMaskedBitmapDrawingElement (dcHandle, 
-                                                               gdiBitmap,
-                                                               m_maskColour,
-                                                               screenXLeft,
-                                                               screenYTop,
-                                                               screenScale,
-                                                               drawingFlags,
-                                                               maskedBitmapDrawingElement);
-
-                    if (status == ERR_SUCCESS)
-                    {
-                        // Add the masked GDI bitmap to the list of drawing elements.
-
-                        drawingElementsList.push_back (DrawingElement(m_drawingElementId,
-                                                                      maskedBitmapDrawingElement,
-                                                                      drawingElementUserData,
-                                                                      m_collisionGridCellValue));
-
-                        // Makes sure and set the GDI bitmap's drawing mode.
-
-                        gdiBitmap->SetDrawingMode (SRCPAINT);
-                    } // Endif.
-                    
-                } // Endif.
-
-                if (status == ERR_SUCCESS)
-                {
-                    // Should the GDI bitmap be flipped?
-
-                    if (IsFlipped (drawingFlags))
-                    {
-                        // Yes. Flip the GDI bitmap.
-
-                        gdiBitmap->SetDrawingFlip (IsFlipHorizontal (drawingFlags), 
-                                                   IsFlipVertical (drawingFlags));
-                    } // Endif.
-
-                    // Set the GDI bitmap's top-left screen position.
-
-                    status = gdiBitmap->SetScreenTopLeft (screenXLeft, screenYTop);
-
-                    if (status == ERR_SUCCESS)
-                    {
-                        // Scale the GDI bitmap.
-
-                        gdiBitmap->SetScreenScale (screenScale);
-
-                        // Add the GDI bitmap to the list of drawing elements.
-
-                        drawingElementsList.push_back (DrawingElement(m_drawingElementId,
-                                                                      gdiBitmap, 
-                                                                      drawingElementUserData,
-                                                                      m_collisionGridCellValue));
-                    } // Endif.
-
+                    m_maskedGdiBitmap = maskedGdiBitmap;
                 } // Endif.
 
             } // Endif.
-    
+                    
         } // Endif.
 
-        if (status != ERR_SUCCESS)
+        if (status == ERR_SUCCESS)
         {
-            drawingElementsList.clear ();
+            // Add the GDI bitmap to the list of drawing elements.
+
+            drawingElementsList.push_back (DrawingElement(m_drawingElementId,
+                                                          screenXLeft,
+                                                          screenYTop,
+                                                          gdiBitmap, 
+                                                          drawingElementUserData,
+                                                          m_collisionGridCellValue));
+
+            if (!isNewDrawingElementRqd && !m_gdiBitmap)
+            {
+                // Set the GDI bitmap.
+
+                m_gdiBitmap = gdiBitmap;
+            } // Endif.
+
         } // Endif.
 
     } // Endif.
@@ -354,6 +324,14 @@ FolioStatus ResourceGraphic::QueryDrawingElements (FolioHandle                  
             // Change the colour of the device-independent GDI bitmap.
 
             status = m_gdiDiBitmap->ChangeColour (m_colourTableIndex, colour);
+
+            if ((status == ERR_SUCCESS) && m_gdiBitmap)
+            {
+                // Destroy the GDI bitmap.
+
+                m_gdiBitmap.reset ();
+            } // Endif.
+
         } // Endif. 
           
         if (status == ERR_SUCCESS)
@@ -406,7 +384,7 @@ UInt32  ResourceGraphic::GetChangeColourTableIndex () const
 } // Endproc.
 
 
-CollisionGrid::CellValue    ResourceGraphic::GetCollisionGridCellValue () const
+ACollisionGrid::CellValue   ResourceGraphic::GetCollisionGridCellValue () const
 {
     return (m_collisionGridCellValue);
 } // Endproc.
@@ -526,56 +504,146 @@ bool    ResourceGraphic::IsFlipVertical (UInt32 drawingFlags)
 } // Endproc.
 
 
-FolioStatus ResourceGraphic::CreateMaskedBitmapDrawingElement (FolioHandle                                  dcHandle,
-                                                               const Folio::Core::Graphic::GdiBitmapPtr&    gdiBitmap,
-                                                               Gdiplus::ARGB                                maskColour,
-                                                               Int32                                        screenXLeft,
-                                                               Int32                                        screenYTop,
-                                                               UInt32                                       screenScale,
-                                                               UInt32                                       drawingFlags,
-                                                               Folio::Core::Graphic::GdiBitmapPtr&          maskedBitmapDrawingElement)
+FolioStatus ResourceGraphic::CreateGdiBitmap (FolioHandle                                   dcHandle,
+                                              UInt32                                        screenScale,
+                                              UInt32                                        drawingFlags,
+                                              const Folio::Core::Graphic::GdiDiBitmapPtr&   gdiDiBitmap,
+                                              Folio::Core::Graphic::GdiBitmapPtr&           gdiBitmap)
 {
-    // Create the masked GDI bitmap drawing element.
+    static  const   double PI = 3.14159265358979323846; // PI.
 
-    maskedBitmapDrawingElement.reset (new Folio::Core::Graphic::GdiBitmapPtr::element_type);
-
-    FolioStatus status = maskedBitmapDrawingElement->Create (dcHandle,
-                                                             *gdiBitmap, 
-                                                             maskColour);
-
-    if (status == ERR_SUCCESS)
+    // Rotation.
+    struct Rotation
     {
-        // Set the masked GDI bitmap drawing element's drawing mode.
+        UInt32  m_rotation;
+        double  m_radians;
+    }; // Endstruct.
 
-        maskedBitmapDrawingElement->SetDrawingMode (SRCAND);
+    // Rotation table.
+    static  const   Rotation    s_rotationTable [] =
+    {
+    //      m_rotation          m_radians
+        {   ROTATION_NONE,      0,          },
+        {   ROTATION_180,       PI,         },
+        {   ROTATION_LEFT_90,   PI / 2,     },
+        {   ROTATION_RIGHT_90,  -PI / 2,    },
+    }; 
 
-        // Should the masked GDI bitmap be flipped?
+    FolioStatus status = ERR_SUCCESS;
+
+    // Does the GDI bitmap need to be created?
+
+    if (!gdiBitmap || IsNewDrawingElementRqd (drawingFlags))
+    {
+        // Yes. Create the GDI bitmap from the device-independent GDI bitmap.
+
+        gdiBitmap.reset (new Folio::Core::Graphic::GdiBitmapPtr::element_type);
+
+        // Should the GDI bitmap be rotated?
+
+        if (IsRotated (drawingFlags))
+        {
+            // Yes. Rotate the device-independent GDI bitmap.
+
+            Folio::Core::Graphic::GdiDiBitmapPtr  rotatedGdiDiBitmap(new Folio::Core::Graphic::GdiDiBitmapPtr::element_type);
+
+            status = rotatedGdiDiBitmap->Create (*gdiDiBitmap,
+                                                 s_rotationTable [(drawingFlags & ROTATION_MASK) >> 2].m_radians,
+                                                 Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR);
+
+            if (status == ERR_SUCCESS)
+            {
+                // Create the GDI bitmap from the rotated device-independent GDI bitmap.
+
+                status = gdiBitmap->Create (dcHandle, *rotatedGdiDiBitmap);
+            } // Endif.
+
+        } // Endif.
+
+        else
+        {
+            // No. Create the GDI bitmap from the device-independent GDI bitmap.
+
+            status = gdiBitmap->Create (dcHandle, *gdiDiBitmap);
+        } // Endelse.
+
+        // Should the GDI bitmap be flipped?
 
         if (IsFlipped (drawingFlags))
         {
-            // Yes. Flip the masked GDI bitmap drawing element.
+            // Yes. Flip the GDI bitmap.
 
-            maskedBitmapDrawingElement->SetDrawingFlip (IsFlipHorizontal (drawingFlags), 
-                                                        IsFlipVertical (drawingFlags));
+            gdiBitmap->SetDrawingFlip (IsFlipHorizontal (drawingFlags), 
+                                       IsFlipVertical (drawingFlags));
         } // Endif.
 
-        // Set the masked GDI bitmap drawing element's top-left screen position.
+        // Scale the GDI bitmap.
 
-        status = maskedBitmapDrawingElement->SetScreenTopLeft (screenXLeft, screenYTop);
-
-        if (status == ERR_SUCCESS)
-        {
-            // Scale the masked GDI bitmap drawing element.
-
-            maskedBitmapDrawingElement->SetScreenScale (screenScale);
-        } // Endif.
-    
+        gdiBitmap->SetScreenScale (screenScale);
     } // Endif.
 
     return (status);
 } // Endproc.
 
 
+FolioStatus ResourceGraphic::CreateMaskedGdiBitmap (FolioHandle                         dcHandle,
+                                                    Gdiplus::ARGB                       maskColour,
+                                                    UInt32                              screenScale,
+                                                    UInt32                              drawingFlags,
+                                                    Folio::Core::Graphic::GdiBitmapPtr& gdiBitmap,
+                                                    Folio::Core::Graphic::GdiBitmapPtr& maskedGdiBitmap)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Does the masked GDI bitmap need to be created?
+
+    if (!maskedGdiBitmap || IsNewDrawingElementRqd (drawingFlags))
+    {
+        // Yes. Create the masked GDI bitmap from the GDI bitmap.
+
+        maskedGdiBitmap.reset (new Folio::Core::Graphic::GdiBitmapPtr::element_type);
+
+        status = maskedGdiBitmap->Create (dcHandle,
+                                          *gdiBitmap, 
+                                          maskColour);
+
+        if (status == ERR_SUCCESS)
+        {
+            // Should the masked GDI bitmap be flipped?
+
+            if (IsFlipped (drawingFlags))
+            {
+                // Yes. Flip the masked GDI bitmap.
+
+                maskedGdiBitmap->SetDrawingFlip (IsFlipHorizontal (drawingFlags), 
+                                                 IsFlipVertical (drawingFlags));
+            } // Endif.
+
+            // Scale the masked GDI bitmap.
+
+            maskedGdiBitmap->SetScreenScale (screenScale);
+
+            // Set the masked GDI bitmap's drawing mode.
+
+            maskedGdiBitmap->SetDrawingMode (SRCAND);
+
+            // Make sure and set the GDI bitmap's drawing mode.
+
+            gdiBitmap->SetDrawingMode (SRCPAINT);
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+bool    ResourceGraphic::IsNewDrawingElementRqd (UInt32 drawingFlags)
+{
+    return (IsRotated (drawingFlags) || IsFlipped (drawingFlags));
+} // Endproc.
+
+                                
 bool    ResourceGraphic::IsCreated () const
 {
     return (m_gdiDiBitmap.get () != 0);

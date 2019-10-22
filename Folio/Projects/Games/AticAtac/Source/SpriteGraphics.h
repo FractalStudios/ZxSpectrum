@@ -5,7 +5,6 @@
 
 // "Home-made" includes.
 #include    <Game.h>
-#include    "ZxSpectrum.h"
 
 #pragma pack(push, 1)
 
@@ -191,107 +190,6 @@ typedef std::map<SPRITE_ID, SpriteGraphic>      SpriteGraphicsMap;
 extern  FolioStatus BuildSpriteGraphics (FolioHandle        dcHandle, 
                                          FolioHandle        instanceHandle,
                                          SpriteGraphicsMap  &spriteGraphicsMap);
-
-template <typename T, typename U>
-FolioStatus QuerySpriteGraphics (FolioHandle                                                dcHandle,
-                                 T                                                          spriteId,
-                                 const SpriteGraphicsMap                                    &spriteGraphicsMap,
-                                 ZxSpectrum::COLOUR                                         spriteColour,
-                                 UInt32                                                     numSpriteGraphicAttributes,
-                                 const U                                                    *spriteGraphicAttributesTable,
-                                 Folio::Core::Game::ASprite::SpriteGraphicAttributesList    &spriteGraphicAttributesList)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    spriteGraphicAttributesList.clear (); // Initialise!
-
-    // Get the mapped sprite colour.
-
-    Gdiplus::ARGB   mappedSpriteColour = ZxSpectrum::MapInkColour (spriteColour);
-
-    // Build the sprite's bitmaps.
-
-    bool    complete    = false;   // Initialise!
-    bool    foundSprite = false;
-
-    for (UInt32 index = 0; 
-         !complete && (status == ERR_SUCCESS) && (index < numSpriteGraphicAttributes);
-         ++index)
-    {              
-        // Does this sprite match the sprite in the sprite graphics atttribute table?
-
-        if (spriteGraphicAttributesTable [index].m_spriteId == spriteId)
-        {
-            // Yes. 
-            
-            foundSprite = true; // We've found the sprite.
-
-            // Add the sprite graphics.
-
-            Folio::Core::Game::ASprite::SpriteGraphicsList  spriteGraphicsList;
-
-            for (U::SpriteGraphicIdsList::const_iterator itr = spriteGraphicAttributesTable [index].m_spriteGraphicIdsList.begin ();     
-                 (status == ERR_SUCCESS) && (itr != spriteGraphicAttributesTable [index].m_spriteGraphicIdsList.end ());
-                 ++itr)
-            {
-                // Find the sprite graphic in the sprite graphics map.
-
-                SpriteGraphicsMap::const_iterator spriteGraphicsMapItr = spriteGraphicsMap.find (*itr);
-
-                if (spriteGraphicsMapItr != spriteGraphicsMap.end ())
-                {
-                    // Get the sprite graphic.
-
-                    SpriteGraphic   spriteGraphic(spriteGraphicsMapItr->second);
-
-                    if (spriteColour != ZxSpectrum::UNDEFINED)
-                    {
-                        // Change the colour of the sprite graphic.
-
-                        status = spriteGraphic->ChangeColour (mappedSpriteColour);
-                    } // Endif.
-
-                    if (status == ERR_SUCCESS)
-                    {
-                        // Add the sprite graphic.
-
-                        spriteGraphicsList.push_back (spriteGraphicsMapItr->second);
-                    } // Endif.
-        
-                } // Endif.
-
-                else
-                {
-                    // Didn't find the sprite graphic in the sprite graphics map.
-
-                    status = ERR_NOT_FOUND;
-                } // Endelse.
-
-            } // Endfor.            
-
-            if (status == ERR_SUCCESS)
-            {
-                spriteGraphicAttributesList.push_back (Folio::Core::Game::ASprite::SpriteGraphicAttributesList::value_type(spriteGraphicAttributesTable [index].m_direction,
-                                                                                                                           spriteGraphicsList));
-            } // Endif.
-
-        } // Endif.
-
-        else
-        if (foundSprite)
-        {
-            complete = true;    // We've found all the sprite's directions.
-        } // Endelseif.
-
-    } // Endfor.
-
-    if (status != ERR_SUCCESS)
-    {
-        spriteGraphicAttributesList.clear ();
-    } // Endif.
-
-    return (status);
-} // Endproc.
 
 } // Endnamespace.
 

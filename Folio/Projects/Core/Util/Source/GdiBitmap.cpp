@@ -7,6 +7,7 @@
 #include    <Trace.h>
 #include    "Gdi.h"
 #include    "GdiBitmap.h"
+#include    "HandleMonitor.h"
 
 namespace Folio
 {
@@ -69,6 +70,11 @@ FolioStatus CreateCompatibleBitmap (FolioHandle     dcHandle,
                                 bitmapHeight);
     } // Endif.
 
+    else
+    {
+        g_handleMonitor.AddHandle (bitmapHandle, TXT("CreateCompatibleBitmap"));
+    } // Endelse.
+
     return (status);
 } // Endproc.
 
@@ -118,6 +124,8 @@ FolioStatus CreateMonochromeBitmap (FolioHandle         dcHandle,
 
         if (monochromeBitmapHandle != FOLIO_INVALID_HANDLE)
         {
+            g_handleMonitor.AddHandle (monochromeBitmapHandle, TXT("CreateMonochromeBitmap"));
+
             // Create a compatible memory DC for the monochrome bitmap.
 
             FolioHandle monochromeMemoryDcHandle = FOLIO_INVALID_HANDLE;    // Initialise!
@@ -256,6 +264,11 @@ FolioStatus CreateCompatibleBitmap (FolioHandle     dcHandle,
                                     diBitmapHandle);
         } // Endif.
 
+        else
+        {
+            g_handleMonitor.AddHandle (bitmapHandle, TXT("CreateCompatibleBitmap2"));
+        } // Endelse.
+
         delete [] diBitmapPixels;
     } // Endif.
 
@@ -312,6 +325,8 @@ FolioStatus CreateCopiedDiBitmap (FolioHandle   dcHandle,
 
         if (copiedDiBitmapHandle != FOLIO_INVALID_HANDLE)
         {
+            g_handleMonitor.AddHandle (copiedDiBitmapHandle, TXT("CreateCopiedDiBitmap"));
+
             // Copy the device-independent bitmap's pixels.
 
             ::memcpy (copiedDiBitmapPixels, diBitmapPixels, diBitmapInfo.bmiHeader.biSizeImage);
@@ -435,6 +450,8 @@ FolioStatus CreateRotatedDiBitmap (FolioHandle      dcHandle,
 
         if (rotatedDiBitmapHandle != FOLIO_INVALID_HANDLE)
         {
+            g_handleMonitor.AddHandle (rotatedDiBitmapHandle, TXT("CreateRotateddDiBitmap"));
+
             // Find the background colour in the colour table.
 
 		    for (UInt32 colourIndex = 0; colourIndex < numColours; ++colourIndex)
@@ -1292,6 +1309,8 @@ FolioStatus ScaleBitmap (FolioHandle    destinationDcHandle,
  */
 FolioStatus DestroyBitmap (FolioHandle bitmapHandle)
 {
+    g_handleMonitor.RemoveHandle (bitmapHandle);
+
     return (DestroyObject (bitmapHandle));
 } // Endproc.
 

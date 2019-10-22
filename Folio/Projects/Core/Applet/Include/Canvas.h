@@ -59,6 +59,7 @@ public:
 
     FolioStatus ClearCanvasRectangle (const Gdiplus::Rect&  screenRect,
                                       bool                  drawCanvas = false);
+    FolioStatus ClearCanvas ();
     FolioStatus DrawCanvas (bool drawAlways = true);
     FolioStatus PaintCanvas ();
     FolioStatus ResizeCanvas (UInt32    resizeType,

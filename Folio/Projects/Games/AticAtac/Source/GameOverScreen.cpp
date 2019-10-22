@@ -4,7 +4,6 @@
 #include    "Font.h"
 #include    "GameOverScreen.h"
 #include    "InformationPanel.h"
-#include    "ZxSpectrum.h"
 
 namespace Folio
 {
@@ -23,28 +22,28 @@ struct GameOverScreenItemAttributes
     static  const   UInt32  ADD_IF_COMPLETED_GAME       = 0x00000002;
     static  const   UInt32  ADD_IF_NOT_COMPLETED_GAME   = 0x00000004;
 
-    GAME_OVER_SCREEN_ITEM_ID    m_itemId;           // The identifier of the game over screen item.
-    UInt32                      m_flags;            // The flags of the game over screen item
-    UInt16                      m_bitmapResourceId; // The game over screen item's bitmap resource identifier (if it's a graphic item).
-    Int32                       m_screenXLeft;      // The screen X left of the game over screen item.
-    Int32                       m_screenYTop;       // The screen Y top of the game over screen item.
-    ZxSpectrum::COLOUR          m_colour;           // The colour of the game over screen item.
+    GAME_OVER_SCREEN_ITEM_ID                m_itemId;           // The identifier of the game over screen item.
+    UInt32                                  m_flags;            // The flags of the game over screen item
+    UInt16                                  m_bitmapResourceId; // The game over screen item's bitmap resource identifier (if it's a graphic item).
+    Int32                                   m_screenXLeft;      // The screen X left of the game over screen item.
+    Int32                                   m_screenYTop;       // The screen Y top of the game over screen item.
+    Folio::Core::Game::ZxSpectrum::COLOUR   m_colour;           // The colour of the game over screen item.
  }; // Endstruct.
 
 // Game over screen item attributes table.
 static  const   GameOverScreenItemAttributes    g_gameOverScreenAttributesTable [] =
 {
 //      m_itemId                                            m_flags                                                     m_bitmapResourceId      m_screenXLeft   m_screenYTop    m_colour
-    {   GAME_OVER_SCREEN_ITEM_ROOM,                         GameOverScreenItemAttributes::ADD_IF_COMPLETED_GAME,        IDB_BITMAP_ROOM_11,       0,             0,             ZxSpectrum::BRIGHT | ZxSpectrum::WHITE, },
-    {   GAME_OVER_SCREEN_ITEM_CONGRATULATIONS_TEXT,         GameOverScreenItemAttributes::ADD_IF_COMPLETED_GAME,        0,                       64,            32,             ZxSpectrum::BRIGHT | ZxSpectrum::WHITE, },
-    {   GAME_OVER_SCREEN_ITEM_YOU_HAVE_ESCAPED_TEXT,        GameOverScreenItemAttributes::ADD_IF_COMPLETED_GAME,        0,                       64,            48,             ZxSpectrum::BRIGHT | ZxSpectrum::WHITE, },
-    {   GAME_OVER_SCREEN_ITEM_GAME_OVER_TEXT,               GameOverScreenItemAttributes::ADD_IF_NOT_COMPLETED_GAME,    0,                       64,            48,             ZxSpectrum::BRIGHT | ZxSpectrum::WHITE, },
-    {   GAME_OVER_SCREEN_ITEM_TIME_TEXT,                    GameOverScreenItemAttributes::ADD_ALWAYS,                   0,                       64,            64,             ZxSpectrum::BRIGHT | ZxSpectrum::CYAN,  },
-    {   GAME_OVER_SCREEN_ITEM_TIME_VALUE,                   GameOverScreenItemAttributes::ADD_ALWAYS,                   0,                      128,            64,             ZxSpectrum::BRIGHT | ZxSpectrum::CYAN,  },
-    {   GAME_OVER_SCREEN_ITEM_SCORE_TEXT,                   GameOverScreenItemAttributes::ADD_ALWAYS,                   0,                       64,            80,             ZxSpectrum::BRIGHT | ZxSpectrum::CYAN,  },
-    {   GAME_OVER_SCREEN_ITEM_SCORE_VALUE,                  GameOverScreenItemAttributes::ADD_ALWAYS,                   0,                      128,            80,             ZxSpectrum::BRIGHT | ZxSpectrum::CYAN,  },
-    {   GAME_OVER_SCREEN_ITEM_PERCENTAGE_COMPLETED_TEXT,    GameOverScreenItemAttributes::ADD_ALWAYS,                   0,                       64,            96,             ZxSpectrum::BRIGHT | ZxSpectrum::CYAN,  },
-    {   GAME_OVER_SCREEN_ITEM_PERCENTAGE_COMPLETED_VALUE,   GameOverScreenItemAttributes::ADD_ALWAYS,                   0,                      128,            96,             ZxSpectrum::BRIGHT | ZxSpectrum::CYAN,  },
+    {   GAME_OVER_SCREEN_ITEM_ROOM,                         GameOverScreenItemAttributes::ADD_IF_COMPLETED_GAME,        IDB_BITMAP_ROOM_11,       0,             0,             Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   GAME_OVER_SCREEN_ITEM_CONGRATULATIONS_TEXT,         GameOverScreenItemAttributes::ADD_IF_COMPLETED_GAME,        0,                       64,            32,             Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   GAME_OVER_SCREEN_ITEM_YOU_HAVE_ESCAPED_TEXT,        GameOverScreenItemAttributes::ADD_IF_COMPLETED_GAME,        0,                       64,            48,             Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   GAME_OVER_SCREEN_ITEM_GAME_OVER_TEXT,               GameOverScreenItemAttributes::ADD_IF_NOT_COMPLETED_GAME,    0,                       64,            48,             Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   GAME_OVER_SCREEN_ITEM_TIME_TEXT,                    GameOverScreenItemAttributes::ADD_ALWAYS,                   0,                       64,            64,             Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    },
+    {   GAME_OVER_SCREEN_ITEM_TIME_VALUE,                   GameOverScreenItemAttributes::ADD_ALWAYS,                   0,                      128,            64,             Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    },
+    {   GAME_OVER_SCREEN_ITEM_SCORE_TEXT,                   GameOverScreenItemAttributes::ADD_ALWAYS,                   0,                       64,            80,             Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    },
+    {   GAME_OVER_SCREEN_ITEM_SCORE_VALUE,                  GameOverScreenItemAttributes::ADD_ALWAYS,                   0,                      128,            80,             Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    },
+    {   GAME_OVER_SCREEN_ITEM_PERCENTAGE_COMPLETED_TEXT,    GameOverScreenItemAttributes::ADD_ALWAYS,                   0,                       64,            96,             Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    },
+    {   GAME_OVER_SCREEN_ITEM_PERCENTAGE_COMPLETED_VALUE,   GameOverScreenItemAttributes::ADD_ALWAYS,                   0,                      128,            96,             Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    },
 };
 
 
@@ -99,9 +98,9 @@ FolioStatus GameOverScreen::BuildScreenItems (FolioHandle   dcHandle,
                                            g_gameOverScreenAttributesTable [index].m_itemId,
                                            g_gameOverScreenAttributesTable [index].m_screenXLeft, 
                                            g_gameOverScreenAttributesTable [index].m_screenYTop,
-                                           ZxSpectrum::DEFAULT_SCREEN_SCALE, 
-                                           ZxSpectrum::GetBitmapChangeColour (),
-                                           ZxSpectrum::MapInkColour (g_gameOverScreenAttributesTable [index].m_colour));
+                                           Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE, 
+                                           Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour (),
+                                           Folio::Core::Game::ZxSpectrum::MapInkColour (g_gameOverScreenAttributesTable [index].m_colour));
 
                     if (status == ERR_SUCCESS)
                     {
@@ -133,8 +132,8 @@ FolioStatus GameOverScreen::BuildScreenItems (FolioHandle   dcHandle,
                                            g_gameOverScreenAttributesTable [index].m_itemId,
                                            g_gameOverScreenAttributesTable [index].m_screenXLeft, 
                                            g_gameOverScreenAttributesTable [index].m_screenYTop,
-                                           ZxSpectrum::DEFAULT_SCREEN_SCALE, 
-                                           ZxSpectrum::MapInkColour (g_gameOverScreenAttributesTable [index].m_colour));
+                                           Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE, 
+                                           Folio::Core::Game::ZxSpectrum::MapInkColour (g_gameOverScreenAttributesTable [index].m_colour));
 
                     if (status == ERR_SUCCESS)
                     {

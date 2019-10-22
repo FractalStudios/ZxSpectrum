@@ -154,7 +154,7 @@ FolioStatus AScreen::QueryScreenDrawingElements (FolioHandle                    
 
     // Query the drawing elements of the screen items.
 
-    for (ItemsList::const_iterator itr = m_itemsList.begin ();
+    for (Folio::Core::Game::ItemsList::const_iterator itr = m_itemsList.begin ();
          (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
          ++itr)
     {

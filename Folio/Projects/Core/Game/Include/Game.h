@@ -2,21 +2,24 @@
 
 // "Home-made" includes.
 #include    "ABossSprite.h"
+#include    "ACollisionGrid.h"
 #include    "AItem.h"
 #include    "ASprite.h"
 #include    "ANastySprite.h"
 #include    "APlayerSprite.h"
 #include    "AStaticSprite.h"
 #include    "AWeaponSprite.h"
-#include    "CollisionGrid.h"
+#include    "DefaultFont.h"
 #include    "DrawingElement.h"
 #include    "Gamepad.h"
 #include    "GraphicItem.h"
+#include    "ItemAttributes.h"
 #include    "ResourceGraphic.h"
 #include    "SpriteDrawingElement.h"
 #include    "SpriteGraphicsAttributes.h"
 #include    "SpriteMovementSoundAttributes.h"
 #include    "TextItem.h"
+#include    "ZxSpectrum.h"
 
 #ifdef _DEBUG
 #pragma comment(lib, "GameD.lib")

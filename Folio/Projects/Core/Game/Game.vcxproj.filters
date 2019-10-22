@@ -4,9 +4,6 @@
     <ClCompile Include="Source\AItem.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="Source\CollisionGrid.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
     <ClCompile Include="Source\DrawingElement.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
@@ -52,12 +49,18 @@
     <ClCompile Include="Source\SpriteMovementSoundAttributes.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ZxSpectrum.cpp">
+      <Filter>Source Files\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DefaultFont.cpp">
+      <Filter>Source Files\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ACollisionGrid.cpp">
+      <Filter>Source Files\SDK</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include\AItem.h">
-      <Filter>Header Files\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\CollisionGrid.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
     <ClInclude Include="Include\DrawingElement.h">
@@ -103,6 +106,18 @@
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
     <ClInclude Include="Include\SpriteMovementSoundAttributes.h">
+      <Filter>Header Files\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ZxSpectrum.h">
+      <Filter>Header Files\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\DefaultFont.h">
+      <Filter>Header Files\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ItemAttributes.h">
+      <Filter>Header Files\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ACollisionGrid.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
   </ItemGroup>

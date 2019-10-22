@@ -553,10 +553,6 @@ void    GdiBitmap::SetDrawingFlip (bool horizontalFlip,
 {
     m_horizontalFlip    = horizontalFlip;
     m_verticalFlip      = verticalFlip;
-
-    // Set the scaled rect.
-
-    SetScreenScaledRect ();
 } // Endproc.
 
 
@@ -1204,52 +1200,13 @@ FolioStatus GdiBitmap::Draw (Gdiplus::Graphics& graphics,
 
 
 /**
- * Method that is used to set the top-left hand corner of the bitmap's screen 
- * point.
+ * Method that is used to draw the bitmap.
  *
  * @param [in] screenXLeft
- * The screen X left positoin of the graphic element.
+ * The screen X left position of the graphic element.
  *
  * @param [in] screenYTop
- * The screen Y top positoin of the graphic element.
- *
- * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_NOT_INITIALISED</b> if the graphic element is not initialised.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
- */
-FolioStatus GdiBitmap::SetScreenTopLeft (Int32  screenXLeft,
-                                         Int32  screenYTop)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Have we created a bitmap?
-
-    if (IsCreated ())
-    {
-        // Yes. Set the screen rect.
-
-        SetScreenRect (Gdiplus::Rect(screenXLeft, 
-                                     screenYTop,
-                                     m_bitmapRect.Width,
-                                     m_bitmapRect.Height));
-    } // Endif.
-
-    else
-    {
-        // No.
-
-        status = ERR_NOT_INITIALISED;
-    } // Endelse.
-
-    return (status);
-} // Endproc.
-
-
-/**
- * Method that is used to draw the bitmap.
+ * The screen Y top position of the graphic element.
  *
  * @param [in, out] graphics
  * The graphics object to draw to.
@@ -1266,7 +1223,9 @@ FolioStatus GdiBitmap::SetScreenTopLeft (Int32  screenXLeft,
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus GdiBitmap::Draw (Gdiplus::Graphics& graphics,
+FolioStatus GdiBitmap::Draw (Int32              screenXLeft,
+                             Int32              screenYTop,
+                             Gdiplus::Graphics& graphics,
                              RectList*          rects)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -1283,12 +1242,18 @@ FolioStatus GdiBitmap::Draw (Gdiplus::Graphics& graphics,
 
         if (m_drawingAdjustmentMode != NONE)
         {
-            status = DrawPartialBitmap (graphicsDcHandle, drawingRect);
+            status = DrawPartialBitmap (graphicsDcHandle, 
+                                        screenXLeft, 
+                                        screenYTop,
+                                        drawingRect);
         } // Endif.
         
         else
         {
-            status = DrawFullBitmap (graphicsDcHandle, drawingRect);
+            status = DrawFullBitmap (graphicsDcHandle, 
+                                     screenXLeft,
+                                     screenYTop,
+                                     drawingRect);
         } // Endelse.
 
         // Release the graphics device context.
@@ -1353,6 +1318,11 @@ FolioStatus GdiBitmap::InitialiseBitmap (FolioHandle    dcHandle,
         m_bitmapRect.Width  = bitmapWidth;
         m_bitmapRect.Height = bitmapHeight;
 
+        // Set the graphic element's width and height.
+
+        SetScreenWidth (m_bitmapRect.Width);
+        SetScreenHeight (m_bitmapRect.Height);
+
         // Create a display compatible memory DC.
 
         status = CreateCompatibleMemoryDC (dcHandle, m_memoryDcHandle);
@@ -1384,6 +1354,12 @@ FolioStatus GdiBitmap::InitialiseBitmap (FolioHandle    dcHandle,
  * @param [in] graphicsDcHandle
  * The graphics device context to draw to.
  *
+ * @param [in] screenXLeft
+ * The screen X left position of the graphic element.
+ *
+ * @param [in] screenYTop
+ * The screen Y top position of the graphic element.
+ *
  * @param [out] drawingRect
  * The scaled rect of the drawn bitmap.
  *
@@ -1394,6 +1370,8 @@ FolioStatus GdiBitmap::InitialiseBitmap (FolioHandle    dcHandle,
  * </ul>
  */
 FolioStatus GdiBitmap::DrawPartialBitmap (HDC           graphicsDcHandle,
+                                          Int32         screenXLeft,
+                                          Int32         screenYTop,
                                           Gdiplus::Rect &drawingRect) const
 {
     FolioStatus status = ERR_SUCCESS;
@@ -1406,6 +1384,11 @@ FolioStatus GdiBitmap::DrawPartialBitmap (HDC           graphicsDcHandle,
     Int32   drawingWidthAdjustment  = m_drawingWidthAdjustment;
     Int32   drawingHeightAdjustment = m_drawingHeightAdjustment;
 
+    // Calculate the scaled position.
+
+    Int32   scaledXLeft = screenXLeft * m_screenScale;
+    Int32   scaledYTop  = screenYTop * m_screenScale;
+
     // Build the scaled rect.
 
     if ((m_drawingAdjustmentMode & SET_WIDTH) ||
@@ -1415,13 +1398,13 @@ FolioStatus GdiBitmap::DrawPartialBitmap (HDC           graphicsDcHandle,
         {
             drawingWidthAdjustment *= -1;
 
-            drawingRect.X   = (m_screenRect.X - m_drawingWidthAdjustment) * m_screenScale;
+            drawingRect.X   = (screenXLeft - m_drawingWidthAdjustment) * m_screenScale;
             sourceX        += drawingWidthAdjustment;
         } // Endif.
 
         else
         {
-            drawingRect.X   = m_scaledRect.X;
+            drawingRect.X   = scaledXLeft;
         } // Endif.
 
         drawingRect.Width   = (m_bitmapRect.Width - drawingWidthAdjustment) * m_screenScale;
@@ -1435,13 +1418,13 @@ FolioStatus GdiBitmap::DrawPartialBitmap (HDC           graphicsDcHandle,
         {
             drawingWidthAdjustment *= -1;
 
-            drawingRect.X   = (m_screenRect.X + sourceWidth - drawingWidthAdjustment) * m_screenScale;
+            drawingRect.X   = (screenXLeft + sourceWidth - drawingWidthAdjustment) * m_screenScale;
             sourceX        += sourceWidth - drawingWidthAdjustment;
         } // Endif.
 
         else
         {
-            drawingRect.X   = m_scaledRect.X;
+            drawingRect.X   = scaledXLeft;
         } // Endif.
 
         drawingRect.Width   = drawingWidthAdjustment * m_screenScale;
@@ -1450,8 +1433,8 @@ FolioStatus GdiBitmap::DrawPartialBitmap (HDC           graphicsDcHandle,
 
     else
     {
-        drawingRect.X       = m_scaledRect.X;
-        drawingRect.Width   = m_scaledRect.Width;
+        drawingRect.X       = scaledXLeft;
+        drawingRect.Width   = m_scaledWidth;
     } // Endelse.
 
     if ((m_drawingAdjustmentMode & SET_HEIGHT) ||
@@ -1461,13 +1444,13 @@ FolioStatus GdiBitmap::DrawPartialBitmap (HDC           graphicsDcHandle,
         {
             drawingHeightAdjustment *= -1;
         
-            drawingRect.Y   = (m_screenRect.Y - m_drawingHeightAdjustment) * m_screenScale;
+            drawingRect.Y   = (screenYTop - m_drawingHeightAdjustment) * m_screenScale;
             sourceY        += drawingHeightAdjustment;
         } // Endif.
 
         else
         {
-            drawingRect.Y   = m_scaledRect.Y;
+            drawingRect.Y   = scaledYTop;
         } // Endelse.
 
         drawingRect.Height  = (m_bitmapRect.Height - drawingHeightAdjustment) * m_screenScale;
@@ -1481,13 +1464,13 @@ FolioStatus GdiBitmap::DrawPartialBitmap (HDC           graphicsDcHandle,
         {
             drawingHeightAdjustment *= -1;
         
-            drawingRect.Y   = (m_screenRect.Y + sourceHeight - drawingHeightAdjustment) * m_screenScale;
+            drawingRect.Y   = (screenYTop + sourceHeight - drawingHeightAdjustment) * m_screenScale;
             sourceY        += sourceHeight - drawingHeightAdjustment;
         } // Endif.
 
         else
         {
-            drawingRect.Y   = m_scaledRect.Y;
+            drawingRect.Y   = scaledYTop;
         } // Endelse.
 
         drawingRect.Height  = drawingHeightAdjustment * m_screenScale;
@@ -1496,8 +1479,8 @@ FolioStatus GdiBitmap::DrawPartialBitmap (HDC           graphicsDcHandle,
 
     else
     {
-        drawingRect.Y       = m_scaledRect.Y;
-        drawingRect.Height  = m_scaledRect.Height;
+        drawingRect.Y       = scaledYTop;
+        drawingRect.Height  = m_scaledHeight;
     } // Endelse.
 
     if (sourceWidth && sourceHeight && 
@@ -1549,6 +1532,12 @@ FolioStatus GdiBitmap::DrawPartialBitmap (HDC           graphicsDcHandle,
  * @param [in] graphicsDcHandle
  * The graphics device context to draw to.
  *
+ * @param [in] screenXLeft
+ * The screen X left position of the graphic element.
+ *
+ * @param [in] screenYTop
+ * The screen Y top position of the graphic element.
+ *
  * @param [out] drawingRect
  * The scaled rect of the drawn bitmap.
  *
@@ -1559,13 +1548,18 @@ FolioStatus GdiBitmap::DrawPartialBitmap (HDC           graphicsDcHandle,
  * </ul>
  */
 FolioStatus GdiBitmap::DrawFullBitmap (HDC              graphicsDcHandle,
+                                       Int32            screenXLeft,
+                                       Int32            screenYTop,
                                        Gdiplus::Rect    &drawingRect) const
 {
     FolioStatus status = ERR_SUCCESS;
 
     // Note the drawing rect.
 
-    drawingRect = m_scaledRect;
+    drawingRect = Gdiplus::Rect(screenXLeft * m_screenScale,
+                                screenYTop * m_screenScale,
+                                m_scaledWidth,
+                                m_scaledHeight);
 
     if ((m_screenScale == 1)    &&
         !m_horizontalFlip       && 
@@ -1591,8 +1585,8 @@ FolioStatus GdiBitmap::DrawFullBitmap (HDC              graphicsDcHandle,
         // graphics device context.
 
         status = ScaleBitmap (graphicsDcHandle,
-                              m_horizontalFlip ? (m_screenRect.X + m_screenRect.Width) * m_screenScale - 1 : drawingRect.X,
-                              m_verticalFlip ? (m_screenRect.Y + m_screenRect.Height) * m_screenScale - 1 : drawingRect.Y,
+                              m_horizontalFlip ? (screenXLeft + m_screenWidth) * m_screenScale - 1 : drawingRect.X,
+                              m_verticalFlip ? (screenYTop + m_screenHeight) * m_screenScale - 1 : drawingRect.Y,
                               m_horizontalFlip ? -drawingRect.Width : drawingRect.Width,
                               m_verticalFlip  ? -drawingRect.Height : drawingRect.Height,
                               m_memoryDcHandle,

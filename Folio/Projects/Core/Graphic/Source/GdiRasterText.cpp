@@ -63,12 +63,10 @@ void    GdiRasterText::SetTextString (const FolioNarrowString& textString)
 
     m_textStringBitBuffer = m_gdiRasterFont.GetTextStringBitBuffer (m_textString);
 
-    // Set the new screen rect.
+    // Set the graphic element's width and height.
 
-    SetScreenRect (Gdiplus::Rect(m_screenRect.X, 
-                                 m_screenRect.Y,
-                                 m_textString.size () * m_gdiRasterFont.GetCharacterWidthInPixels (),
-                                 m_gdiRasterFont.GetCharacterHeightInPixels ()));
+    SetScreenWidth (m_textString.size () * m_gdiRasterFont.GetCharacterWidthInPixels ());
+    SetScreenHeight (m_gdiRasterFont.GetCharacterHeightInPixels ());
 } // Endproc.
 
 
@@ -331,38 +329,14 @@ FolioStatus GdiRasterText::QueryTextBoundingArea (const FolioNarrowString&  text
 
 
 /**
- * Method that is used to set the top-left hand corner of the text's screen 
- * point.
+ * Method that is used to draw the raster text.
+ *
  *
  * @param [in] screenXLeft
- * The screen X left positoin of the graphic element.
+ * The screen X left position of the graphic element.
  *
  * @param [in] screenYTop
- * The screen Y top positoin of the graphic element.
- *
- * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_NOT_INITIALISED</b> if the graphic element is not initialised.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
- */
-FolioStatus GdiRasterText::SetScreenTopLeft (Int32  screenXLeft,
-                                             Int32  screenYTop)
-{
-    // Set the screen rect.
-
-    SetScreenRect (Gdiplus::Rect(screenXLeft, 
-                                 screenYTop,
-                                 m_textString.size () * m_gdiRasterFont.GetCharacterWidthInPixels (),
-                                 m_gdiRasterFont.GetCharacterHeightInPixels ()));
-    
-    return (ERR_SUCCESS);
-} // Endproc.
-
-
-/**
- * Method that is used to draw the raster text.
+ * The screen Y top position of the graphic element.
  *
  * @param [in, out] graphics
  * The graphics object to draw to.
@@ -377,7 +351,9 @@ FolioStatus GdiRasterText::SetScreenTopLeft (Int32  screenXLeft,
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus GdiRasterText::Draw (Gdiplus::Graphics& graphics,
+FolioStatus GdiRasterText::Draw (Int32              screenXLeft,
+                                 Int32              screenYTop,
+                                 Gdiplus::Graphics& graphics,
                                  RectList*          rects)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -387,6 +363,11 @@ FolioStatus GdiRasterText::Draw (Gdiplus::Graphics& graphics,
     UInt32  characterWidth          = m_gdiRasterFont.GetCharacterWidth ();
     Int32   characterWidthInPixels  = m_gdiRasterFont.GetCharacterWidthInPixels ();
     Int32   characterHeightInPixels = m_gdiRasterFont.GetCharacterHeightInPixels ();
+
+    // Calculate the scaled position.
+
+    Int32   scaledXLeft = screenXLeft * m_screenScale;
+    Int32   scaledYTop  = screenYTop * m_screenScale;
 
     // Get the graphics device context.
      
@@ -401,8 +382,8 @@ FolioStatus GdiRasterText::Draw (Gdiplus::Graphics& graphics,
         // Draw each character in the string.
 
         DrawCharacter (graphicsDcHandle,
-                       m_scaledRect.X + (character * characterWidthInPixels * m_screenScale),
-                       m_scaledRect.Y,
+                       scaledXLeft + (character * characterWidthInPixels * m_screenScale),
+                       scaledYTop,
                        characterWidth,          
                        characterWidthInPixels,  
                        characterHeightInPixels,
@@ -419,7 +400,10 @@ FolioStatus GdiRasterText::Draw (Gdiplus::Graphics& graphics,
     {
         // Yes.
 
-        rects->push_back (m_scaledRect);
+        rects->push_back (Gdiplus::Rect(scaledXLeft, 
+                                        scaledYTop,
+                                        m_scaledWidth,
+                                        m_scaledHeight));
     } // Endif.
 
     return (status);

@@ -5,17 +5,17 @@
 #include    <Applet.h>
 #include    <Graphic.h>
 #include    "BackgroundItemGraphics.h"
-#include    "BackgroundItems.h"
+#include    "BackgroundItem.h"
 #include    "DrawingElement.h"
 #include    "FallingSimulationScreen.h"
 #include    "GameOverScreen.h"
 #include    "InformationPanel.h"
 #include    "LoadingScreen.h"
-#include    "PlayerSprites.h"
+#include    "PlayerSprite.h"
 #include    "SpriteGraphics.h"
-#include    "StaticSprites.h"
+#include    "StaticSprite.h"
 #include    "RoomGraphics.h"
-#include    "Screens.h"
+#include    "Screen.h"
 #include    "SelectionScreen.h"
 
 #pragma pack(push, 1)

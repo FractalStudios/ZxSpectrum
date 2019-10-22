@@ -16,7 +16,9 @@ using   namespace   Gdiplus;
  * The default class constructor.
  */
 AGdiGraphicElement::AGdiGraphicElement ()
-:   m_screenScale(1)
+:   m_screenWidth(0),
+    m_screenHeight(0), 
+    m_screenScale(1)
 {
 } // Endproc.
 
@@ -32,27 +34,13 @@ AGdiGraphicElement::~AGdiGraphicElement ()
 #ifdef  FOLIO_DOXYGEN
 
 /**
- * Method that is used to set the top-left hand corner of the graphic element's 
- * screen point.
+ * Method that is used to draw the graphic element.
  *
  * @param [in] screenXLeft
- * The screen X left positoin of the graphic element.
+ * The screen X left position of the graphic element.
  *
  * @param [in] screenYTop
- * The screen Y top positoin of the graphic element.
- *
- * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_NOT_INITIALISED</b> if the graphic element is not initialised.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
- */
-FolioStatus AGdiGraphicElement::SetScreenTopLeft (Int32 screenXLeft,
-                                                  Int32 screenYTop) = 0;
-
-/**
- * Method that is used to draw the graphic element.
+ * The screen Y top position of the graphic element.
  *
  * @param [in, out] graphics
  * The graphics object to draw to.
@@ -68,70 +56,12 @@ FolioStatus AGdiGraphicElement::SetScreenTopLeft (Int32 screenXLeft,
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus AGdiGraphicElement::Draw (Gdiplus::Graphics&    graphics,
+FolioStatus AGdiGraphicElement::Draw (Int32                 screenXLeft,
+                                      Int32                 screenYTop,
+                                      Gdiplus::Graphics&    graphics,
                                       RectList*             rects) = 0;
 
 #endif
-
-
-/**
- * Method that is used to get the screen rect of the graphic element.
- *
- * @return
- * The screen rect of the graphic element.
- */
-Gdiplus::Rect   AGdiGraphicElement::GetScreenRect () const
-{
-    return (m_screenRect);
-} // Endproc.
-
-
-/**
- * Method that is used to get the screen X left position of the graphic element.
- *
- * @return
- * The screen X left position of the graphic element.
- */
-Int32   AGdiGraphicElement::GetScreenXLeft () const
-{
-    return (m_screenRect.X);
-} // Endproc.
-
-
-/**
- * Method that is used to get the screen Y top position of the graphic element.
- *
- * @return
- * The screen Y top position of the graphic element.
- */
-Int32   AGdiGraphicElement::GetScreenYTop () const
-{
-    return (m_screenRect.Y);
-} // Endproc.
-
-
-/**
- * Method that is used to get the screen X right position of the graphic element.
- *
- * @return
- * The screen X right position of the graphic element.
- */
-Int32   AGdiGraphicElement::GetScreenXRight () const
-{
-    return (m_screenRect.X + m_screenRect.Width - 1);
-} // Endproc.
-
-
-/**
- * Method that is used to get the screen Y bottom position of the graphic element.
- *
- * @return
- * The screen Y bottom position of the graphic element.
- */
-Int32   AGdiGraphicElement::GetScreenYBottom () const
-{
-    return (m_screenRect.Y + m_screenRect.Height - 1);
-} // Endproc.
 
 
 /**
@@ -142,7 +72,7 @@ Int32   AGdiGraphicElement::GetScreenYBottom () const
  */
 Int32   AGdiGraphicElement::GetScreenWidth () const
 {
-    return (m_screenRect.Width);
+    return (m_screenWidth);
 } // Endproc.
 
 
@@ -154,7 +84,7 @@ Int32   AGdiGraphicElement::GetScreenWidth () const
  */
 Int32   AGdiGraphicElement::GetScreenHeight () const
 {
-    return (m_screenRect.Height);
+    return (m_screenHeight);
 } // Endproc.
 
 
@@ -166,11 +96,9 @@ Int32   AGdiGraphicElement::GetScreenHeight () const
  */
 void    AGdiGraphicElement::SetScreenScale (UInt32 screenScale)
 {
-    m_screenScale = screenScale;
-
-    // Set the scaled rect.
-
-    SetScreenScaledRect ();
+    m_screenScale   = screenScale;
+    m_scaledWidth   = m_screenWidth * m_screenScale;
+    m_scaledHeight  = m_screenHeight * m_screenScale;
 } // Endproc.
 
 
@@ -187,47 +115,74 @@ UInt32  AGdiGraphicElement::GetScreenScale () const
 
 
 /**
- * Indicates if the specified scaled rect overlaps the scaled rect of the 
- * graphic element.
+ * Method that is used to get the scaled rect of the graphic element.
  *
- * @param [in] screenRect
- * The screen rect.
+ * @param [in] screenXLeft
+ * The screen X left position of the graphic element.
+ *
+ * @param [in] screenYTop
+ * The screen Y top position of the graphic element.
  *
  * @return
- * <b>true</b> if the specified screen rect overlaps the screen rect of the 
- * graphic element, <b>false</b> otherwise.
+ * The scaled rect.
  */
-bool    AGdiGraphicElement::IsOverlap (const Gdiplus::Rect& screenRect) const
+Gdiplus::Rect   AGdiGraphicElement::GetScaledRect  (Int32   screenXLeft,
+                                                    Int32   screenYTop) const
 {
-    return (!((m_screenRect.X > (  screenRect.X +   screenRect.Width  - 1)) ||
-                (screenRect.X > (m_screenRect.X + m_screenRect.Width  - 1)) ||
-              (m_screenRect.Y > (  screenRect.Y +   screenRect.Height - 1)) ||
-                (screenRect.Y > (m_screenRect.Y + m_screenRect.Height - 1))));
+    return (Gdiplus::Rect(screenXLeft * m_screenScale, 
+                          screenYTop * m_screenScale, 
+                          m_scaledWidth, 
+                          m_scaledHeight));
 } // Endproc.
 
 
 /**
- * Method that is used to set the screen rect of the graphic element.
+ * Method that is used to get the scaled width of the graphic element.
+ *
+ * @return
+ * The scaled width of the graphic element.
  */
-void    AGdiGraphicElement::SetScreenRect (const Gdiplus::Rect& screenRect)
+Int32   AGdiGraphicElement::GetScaledWidth () const
 {
-    m_screenRect = screenRect;
-
-    // Set the scaled rect.
-
-    SetScreenScaledRect ();
+    return (m_scaledWidth);
 } // Endproc.
 
 
 /**
- * Method that is used to set the scaled rect of the graphic element.
+ * Method that is used to get the scaled height of the graphic element.
+ *
+ * @return
+ * The scaled height of the graphic element.
  */
-void    AGdiGraphicElement::SetScreenScaledRect ()
+Int32   AGdiGraphicElement::GetScaledHeight() const
 {
-    m_scaledRect.X      = m_screenRect.X * m_screenScale;
-    m_scaledRect.Y      = m_screenRect.Y * m_screenScale;
-    m_scaledRect.Width  = m_screenRect.Width * m_screenScale;
-    m_scaledRect.Height = m_screenRect.Height * m_screenScale;
+    return (m_scaledHeight);
+} // Endproc.
+
+
+/**
+ * Method that is used to set the screen width of the graphic element.
+ *
+ * @param [in] UInt32 screenWidth
+ * The screen width of the graphic element.
+ */
+void    AGdiGraphicElement::SetScreenWidth (Int32 screenWidth)
+{
+    m_screenWidth   = screenWidth;
+    m_scaledWidth   = m_screenWidth * m_screenScale;
+} // Endproc.
+
+
+/**
+ * Method that is used to set the screen height of the graphic element.
+ *
+ * @param [in] UInt32 screenHeight
+ * The screen height of the graphic element.
+ */
+void    AGdiGraphicElement::SetScreenHeight (Int32 screenHeight)
+{
+    m_screenHeight  = screenHeight;
+    m_scaledHeight  = m_screenHeight * m_screenScale;
 } // Endproc.
 
 
@@ -239,9 +194,11 @@ void    AGdiGraphicElement::SetScreenScaledRect ()
  */
 void    AGdiGraphicElement::Clone (const AGdiGraphicElement& rhs)
 {
-    m_screenRect    = rhs.m_screenRect; 
+    m_screenWidth   = rhs.m_screenWidth;
+    m_screenHeight  = rhs.m_screenHeight; 
     m_screenScale   = rhs.m_screenScale;
-    m_scaledRect    = rhs.m_scaledRect; 
+    m_scaledWidth   = rhs.m_scaledWidth;
+    m_scaledHeight  = rhs.m_scaledHeight; 
 } // Endproc.
 
 } // Endnamespace.

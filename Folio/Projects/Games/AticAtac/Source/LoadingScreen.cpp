@@ -2,7 +2,6 @@
 #include    "StdAfx.h"
 #include    "DrawingElement.h"
 #include    "LoadingScreen.h"
-#include    "ZxSpectrum.h"
 
 namespace Folio
 {
@@ -14,19 +13,13 @@ namespace AticAtac
 {
 
 // Loading screen item attributes.
-struct LoadingScreenItemAttributes
-{
-    LOADING_SCREEN_ITEM_ID  m_itemId;           // The identifier of the loading screen item.
-    UInt16                  m_bitmapResourceId; // The loading screen item's bitmap resource identifier (if it's a graphic item).
-    Int32                   m_screenXLeft;      // The screen X left of the loading screen item.
-    Int32                   m_screenYTop;       // The screen Y top of the loading screen item.
- }; // Endstruct.
+typedef Folio::Core::Game::ItemAttributes<LOADING_SCREEN_ITEM_ID>   LoadingScreenItemAttributes;
 
 // Loading screen item attributes table.
-static  const   LoadingScreenItemAttributes   g_loadingScreenAttributesTable [] =
+static  const   LoadingScreenItemAttributes g_loadingScreenAttributesTable [] =
 {
-//      m_itemId                        m_bitmapResourceId          m_screenXLeft   m_screenYTop
-    {   LOADING_SCREEN_ITEM_GRAPHIC,    IDB_BITMAP_LOADING_SCREEN,  0,              0,  },
+//      m_itemId                        m_bitmapResourceId          m_screenXLeft   m_screenYTop    m_colour
+    {   LOADING_SCREEN_ITEM_GRAPHIC,    IDB_BITMAP_LOADING_SCREEN,  0,              0,              Folio::Core::Game::ZxSpectrum::UNDEFINED},
 };
 
 
@@ -75,7 +68,7 @@ FolioStatus LoadingScreen::BuildScreenItems (FolioHandle    dcHandle,
                                        g_loadingScreenAttributesTable [index].m_itemId,
                                        g_loadingScreenAttributesTable [index].m_screenXLeft, 
                                        g_loadingScreenAttributesTable [index].m_screenYTop,
-                                       ZxSpectrum::DEFAULT_SCREEN_SCALE);
+                                       Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE);
 
                 if (status == ERR_SUCCESS)
                 {
@@ -135,12 +128,12 @@ void    LoadingScreen::CreateSoundSamples ()
 {
     // Create each sound sample representing the required sound.
 
-    UInt32  milliseconds = ZxSpectrum::BeepDurationToMilliseconds (0.1f);
+    UInt32  milliseconds = Folio::Core::Game::ZxSpectrum::BeepDurationToMilliseconds (0.1f);
 
     for (Int32 pitch = 1; pitch <= 5; ++pitch)
     {
         m_soundSamplesList.push_back (Folio::Core::Util::Sound::SoundSample (milliseconds, 
-                                                                             ZxSpectrum::BeepPitchToFrequency (pitch)));
+                                                                             Folio::Core::Game::ZxSpectrum::BeepPitchToFrequency (pitch)));
     } // Endfor.
 
     m_currentSoundSampleIndex = 0;  // Initialise!

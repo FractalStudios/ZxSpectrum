@@ -3,7 +3,6 @@
 #include    <Trace.h>
 #include    <Util.h>
 #include    "MainCanvasMsgHandler.h"
-#include    "ZxSpectrum.h"
 
 namespace Folio
 {
@@ -18,9 +17,9 @@ ACanvasMsgHandler*  CreateCanvasMsgHandler ()
 {
     // Create our initial canvas message handler.
 
-    return (new Folio::Games::AticAtac::MainCanvasMsgHandler(Folio::Games::ZxSpectrum::MAX_SCREEN_X_PIXELS, 
-                                                             Folio::Games::ZxSpectrum::MAX_SCREEN_Y_PIXELS,
-                                                             Folio::Games::ZxSpectrum::DEFAULT_SCREEN_SCALE));
+    return (new Folio::Games::AticAtac::MainCanvasMsgHandler(Folio::Core::Game::ZxSpectrum::MAX_SCREEN_X_PIXELS, 
+                                                             Folio::Core::Game::ZxSpectrum::MAX_SCREEN_Y_PIXELS,
+                                                             Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE));
 } // Endproc.
 
 } // Endnamespace.
@@ -55,7 +54,7 @@ FolioStatus MainCanvasMsgHandler::HandleCreateCanvasMsg (FolioHandle    wndHandl
 {
     // Set the canvas's window text.
 
-    Folio::Core::Util::Wnd::SetWndText (wndHandle, TXT("ATICATAC by fractal studios"));
+    Folio::Core::Util::Wnd::SetWndText (wndHandle, TXT("AticAtac by fractal studios"));
 
     // Initialise.
 
@@ -206,7 +205,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   
         {
             // Has the main player completed the game?
 
-            if (m_mainPlayer->CompletedGame ())
+            if (m_mainPlayer->IsGameCompleted ())
             {
                 // Yes. Display the game over screen.
 

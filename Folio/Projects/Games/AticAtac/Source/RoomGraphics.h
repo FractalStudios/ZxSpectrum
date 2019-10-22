@@ -6,7 +6,7 @@
 
 // "Home-made" includes.
 #include    <Game.h>
-#include    "ZxSpectrum.h"
+#include    "CollisionGrid.h"
 
 #pragma pack(push, 1)
 
@@ -56,7 +56,7 @@ public:
                         Int32       floorWidth,
                         Int32       floorHeight);
     FolioStatus QueryDrawingElements (FolioHandle                               dcHandle,
-                                      ZxSpectrum::COLOUR                        roomColour,
+                                      Folio::Core::Game::ZxSpectrum::COLOUR     roomColour,
                                       Folio::Core::Game::DrawingElementsList    &drawingElementsList);
 
     Gdiplus::Rect   GetFloorRect () const;
@@ -65,12 +65,12 @@ public:
     Int32           GetFloorWidth () const;
     Int32           GetFloorHeight () const;
 
-    Folio::Core::Game::CollisionGrid GetCollisionGrid () const;
+    CollisionGrid   GetCollisionGrid () const;
 
 private:
     Gdiplus::Rect   m_floorRect;    // The rect of the room's floor.
 
-    Folio::Core::Game::CollisionGrid    m_collisionGrid;    // The room's collision grid.
+    CollisionGrid   m_collisionGrid;    // The room's collision grid.
 }; // Endclass.
 
 // Room graphics pointer.

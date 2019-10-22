@@ -2,7 +2,7 @@
 #include    "StdAfx.h"
 #include    "DrawingElement.h"
 #include    "FallingSimulationScreen.h"
-#include    "ZxSpectrum.h"
+#include    "Ultimate.h"
 
 namespace Folio
 {
@@ -14,25 +14,18 @@ namespace AticAtac
 {
 
 // Falling simulation screen item attributes.
-struct FallingSimulationScreenItemAttributes
-{
-    FALLING_SIMULATION_SCREEN_ITEM_ID   m_itemId;           // The identifier of the falling simulation screen item.
-    UInt16                              m_bitmapResourceId; // The falling simulation screen item's bitmap resource identifier.
-    Int32                               m_screenXLeft;      // The screen X left of the falling simulation screen item.
-    Int32                               m_screenYTop;       // The screen Y top of the falling simulation screen item.
-    ZxSpectrum::COLOUR                  m_colour;           // The colour of the falling simulation screen item.
- }; // Endstruct.
+typedef Folio::Core::Game::ItemAttributes<FALLING_SIMULATION_SCREEN_ITEM_ID> FallingSimulationScreenItemAttributes;
 
 // Falling simulation screen item attributes table.
 static  const   FallingSimulationScreenItemAttributes   g_fallingSimulationScreenAttributesTable [] =
 {
 //      m_itemId                            m_bitmapResourceId                  m_screenXLeft   m_screenYTop    m_colour
-    {   FALLING_SIMULATION_SCREEN_ITEM_01,  IDB_BITMAP_FALLING_SIMULATION_01,   0,              0,              ZxSpectrum::BRIGHT | ZxSpectrum::WHITE, },
-    {   FALLING_SIMULATION_SCREEN_ITEM_02,  IDB_BITMAP_FALLING_SIMULATION_02,   0,              0,              ZxSpectrum::BRIGHT | ZxSpectrum::WHITE, },
-    {   FALLING_SIMULATION_SCREEN_ITEM_03,  IDB_BITMAP_FALLING_SIMULATION_03,   0,              0,              ZxSpectrum::BRIGHT | ZxSpectrum::WHITE, },
-    {   FALLING_SIMULATION_SCREEN_ITEM_04,  IDB_BITMAP_FALLING_SIMULATION_04,   0,              0,              ZxSpectrum::BRIGHT | ZxSpectrum::WHITE, },
-    {   FALLING_SIMULATION_SCREEN_ITEM_05,  IDB_BITMAP_FALLING_SIMULATION_05,   0,              0,              ZxSpectrum::BRIGHT | ZxSpectrum::WHITE, },
-    {   FALLING_SIMULATION_SCREEN_ITEM_06,  IDB_BITMAP_FALLING_SIMULATION_06,   0,              0,              ZxSpectrum::BRIGHT | ZxSpectrum::WHITE, },
+    {   FALLING_SIMULATION_SCREEN_ITEM_01,  IDB_BITMAP_FALLING_SIMULATION_01,   0,              0,              Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   FALLING_SIMULATION_SCREEN_ITEM_02,  IDB_BITMAP_FALLING_SIMULATION_02,   0,              0,              Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   FALLING_SIMULATION_SCREEN_ITEM_03,  IDB_BITMAP_FALLING_SIMULATION_03,   0,              0,              Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   FALLING_SIMULATION_SCREEN_ITEM_04,  IDB_BITMAP_FALLING_SIMULATION_04,   0,              0,              Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   FALLING_SIMULATION_SCREEN_ITEM_05,  IDB_BITMAP_FALLING_SIMULATION_05,   0,              0,              Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   FALLING_SIMULATION_SCREEN_ITEM_06,  IDB_BITMAP_FALLING_SIMULATION_06,   0,              0,              Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
 };
 
 
@@ -89,9 +82,9 @@ FolioStatus FallingSimulationScreen::BuildScreenItems (FolioHandle  dcHandle,
                                        g_fallingSimulationScreenAttributesTable [index].m_itemId,
                                        g_fallingSimulationScreenAttributesTable [index].m_screenXLeft, 
                                        g_fallingSimulationScreenAttributesTable [index].m_screenYTop,
-                                       ZxSpectrum::DEFAULT_SCREEN_SCALE, 
-                                       ZxSpectrum::GetBitmapChangeColour (),
-                                       ZxSpectrum::MapInkColour (g_fallingSimulationScreenAttributesTable [index].m_colour));
+                                       Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE, 
+                                       Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour (),
+                                       Folio::Core::Game::ZxSpectrum::MapInkColour (g_fallingSimulationScreenAttributesTable [index].m_colour));
 
                 if (status == ERR_SUCCESS)
                 {
@@ -125,7 +118,7 @@ FolioStatus FallingSimulationScreen::QueryScreenDrawingElements (FolioHandle    
 
     bool    finished = false;   // Initialise!
 
-    for (ItemsList::const_iterator itr = m_itemsList.begin ();
+    for (Folio::Core::Game::ItemsList::const_iterator itr = m_itemsList.begin ();
          !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
          ++itr)
     {
@@ -216,7 +209,7 @@ FolioStatus FallingSimulationScreen::UpdateScreen ()
     bool    finished        = false;   // Initialise!
     bool    redrawCanvas    = false;
 
-    for (ItemsList::iterator itr = m_itemsList.begin ();
+    for (Folio::Core::Game::ItemsList::iterator itr = m_itemsList.begin ();
          !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
          ++itr)
     {
@@ -277,9 +270,9 @@ void    FallingSimulationScreen::CreateSoundSamples ()
     {
         // Create each sound sample representing the required sound.
 
-        for (ZxSpectrum::BYTE frequency = 0x80; frequency <= 0xff; ++frequency)
+        for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x80; frequency <= 0xff; ++frequency)
         {
-            m_soundSamplesList.push_back (ZxSpectrum::MapUltimateMakeSound (frequency, 0x08));
+            m_soundSamplesList.push_back (Ultimate::MapMakeSound (frequency, 0x08));
         } // Endfor.
         
     } // Endif.

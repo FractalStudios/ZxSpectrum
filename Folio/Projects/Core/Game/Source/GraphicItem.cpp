@@ -57,7 +57,7 @@ FolioStatus GraphicItem::Create (FolioHandle        dcHandle,
                                             drawingElementId,
                                             bitmapResourceId,
                                             maskedBitmapDrawingElementRqd,
-                                            CollisionGrid::CELL_VALUE_EMPTY,
+                                            ACollisionGrid::CELL_VALUE_EMPTY,
                                             maskColour);
 
         if (status == ERR_SUCCESS)
@@ -123,7 +123,7 @@ FolioStatus GraphicItem::Create (FolioHandle        dcHandle,
                                             bitmapResourceId,
                                             changeColour,
                                             maskedBitmapDrawingElementRqd,
-                                            CollisionGrid::CELL_VALUE_EMPTY,
+                                            ACollisionGrid::CELL_VALUE_EMPTY,
                                             maskColour);
 
         if (status == ERR_SUCCESS)

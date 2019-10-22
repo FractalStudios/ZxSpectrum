@@ -18,16 +18,19 @@
     <ClInclude Include="Include\APlayerSprite.h" />
     <ClInclude Include="Include\ASprite.h" />
     <ClInclude Include="Include\AWeaponSprite.h" />
-    <ClInclude Include="Include\CollisionGrid.h" />
+    <ClInclude Include="Include\ACollisionGrid.h" />
+    <ClInclude Include="Include\DefaultFont.h" />
     <ClInclude Include="Include\DrawingElement.h" />
     <ClInclude Include="Include\Gamepad.h" />
     <ClInclude Include="Include\GraphicItem.h" />
     <ClInclude Include="Include\Game.h" />
+    <ClInclude Include="Include\ItemAttributes.h" />
     <ClInclude Include="Include\ResourceGraphic.h" />
     <ClInclude Include="Include\SpriteDrawingElement.h" />
     <ClInclude Include="Include\SpriteGraphicsAttributes.h" />
     <ClInclude Include="Include\SpriteMovementSoundAttributes.h" />
     <ClInclude Include="Include\TextItem.h" />
+    <ClInclude Include="Include\ZxSpectrum.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ABossSprite.cpp" />
@@ -37,7 +40,8 @@
     <ClCompile Include="Source\APlayerSprite.cpp" />
     <ClCompile Include="Source\ASprite.cpp" />
     <ClCompile Include="Source\AWeaponSprite.cpp" />
-    <ClCompile Include="Source\CollisionGrid.cpp" />
+    <ClCompile Include="Source\ACollisionGrid.cpp" />
+    <ClCompile Include="Source\DefaultFont.cpp" />
     <ClCompile Include="Source\DrawingElement.cpp" />
     <ClCompile Include="Source\Gamepad.cpp" />
     <ClCompile Include="Source\GraphicItem.cpp" />
@@ -47,6 +51,7 @@
     <ClCompile Include="Source\SpriteGraphicsAttributes.cpp" />
     <ClCompile Include="Source\SpriteMovementSoundAttributes.cpp" />
     <ClCompile Include="Source\TextItem.cpp" />
+    <ClCompile Include="Source\ZxSpectrum.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{536287D1-0949-4868-B9B1-8F2616B14D28}</ProjectGuid>

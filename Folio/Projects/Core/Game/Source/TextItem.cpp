@@ -60,21 +60,17 @@ FolioStatus TextItem::Create (FolioHandle                           dcHandle,
 
         if (status == ERR_SUCCESS)
         {
-            // Set the GDI raster text's top-left screen position.
+            // Scale the GDI raster text.
 
-            status = m_gdiRasterText->SetScreenTopLeft (screenXLeft, screenYTop);
+            m_gdiRasterText->SetScreenScale (screenScale);
 
-            if (status == ERR_SUCCESS)
-            {
-                // Scale the GDI raster text.
+            // Add the GDI raster text to the list of drawing elements.
 
-                m_gdiRasterText->SetScreenScale (screenScale);
-
-                m_drawingElementsList.push_back (DrawingElement(drawingElementId,
-                                                                m_gdiRasterText,
-                                                                this)); // Drawing element user data.
-            } // Endif.
-
+            m_drawingElementsList.push_back (DrawingElement(drawingElementId,
+                                                            screenXLeft, 
+                                                            screenYTop,
+                                                            m_gdiRasterText,
+                                                            this)); // Drawing element user data.
         } // Endif.
     
     } // Endelse.

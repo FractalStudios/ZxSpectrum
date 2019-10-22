@@ -111,6 +111,26 @@ FolioStatus AItem::Draw (Gdiplus::Graphics&                                     
     return (m_drawingElementsList.empty () ? ERR_INVALID_SEQUENCE : m_drawingElementsList.back ().Draw (graphics, rects));
 } // Endproc.
 
+
+FolioStatus AItem::Draw (Int32                                                  screenXLeft,    
+                         Int32                                                  screenYTop,
+                         Gdiplus::Graphics&                                     graphics,
+                         Folio::Core::Graphic::AGdiGraphicElement::RectList*    rects)
+{
+    // Set the item's top-left position.
+
+    FolioStatus status = SetScreenTopLeft (screenXLeft,  screenYTop);
+
+    if (status == ERR_SUCCESS)
+    {
+        // Draw it.
+
+        status = Draw (graphics, rects);
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
 } // Endnamespace.
 
 } // Endnamespace.

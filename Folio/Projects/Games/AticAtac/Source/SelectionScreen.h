@@ -3,7 +3,7 @@
 // "Home-made" includes.
 #include    <Applet.h>
 #include    <Game.h>
-#include    "PlayerSprites.h"
+#include    "PlayerSprite.h"
 
 #pragma pack(push, 1)
 

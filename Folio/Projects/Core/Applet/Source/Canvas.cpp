@@ -32,10 +32,6 @@ Canvas::Canvas (Int32   maxScreenXPixels,
 
     m_gdiBitmap.Create (m_appletWnd->GetAppletWndDCHandle (), 
                         Gdiplus::Rect(0, 0, maxScreenXPixels * screenScale, maxScreenYPixels * screenScale));
-
-    // Set the screen top-left of the bitmap.
-
-    m_gdiBitmap.SetScreenTopLeft (0, 0);
 } // Endproc.
 
 
@@ -580,6 +576,21 @@ FolioStatus Canvas::ClearCanvasRectangle (const Gdiplus::Rect&  screenRect,
     } // Endif.
 
     return (status);
+} // Endproc.
+
+
+/**
+ * Method that is used to clear the canvas.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if successful.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus Canvas::ClearCanvas ()
+{
+    return (m_gdiBitmap.Clear ());
 } // Endproc.
 
 

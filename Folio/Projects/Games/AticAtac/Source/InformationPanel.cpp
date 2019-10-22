@@ -3,6 +3,7 @@
 #include    "DrawingElement.h"
 #include    "Font.h"
 #include    "InformationPanel.h"
+#include    "Ultimate.h"
 
 namespace Folio
 {
@@ -14,30 +15,23 @@ namespace AticAtac
 {
 
 // Information panel item attributes.
-struct InformationPanelItemAttributes
-{
-    INFORMATION_PANEL_ITEM_ID   m_itemId;               // The identifier of the information panel item.
-    UInt16                      m_bitmapResourceId;     // The information panel item's bitmap resource identifier (if it's a graphic item).
-    Int32                       m_screenXLeft;          // The screen X left of the information panel item.
-    Int32                       m_screenYTop;           // The screen Y top of the information panel item.
-    ZxSpectrum::COLOUR          m_colour;               // The colour of the information panel item.
- }; // Endstruct.
+typedef Folio::Core::Game::ItemAttributes<INFORMATION_PANEL_ITEM_ID>    InformationPanelItemAttributes;
 
 // Information panel item attributes table.
 static  const   InformationPanelItemAttributes  g_informationPanelAttributesTable [] =
 {
 //      m_itemId                                m_bitmapResourceId                  m_screenXLeft   m_screenYTop    m_colour
-    {   INFORMATION_PANEL_ITEM_SCROLL,          IDB_BITMAP_SCROLL,                   0,               0,            0,                                          },
-    {   INFORMATION_PANEL_ITEM_SCROLL_SEAL,     IDB_BITMAP_SCROLL_SEAL,              8,             144,            0,                                          },
-    {   INFORMATION_PANEL_ITEM_TIME_TEXT,       0,                                  16,              56,            ZxSpectrum::BRIGHT | ZxSpectrum::MAGENTA,   },
-    {   INFORMATION_PANEL_ITEM_TIME_VALUE,      0,                                   8,              64,            ZxSpectrum::BRIGHT | ZxSpectrum::WHITE,     },
-    {   INFORMATION_PANEL_ITEM_SCORE_TEXT,      0,                                  12,              72,            ZxSpectrum::BRIGHT | ZxSpectrum::CYAN,      },
-    {   INFORMATION_PANEL_ITEM_SCORE_VALUE,     0,                                   8,              80,            ZxSpectrum::BRIGHT | ZxSpectrum::WHITE,     },
-    {   INFORMATION_PANEL_ITEM_TURKEY_CARCASS,  IDB_BITMAP_TURKEY_CARCASS,           8,              90,            ZxSpectrum::BRIGHT | ZxSpectrum::YELLOW,    },
-    {   INFORMATION_PANEL_ITEM_TURKEY,          IDB_BITMAP_FULL_TURKEY,              8,              90,            ZxSpectrum::BRIGHT | ZxSpectrum::YELLOW,    },
-    {   INFORMATION_PANEL_ITEM_PLAYER_LIFE_1,   IDB_BITMAP_KNIGHT_WALKING_LEFT_1,    8,             122,            ZxSpectrum::BRIGHT | ZxSpectrum::WHITE,     },
-    {   INFORMATION_PANEL_ITEM_PLAYER_LIFE_2,   IDB_BITMAP_KNIGHT_WALKING_LEFT_1,   24,             122,            ZxSpectrum::BRIGHT | ZxSpectrum::WHITE,     },
-    {   INFORMATION_PANEL_ITEM_PLAYER_LIFE_3,   IDB_BITMAP_KNIGHT_WALKING_LEFT_1,   40,             122,            ZxSpectrum::BRIGHT | ZxSpectrum::WHITE,     },
+    {   INFORMATION_PANEL_ITEM_SCROLL,          IDB_BITMAP_SCROLL,                   0,               0,            Folio::Core::Game::ZxSpectrum::UNDEFINED,                                       },
+    {   INFORMATION_PANEL_ITEM_SCROLL_SEAL,     IDB_BITMAP_SCROLL_SEAL,              8,             144,            Folio::Core::Game::ZxSpectrum::UNDEFINED,                                       },
+    {   INFORMATION_PANEL_ITEM_TIME_TEXT,       0,                                  16,              56,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::MAGENTA, },
+    {   INFORMATION_PANEL_ITEM_TIME_VALUE,      0,                                   8,              64,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   INFORMATION_PANEL_ITEM_SCORE_TEXT,      0,                                  12,              72,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    },
+    {   INFORMATION_PANEL_ITEM_SCORE_VALUE,     0,                                   8,              80,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   INFORMATION_PANEL_ITEM_TURKEY_CARCASS,  IDB_BITMAP_TURKEY_CARCASS,           8,              90,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::YELLOW,  },
+    {   INFORMATION_PANEL_ITEM_TURKEY,          IDB_BITMAP_FULL_TURKEY,              8,              90,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::YELLOW,  },
+    {   INFORMATION_PANEL_ITEM_PLAYER_LIFE_1,   IDB_BITMAP_KNIGHT_WALKING_LEFT_1,    8,             122,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   INFORMATION_PANEL_ITEM_PLAYER_LIFE_2,   IDB_BITMAP_KNIGHT_WALKING_LEFT_1,   24,             122,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   INFORMATION_PANEL_ITEM_PLAYER_LIFE_3,   IDB_BITMAP_KNIGHT_WALKING_LEFT_1,   40,             122,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
 };
 
 
@@ -108,7 +102,7 @@ FolioStatus InformationPanel::Create (Folio::Core::Applet::Canvas   &canvas,
 
 
 FolioStatus InformationPanel::QueryDrawingElements (FolioHandle                             dcHandle,
-                                                    ZxSpectrum::COLOUR                      roomColour,
+                                                    Folio::Core::Game::ZxSpectrum::COLOUR   roomColour,
                                                     Folio::Core::Game::DrawingElementsList  &drawingElementsList)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -117,7 +111,7 @@ FolioStatus InformationPanel::QueryDrawingElements (FolioHandle                 
 
     // Query the drawing elements of the information panel items.
 
-    for (ItemsList::iterator itr = m_itemsList.begin ();
+    for (Folio::Core::Game::ItemsList::iterator itr = m_itemsList.begin ();
          (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
          ++itr)
     {
@@ -141,7 +135,7 @@ FolioStatus InformationPanel::QueryDrawingElements (FolioHandle                 
                 // Query the information panel item's drawing elements.
 
                 status = item->QueryDrawingElements (dcHandle,
-                                                     ZxSpectrum::MapInkColour (GetScrollItemColour (itemId, roomColour)), 
+                                                     Folio::Core::Game::ZxSpectrum::MapInkColour (GetScrollItemColour (itemId, roomColour)), 
                                                      itemDrawingElementsList);
             } // Endscope.
             break;
@@ -295,25 +289,25 @@ bool    InformationPanel::IsAnyCollectedItem () const
 
 bool    InformationPanel::IsRedKeyCollected () const
 {
-    return (FindHeldItem (STATIC_SPRITE_KEY, ZxSpectrum::BRIGHT | ZxSpectrum::RED) != m_heldItemsList.end ());
+    return (FindHeldItem (STATIC_SPRITE_KEY, Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::RED) != m_heldItemsList.end ());
 } // Endproc.
 
 
 bool    InformationPanel::IsGreenKeyCollected () const
 {
-    return (FindHeldItem (STATIC_SPRITE_KEY, ZxSpectrum::BRIGHT | ZxSpectrum::GREEN) != m_heldItemsList.end ());
+    return (FindHeldItem (STATIC_SPRITE_KEY, Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::GREEN) != m_heldItemsList.end ());
 } // Endproc.
 
 
 bool    InformationPanel::IsCyanKeyCollected () const
 {
-    return (FindHeldItem (STATIC_SPRITE_KEY, ZxSpectrum::BRIGHT | ZxSpectrum::CYAN) != m_heldItemsList.end ());
+    return (FindHeldItem (STATIC_SPRITE_KEY, Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN) != m_heldItemsList.end ());
 } // Endproc.
 
 
 bool    InformationPanel::IsYellowKeyCollected () const
 {
-    return (FindHeldItem (STATIC_SPRITE_KEY, ZxSpectrum::BRIGHT | ZxSpectrum::YELLOW) != m_heldItemsList.end ());
+    return (FindHeldItem (STATIC_SPRITE_KEY, Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::YELLOW) != m_heldItemsList.end ());
 } // Endproc.
 
 
@@ -344,13 +338,13 @@ bool    InformationPanel::IsAcgKeyCollected () const
 
 bool    InformationPanel::IsCrucifixCollected () const
 {
-    return (FindHeldItem (STATIC_SPRITE_CRUCIFIX, ZxSpectrum::BRIGHT | ZxSpectrum::YELLOW) != m_heldItemsList.end ());
+    return (FindHeldItem (STATIC_SPRITE_CRUCIFIX, Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::YELLOW) != m_heldItemsList.end ());
 } // Endproc.
 
 
 bool    InformationPanel::IsSpannerCollected () const
 {
-    return (FindHeldItem (STATIC_SPRITE_SPANNER, ZxSpectrum::BRIGHT | ZxSpectrum::CYAN) != m_heldItemsList.end ());
+    return (FindHeldItem (STATIC_SPRITE_SPANNER, Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN) != m_heldItemsList.end ());
 } // Endproc.
 
 
@@ -606,8 +600,8 @@ FolioStatus InformationPanel::BuildItems (FolioHandle   dcHandle,
                                        g_informationPanelAttributesTable [index].m_itemId,
                                        g_informationPanelAttributesTable [index].m_screenXLeft + ORIGIN_X_LEFT, 
                                        g_informationPanelAttributesTable [index].m_screenYTop + ORIGIN_Y_TOP,
-                                       ZxSpectrum::DEFAULT_SCREEN_SCALE, 
-                                       ZxSpectrum::GetBitmapChangeColour (),
+                                       Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE, 
+                                       Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour (),
                                        Folio::Core::Graphic::DEFAULT_FOREGROUND_COLOUR,
                                        Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR,
                                        true);   // Mask required.
@@ -637,8 +631,8 @@ FolioStatus InformationPanel::BuildItems (FolioHandle   dcHandle,
                                        g_informationPanelAttributesTable [index].m_itemId,
                                        g_informationPanelAttributesTable [index].m_screenXLeft + ORIGIN_X_LEFT, 
                                        g_informationPanelAttributesTable [index].m_screenYTop + ORIGIN_Y_TOP,
-                                       ZxSpectrum::DEFAULT_SCREEN_SCALE, 
-                                       ZxSpectrum::MapInkColour (g_informationPanelAttributesTable [index].m_colour));
+                                       Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE, 
+                                       Folio::Core::Game::ZxSpectrum::MapInkColour (g_informationPanelAttributesTable [index].m_colour));
 
                 if (status == ERR_SUCCESS)
                 {
@@ -682,9 +676,9 @@ FolioStatus InformationPanel::BuildItems (FolioHandle   dcHandle,
                                        g_informationPanelAttributesTable [index].m_itemId,
                                        g_informationPanelAttributesTable [index].m_screenXLeft + ORIGIN_X_LEFT, 
                                        g_informationPanelAttributesTable [index].m_screenYTop + ORIGIN_Y_TOP,
-                                       ZxSpectrum::DEFAULT_SCREEN_SCALE, 
-                                       ZxSpectrum::GetBitmapChangeColour (),
-                                       ZxSpectrum::MapInkColour (g_informationPanelAttributesTable [index].m_colour));
+                                       Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE, 
+                                       Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour (),
+                                       Folio::Core::Game::ZxSpectrum::MapInkColour (g_informationPanelAttributesTable [index].m_colour));
 
                 if (status == ERR_SUCCESS)
                 {
@@ -748,7 +742,7 @@ FolioStatus InformationPanel::CheckScore (UInt32    currentTickCount,
     } // Endif.
 
     else
-    if (currentTickCount >= (m_previousScoreFrameTickCount + ZxSpectrum::FLASH_MILLISECONDS))
+    if (currentTickCount >= (m_previousScoreFrameTickCount + Folio::Core::Game::ZxSpectrum::FLASH_MILLISECONDS))
     {
         // Update the information panel.
 
@@ -840,7 +834,7 @@ FolioStatus InformationPanel::Update (UPDATE update)
     bool    finished        = false;   // Initialise!
     bool    redrawCanvas    = false;
 
-    for (ItemsList::iterator itr = m_itemsList.begin ();
+    for (Folio::Core::Game::ItemsList::iterator itr = m_itemsList.begin ();
          !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
          ++itr)
     {
@@ -1039,7 +1033,7 @@ FolioStatus InformationPanel::Reset ()
     bool    finished        = false;   // Initialise!
     bool    redrawCanvas    = false;
 
-    for (ItemsList::iterator itr = m_itemsList.begin ();
+    for (Folio::Core::Game::ItemsList::iterator itr = m_itemsList.begin ();
          !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
          ++itr)
     {
@@ -1142,9 +1136,9 @@ FolioStatus InformationPanel::AddHeldItem  (const HeldItem  &heldItem,
                                itemId,
                                HELD_ITEM_ORIGIN_X_LEFT, 
                                HELD_ITEM_ORIGIN_Y_TOP,
-                               ZxSpectrum::DEFAULT_SCREEN_SCALE, 
-                               ZxSpectrum::GetBitmapChangeColour (),
-                               ZxSpectrum::MapInkColour (heldItem.m_staticSprite->GetStaticSpriteColour ()));
+                               Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE, 
+                               Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour (),
+                               Folio::Core::Game::ZxSpectrum::MapInkColour (heldItem.m_staticSprite->GetStaticSpriteColour ()));
 
         if (status == ERR_SUCCESS)
         {
@@ -1242,7 +1236,7 @@ FolioStatus InformationPanel::RemoveLastHeldItem (DroppedItem &droppedItem)
         {
             // Yes. Find the information panel graphic item.
 
-            InformationPanel::ItemsList::iterator   itr = FindItem (droppedItem.m_itemId);
+            Folio::Core::Game::ItemsList::iterator  itr = FindItem (droppedItem.m_itemId);
 
             if (itr != m_itemsList.end ())
             {
@@ -1312,8 +1306,8 @@ InformationPanel::HeldItemsList::iterator InformationPanel::FindHeldItem (INFORM
 } // Endproc.
 
 
-InformationPanel::HeldItemsList::const_iterator InformationPanel::FindHeldItem (STATIC_SPRITE_ID    staticSpriteId,
-                                                                                ZxSpectrum::COLOUR  colour) const
+InformationPanel::HeldItemsList::const_iterator InformationPanel::FindHeldItem (STATIC_SPRITE_ID                        staticSpriteId,
+                                                                                Folio::Core::Game::ZxSpectrum::COLOUR   colour) const
 {
     return (std::find_if (m_heldItemsList.begin (), m_heldItemsList.end (), 
                           [&staticSpriteId, colour](const HeldItem& arg) 
@@ -1344,7 +1338,9 @@ FolioStatus InformationPanel::UpdateTextItem (Folio::Core::Game::TextItemPtr::el
 
         // Draw it.
 
-        status = gdiRasterText->Draw (graphics);
+        status = gdiRasterText->Draw (item.GetScreenXLeft (), 
+                                      item.GetScreenYTop (), 
+                                      graphics);
 
         if (status == ERR_SUCCESS)
         {
@@ -1362,7 +1358,9 @@ FolioStatus InformationPanel::UpdateTextItem (Folio::Core::Game::TextItemPtr::el
 
         // Draw it.
 
-        status = gdiRasterText->Draw (graphics);
+        status = gdiRasterText->Draw (item.GetScreenXLeft (), 
+                                      item.GetScreenYTop (), 
+                                      graphics);
 
         if (status == ERR_SUCCESS)
         {
@@ -1425,32 +1423,32 @@ bool    InformationPanel::SetGraphicItemHeight (Folio::Core::Game::GraphicItemPt
 } // Endproc.
 
 
-InformationPanel::ItemsList::iterator   InformationPanel::FindItem (INFORMATION_PANEL_ITEM_ID itemId)
+Folio::Core::Game::ItemsList::iterator  InformationPanel::FindItem (INFORMATION_PANEL_ITEM_ID itemId)
 {
     return (std::find_if (m_itemsList.begin (), m_itemsList.end (), 
-                          [&itemId](const Item& arg) {return (arg->GetItemId () == itemId);}));
+                          [&itemId](const Folio::Core::Game::ItemPtr& arg) {return (arg->GetItemId () == itemId);}));
 } // Endproc.
 
 
-ZxSpectrum::COLOUR  InformationPanel::GetScrollItemColour (INFORMATION_PANEL_ITEM_ID    itemId,
-                                                           ZxSpectrum::COLOUR           roomColour) const
+Folio::Core::Game::ZxSpectrum::COLOUR   InformationPanel::GetScrollItemColour (INFORMATION_PANEL_ITEM_ID                itemId,
+                                                                               Folio::Core::Game::ZxSpectrum::COLOUR    roomColour) const
 {
     // The colour map type.
-    typedef std::map<ZxSpectrum::COLOUR, ZxSpectrum::COLOUR>    ColourMap;
+    typedef std::map<Folio::Core::Game::ZxSpectrum::COLOUR, Folio::Core::Game::ZxSpectrum::COLOUR>  ColourMap;
 
     // The scroll colour map.
     static  ColourMap   s_scrollColourMap =
     {
-    //      roomColour                                  scrollColour
-        {   ZxSpectrum::BRIGHT | ZxSpectrum::RED,       ZxSpectrum::CYAN,                       },
-        {   ZxSpectrum::BRIGHT | ZxSpectrum::MAGENTA,   ZxSpectrum::GREEN,                      },
-        {   ZxSpectrum::BRIGHT | ZxSpectrum::GREEN,     ZxSpectrum::MAGENTA,                    },
-        {   ZxSpectrum::BRIGHT | ZxSpectrum::CYAN,      ZxSpectrum::RED,                        },
-        {   ZxSpectrum::BRIGHT | ZxSpectrum::YELLOW,    ZxSpectrum::BRIGHT | ZxSpectrum::GREEN, },
-        {   ZxSpectrum::BRIGHT | ZxSpectrum::WHITE,     ZxSpectrum::BRIGHT | ZxSpectrum::GREEN, },
+    //      roomColour                                                                      scrollColour
+        {   Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::RED,     Folio::Core::Game::ZxSpectrum::CYAN,                                            },
+        {   Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::MAGENTA, Folio::Core::Game::ZxSpectrum::GREEN,                                           },
+        {   Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::GREEN,   Folio::Core::Game::ZxSpectrum::MAGENTA,                                         },
+        {   Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    Folio::Core::Game::ZxSpectrum::RED,                                             },
+        {   Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::YELLOW,  Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::GREEN,   },
+        {   Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::GREEN,   },
     };
 
-    ZxSpectrum::COLOUR  itemColour = ZxSpectrum::WHITE; // Initialise!
+    Folio::Core::Game::ZxSpectrum::COLOUR   itemColour = Folio::Core::Game::ZxSpectrum::WHITE; // Initialise!
 
     // Get the item's colour.
 
@@ -1465,7 +1463,7 @@ ZxSpectrum::COLOUR  InformationPanel::GetScrollItemColour (INFORMATION_PANEL_ITE
         break;
 
     default:
-        itemColour = ZxSpectrum::WHITE;
+        itemColour = Folio::Core::Game::ZxSpectrum::WHITE;
         break;
     } // Endswitch.
 
@@ -1491,18 +1489,18 @@ void    InformationPanel::CreateIncrementMainPlayerHealthSoundSamples ()
     {
         // Create each sound sample representing the required sound.
     
-        for (ZxSpectrum::BYTE frequency = 0x10; frequency <= 0x90; frequency += 0x10)
+        for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x10; frequency <= 0x90; frequency += 0x10)
         {
-            m_incrementMainPlayerHealthSoundSamplesList.push_back (ZxSpectrum::MapUltimateMakeSound (frequency, 0x08));
+            m_incrementMainPlayerHealthSoundSamplesList.push_back (Ultimate::MapMakeSound (frequency, 0x08));
         } // Endfor.
         
         for (UInt32 count = 0; count < 3; ++count)
         {
-            m_incrementMainPlayerHealthSoundSamplesList.push_back (ZxSpectrum::MapUltimateMakeSound (0x80, 0x08));
-            m_incrementMainPlayerHealthSoundSamplesList.push_back (ZxSpectrum::MapUltimateMakeSound (0x90, 0x08));
+            m_incrementMainPlayerHealthSoundSamplesList.push_back (Ultimate::MapMakeSound (0x80, 0x08));
+            m_incrementMainPlayerHealthSoundSamplesList.push_back (Ultimate::MapMakeSound (0x90, 0x08));
         } // Endfor.
 
-        m_incrementMainPlayerHealthSoundSamplesList.push_back (ZxSpectrum::MapUltimateMakeSound (0x80, 0x08));
+        m_incrementMainPlayerHealthSoundSamplesList.push_back (Ultimate::MapMakeSound (0x80, 0x08));
     } // Endif.
 
 } // Endproc.
@@ -1514,11 +1512,11 @@ void    InformationPanel::CreateDecrementMainPlayerHealthSoundSamples ()
     {
         // Create each sound sample representing the required sound.
 
-        ZxSpectrum::BYTE    frequency = 0x4c;
+        Folio::Core::Game::ZxSpectrum::BYTE    frequency = 0x4c;
 
-        for (ZxSpectrum::BYTE numLoops = 0x0f; numLoops >= 0x01; --numLoops)
+        for (Folio::Core::Game::ZxSpectrum::BYTE numLoops = 0x0f; numLoops >= 0x01; --numLoops)
         {
-            m_decrementMainPlayerHealthSoundSamplesList.push_back (ZxSpectrum::MapUltimateMakeSound (frequency, numLoops));
+            m_decrementMainPlayerHealthSoundSamplesList.push_back (Ultimate::MapMakeSound (frequency, numLoops));
 
             frequency++;
 

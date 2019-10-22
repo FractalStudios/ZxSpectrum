@@ -2,7 +2,6 @@
 #include    "StdAfx.h"
 #include    "DrawingElement.h"
 #include    "RoomGraphics.h"
-#include    "ZxSpectrum.h"
 
 namespace Folio
 {
@@ -65,7 +64,7 @@ FolioStatus RoomGraphic::Create (FolioHandle    dcHandle,
                                                   instanceHandle, 
                                                   DRAWING_ELEMENT_ROOM, 
                                                   bitmapResourceId,
-                                                  ZxSpectrum::GetBitmapChangeColour ());
+                                                  Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour ());
     
     if (status == ERR_SUCCESS)
     {
@@ -90,14 +89,14 @@ FolioStatus RoomGraphic::Create (FolioHandle    dcHandle,
 
 
 FolioStatus RoomGraphic::QueryDrawingElements (FolioHandle                              dcHandle,
-                                               ZxSpectrum::COLOUR                       roomColour,
+                                               Folio::Core::Game::ZxSpectrum::COLOUR    roomColour,
                                                Folio::Core::Game::DrawingElementsList   &drawingElementsList)
 {
     return (Folio::Core::Game::ResourceGraphic::QueryDrawingElements (dcHandle, 
                                                                       0,    // Screen X left.
                                                                       0,    // Screen Y top.
-                                                                      ZxSpectrum::DEFAULT_SCREEN_SCALE,     
-                                                                      ZxSpectrum::MapInkColour (roomColour),
+                                                                      Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE,     
+                                                                      Folio::Core::Game::ZxSpectrum::MapInkColour (roomColour),
                                                                       Folio::Core::Game::ResourceGraphic::NO_DRAWING_FLAGS, 
                                                                       const_cast<RoomGraphic *> (this), // Drawing element user data.
                                                                       drawingElementsList));
@@ -134,7 +133,7 @@ Int32   RoomGraphic::GetFloorHeight () const
 } // Endproc.
 
 
-Folio::Core::Game::CollisionGrid    RoomGraphic::GetCollisionGrid () const
+CollisionGrid   RoomGraphic::GetCollisionGrid () const
 {
     return (m_collisionGrid);
 } // Endproc.
