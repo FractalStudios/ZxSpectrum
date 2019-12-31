@@ -50,6 +50,8 @@ public:
     FolioStatus ChangeColour (const Gdiplus::Color& colour,
                               const Gdiplus::Color& newColour);
 
+    UInt32      GetId () const;
+
     bool    IsMonochrome () const;
 
     Gdiplus::Rect   GetBitmapRect () const;
@@ -85,6 +87,7 @@ public:
     bool    IsBitmapNoLongerDrawn ();
 
     FolioHandle         GetBitmapHandle () const;
+    FolioHandle         GetDcHandle () const;
     FolioHandle         GetBitmapDcHandle () const;
     Gdiplus::Graphics*  GetBitmapGraphics () const;
     
@@ -102,8 +105,10 @@ public:
                               RectList*             rects = 0);
 
 private:
+    UInt32          m_id;               ///< The identifier of the bitmap (based on the GDI device-independent bitmap resource identifier).
     bool            m_isMonochrome;     ///< true if the bitmap is monochrome.
     Gdiplus::Rect   m_bitmapRect;       ///< The rect of the bitmap.
+    FolioHandle     m_dcHandle;         ///< The handle to the display compatible device context associated with the bitmap.
     FolioHandle     m_memoryDcHandle;   ///< The handle to the display compatible memory device context associated with the bitmap.
     FolioHandle     m_bitmapHandle;     ///< The handle to the bitmap
     FolioHandle     m_oldBitmapHandle;  ///< The old handle to the bitmap.
@@ -129,6 +134,7 @@ private:
     std::unique_ptr<Gdiplus::Graphics>  m_graphics; ///< The GDI+ graphics object associated with the bitmap.
 
     FolioStatus InitialiseBitmap (FolioHandle   dcHandle, 
+                                  UInt32        id = FOLIO_UNDEFINED,
                                   bool          isMonochrome = false);
     FolioStatus DrawPartialBitmap (HDC              graphicsDcHandle,
                                    Int32            screenXLeft,

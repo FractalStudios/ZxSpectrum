@@ -47,7 +47,7 @@ private:
 
     HWAVEOUT    m_waveOutHandle; // The wave out handle.
 
-    bool    m_playing;  // Indicates if the  waveform-audio output device is playing.
+    bool    m_playing;  // Indicates if the waveform-audio output device is playing.
 
     static  void    CALLBACK    Callback (HWAVEOUT  waveOutHandle,
                                           UINT      message,

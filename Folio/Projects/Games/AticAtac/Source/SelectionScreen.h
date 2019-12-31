@@ -83,7 +83,7 @@ public:
     bool    IsPauseGameKeyDown () const;
     bool    IsMainPlayerFireWeaponKeyDown () const;
     bool    IsMainPlayerCollectItemsKeyDown () const;
-    bool    IsMainPlayerDirectionKeyDown (Folio::Core::Game::APlayerSprite::Direction &direction) const;
+    bool    IsMainPlayerDirectionKeyDown (Folio::Core::Game::Direction &direction) const;
 
 private:
     GAME_CONTROL    m_gameControl;  // The game control.

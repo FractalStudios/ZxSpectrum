@@ -84,6 +84,12 @@ FolioStatus GdiBufferedBitmap::Create (FolioHandle          dcHandle,
 
         if (status == ERR_SUCCESS)
         {
+            // Add to the handle monitor.
+
+            //Folio::Core::Util::g_handleMonitor.AddHandle (m_bitmapHandle,
+            //                                              FOLIO_UNDEFINED,
+            //                                              TXT("GdiBufferedBitmap::Create::CreateCompatibleBitmap"));
+
             // Initialise the bitmap.
 
             status = InitialiseBitmap (dcHandle, bufferedBitmapRect, drawToRequired);
@@ -309,6 +315,12 @@ FolioStatus GdiBufferedBitmap::Buffer (Gdiplus::Graphics&   graphics,
 
                 if (status == ERR_SUCCESS)
                 {
+                    // Add to the handle monitor.
+
+                    //Folio::Core::Util::g_handleMonitor.AddHandle (m_bitmapHandle,
+                    //                                              FOLIO_UNDEFINED,
+                    //                                              TXT("GdiBufferedBitmap::Buffer::CreateCompatibleBitmap"));
+
                     // Select the bitmap into the memory device context.
 
                     status = SelectObjectIntoDC (m_memoryDcHandle, m_bitmapHandle, &(m_oldBitmapHandle));

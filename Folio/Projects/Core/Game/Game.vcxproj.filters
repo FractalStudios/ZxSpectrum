@@ -37,16 +37,10 @@
     <ClCompile Include="Source\Gamepad.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SpriteGraphicsAttributes.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
     <ClCompile Include="Source\AStaticSprite.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
     <ClCompile Include="Source\SpriteDrawingElement.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SpriteMovementSoundAttributes.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
     <ClCompile Include="Source\ZxSpectrum.cpp">
@@ -56,6 +50,15 @@
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
     <ClCompile Include="Source\ACollisionGrid.cpp">
+      <Filter>Source Files\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ResourceGraphicsCache.cpp">
+      <Filter>Source Files\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SpriteGraphics.cpp">
+      <Filter>Source Files\SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SpriteSound.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
   </ItemGroup>
@@ -96,16 +99,10 @@
     <ClInclude Include="Include\Gamepad.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Include\SpriteGraphicsAttributes.h">
-      <Filter>Header Files\SDK</Filter>
-    </ClInclude>
     <ClInclude Include="Include\AStaticSprite.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
     <ClInclude Include="Include\SpriteDrawingElement.h">
-      <Filter>Header Files\SDK</Filter>
-    </ClInclude>
-    <ClInclude Include="Include\SpriteMovementSoundAttributes.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
     <ClInclude Include="Include\ZxSpectrum.h">
@@ -118,6 +115,15 @@
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
     <ClInclude Include="Include\ACollisionGrid.h">
+      <Filter>Header Files\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ResourceGraphicsCache.h">
+      <Filter>Header Files\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SpriteSound.h">
+      <Filter>Header Files\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\SpriteGraphics.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
   </ItemGroup>

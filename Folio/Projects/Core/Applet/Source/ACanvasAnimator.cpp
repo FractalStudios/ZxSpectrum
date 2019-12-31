@@ -181,7 +181,7 @@ bool    ACanvasAnimator::IsCreated () const
  *
  * @return
  * The possible return values are:<ul>
- * <li><b>ERROR_SUCCESS</b> if successful.
+ * <li><b>ERR_SUCCESS</b> if successful.
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
@@ -224,7 +224,7 @@ FolioStatus ACanvasAnimator::StartThread ()
  *
  * @return
  * The possible return values are:<ul>
- * <li><b>ERROR_SUCCESS</b> if successful.
+ * <li><b>ERR_SUCCESS</b> if successful.
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
@@ -253,14 +253,14 @@ FolioStatus ACanvasAnimator::StopThread ()
  *
  * @return
  * The possible return values are:<ul>
- * <li><b>ERROR_SUCCESS</b> if successful.
+ * <li><b>ERR_SUCCESS</b> if successful.
  * <li><b>ERR_INTERNAL_ERROR</b> if there is no <b>ACanvasAnimator</b> object.
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
 FolioStatus FOLIO_CALL  ACanvasAnimator::ThreadEntry (void* args)
 {
-    FolioStatus status = ERROR_SUCCESS;
+    FolioStatus status = ERR_SUCCESS;
 
     // Set our thread name.
                                             
@@ -306,7 +306,7 @@ FolioStatus FOLIO_CALL  ACanvasAnimator::ThreadEntry (void* args)
  *
  * @return
  * The possible return values are:<ul>
- * <li><b>ERROR_SUCCESS</b> if successful.
+ * <li><b>ERR_SUCCESS</b> if successful.
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
@@ -358,7 +358,7 @@ void    ACanvasAnimator::ThreadTerminate ()
  *
  * @return
  * The possible return values are:<ul>
- * <li><b>ERROR_SUCCESS</b> if successful.
+ * <li><b>ERR_SUCCESS</b> if successful.
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */

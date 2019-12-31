@@ -583,8 +583,7 @@ FolioStatus MainCanvasMsgHandler::CheckPlayingGameStateInput ()
 
             // Is a player's direction key down?
 
-            Folio::Core::Game::APlayerSprite::Direction direction =  
-                Folio::Core::Game::APlayerSprite::NO_DIRECTION; // Initialise!
+            Folio::Core::Game::Direction    direction = Folio::Core::Game::NO_DIRECTION;    // Initialise!
 
             if (m_selectionScreen->IsPlayerDirectionKeyDown (direction))
             {
@@ -685,16 +684,14 @@ FolioStatus MainCanvasMsgHandler::Initialise ()
 
     // Create the background item graphics.
 
-    FolioStatus status = CreateBackgroundItemGraphics (dcHandle,
-                                                       instanceHandle,
+    FolioStatus status = CreateBackgroundItemGraphics (instanceHandle,
                                                        m_backgroundItemGraphicsMap);
 
     if (status == ERR_SUCCESS)
     {
         // Create the sprite graphics.
 
-        status = CreateSpriteGraphics (dcHandle,
-                                       instanceHandle,
+        status = CreateSpriteGraphics (instanceHandle,
                                        m_spriteGraphicsMap);
 
         if (status == ERR_SUCCESS)

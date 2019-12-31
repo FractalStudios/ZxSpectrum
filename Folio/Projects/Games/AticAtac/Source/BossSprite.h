@@ -1,17 +1,15 @@
 #pragma once
 
 // STL includes.
+#include    <map>
 #include    <memory>
 #include    <vector>
 
 // "Home-made" includes.
-#include    <Applet.h>
 #include    <Game.h>
 #include    "CollisionGrid.h"
 #include    "InformationPanel.h"
 #include    "NastySprite.h"
-#include    "PlayerSprite.h"
-#include    "SpriteGraphics.h"
 #include    "StaticSprite.h"
 
 #pragma pack(push, 1)
@@ -41,17 +39,20 @@ enum BOSS_SPRITE_ID
 class BossSprite : public Folio::Core::Game::ABossSprite
 {
 public:
+    // Boss sprite flags.
+    static  const   UInt32  FLAGS_NONE                      = NastySprite::FLAGS_NONE;
+    static  const   UInt32  FLAGS_INITIALISED_BY_GRAPHIC    = NastySprite::FLAGS_INITIALISED_BY_GRAPHIC;
+    static  const   UInt32  FLAGS_TERMINATED_BY_GRAPHIC     = NastySprite::FLAGS_TERMINATED_BY_GRAPHIC;
+    
     BossSprite ();
     ~BossSprite ();
 
-    FolioStatus Create (FolioHandle             dcHandle,
-                        BOSS_SPRITE_ID          bossSpriteId,
-                        const SpriteGraphicsMap &spriteGraphicsMap,
-                        const PlayerSpritePtr   &mainPlayer,                
-                        const InformationPanel  &informationPanel,
-                        const CollisionGrid     &collisionGrid);                
-    FolioStatus Reset (const CollisionGrid  &collisionGrid,
-                       bool                 &removeBossSprite);
+    FolioStatus Create (FolioHandle                             dcHandle,
+                        BOSS_SPRITE_ID                          bossSpriteId,
+                        Folio::Core::Game::ZxSpectrum::COLOUR   bossSpriteColour,
+                        UInt32                                  bossSpriteFlags = FLAGS_NONE);
+    FolioStatus Start (const InformationPanel   &informationPanel,
+                       const CollisionGrid      &collisionGrid);
     FolioStatus Move (Gdiplus::Graphics         &graphics,
                       const InformationPanel    &informationPanel,
                       CollisionGrid             &collisionGrid);
@@ -61,48 +62,46 @@ public:
 
     bool    CanBeKilled (const InformationPanel &informationPanel) const;
 
+    static  BOSS_SPRITE_ID  GetScreenBossSpriteId (UInt32   screenNumber, 
+                                                   UInt32   totalNumRooms);
+
 private:
     static  const   UInt32  BOSS_SPRITE_SPEED = 1;  // Boss sprite speed.
 
-    PlayerSpritePtr m_mainPlayer;   // The main player.
+    BOSS_SPRITE_ID  m_bossSpriteId;     // The identifier of the boss sprite.
+    UInt32          m_bossSpriteFlags;  // The flags of the boss sprite.
 
-    BOSS_SPRITE_ID      m_bossSpriteId;     // The identifier of the boss sprite.
-    UInt32              m_bossSpriteFlags;  // The flags of the boss sprite.
-
-    static  SpriteTerminatingSoundSamplesList   m_bossSpriteTerminatingSoundSamplesList;    // The boss sprite's terminating sound samples.
+    static  Folio::Core::Game::SpriteStationarySoundSamplesList m_bossSpriteTerminatingSoundSamplesList;    // The boss sprite's terminating sound samples.
 
     FolioStatus SetInitialisingMode (FolioHandle                            dcHandle,
-                                     const SpriteGraphicsMap                &spriteGraphicsMap,
                                      Folio::Core::Game::ZxSpectrum::COLOUR  bossSpriteColour,
                                      UInt32                                 bossSpriteFlags);
     FolioStatus SetTerminatingMode (FolioHandle                             dcHandle,
-                                    const SpriteGraphicsMap                 &spriteGraphicsMap,
                                     Folio::Core::Game::ZxSpectrum::COLOUR   bossSpriteColour,
                                     UInt32                                  bossSpriteFlags);
 
-    bool        IsUpdateDirectionRqd (const CollisionGrid &collisionGrid) const;
-    Direction   GetDirection (const InformationPanel    &informationPanel,
-                              const CollisionGrid       &collisionGrid) const;
-    Direction   GetDirectionToAttractedStaticSprite (const CollisionGrid    &collisionGrid,
-                                                     bool                   &staticSpriteFound) const;
-    UInt32      GetSpeed (const InformationPanel    &informationPanel,
-                          const CollisionGrid       &collisionGrid) const;
-    UInt32      GetSpeedToAttractedStaticSprite (const CollisionGrid    &collisionGrid,
-                                                 bool                   &staticSpriteFound) const;
+    bool    IsUpdateDirectionRqd (const CollisionGrid &collisionGrid) const;
+    Folio::Core::Game::Direction    GetDirection (const InformationPanel    &informationPanel,
+                                                  const CollisionGrid       &collisionGrid) const;
+    Folio::Core::Game::Direction    GetDirectionToAttractedStaticSprite (const CollisionGrid    &collisionGrid,
+                                                                         bool                   &staticSpriteFound) const;
+    
+    UInt32  GetSpeed (const InformationPanel    &informationPanel,
+                      const CollisionGrid       &collisionGrid) const;
+    
+    UInt32  GetSpeedToAttractedStaticSprite (const CollisionGrid    &collisionGrid,
+                                             bool                   &staticSpriteFound) const;
     bool    IsAnyAttractedStaticSprite (const CollisionGrid &collisionGrid) const;
 
-    static  Int32                                   GetInitialScreenXLeft (BOSS_SPRITE_ID           bossSpriteId,
-                                                                           const PlayerSpritePtr    &mainPlayer,
-                                                                           const CollisionGrid      &collisionGrid);
-    static  Int32                                   GetInitialScreenYTop (BOSS_SPRITE_ID            bossSpriteId,
-                                                                          const PlayerSpritePtr     &mainPlayer,
-                                                                          const CollisionGrid       &collisionGrid);
-    static  Folio::Core::Game::ZxSpectrum::COLOUR   GetColour (BOSS_SPRITE_ID bossSpriteId);
-    static  UInt32                                  GetBossSpriteFlags (BOSS_SPRITE_ID bossSpriteId);
-    static  bool                                    IsAttractedToStaticSprite (BOSS_SPRITE_ID       bossSpriteId,
-                                                                               const StaticSprite   &staticSprite);
+    static  Int32   GetInitialScreenXLeft (BOSS_SPRITE_ID       bossSpriteId,
+                                           const CollisionGrid  &collisionGrid);
+    static  Int32   GetInitialScreenYTop (BOSS_SPRITE_ID        bossSpriteId,
+                                          const CollisionGrid   &collisionGrid);
+    
+    static  bool    IsAttractedToStaticSprite (BOSS_SPRITE_ID       bossSpriteId,
+                                               const StaticSprite   &staticSprite);
 
-    static  SpriteTerminatingSoundSamplesList   GetBossSpriteTerminatingSoundSamples ();
+    static  Folio::Core::Game::SpriteStationarySoundSamplesList GetBossSpriteTerminatingSoundSamples ();
 
     // Private copy constructor to prevent copying.
     BossSprite (const BossSprite& rhs);
@@ -114,8 +113,8 @@ private:
 // Boss sprite pointer.
 typedef std::shared_ptr<BossSprite> BossSpritePtr;
 
-// Boss sprites list.
-typedef std::vector<BossSpritePtr>  BossSpritesList;
+// Boss sprites map.
+typedef std::map<BOSS_SPRITE_ID, BossSpritePtr> BossSpritesMap;
 
 // Boss sprite drawing element.
 typedef Folio::Core::Game::SpriteDrawingElement<BossSpritePtr> BossSpriteDrawingElement;
@@ -126,8 +125,9 @@ typedef std::vector<BossSpriteDrawingElement> BossSpriteDrawingElementsList;
 
 // Routines.
 
-BOSS_SPRITE_ID  GetScreenBossSpriteId (UInt32   screenNumber, 
-                                       UInt32   totalNumRooms);
+FolioStatus CreateBossSprites (FolioHandle      dcHandle,
+                               BossSpritesMap   &bossSpritesMap);
+void    SetBossSpritesAlive (BossSpritesMap &bossSpritesMap);
 
 } // Endnamespace.
 

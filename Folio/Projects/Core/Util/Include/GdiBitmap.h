@@ -70,6 +70,10 @@ FolioStatus QueryColourTableIndexInDiBitmap (FolioHandle        dcHandle,
                                              FolioHandle        bitmapHandle,
                                              const COLORREF&    colourRef,
                                              UInt32&            colourTableIndex);
+FolioStatus QueryColourInDiBitmap (FolioHandle  dcHandle,
+                                   FolioHandle  bitmapHandle,
+                                   UInt32       colourTableIndex,
+                                   COLORREF&    colourRef);
 FolioStatus ChangeColourInDiBitmap (FolioHandle     dcHandle,
                                     FolioHandle     bitmapHandle,
                                     UInt32          colourTableIndex,

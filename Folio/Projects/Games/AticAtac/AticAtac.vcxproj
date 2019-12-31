@@ -15,6 +15,7 @@
     <ClCompile Include="Source\BackgroundItem.cpp" />
     <ClCompile Include="Source\BossSprite.cpp" />
     <ClCompile Include="Source\CollisionGrid.cpp" />
+    <ClCompile Include="Source\Globals.cpp" />
     <ClCompile Include="Source\LoadingScreen.cpp" />
     <ClCompile Include="Source\PlayerSprite.cpp" />
     <ClCompile Include="Source\FallingSimulationScreen.cpp" />
@@ -41,6 +42,7 @@
     <ClInclude Include="Source\BackgroundItem.h" />
     <ClInclude Include="Source\BossSprite.h" />
     <ClInclude Include="Source\CollisionGrid.h" />
+    <ClInclude Include="Source\Globals.h" />
     <ClInclude Include="Source\LoadingScreen.h" />
     <ClInclude Include="Source\PlayerSprite.h" />
     <ClInclude Include="Source\FallingSimulationScreen.h" />
@@ -48,6 +50,7 @@
     <ClInclude Include="Source\GameOverScreen.h" />
     <ClInclude Include="Source\InformationPanel.h" />
     <ClInclude Include="Source\MainCanvasMsgHandler.h" />
+    <ClInclude Include="Source\ResourceOwnerId.h" />
     <ClInclude Include="Source\SpriteGraphics.h" />
     <ClInclude Include="Source\NastySprite.h" />
     <ClInclude Include="Source\resource.h" />

@@ -1,8 +1,10 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
+#include    "BackgroundItem.h"
+#include    "BackgroundItemGraphics.h"
 #include    "CollisionGrid.h"
 #include    "DrawingElement.h"
-#include    "BackgroundItemGraphics.h"
+#include    "Globals.h"
 
 namespace Folio
 {
@@ -18,7 +20,6 @@ namespace AticAtac
 struct BackgroundItemGraphicAttributes
 {
     BACKGROUND_ITEM_ID          m_backgroundItemId;         // The identifier of the background item.
-    UInt16                      m_bitmapResourceId;         // The background item's bitmap resource identifier.
     bool                        m_supportsRoomColouring;    // true if the background item supports room colouring.
     bool                        m_maskRqd;                  // true if the background item requires a mask.
     CollisionGrid::CellValue    m_collisionGridCellValue;   // The collision grid cell value of the background item.
@@ -27,103 +28,118 @@ struct BackgroundItemGraphicAttributes
 // Background item graphic attributes table.
 static  const   BackgroundItemGraphicAttributes g_backgroundItemGraphicAttributesTable [] =
 {
-//      m_backgroundItemId                              m_bitmapResourceId                      m_supportsRoomColouring m_maskRqd   m_collisionGridCellValue
-    {   BACKGROUND_ITEM_CAVE_DOOR_FRAME,                IDB_BITMAP_CAVE_DOOR_FRAME,             true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_NORMAL_DOOR_FRAME,              IDB_BITMAP_NORMAL_DOOR_FRAME,           false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_BIG_DOOR_FRAME,                 IDB_BITMAP_BIG_DOOR_FRAME,              false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_RED_LOCKED_NORMAL_DOOR,         IDB_BITMAP_RED_LOCKED_NORMAL_DOOR,      false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_GREEN_LOCKED_NORMAL_DOOR,       IDB_BITMAP_GREEN_LOCKED_NORMAL_DOOR,    false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_CYAN_LOCKED_NORMAL_DOOR,        IDB_BITMAP_CYAN_LOCKED_NORMAL_DOOR,     false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_YELLOW_LOCKED_NORMAL_DOOR,      IDB_BITMAP_YELLOW_LOCKED_NORMAL_DOOR,   false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_RED_LOCKED_CAVE_DOOR,           IDB_BITMAP_RED_LOCKED_CAVE_DOOR,        true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_GREEN_LOCKED_CAVE_DOOR,         IDB_BITMAP_GREEN_LOCKED_CAVE_DOOR,      true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_CYAN_LOCKED_CAVE_DOOR,          IDB_BITMAP_CYAN_LOCKED_CAVE_DOOR,       true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_YELLOW_LOCKED_CAVE_DOOR,        IDB_BITMAP_YELLOW_LOCKED_CAVE_DOOR,     true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_CLOCK,                          IDB_BITMAP_CLOCK,                       true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_PICTURE,                        IDB_BITMAP_PICTURE,                     true,                   false,      CollisionGrid::CELL_VALUE_EMPTY,        },
-    {   BACKGROUND_ITEM_TABLE,                          IDB_BITMAP_TABLE,                       false,                  false,      CollisionGrid::CELL_VALUE_SOLID_ITEM,   },
-    {   BACKGROUND_ITEM_ANTLER_TROPHY,                  IDB_BITMAP_ANTLER_TROPHY,               false,                  false,      CollisionGrid::CELL_VALUE_EMPTY,        },
-    {   BACKGROUND_ITEM_TROPHY,                         IDB_BITMAP_TROPHY,                      false,                  false,      CollisionGrid::CELL_VALUE_EMPTY,        },
-    {   BACKGROUND_ITEM_BOOKCASE,                       IDB_BITMAP_BOOKCASE,                    true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_CLOSED_TRAP_DOOR,               IDB_BITMAP_CLOSED_TRAP_DOOR,            false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_OPEN_TRAP_DOOR,                 IDB_BITMAP_OPEN_TRAP_DOOR,              false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_BARREL,                         IDB_BITMAP_BARREL,                      false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_RUG,                            IDB_BITMAP_RUG,                         false,                  false,      CollisionGrid::CELL_VALUE_EMPTY,        },
-    {   BACKGROUND_ITEM_ACG_SHIELD,                     IDB_BITMAP_ACG_SHIELD,                  false,                  false,      CollisionGrid::CELL_VALUE_EMPTY,        },
-    {   BACKGROUND_ITEM_SHIELD,                         IDB_BITMAP_SHIELD,                      true,                   false,      CollisionGrid::CELL_VALUE_EMPTY,        },
-    {   BACKGROUND_ITEM_KNIGHT,                         IDB_BITMAP_KNIGHT,                      false,                  false,      CollisionGrid::CELL_VALUE_EMPTY,        },
-    {   BACKGROUND_ITEM_CLOSED_NORMAL_DOOR,             IDB_BITMAP_CLOSED_NORMAL_DOOR,          false,                  true,       CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_OPEN_NORMAL_DOOR,               IDB_BITMAP_OPEN_NORMAL_DOOR,            false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_CLOSED_CAVE_DOOR,               IDB_BITMAP_CLOSED_CAVE_DOOR,            true,                   true,       CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_OPEN_CAVE_DOOR,                 IDB_BITMAP_OPEN_CAVE_DOOR,              true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_ACG_EXIT_DOOR,                  IDB_BITMAP_ACG_EXIT_DOOR,               true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
-    {   BACKGROUND_ITEM_PICTURE_2,                      IDB_BITMAP_PICTURE_2,                   false,                  false,      CollisionGrid::CELL_VALUE_EMPTY,        },
-    {   BACKGROUND_ITEM_SKELETON,                       IDB_BITMAP_SKELETON,                    true,                   false,      CollisionGrid::CELL_VALUE_EMPTY,        },
-    {   BACKGROUND_ITEM_BARRELS,                        IDB_BITMAP_BARRELS,                     false,                  false,      CollisionGrid::CELL_VALUE_EMPTY,        },
+//      m_backgroundItemId                              m_supportsRoomColouring m_maskRqd   m_collisionGridCellValue
+    {   BACKGROUND_ITEM_CAVE_DOOR_FRAME,                true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_NORMAL_DOOR_FRAME,              false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_BIG_DOOR_FRAME,                 false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_RED_LOCKED_NORMAL_DOOR,         false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_GREEN_LOCKED_NORMAL_DOOR,       false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_CYAN_LOCKED_NORMAL_DOOR,        false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_YELLOW_LOCKED_NORMAL_DOOR,      false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_RED_LOCKED_CAVE_DOOR,           true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_GREEN_LOCKED_CAVE_DOOR,         true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_CYAN_LOCKED_CAVE_DOOR,          true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_YELLOW_LOCKED_CAVE_DOOR,        true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_CLOCK,                          true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_PICTURE,                        true,                   false,      CollisionGrid::CELL_VALUE_EMPTY,        },
+    {   BACKGROUND_ITEM_TABLE,                          false,                  false,      CollisionGrid::CELL_VALUE_SOLID_ITEM,   },
+    {   BACKGROUND_ITEM_ANTLER_TROPHY,                  false,                  false,      CollisionGrid::CELL_VALUE_EMPTY,        },
+    {   BACKGROUND_ITEM_TROPHY,                         false,                  false,      CollisionGrid::CELL_VALUE_EMPTY,        },
+    {   BACKGROUND_ITEM_BOOKCASE,                       true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_CLOSED_TRAP_DOOR,               false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_OPEN_TRAP_DOOR,                 false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_BARREL,                         false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_RUG,                            false,                  false,      CollisionGrid::CELL_VALUE_EMPTY,        },
+    {   BACKGROUND_ITEM_ACG_SHIELD,                     false,                  false,      CollisionGrid::CELL_VALUE_EMPTY,        },
+    {   BACKGROUND_ITEM_SHIELD,                         true,                   false,      CollisionGrid::CELL_VALUE_EMPTY,        },
+    {   BACKGROUND_ITEM_KNIGHT,                         false,                  false,      CollisionGrid::CELL_VALUE_EMPTY,        },
+    {   BACKGROUND_ITEM_CLOSED_NORMAL_DOOR,             false,                  true,       CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_OPEN_NORMAL_DOOR,               false,                  false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_CLOSED_CAVE_DOOR,               true,                   true,       CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_OPEN_CAVE_DOOR,                 true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_ACG_EXIT_DOOR,                  true,                   false,      CollisionGrid::CELL_VALUE_EXIT,         },
+    {   BACKGROUND_ITEM_PICTURE_2,                      false,                  false,      CollisionGrid::CELL_VALUE_EMPTY,        },
+    {   BACKGROUND_ITEM_SKELETON,                       true,                   false,      CollisionGrid::CELL_VALUE_EMPTY,        },
+    {   BACKGROUND_ITEM_BARRELS,                        false,                  false,      CollisionGrid::CELL_VALUE_EMPTY,        },
 };                                                                                                             
 
 
-FolioStatus BuildBackgroundItemGraphics (FolioHandle                dcHandle, 
-                                         FolioHandle                instanceHandle,
-                                         BackgroundItemGraphicsMap  &backgroundItemGraphicsMap)
+FolioStatus CreateBackgroundItemGraphics (FolioHandle instanceHandle)
 {
     FolioStatus status = ERR_SUCCESS;
 
-    backgroundItemGraphicsMap.clear ();    // Initialise!
-
-    // Build the background item graphics map. 
+    // Add the background item graphics into the resource graphics cache. 
 
     for (UInt32 index = 0; 
          (status == ERR_SUCCESS) && (index < (sizeof (g_backgroundItemGraphicAttributesTable) / sizeof (BackgroundItemGraphicAttributes)));
          ++index)
-    {              
-        // Create a background item graphic.
+    {   
+        // Get the maximum background items on any single screen; use to build the resource graphics cache.
 
-        BackgroundItemGraphic   backgroundItemGraphic(new BackgroundItemGraphic::element_type);
+        UInt32  maxBackgroundItemsOnScreen = std::max (static_cast<UInt32> (1), GetMaxBackgroundItemsOnScreen (g_backgroundItemGraphicAttributesTable [index].m_backgroundItemId));
 
-        // Does the background item graphic support room colouring?
+        for (UInt32 cacheCount = 0; 
+             (status == ERR_SUCCESS) && (cacheCount < maxBackgroundItemsOnScreen);
+             ++cacheCount)
+        {            
+            // Create a background item graphic.
 
-        if (g_backgroundItemGraphicAttributesTable [index].m_supportsRoomColouring)
-        {
-            // Yes.
+            BackgroundItemGraphic   backgroundItemGraphic(new BackgroundItemGraphic::element_type);
 
-            status = backgroundItemGraphic->Create (dcHandle,
-                                                    instanceHandle,
-                                                    DRAWING_ELEMENT_BACKGROUND_ITEM,
-                                                    g_backgroundItemGraphicAttributesTable [index].m_bitmapResourceId,
-                                                    Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour (),
-                                                    g_backgroundItemGraphicAttributesTable [index].m_maskRqd,
-                                                    g_backgroundItemGraphicAttributesTable [index].m_collisionGridCellValue);
-        } // Endif.
+            // Does the background item graphic support room colouring?
 
-        else
-        {
-            // No.
+            if (g_backgroundItemGraphicAttributesTable [index].m_supportsRoomColouring)
+            {
+                // Yes.
 
-            status = backgroundItemGraphic->Create (dcHandle,
-                                                    instanceHandle,
-                                                    DRAWING_ELEMENT_BACKGROUND_ITEM,
-                                                    g_backgroundItemGraphicAttributesTable [index].m_bitmapResourceId,
-                                                    g_backgroundItemGraphicAttributesTable [index].m_maskRqd,
-                                                    g_backgroundItemGraphicAttributesTable [index].m_collisionGridCellValue);
-        } // Endelse.                       
+                status = backgroundItemGraphic->Create (instanceHandle,
+                                                        DRAWING_ELEMENT_BACKGROUND_ITEM,
+                                                        g_backgroundItemGraphicAttributesTable [index].m_backgroundItemId,
+                                                        Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour (),
+                                                        g_backgroundItemGraphicAttributesTable [index].m_maskRqd,
+                                                        g_backgroundItemGraphicAttributesTable [index].m_collisionGridCellValue);
+            } // Endif.
+
+            else
+            {
+                // No.
+
+                status = backgroundItemGraphic->Create (instanceHandle,
+                                                        DRAWING_ELEMENT_BACKGROUND_ITEM,
+                                                        g_backgroundItemGraphicAttributesTable [index].m_backgroundItemId,
+                                                        g_backgroundItemGraphicAttributesTable [index].m_maskRqd,
+                                                        g_backgroundItemGraphicAttributesTable [index].m_collisionGridCellValue);
+            } // Endelse.                       
         
-        if (status == ERR_SUCCESS)
-        {
-            // Store the background item graphic in the background item graphics map.
+            if (status == ERR_SUCCESS)
+            {
+                // Store the background item graphic in the resource graphics cache.
 
-            backgroundItemGraphicsMap.insert (BackgroundItemGraphicsMap::value_type(g_backgroundItemGraphicAttributesTable [index].m_backgroundItemId, 
-                                                                                    backgroundItemGraphic));
-        } // Endif.
+                g_resourceGraphicsCache.Add (DRAWING_ELEMENT_BACKGROUND_ITEM, backgroundItemGraphic);
+            } // Endif.
        
+        } // Endfor.
+
     } // Endfor.
 
-    if (status != ERR_SUCCESS)
-    {
-        backgroundItemGraphicsMap.clear ();
-    } // Endif.
-
     return (status);
+} // Endproc.
+
+
+FolioStatus QueryBackgroundItemGraphic (Folio::Core::Game::ResourceGraphicsCache::OwnerId   ownerId,    
+                                        BACKGROUND_ITEM_ID                                  backgroundItemId, 
+                                        BackgroundItemGraphic                               &backgroundItemGraphic)
+{
+    return (g_resourceGraphicsCache.GainResourceGraphic (ownerId,
+                                                         DRAWING_ELEMENT_BACKGROUND_ITEM, 
+                                                         backgroundItemId, 
+                                                         backgroundItemGraphic));
+} // Endproc.
+
+
+FolioStatus ReleaseBackgroundItemGraphic (const BackgroundItemGraphic &backgroundItemGraphic)
+{
+    return (g_resourceGraphicsCache.ReleaseResourceGraphic (backgroundItemGraphic));
 } // Endproc.
 
 } // Endnamespace.

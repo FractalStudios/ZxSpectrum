@@ -33,7 +33,7 @@ class AsyncSound : public ProcessSingleton<AsyncSound>
 public:
     ~AsyncSound  ();
 
-    FolioStatus PlaySoundSample (const SoundSample& soundSamples);
+    FolioStatus PlaySoundSample (const SoundSample& soundSample);
     FolioStatus PlaySoundSamples (const SoundSamplesList& soundSamplesList);
 
 protected:
@@ -69,7 +69,8 @@ private:
     void        ThreadTerminate ();
     FolioStatus Thread ();
 
-    FolioStatus PlayFirstSoundSample ();
+    SoundSample GetFirstSoundSample ();
+    FolioStatus PlayFirstSoundSample (const SoundSample& soundSample) const;
 
     /// Private copy constructor to prevent copying.
     AsyncSound (const AsyncSound& rhs);

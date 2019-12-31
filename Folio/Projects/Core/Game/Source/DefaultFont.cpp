@@ -13,7 +13,7 @@ namespace Game
 namespace ZxSpectrum
 {
 
-Font    GetFont ()
+FontPtr GetFont ()
 {
     static  const   Folio::Core::Graphic::GdiRasterFont::CharacterMap   characterMap =
     {
@@ -117,7 +117,7 @@ Font    GetFont ()
         {   '\x7f',	    {   0x3c, 0x42, 0x99, 0xa1, 0xa1, 0x99, 0x42, 0x3c, },  },  // Copyright symbol.
     };
 
-    static  Font    font(new Font::element_type(1, 8, characterMap));
+    static  FontPtr font(new FontPtr::element_type(1, 8, characterMap));
 
     return (font);
 } // Endproc.

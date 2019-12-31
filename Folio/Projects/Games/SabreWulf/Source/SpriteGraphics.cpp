@@ -213,8 +213,7 @@ static  const   SpriteGraphicAttributes   g_spriteGraphicAttributesTable [] =
 };
 
 
-FolioStatus CreateSpriteGraphics (FolioHandle           dcHandle, 
-                                  FolioHandle           instanceHandle,
+FolioStatus CreateSpriteGraphics (FolioHandle           instanceHandle,
                                   SpriteGraphicsMapPtr  &spriteGraphicsMap)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -233,8 +232,7 @@ FolioStatus CreateSpriteGraphics (FolioHandle           dcHandle,
 
         Folio::Core::Game::SpriteGraphic    spriteGraphic(new Folio::Core::Game::SpriteGraphic::element_type);
 
-        status = spriteGraphic->Create (dcHandle,
-                                        instanceHandle,
+        status = spriteGraphic->Create (instanceHandle,
                                         g_spriteGraphicAttributesTable [index].m_drawingElementId,
                                         g_spriteGraphicAttributesTable [index].m_bitmapResourceId,
                                         Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour (),

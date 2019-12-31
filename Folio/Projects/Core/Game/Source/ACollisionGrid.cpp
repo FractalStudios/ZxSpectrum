@@ -481,8 +481,6 @@ bool    ACollisionGrid::IsExitedScreen (const Gdiplus::Rect&    spriteScreenRect
                                         bool&                   isInScreenExit,
                                         ScreenExit&             screenExit) const
 {
-    isInScreenExit = false; // Initialise!
-
     bool    isExitedScreen  = false;   // Initialise!
     bool    foundExit       = false;
 
@@ -888,26 +886,26 @@ void    ACollisionGrid::ToScreenRectBound (UInt32               spriteDirection,
 {
     switch (spriteDirection)
     {
-    case ASprite::N:
+    case N:
         spriteScreenRect.Y = screenRectBound.Y + screenRectBound.Height; 
         break;
 
-    case ASprite::S:
+    case S:
         spriteScreenRect.Y = screenRectBound.Y - spriteScreenRect.Height; 
         break;
 
-    case ASprite::E:
+    case E:
         spriteScreenRect.X = screenRectBound.X - spriteScreenRect.Width; 
         break;
  
-    case ASprite::W:
+    case W:
         spriteScreenRect.X = screenRectBound.X + screenRectBound.Width; 
         break;
             
-    case ASprite::NE:
-    case ASprite::NW:
-    case ASprite::SE:
-    case ASprite::SW:
+    case NE:
+    case NW:
+    case SE:
+    case SW:
         {
             // Get the sprite's position.
 
@@ -919,8 +917,8 @@ void    ACollisionGrid::ToScreenRectBound (UInt32               spriteDirection,
             Int32   solidItemXRight     = screenRectBound.X + screenRectBound.Width - 1;
             Int32   solidItemYBottom    = screenRectBound.Y + screenRectBound.Height - 1;
 
-            if ((spriteDirection == ASprite::NE) ||
-                (spriteDirection == ASprite::NW))
+            if ((spriteDirection == NE) ||
+                (spriteDirection == NW))
             {
                 if ((spriteScreenRect.Y < solidItemYBottom) &&
                     (spriteYBottom > solidItemYBottom))
@@ -963,8 +961,8 @@ void    ACollisionGrid::ToScreenRectBound (UInt32               spriteDirection,
 
             } // Endelseif.
 
-            if ((spriteDirection == ASprite::NE) ||
-                (spriteDirection == ASprite::SE))
+            if ((spriteDirection == NE) ||
+                (spriteDirection == SE))
             {
                 if ((spriteScreenRect.X < screenRectBound.X)  &&
                     (spriteXRight > screenRectBound.X))

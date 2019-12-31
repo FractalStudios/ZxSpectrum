@@ -20,13 +20,13 @@ namespace Game
 namespace ZxSpectrum
 {
 
-// The font.
-typedef std::shared_ptr<Folio::Core::Graphic::GdiRasterFont>    Font;
+// The font pointer.
+typedef std::shared_ptr<Folio::Core::Graphic::GdiRasterFont>    FontPtr;
 
 
 // Routines.
 
-extern  Font    GetFont ();
+extern  FontPtr GetFont ();
 
 } // Endnamespace.
 

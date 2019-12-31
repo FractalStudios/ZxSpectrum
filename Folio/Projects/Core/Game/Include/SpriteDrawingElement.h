@@ -23,7 +23,7 @@ class SpriteDrawingElement
 {
 public:
     SpriteDrawingElement ()
-    :   m_reset(false)
+    :   m_createdTickCount(0)
     {} // Endproc.
 
     SpriteDrawingElement (DrawingElement::Id        id,
@@ -36,15 +36,15 @@ public:
                                             sprite, 
                                             sprite.get (), 
                                             cellValue)),
-        m_reset(false)
+        m_createdTickCount(Folio::Core::Util::DateTime::GetCurrentTickCount ())
     {} // Endproc.
 
     ~SpriteDrawingElement ()
     {} // Endproc.
 
-    FolioStatus Create  (DrawingElement::Id         id,
-                         const T&                   sprite,
-                         ACollisionGrid::CellValue  cellValue = ACollisionGrid::CELL_VALUE_EMPTY)
+    FolioStatus Create (DrawingElement::Id          id,
+                        const T&                    sprite,
+                        ACollisionGrid::CellValue   cellValue = ACollisionGrid::CELL_VALUE_EMPTY)
     {
         FolioStatus status = ERR_SUCCESS;
 
@@ -61,8 +61,7 @@ public:
         {
             // No. Create the sprite drawing element.
 
-            m_reset     = false;
-            m_sprite    = sprite;
+            m_sprite = sprite;
             
             m_drawingElement.reset (new DrawingElement(id, 
                                                        sprite->GetCollisionXLeft (), 
@@ -70,59 +69,111 @@ public:
                                                        sprite, 
                                                        sprite.get (), 
                                                        cellValue));
+
+            m_createdTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
         } // Endelse.
 
         return (status);
     } // Endproc.
 
+    void    Destroy ()
+    {
+        m_sprite.reset ();
+        m_drawingElement.reset ();
 
+        m_createdTickCount = 0;
+    } // Endproc.
+        
     bool    IsCreated () const
     {
         return (m_sprite && m_drawingElement);
     } // Endproc.
 
-    void    Kill ()
+    void    SetSprite (const T& sprite) 
     {
-        Reset ();
-    } // Endproc.
-        
-    bool    IsKilled () const
-    {
-        return (m_reset);
+        m_sprite = sprite;
     } // Endproc.
 
-    void    Reset ()
+    T   GetSprite () const
     {
-        m_reset = true;
+        return (m_sprite);
+    } // Endproc.
 
-        m_sprite.reset ();
+    bool    IsSprite () const
+    {
+        return (m_sprite != 0);
+    } // Endproc.
+
+    FolioStatus CreateDrawingElement (DrawingElement::Id        id,
+                                      ACollisionGrid::CellValue cellValue = ACollisionGrid::CELL_VALUE_EMPTY)
+    {
+        FolioStatus status = ERR_SUCCESS;
+
+        // Have we created a sprite drawing element already?
+
+        if (IsCreated () || !m_sprite)
+        {
+            // Yes.
+
+            status = ERR_INVALID_SEQUENCE;
+        } // Endif.
+
+        else
+        {
+            // No. Create the sprite drawing element.
+
+            m_drawingElement.reset (new DrawingElement(id, 
+                                                       m_sprite->GetCollisionXLeft (), 
+                                                       m_sprite->GetCollisionYTop (), 
+                                                       m_sprite, 
+                                                       m_sprite.get (), 
+                                                       cellValue));
+            
+            m_createdTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
+        } // Endelse.
+
+        return (status);
+    } // Endproc.
+
+    void    DestroyDrawingElement ()
+    {
         m_drawingElement.reset ();
     } // Endproc.
-        
-    FolioStatus StoreSpriteBackground (Gdiplus::Graphics &graphics)
+
+    DrawingElementPtr   GetDrawingElement () const
     {
-        return (m_sprite ? m_sprite->StoreUnderlyingBackground (graphics) : ERR_SUCCESS);
+        return (DrawingElementPtr);
     } // Endproc.
 
-    FolioStatus RestoreSpriteBackground (Gdiplus::Graphics &graphics)
+    bool    IsDrawingElement () const
     {
-        return (m_sprite ? m_sprite->RestoreUnderlyingBackground (graphics) : ERR_SUCCESS);
+        return (m_drawingElement != 0);
     } // Endproc.
 
-    FolioStatus DrawSprite (Gdiplus::Graphics                                   &graphics,
-                            Folio::Core::Graphic::AGdiGraphicElement::RectList  *dirtyRects = 0)
+    FolioStatus StoreSpriteBackground (Gdiplus::Graphics& graphics)
     {
-        return (m_sprite ? m_sprite->Draw (graphics, dirtyRects) : ERR_SUCCESS);
+        return (IsCreated () ? m_sprite->StoreUnderlyingBackground (graphics) : ERR_SUCCESS);
+    } // Endproc.
+
+    FolioStatus RestoreSpriteBackground (Gdiplus::Graphics& graphics)
+    {
+        return (IsCreated () ? m_sprite->RestoreUnderlyingBackground (graphics) : ERR_SUCCESS);
+    } // Endproc.
+
+    FolioStatus DrawSprite (Gdiplus::Graphics&                                  graphics,
+                            Folio::Core::Graphic::AGdiGraphicElement::RectList* dirtyRects = 0)
+    {
+        return (IsCreated () ? m_sprite->Draw (graphics, dirtyRects) : ERR_SUCCESS);
     } // Endproc.
 
     T                   m_sprite;           // The sprite.
     DrawingElementPtr   m_drawingElement;   // The sprite's drawing element.
-    bool                m_reset;            // Indicates if the sprite has been reset.
+    UInt32              m_createdTickCount; // The tick count when the sprite drawing element was created.
 }; // Endclass.
 
 
 template <typename T>
-FolioStatus StoreSpriteBackgrounds (Gdiplus::Graphics   &graphics,
+FolioStatus StoreSpriteBackgrounds (Gdiplus::Graphics&  graphics,
                                     T&                  spriteDrawingElementsList)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -147,8 +198,8 @@ FolioStatus StoreSpriteBackgrounds (Gdiplus::Graphics   &graphics,
 
 
 template <typename T>
-FolioStatus RestoreSpriteBackgrounds (Gdiplus::Graphics &graphics,
-                                      T&                spriteDrawingElementsList)
+FolioStatus RestoreSpriteBackgrounds (Gdiplus::Graphics&    graphics,
+                                      T&                    spriteDrawingElementsList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -172,9 +223,9 @@ FolioStatus RestoreSpriteBackgrounds (Gdiplus::Graphics &graphics,
 
 
 template <typename T>
-FolioStatus DrawSprites (Gdiplus::Graphics                                  &graphics,
-                         T&                                                 spriteDrawingElementsList,
-                         Folio::Core::Graphic::AGdiGraphicElement::RectList *dirtyRects = 0)
+FolioStatus DrawSprites (Gdiplus::Graphics&                                     graphics,
+                         T&                                                     spriteDrawingElementsList,
+                         Folio::Core::Graphic::AGdiGraphicElement::RectList*    dirtyRects = 0)
 {
     FolioStatus status = ERR_SUCCESS;
 

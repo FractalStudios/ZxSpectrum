@@ -11,12 +11,12 @@ namespace Games
 namespace SabreWulf
 {
 
-// Orchid sprite graphic attributes.
-static  const   Folio::Core::Game::SpriteGraphicsAttributesList<ORCHID_SPRITE_ID, SPRITE_ID>    g_orchidSpriteGraphicAttributes =
+// Orchid sprite graphic characteristics.
+static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<ORCHID_SPRITE_ID, SPRITE_ID>    g_orchidSpriteGraphicCharacteristics =
 {
-//      m_spriteId      m_direction                             spriteGraphicIdsList
-    {   ORCHID_SPRITE,  Folio::Core::Game::AStaticSprite::N,    {   SPRITE_ORCHID_8,    },  },  
-    {   ORCHID_SPRITE,  Folio::Core::Game::AStaticSprite::S,    {   SPRITE_ORCHID_1,    },  },  
+//      m_spriteId      m_direction             spriteGraphicIdsList
+    {   ORCHID_SPRITE,  Folio::Core::Game::N,   {   SPRITE_ORCHID_8,    },  },  
+    {   ORCHID_SPRITE,  Folio::Core::Game::S,   {   SPRITE_ORCHID_1,    },  },  
 };
 
 
@@ -43,16 +43,16 @@ FolioStatus OrchidSprite::Create (FolioHandle                   dcHandle,
 
     // Query the orchid sprite's graphic attributes.
 
-    SpriteGraphicAttributesList    spriteGraphicAttributesList;
+    Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<ORCHID_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                        ORCHID_SPRITE,
                                                                                                        *spriteGraphicsMap,
                                                                                                        orchidSpriteColour,
-                                                                                                       g_orchidSpriteGraphicAttributes,
+                                                                                                       g_orchidSpriteGraphicCharacteristics,
                                                                                                        spriteGraphicAttributesList);
 
-    if (status == ERROR_SUCCESS)
+    if (status == ERR_SUCCESS)
     {
         // Create the orchid sprite.
 
@@ -62,9 +62,9 @@ FolioStatus OrchidSprite::Create (FolioHandle                   dcHandle,
                                                            INITIAL_SCREEN_Y_TOP,
                                                            Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE,
                                                            Folio::Core::Game::ZxSpectrum::MapInkColour (orchidSpriteColour),
-                                                           S);
+                                                           Folio::Core::Game::S);
 
-        if (status == ERROR_SUCCESS)
+        if (status == ERR_SUCCESS)
         {
             // Set the orchid sprite's initialising mode.
             
@@ -72,7 +72,7 @@ FolioStatus OrchidSprite::Create (FolioHandle                   dcHandle,
                                           spriteGraphicsMap, 
                                           orchidSpriteColour);
 
-            if (status == ERROR_SUCCESS)
+            if (status == ERR_SUCCESS)
             {
                 // Set the orchid sprite's terminating mode.
                 
@@ -80,7 +80,7 @@ FolioStatus OrchidSprite::Create (FolioHandle                   dcHandle,
                                              spriteGraphicsMap, 
                                              orchidSpriteColour); 
 
-                if (status == ERROR_SUCCESS)
+                if (status == ERR_SUCCESS)
                 {
                     // Orchid sprite is static.
 
@@ -120,10 +120,10 @@ void    OrchidSprite::StartTransitionTickCount (bool newScreen)
 {
     if (newScreen &&
        ((m_state != STATE_STATIC) ||
-        (m_direction != S)))
+        (m_direction != Folio::Core::Game::S)))
     {
-        if ((m_state == STATE_STATIC)   && 
-            (m_direction == N)          && 
+        if ((m_state == STATE_STATIC)               && 
+            (m_direction == Folio::Core::Game::N)   && 
             (Folio::Core::Util::Random::GetRandomNumber (4) == 0))
         {
             // Change the orchid sprite colour.
@@ -141,7 +141,8 @@ void    OrchidSprite::StartTransitionTickCount (bool newScreen)
     } // Endif.
 
     else
-    if ((m_state == STATE_STATIC) && (m_direction == N))
+    if ((m_state == STATE_STATIC) && 
+        (m_direction == Folio::Core::Game::N))
     {
         m_transitionTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount () + 
                                 1000 * Folio::Core::Util::Random::GetRandomNumber (1, 4);
@@ -167,7 +168,9 @@ void    OrchidSprite::CheckTransition ()
 
         SetState (STATE_STATIC);
 
-        UpdateDirection (N);
+        // Set the orchid sprite's direction.
+
+        SetDirection (Folio::Core::Game::N);
 
         // Start the transition tick count.
 
@@ -181,7 +184,9 @@ void    OrchidSprite::CheckTransition ()
 
         SetState (STATE_STATIC);
 
-        UpdateDirection (S);
+        // Set the orchid sprite's direction.
+
+        SetDirection (Folio::Core::Game::S);
 
         // Change the orchid sprite colour.
 
@@ -203,7 +208,7 @@ void    OrchidSprite::CheckTransition ()
         {
             // Yes. Depending on direction, initialise or terminate the orchid sprite.
 
-            SetState ((m_direction == S) ? STATE_INITIALISE_RQD : STATE_TERMINATE_RQD);
+            SetState ((m_direction == Folio::Core::Game::S) ? STATE_INITIALISE_RQD : STATE_TERMINATE_RQD);
         } // Endif.
         break;
 
@@ -264,21 +269,21 @@ FolioStatus OrchidSprite::SetInitialisingMode (FolioHandle                      
 {
     static  const   UInt32  MAX_SEQUENCE_COUNT = 1;
 
-    // Orchid sprite initialising sprite attributes.
-    static  const   Folio::Core::Game::SpriteGraphicsAttributesList<ORCHID_SPRITE_ID, SPRITE_ID> s_initialisingSpriteGraphicAttributes = 
+    // Orchid sprite initialising sprite characteristics.
+    static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<ORCHID_SPRITE_ID, SPRITE_ID> s_initialisingSpriteGraphicCharacteristics = 
     {
-    //      m_spriteId                  m_direction                                         m_spriteGraphicIdsList
-        {   ORCHID_SPRITE_UNDEFINED,    Folio::Core::Game::APlayerSprite::ALL_DIRECTIONS,   {   SPRITE_ORCHID_2, SPRITE_ORCHID_3, SPRITE_ORCHID_4, SPRITE_ORCHID_5, SPRITE_ORCHID_6, SPRITE_ORCHID_7,   },  },
+    //      m_spriteId                  m_direction                         m_spriteGraphicIdsList
+        {   ORCHID_SPRITE_UNDEFINED,    Folio::Core::Game::ALL_DIRECTIONS,  {   SPRITE_ORCHID_2, SPRITE_ORCHID_3, SPRITE_ORCHID_4, SPRITE_ORCHID_5, SPRITE_ORCHID_6, SPRITE_ORCHID_7,   },  },
     };
 
     // Query the orchid sprite's initialising graphics.
 
-    SpriteGraphicAttributesList    spriteGraphicAttributesList;
+    Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<ORCHID_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                       *spriteGraphicsMap,
                                                                                                       orchidSpriteColour,
-                                                                                                      s_initialisingSpriteGraphicAttributes,
+                                                                                                      s_initialisingSpriteGraphicCharacteristics,
                                                                                                       spriteGraphicAttributesList);
 
     if (status == ERR_SUCCESS)
@@ -300,21 +305,21 @@ FolioStatus OrchidSprite::SetTerminatingMode (FolioHandle                       
 {
     static  const   UInt32  MAX_SEQUENCE_COUNT = 1;
 
-    // Orchid sprite terminating sprite attributes.
-    static  const   Folio::Core::Game::SpriteGraphicsAttributesList<ORCHID_SPRITE_ID, SPRITE_ID> s_terminatingSpriteGraphicAttributes = 
+    // Orchid sprite terminating sprite characteristics.
+    static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<ORCHID_SPRITE_ID, SPRITE_ID> s_terminatingSpriteGraphicCharacteristics = 
     {
-    //      m_spriteId                  m_direction                                         m_spriteGraphicIdsList
-        {   ORCHID_SPRITE_UNDEFINED,    Folio::Core::Game::APlayerSprite::ALL_DIRECTIONS,   {   SPRITE_ORCHID_7, SPRITE_ORCHID_6, SPRITE_ORCHID_5, SPRITE_ORCHID_4, SPRITE_ORCHID_3, SPRITE_ORCHID_2,   },  },
+    //      m_spriteId                  m_direction                         m_spriteGraphicIdsList
+        {   ORCHID_SPRITE_UNDEFINED,    Folio::Core::Game::ALL_DIRECTIONS,  {   SPRITE_ORCHID_7, SPRITE_ORCHID_6, SPRITE_ORCHID_5, SPRITE_ORCHID_4, SPRITE_ORCHID_3, SPRITE_ORCHID_2,   },  },
     };
 
     // Query the orchid sprite's terminating graphics.
 
-    SpriteGraphicAttributesList    spriteGraphicAttributesList;
+    Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<ORCHID_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                       *spriteGraphicsMap,
                                                                                                       orchidSpriteColour,
-                                                                                                      s_terminatingSpriteGraphicAttributes,
+                                                                                                      s_terminatingSpriteGraphicCharacteristics,
                                                                                                       spriteGraphicAttributesList);
 
     if (status == ERR_SUCCESS)
@@ -376,7 +381,7 @@ bool    OrchidSprite::IsOrchidSpriteInfectious () const
         // Orchid is infectious if it is has not already infected the 
         // player, and it is fully grown.
 
-        return (!m_infectedPlayer && (m_direction == N));
+        return (!m_infectedPlayer && (m_direction == Folio::Core::Game::N));
         break;
 
     default:

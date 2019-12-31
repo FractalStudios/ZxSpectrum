@@ -33,10 +33,12 @@ DrawingElement::~DrawingElement ()
 FolioStatus DrawingElement::SetScreenTopLeft (Int32 screenXLeft,    
                                               Int32 screenYTop)
 {
+    FolioStatus status = ERR_SUCCESS;
+
     m_screenRect.X = screenXLeft;
     m_screenRect.Y = screenYTop;
 
-    return (ERR_SUCCESS);
+    return (status);
 } // Endproc.
 
 
@@ -60,7 +62,7 @@ FolioStatus DrawingElement::Draw (Int32                                         
     {
         // Draw it.
 
-        status = m_gdiGraphicElement->Draw (m_screenRect.X, m_screenRect.Y, graphics, rects);
+        status = Draw (graphics, rects);
     } // Endif.
 
     return (status);

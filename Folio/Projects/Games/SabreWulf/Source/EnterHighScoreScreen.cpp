@@ -134,8 +134,7 @@ FolioStatus EnterHighScoreScreen::ProcessScreenInput ()
 {
     FolioStatus status = ERR_SUCCESS;
 
-    Folio::Core::Game::APlayerSprite::Direction direction =  
-        Folio::Core::Game::APlayerSprite::NO_DIRECTION; // Initialise!
+    Folio::Core::Game::Direction    direction = Folio::Core::Game::NO_DIRECTION;    // Initialise!
 
     if (m_selectionScreen->IsPlayerDirectionKeyDown (direction))
     {
@@ -143,7 +142,7 @@ FolioStatus EnterHighScoreScreen::ProcessScreenInput ()
         
         switch (direction)
         {
-        case Folio::Core::Game::APlayerSprite::E:
+        case Folio::Core::Game::E:
             // Update the initial.
 
             if (m_currentInitial == ' ')
@@ -162,7 +161,7 @@ FolioStatus EnterHighScoreScreen::ProcessScreenInput ()
             status = UpdateScreen ();
             break;
 
-        case Folio::Core::Game::APlayerSprite::W:
+        case Folio::Core::Game::W:
             // Update the initial.
 
             if (m_currentInitial == ' ')

@@ -126,7 +126,7 @@ FolioStatus AsyncSound::PlaySoundSamples (const SoundSamplesList& soundSamplesLi
 
             SingleThreadAccess  singleThreadAccess(m_lock);
 
-            // Add the list of sound samples to our list.
+            // Add the list of sound samples to the end of our list.
 
             m_soundSamplesList.insert (m_soundSamplesList.end (),
                                        soundSamplesList.begin (), 
@@ -160,7 +160,7 @@ bool    AsyncSound::IsThreadStarted () const
  *
  * @return
  * The possible return values are:<ul>
- * <li><b>ERROR_SUCCESS</b> if successful.
+ * <li><b>ERR_SUCCESS</b> if successful.
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
@@ -195,7 +195,7 @@ FolioStatus AsyncSound::StartThread ()
  *
  * @return
  * The possible return values are:<ul>
- * <li><b>ERROR_SUCCESS</b> if successful.
+ * <li><b>ERR_SUCCESS</b> if successful.
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
@@ -224,14 +224,14 @@ FolioStatus AsyncSound::StopThread ()
  *
  * @return
  * The possible return values are:<ul>
- * <li><b>ERROR_SUCCESS</b> if successful.
+ * <li><b>ERR_SUCCESS</b> if successful.
  * <li><b>ERR_INTERNAL_ERROR</b> if there is no <b>AsyncSound</b> object.
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
 FolioStatus FOLIO_CALL  AsyncSound::ThreadEntry (void* args)
 {
-    FolioStatus status = ERROR_SUCCESS;
+    FolioStatus status = ERR_SUCCESS;
 
     // Set our thread name.
                                             
@@ -277,7 +277,7 @@ FolioStatus FOLIO_CALL  AsyncSound::ThreadEntry (void* args)
  *
  * @return
  * The possible return values are:<ul>
- * <li><b>ERROR_SUCCESS</b> if successful.
+ * <li><b>ERR_SUCCESS</b> if successful.
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
@@ -306,7 +306,7 @@ void    AsyncSound::ThreadTerminate ()
  *
  * @return
  * The possible return values are:<ul>
- * <li><b>ERROR_SUCCESS</b> if successful.
+ * <li><b>ERR_SUCCESS</b> if successful.
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
@@ -340,7 +340,7 @@ FolioStatus AsyncSound::Thread ()
             case 1:
                 // Play the first sound sample in the list of sound samples.
 
-                PlayFirstSoundSample ();
+                PlayFirstSoundSample (GetFirstSoundSample ());
                 break;
         
             case 0:
@@ -367,17 +367,14 @@ FolioStatus AsyncSound::Thread ()
 
 
 /**
- * Method that plays the first sound sample in the list of sound samples.
+ * Method that will return the first sound sample in the list of sound samples.
  *
  * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
+ * The first sound sample in the list of sound samples
  */
-FolioStatus AsyncSound::PlayFirstSoundSample ()
+SoundSample AsyncSound::GetFirstSoundSample ()
 {
-    FolioStatus status = ERR_SUCCESS;
+    SoundSample soundSample;
 
     // Support multi-threaded synchronization.
 
@@ -387,8 +384,35 @@ FolioStatus AsyncSound::PlayFirstSoundSample ()
     {
         // Get the first sound sample to play from the list of sound samples.
 
-        SoundSample &soundSample(m_soundSamplesList.front ());
+        soundSample = m_soundSamplesList.front ();
 
+        // Remove the first sound sample from the list of sound samples.
+
+        m_soundSamplesList.pop_front ();
+    } // Endif.
+
+    return (soundSample);
+} // Endproc.
+
+
+/**
+ * Method that plays the first sound sample in the list of sound samples.
+ *
+ * @param [in] soundSample
+ * The sound sample to play.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if successful.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus AsyncSound::PlayFirstSoundSample (const SoundSample& soundSample) const
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    if (soundSample.IsSoundSampleGenerated ())
+    {
         // Reset the waveform-audio output device.
         
         status = m_waveOut->Reset ();
@@ -400,10 +424,7 @@ FolioStatus AsyncSound::PlayFirstSoundSample ()
             status = m_waveOut->Play (soundSample.GetDuration (), 
                                       soundSample.GetSampleBuffer ());
         } // Endif.
-
-        // Remove the first sound sample from the list of sound samples.
-
-        m_soundSamplesList.pop_front ();
+    
     } // Endif.
 
     return (status);

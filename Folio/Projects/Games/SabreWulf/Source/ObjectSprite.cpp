@@ -12,23 +12,23 @@ namespace Games
 namespace SabreWulf
 {
 
-// Object sprite graphic attributes.
-static  const   Folio::Core::Game::SpriteGraphicsAttributesList<OBJECT_SPRITE_ID, SPRITE_ID>    g_objectSpriteGraphicAttributes =
+// Object sprite graphic characteristics.
+static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<OBJECT_SPRITE_ID, SPRITE_ID>    g_objectSpriteGraphicCharacteristics =
 {
-//      m_spriteId                                  m_direction                                         spriteGraphicIdsList
-    {   OBJECT_SPRITE_BOX,                          Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_BOX,                         },  },  
-    {   OBJECT_SPRITE_RING,                         Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_RING,                        },  },
-    {   OBJECT_SPRITE_APPLE,                        Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_APPLE,                       },  },
-    {   OBJECT_SPRITE_CHARM,                        Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_CHARM,                       },  },
-    {   OBJECT_SPRITE_AMULET,                       Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_AMULET,                      },  },
-    {   OBJECT_SPRITE_EXTRA_LIFE,                   Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_EXTRA_LIFE,                  },  },
-    {   OBJECT_SPRITE_MONEY_BAG,                    Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_MONEY_BAG,                   },  },
-    {   OBJECT_SPRITE_SPEAR,                        Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_SPEAR,                       },  },
-    {   OBJECT_SPRITE_CHALICE,                      Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_CHALICE,                     },  },
-    {   OBJECT_SPRITE_AMULET_PIECE_TOP_LEFT,        Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_AMULET_PIECE_TOP_LEFT,       },  },
-    {   OBJECT_SPRITE_AMULET_PIECE_TOP_RIGHT,       Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_AMULET_PIECE_TOP_RIGHT,      },  },
-    {   OBJECT_SPRITE_AMULET_PIECE_BOTTOM_LEFT,     Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_AMULET_PIECE_BOTTOM_LEFT,    },  },
-    {   OBJECT_SPRITE_AMULET_PIECE_BOTTOM_RIGHT,    Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_AMULET_PIECE_BOTTOM_RIGHT,   },  },
+//      m_spriteId                                  m_direction                         spriteGraphicIdsList
+    {   OBJECT_SPRITE_BOX,                          Folio::Core::Game::NO_DIRECTION,    {   SPRITE_BOX,                         },  },  
+    {   OBJECT_SPRITE_RING,                         Folio::Core::Game::NO_DIRECTION,    {   SPRITE_RING,                        },  },
+    {   OBJECT_SPRITE_APPLE,                        Folio::Core::Game::NO_DIRECTION,    {   SPRITE_APPLE,                       },  },
+    {   OBJECT_SPRITE_CHARM,                        Folio::Core::Game::NO_DIRECTION,    {   SPRITE_CHARM,                       },  },
+    {   OBJECT_SPRITE_AMULET,                       Folio::Core::Game::NO_DIRECTION,    {   SPRITE_AMULET,                      },  },
+    {   OBJECT_SPRITE_EXTRA_LIFE,                   Folio::Core::Game::NO_DIRECTION,    {   SPRITE_EXTRA_LIFE,                  },  },
+    {   OBJECT_SPRITE_MONEY_BAG,                    Folio::Core::Game::NO_DIRECTION,    {   SPRITE_MONEY_BAG,                   },  },
+    {   OBJECT_SPRITE_SPEAR,                        Folio::Core::Game::NO_DIRECTION,    {   SPRITE_SPEAR,                       },  },
+    {   OBJECT_SPRITE_CHALICE,                      Folio::Core::Game::NO_DIRECTION,    {   SPRITE_CHALICE,                     },  },
+    {   OBJECT_SPRITE_AMULET_PIECE_TOP_LEFT,        Folio::Core::Game::NO_DIRECTION,    {   SPRITE_AMULET_PIECE_TOP_LEFT,       },  },
+    {   OBJECT_SPRITE_AMULET_PIECE_TOP_RIGHT,       Folio::Core::Game::NO_DIRECTION,    {   SPRITE_AMULET_PIECE_TOP_RIGHT,      },  },
+    {   OBJECT_SPRITE_AMULET_PIECE_BOTTOM_LEFT,     Folio::Core::Game::NO_DIRECTION,    {   SPRITE_AMULET_PIECE_BOTTOM_LEFT,    },  },
+    {   OBJECT_SPRITE_AMULET_PIECE_BOTTOM_RIGHT,    Folio::Core::Game::NO_DIRECTION,    {   SPRITE_AMULET_PIECE_BOTTOM_RIGHT,   },  },
 };
 
 
@@ -58,20 +58,20 @@ FolioStatus ObjectSprite::Create (FolioHandle                   dcHandle,
 
     // Query the object sprite's graphics.
 
-    SpriteGraphicAttributesList    spriteGraphicAttributesList;
+    Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<OBJECT_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                        objectSpriteId,
                                                                                                        *spriteGraphicsMap,
                                                                                                        objectSpriteColour,
-                                                                                                       g_objectSpriteGraphicAttributes,
+                                                                                                       g_objectSpriteGraphicCharacteristics,
                                                                                                        spriteGraphicAttributesList);
 
-    if (status == ERROR_SUCCESS)
+    if (status == ERR_SUCCESS)
     {
         // Get the object sprite's graphic.
 
-        const   SpriteGraphic   &spriteGraphic(spriteGraphicAttributesList.front ().m_spriteGraphics.front ());
+        const   Folio::Core::Game::SpriteGraphic    &spriteGraphic(spriteGraphicAttributesList.front ().m_spriteGraphicsList.front ());
 
         // Calculate the initial screen Y top.
 
@@ -87,9 +87,9 @@ FolioStatus ObjectSprite::Create (FolioHandle                   dcHandle,
                                                            screenYTop,
                                                            Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE,
                                                            Folio::Core::Game::ZxSpectrum::MapInkColour (objectSpriteColour),
-                                                           NO_DIRECTION);
+                                                           Folio::Core::Game::NO_DIRECTION);
 
-        if (status == ERROR_SUCCESS)
+        if (status == ERR_SUCCESS)
         {
             // Object sprite is static.
 

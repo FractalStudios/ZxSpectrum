@@ -78,8 +78,7 @@ static  const   BackgroundItemGraphicAttributes g_backgroundItemGraphicAttribute
 };
 
 
-FolioStatus CreateBackgroundItemGraphics (FolioHandle                   dcHandle, 
-                                          FolioHandle                   instanceHandle,
+FolioStatus CreateBackgroundItemGraphics (FolioHandle                   instanceHandle,
                                           BackgroundItemGraphicsMapPtr  &backgroundItemGraphicsMap)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -98,8 +97,7 @@ FolioStatus CreateBackgroundItemGraphics (FolioHandle                   dcHandle
 
         BackgroundItemGraphic   backgroundItemGraphic(new BackgroundItemGraphic::element_type);
 
-        status = backgroundItemGraphic->Create (dcHandle,
-                                                instanceHandle,
+        status = backgroundItemGraphic->Create (instanceHandle,
                                                 DRAWING_ELEMENT_BACKGROUND_ITEM,
                                                 g_backgroundItemGraphicAttributesTable [index].m_bitmapResourceId,
                                                 false,  // Masked GDI bitmap is not required.

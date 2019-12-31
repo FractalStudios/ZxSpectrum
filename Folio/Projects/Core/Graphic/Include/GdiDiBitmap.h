@@ -40,12 +40,15 @@ public:
 
     UInt32  GetColourTableIndex (const Gdiplus::Color& colour);
 
+    FolioStatus QueryColour (UInt32             colourTableIndex,
+                             Gdiplus::Color&    colour);
     FolioStatus ChangeColour (UInt32                colourTableIndex,
                               const Gdiplus::Color& newColour);
     FolioStatus ChangeColour (const Gdiplus::Color& colour,
                               const Gdiplus::Color& newColour,
                               UInt32&               colourTableIndex);
 
+    UInt16          GetResourceId () const;
     Gdiplus::Rect   GetBitmapRect () const;
     Int32           GetBitmapXLeft () const;
     Int32           GetBitmapYTop () const;
@@ -55,10 +58,11 @@ public:
     FolioHandle     GetBitmapHandle () const;
 
 private:
+    UInt16          m_resourceId;   ///< The resource identifier.
     Gdiplus::Rect   m_bitmapRect;   ///< The rect of the bitmap.
     FolioHandle     m_bitmapHandle; ///< The handle to the bitmap
 
-    FolioStatus InitialiseBitmap ();
+    FolioStatus InitialiseBitmap (UInt16 resourceId);
 
     void    Destroy ();
     bool    IsCreated () const;

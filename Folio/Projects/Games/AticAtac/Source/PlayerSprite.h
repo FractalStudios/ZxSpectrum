@@ -6,10 +6,7 @@
 #include    <vector>
 
 // "Home-made" includes.
-#include    <Applet.h>
 #include    <Game.h>
-#include    <Util.h>
-#include    "SpriteGraphics.h"
 
 #pragma pack(push, 1)
 
@@ -51,17 +48,15 @@ public:
 
     FolioStatus Create (FolioHandle                             dcHandle, 
                         PLAYER_SPRITE_ID                        playerSpriteId,
-                        const SpriteGraphicsMap                 &spriteGraphicsMap,
                         Int32                                   initialScreenXLeft,
                         Int32                                   initialScreenYTop,
                         Folio::Core::Game::ZxSpectrum::COLOUR   playerSpriteColour,
-                        Direction                               initialDirection = E,
+                        Folio::Core::Game::Direction            initialDirection = Folio::Core::Game::E,
                         UInt32                                  playerSpriteFlags = FLAGS_NONE);
     FolioStatus Restart ();
 
-    PLAYER_SPRITE_ID                        GetPlayerSpriteId () const;
-    Folio::Core::Game::ZxSpectrum::COLOUR   GetPlayerSpriteColour () const;
-    UInt32                                  GetPlayerSpriteFlags () const;
+    PLAYER_SPRITE_ID    GetPlayerSpriteId () const;
+    UInt32              GetPlayerSpriteFlags () const;
 
     void    SetCanFireWeapon (bool canFireWeapon);
     bool    CanFireWeapon () const;
@@ -75,26 +70,25 @@ public:
     static  bool    IsTerminatedTopDown (UInt32 playerSpriteFlags);
 
 private:
-    PLAYER_SPRITE_ID                        m_playerSpriteId;       // The identifier of the player sprite.
-    Int32                                   m_initialScreenXLeft;   // The initial screen X left (in pixels) of the player sprite.
-    Int32                                   m_initialScreenYTop;    // The initial screen Y top (in pixels) of the player sprite.
-    Folio::Core::Game::ZxSpectrum::COLOUR   m_playerSpriteColour;   // The colour of the player sprite.
-    Direction                               m_initialDirection;     // The initial direction of the player sprite.
-    UInt32                                  m_playerSpriteFlags;    // The flags of the player sprite.
+    PLAYER_SPRITE_ID                m_playerSpriteId;       // The identifier of the player sprite.
+    Int32                           m_initialScreenXLeft;   // The initial screen X left (in pixels) of the player sprite.
+    Int32                           m_initialScreenYTop;    // The initial screen Y top (in pixels) of the player sprite.
+    Folio::Core::Game::Direction    m_initialDirection;     // The initial direction of the player sprite.
+    UInt32                          m_playerSpriteFlags;    // The flags of the player sprite.
 
     bool    m_canFireWeapon;    // Indicates if the player sprite can fire a weapon.
     bool    m_canCollectItems;  // Indicates if the player sprite can collect an item.
-    bool    m_completedGame;    // Indicates if the player sprite has completed the game.
 
-    static  SpriteInitialisingSoundSamplesList  m_playerSpriteInitialisingSoundSamplesList; // The player sprite's initialising sound samples.
-    static  SpriteTerminatingSoundSamplesList   m_playerSpriteTerminatingSoundSamplesList;  // The player sprite's terminating sound samples.
+    static  Folio::Core::Game::SpriteStationarySoundSamplesList m_playerSpriteInitialisingSoundSamplesList; // The player sprite's initialising sound samples.
+    static  Folio::Core::Game::SpriteStationarySoundSamplesList m_playerSpriteTerminatingSoundSamplesList;  // The player sprite's terminating sound samples.
 
-    FolioStatus SetMovementSoundSamples (PLAYER_SPRITE_ID playerSpriteId);
     FolioStatus SetInitialisingMode (UInt32 playerSpriteFlags);
     FolioStatus SetTerminatingMode (UInt32 playerSpriteFlags);
 
-    static  SpriteInitialisingSoundSamplesList  GetPlayerSpriteInitialisingSoundSamples (bool isBottomUpMode);
-    static  SpriteTerminatingSoundSamplesList   GetPlayerSpriteTerminatingSoundSamples (bool isBottomUpMode);
+    void    SetMovementSoundSamples ();
+
+    static  Folio::Core::Game::SpriteStationarySoundSamplesList GetPlayerSpriteInitialisingSoundSamples (bool isBottomUpMode);
+    static  Folio::Core::Game::SpriteStationarySoundSamplesList GetPlayerSpriteTerminatingSoundSamples (bool isBottomUpMode);
     
     // Private copy constructor to prevent copying.
     PlayerSprite (const PlayerSprite& rhs);
@@ -118,9 +112,8 @@ typedef std::vector<PlayerSpriteDrawingElement> PlayerSpriteDrawingElementsList;
 
 // Routines.
 
-extern  FolioStatus BuildPlayerSprites (FolioHandle             dcHandle,
-                                        const SpriteGraphicsMap &spriteGraphicsMap,
-                                        PlayerSpritesMap        &playerSpritesMap);
+extern  FolioStatus CreatePlayerSprites (FolioHandle        dcHandle,
+                                         PlayerSpritesMap   &playerSpritesMap);
 
 } // Endnamespace.
 

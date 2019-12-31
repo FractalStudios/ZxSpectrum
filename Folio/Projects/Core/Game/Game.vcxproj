@@ -26,9 +26,10 @@
     <ClInclude Include="Include\Game.h" />
     <ClInclude Include="Include\ItemAttributes.h" />
     <ClInclude Include="Include\ResourceGraphic.h" />
+    <ClInclude Include="Include\ResourceGraphicsCache.h" />
     <ClInclude Include="Include\SpriteDrawingElement.h" />
-    <ClInclude Include="Include\SpriteGraphicsAttributes.h" />
-    <ClInclude Include="Include\SpriteMovementSoundAttributes.h" />
+    <ClInclude Include="Include\SpriteGraphics.h" />
+    <ClInclude Include="Include\SpriteSound.h" />
     <ClInclude Include="Include\TextItem.h" />
     <ClInclude Include="Include\ZxSpectrum.h" />
   </ItemGroup>
@@ -47,9 +48,10 @@
     <ClCompile Include="Source\GraphicItem.cpp" />
     <ClCompile Include="Source\Game.cpp" />
     <ClCompile Include="Source\ResourceGraphic.cpp" />
+    <ClCompile Include="Source\ResourceGraphicsCache.cpp" />
     <ClCompile Include="Source\SpriteDrawingElement.cpp" />
-    <ClCompile Include="Source\SpriteGraphicsAttributes.cpp" />
-    <ClCompile Include="Source\SpriteMovementSoundAttributes.cpp" />
+    <ClCompile Include="Source\SpriteGraphics.cpp" />
+    <ClCompile Include="Source\SpriteSound.cpp" />
     <ClCompile Include="Source\TextItem.cpp" />
     <ClCompile Include="Source\ZxSpectrum.cpp" />
   </ItemGroup>

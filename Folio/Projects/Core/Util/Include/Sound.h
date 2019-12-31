@@ -19,6 +19,10 @@ namespace Sound
 
 // Routines.
 
+extern  FolioStatus LoadSound (FolioHandle  instanceHandle,
+                               UInt16       resourceId,
+                               FolioHandle& soundHandle);
+extern  FolioStatus PlayAsyncSound (FolioHandle soundHandle);
 extern  FolioStatus PlaySoundSample (const SoundSample& soundSample);
 extern  FolioStatus PlayAsyncSoundSample (const SoundSample& soundSample);
 extern  FolioStatus PlayAsyncSoundSamples (const SoundSamplesList& soundSamplesList);

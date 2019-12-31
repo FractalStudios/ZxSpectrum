@@ -44,7 +44,7 @@ const   BYTE    MAX_NUM_ROWS    = MAX_SCREEN_Y_PIXELS / NUM_PIXELS_PER_TEXT_POSI
 // Screen scale.
 const   BYTE    DEFAULT_SCREEN_SCALE = 4;
 
-// Flash .
+// Flash.
 const   BYTE    FLASH_FRAME_RATE    = 16;                                               // Flash frame rate.
 const   BYTE    FLASH_MILLISECONDS  = 1000 * FLASH_FRAME_RATE / TV_REFRESH_FREQUENCY;   // Flash time (in milliseconds).
 

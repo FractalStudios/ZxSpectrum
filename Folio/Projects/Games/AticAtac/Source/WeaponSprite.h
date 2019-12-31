@@ -1,15 +1,13 @@
 #pragma once
 
 // STL includes.
+#include    <map>
 #include    <memory>
 #include    <vector>
 
 // "Home-made" includes.
-#include    <Applet.h>
 #include    <Game.h>
 #include    "CollisionGrid.h"
-#include    "PlayerSprite.h"
-#include    "SpriteGraphics.h"
 
 #pragma pack(push, 1)
 
@@ -40,24 +38,33 @@ public:
     WeaponSprite ();
     ~WeaponSprite ();
 
-    FolioStatus Create (FolioHandle             dcHandle,
-                        WEAPON_SPRITE_ID        weaponSpriteId,
-                        const SpriteGraphicsMap &spriteGraphicsMap,
-                        const Gdiplus::Rect     &mainPlayerRect,      
-                        Direction               initialDirection = E);
+    FolioStatus Create (FolioHandle                             dcHandle,
+                        WEAPON_SPRITE_ID                        weaponSpriteId,
+                        Folio::Core::Game::ZxSpectrum::COLOUR   weaponSpriteColour);
+    FolioStatus Start ();
+    FolioStatus Stop (bool bPlayTerminatedSound);
     FolioStatus Move (Gdiplus::Graphics &graphics,
                       CollisionGrid     &collisionGrid);
 
-    void    PlayWeaponsSpriteSound () const;
+    void    PlayWeaponSpriteInitialisedSound () const;
+    void    PlayWeaponSpriteTerminatedSound () const;
 
     WEAPON_SPRITE_ID    GetWeaponSpriteId () const;
+
+    static  WEAPON_SPRITE_ID    GetMainPlayerWeaponSpriteId ();
 
 private:
     static  const   UInt32  WEAPON_SPRITE_SPEED = 8;    // Weapon sprite speed.
 
     WEAPON_SPRITE_ID    m_weaponSpriteId;   // The identifier of the weapon sprite.
 
-    FolioStatus SetReboundSoundSamples (WEAPON_SPRITE_ID weaponSpriteId);
+    Int32   GetInitialScreenXLeft (const Gdiplus::Rect &mainPlayerRect) const;
+    Int32   GetInitialScreenYTop (const Gdiplus::Rect &mainPlayerRect) const;
+
+    void    SetSoundSamples (WEAPON_SPRITE_ID weaponSpriteId);
+    void    SetInitialisedSoundSample (WEAPON_SPRITE_ID weaponSpriteId);
+    void    SetTerminatedSoundSample (WEAPON_SPRITE_ID weaponSpriteId);
+    void    SetReboundSoundSample (WEAPON_SPRITE_ID weaponSpriteId);
 
     static  Folio::Core::Util::Sound::SoundSample   m_knightWeaponSpriteInitialisedSoundSample; // The knight weapon sprite initialised sound sample.
     static  Folio::Core::Util::Sound::SoundSample   m_wizardWeaponSpriteInitialisedSoundSample; // The wizard weapon sprite initialised sound sample.
@@ -65,21 +72,12 @@ private:
     static  Folio::Core::Util::Sound::SoundSample   m_weaponSpriteTerminatedSoundSample;        // The weapon sprite terminated sound sample.
     static  Folio::Core::Util::Sound::SoundSample   m_weaponSpriteReboundSoundSample;           // The weapon sprite rebound sound sample.
 
-    static  Int32                                   GetInitialScreenXLeft (const Gdiplus::Rect    &mainPlayerRect,
-                                                                           Int32                  weaponSpriteWidth);
-    static  Int32                                   GetInitialScreenYTop (const Gdiplus::Rect &mainPlayerRect,
-                                                                          Int32               weaponSpriteHeight);
-    static  Folio::Core::Game::ZxSpectrum::COLOUR   GetColour (WEAPON_SPRITE_ID weaponSpriteId);
-
     static  void    CreateWeaponSpriteSoundSamples (WEAPON_SPRITE_ID weaponSpriteId);
     static  void    CreateKnightWeaponSpriteInitialisedSoundSample ();
     static  void    CreateWizardWeaponSpriteInitialisedSoundSample ();
     static  void    CreateSerfWeaponSpriteInitialisedSoundSample ();
     static  void    CreateWeaponSpriteTerminatedSoundSample ();
     static  void    CreateWeaponSpriteReboundSoundSample ();
-
-    static  void    PlayWeaponSpriteInitialisedSound (WEAPON_SPRITE_ID weaponSpriteId);
-    static  void    PlayWeaponSpriteTerminatedSound (WEAPON_SPRITE_ID weaponSpriteId);
 
     // Private copy constructor to prevent copying.
     WeaponSprite (const WeaponSprite& rhs);
@@ -91,8 +89,8 @@ private:
 // Weapon sprite pointer.
 typedef std::shared_ptr<WeaponSprite>   WeaponSpritePtr;
 
-// Weapon sprites list.
-typedef std::vector<WeaponSpritePtr>    WeaponSpritesList;
+// Weapon sprites map.
+typedef std::map<WEAPON_SPRITE_ID, WeaponSpritePtr> WeaponSpritesMap;
 
 // Weapon sprite drawing element.
 typedef Folio::Core::Game::SpriteDrawingElement<WeaponSpritePtr> WeaponSpriteDrawingElement;
@@ -103,7 +101,8 @@ typedef std::vector<WeaponSpriteDrawingElement> WeaponSpriteDrawingElementsList;
 
 // Routines.
 
-WEAPON_SPRITE_ID    GetMainPlayerWeaponSpriteId (const PlayerSpritePtr &mainPlayer);
+FolioStatus CreateWeaponSprites (FolioHandle        dcHandle,
+                                 WeaponSpritesMap   &weaponSpritesMap);
 
 } // Endnamespace.
 

@@ -1,6 +1,7 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
 #include    "DrawingElement.h"
+#include    "Globals.h"
 #include    "RoomGraphics.h"
 
 namespace Folio
@@ -16,7 +17,6 @@ namespace AticAtac
 struct RoomGraphicAttributes
 {
     ROOM_ID     m_roomId;           // The identifier of the room.
-    UInt16      m_bitmapResourceId; // The room's bitmap resource identifier.
     Int32       m_floorXLeft;       // The X left of the room's floor.
     Int32       m_floorYTop;        // The Y top of the room's floor.
     Int32       m_floorWidth;       // The width of the room's floor.
@@ -26,19 +26,19 @@ struct RoomGraphicAttributes
 // Room graphic attributes table.
 static  const   RoomGraphicAttributes   g_roomGraphicAttributesTable [] =
 {
-//      m_roomId    m_bitmapResourceId      m_floorXLeft    m_floorYTop     m_floorWidth    m_floorHeight
-    {   ROOM_0,     IDB_BITMAP_ROOM_0,      32,             32,             128,            128,    },
-    {   ROOM_1,     IDB_BITMAP_ROOM_1,      48,             48,              96,             96,    },
-    {   ROOM_2,     IDB_BITMAP_ROOM_2,      32,             32,             128,            128,    },
-    {   ROOM_3,     IDB_BITMAP_ROOM_3,      32,             64,             128,             64,    },
-    {   ROOM_4,     IDB_BITMAP_ROOM_4,      64,             32,              64,            128,    },
-    {   ROOM_5,     IDB_BITMAP_ROOM_5,      72,             41,              48,            110,    },
-    {   ROOM_6,     IDB_BITMAP_ROOM_6,      72,             41,              48,            110,    },
-    {   ROOM_7,     IDB_BITMAP_ROOM_7,      42,             72,             110,             48,    },
-    {   ROOM_8,     IDB_BITMAP_ROOM_8,      42,             72,             110,             48,    },
-    {   ROOM_9,     IDB_BITMAP_ROOM_9,      40,             64,             112,             64,    },
-    {   ROOM_10,    IDB_BITMAP_ROOM_10,     64,             40,              64,            112,    },
-    {   ROOM_11,    IDB_BITMAP_ROOM_11,      0,              0,               0,              0,    },
+//      m_roomId    m_floorXLeft    m_floorYTop     m_floorWidth    m_floorHeight
+    {   ROOM_0,     32,             32,             128,            128,    },
+    {   ROOM_1,     48,             48,              96,             96,    },
+    {   ROOM_2,     32,             32,             128,            128,    },
+    {   ROOM_3,     32,             64,             128,             64,    },
+    {   ROOM_4,     64,             32,              64,            128,    },
+    {   ROOM_5,     72,             41,              48,            110,    },
+    {   ROOM_6,     72,             41,              48,            110,    },
+    {   ROOM_7,     42,             72,             110,             48,    },
+    {   ROOM_8,     42,             72,             110,             48,    },
+    {   ROOM_9,     40,             64,             112,             64,    },
+    {   ROOM_10,    64,             40,              64,            112,    },
+    {   ROOM_11,     0,              0,               0,              0,    },
 };
 
 
@@ -52,16 +52,14 @@ RoomGraphic::~RoomGraphic ()
 } // Endproc.
 
 
-FolioStatus RoomGraphic::Create (FolioHandle    dcHandle,
-                                 FolioHandle    instanceHandle,
+FolioStatus RoomGraphic::Create (FolioHandle    instanceHandle,
                                  UInt16         bitmapResourceId,
                                  Int32          floorXLeft,
                                  Int32          floorYTop,
                                  Int32          floorWidth,
                                  Int32          floorHeight)
 {
-    FolioStatus status = ResourceGraphic::Create (dcHandle, 
-                                                  instanceHandle, 
+    FolioStatus status = ResourceGraphic::Create (instanceHandle, 
                                                   DRAWING_ELEMENT_ROOM, 
                                                   bitmapResourceId,
                                                   Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour ());
@@ -139,15 +137,11 @@ CollisionGrid   RoomGraphic::GetCollisionGrid () const
 } // Endproc.
 
 
-FolioStatus BuildRoomGraphics (FolioHandle      dcHandle, 
-                               FolioHandle      instanceHandle,
-                               RoomGraphicsMap  &roomGraphicsMap)
+FolioStatus CreateRoomGraphics (FolioHandle instanceHandle)
 {
     FolioStatus status = ERR_SUCCESS;
 
-    roomGraphicsMap.clear ();    // Initialise!
-
-    // Build the room graphics map. 
+    // Add the room graphics into the resource graphics cache. 
 
     for (UInt32 index = 0; 
          (status == ERR_SUCCESS) && (index < (sizeof (g_roomGraphicAttributesTable) / sizeof (RoomGraphicAttributes)));
@@ -157,9 +151,8 @@ FolioStatus BuildRoomGraphics (FolioHandle      dcHandle,
 
         RoomGraphicPtr  roomGraphic(new RoomGraphicPtr::element_type);
 
-        status = roomGraphic->Create (dcHandle,
-                                      instanceHandle,
-                                      g_roomGraphicAttributesTable [index].m_bitmapResourceId,
+        status = roomGraphic->Create (instanceHandle,
+                                      g_roomGraphicAttributesTable [index].m_roomId,
                                       g_roomGraphicAttributesTable [index].m_floorXLeft,
                                       g_roomGraphicAttributesTable [index].m_floorYTop,
                                       g_roomGraphicAttributesTable [index].m_floorWidth,
@@ -167,20 +160,42 @@ FolioStatus BuildRoomGraphics (FolioHandle      dcHandle,
         
         if (status == ERR_SUCCESS)
         {
-            // Store the room graphic in the room graphics map.
+            // Store the room graphic in the resource graphics cache.
 
-            roomGraphicsMap.insert (RoomGraphicsMap::value_type(g_roomGraphicAttributesTable [index].m_roomId, 
-                                                                roomGraphic));
+            g_resourceGraphicsCache.Add (DRAWING_ELEMENT_ROOM, roomGraphic);
         } // Endif.
        
     } // Endfor.
 
-    if (status != ERR_SUCCESS)
+    return (status);
+} // Endproc.
+
+
+FolioStatus QueryRoomGraphic (Folio::Core::Game::ResourceGraphicsCache::OwnerId ownerId,
+                              ROOM_ID                                           roomId, 
+                              RoomGraphicPtr                                    &roomGraphic)
+{
+    Folio::Core::Game::ResourceGraphicPtr   resourceGraphic;
+
+    FolioStatus status = g_resourceGraphicsCache.GainResourceGraphic (ownerId,
+                                                                      DRAWING_ELEMENT_ROOM, 
+                                                                      roomId, 
+                                                                      resourceGraphic);
+
+    if (status == ERR_SUCCESS)
     {
-        roomGraphicsMap.clear ();
+        roomGraphic = std::static_pointer_cast<RoomGraphic> (resourceGraphic);
     } // Endif.
 
     return (status);
+} // Endproc.
+
+
+FolioStatus ReleaseRoomGraphic (const RoomGraphic &roomGraphic)
+{
+    Folio::Core::Game::ResourceGraphicPtr   resourceGraphic = std::make_shared<Folio::Core::Game::ResourceGraphic> (roomGraphic);
+
+    return (g_resourceGraphicsCache.ReleaseResourceGraphic (resourceGraphic));
 } // Endproc.
 
 } // Endnamespace.

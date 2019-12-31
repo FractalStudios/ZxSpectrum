@@ -1,7 +1,12 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
-#include    "WeaponSprite.h"
+#include    "DrawingElement.h"
+#include    "Globals.h"
+#include    "PlayerSprite.h"
+#include    "ResourceOwnerId.h"
+#include    "SpriteGraphics.h"
 #include    "Ultimate.h"
+#include    "WeaponSprite.h"
 
 namespace Folio
 {
@@ -12,22 +17,39 @@ namespace Games
 namespace AticAtac
 {
 
-// Weapon sprite graphic attributes.
-static  const   Folio::Core::Game::SpriteGraphicsAttributesList<WEAPON_SPRITE_ID, SPRITE_ID>    g_weaponSpriteGraphicAttributes =
+// Weapon sprite attributes.
+struct WeaponSpriteAttributes
 {
-//      m_spriteId                      m_direction                                         m_spriteGraphicIdsList
-    {   WEAPON_SPRITE_KNIGHT_AXE,       Folio::Core::Game::AWeaponSprite::ALL_DIRECTIONS,   {   SPRITE_KNIGHT_AXE_1, SPRITE_KNIGHT_AXE_2, SPRITE_KNIGHT_AXE_3, SPRITE_KNIGHT_AXE_4, SPRITE_KNIGHT_AXE_5, SPRITE_KNIGHT_AXE_6, SPRITE_KNIGHT_AXE_7, SPRITE_KNIGHT_AXE_8, },  },    
+    WEAPON_SPRITE_ID                        m_weaponSpriteId;       // The identifier of the weapon sprite.
+    Folio::Core::Game::ZxSpectrum::COLOUR   m_weaponSpriteColour;   // The colour of the weapon sprite.
+}; // Endstruct.
 
-    {   WEAPON_SPRITE_WIZARD_POTION,    Folio::Core::Game::AWeaponSprite::ALL_DIRECTIONS,   {   SPRITE_WIZARD_POTION_1, SPRITE_WIZARD_POTION_2, SPRITE_WIZARD_POTION_3,                                                                                                 },  },    
+// Weapon sprite attributes table.
+static  const   WeaponSpriteAttributes  g_weaponSpriteAttributesTable [] =
+{
+//      m_weaponSpriteId                m_weaponSpriteColour
+    {   WEAPON_SPRITE_KNIGHT_AXE,       Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::RED,     },
+    {   WEAPON_SPRITE_WIZARD_POTION,    Folio::Core::Game::ZxSpectrum::UNDEFINED,                                       },
+    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::YELLOW,  },
+};
 
-    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::AWeaponSprite::N,                {   SPRITE_SERF_SWORD_5,                                                                                                                                                    },  },
-    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::AWeaponSprite::S,                {   SPRITE_SERF_SWORD_1,                                                                                                                                                    },  },
-    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::AWeaponSprite::E,                {   SPRITE_SERF_SWORD_3,                                                                                                                                                    },  },
-    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::AWeaponSprite::W,                {   SPRITE_SERF_SWORD_7,                                                                                                                                                    },  },
-    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::AWeaponSprite::NE,               {   SPRITE_SERF_SWORD_6,                                                                                                                                                    },  },
-    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::AWeaponSprite::NW,               {   SPRITE_SERF_SWORD_4,                                                                                                                                                    },  },
-    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::AWeaponSprite::SE,               {   SPRITE_SERF_SWORD_2,                                                                                                                                                    },  },
-    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::AWeaponSprite::SW,               {   SPRITE_SERF_SWORD_8,                                                                                                                                                    },  },
+
+// Weapon sprite graphic characteristics.
+static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<WEAPON_SPRITE_ID, SPRITE_ID>    g_weaponSpriteGraphicCharacteristics =
+{
+//      m_spriteId                      m_direction                         m_spriteGraphicIdsList
+    {   WEAPON_SPRITE_KNIGHT_AXE,       Folio::Core::Game::ALL_DIRECTIONS,  {   SPRITE_KNIGHT_AXE_1, SPRITE_KNIGHT_AXE_2, SPRITE_KNIGHT_AXE_3, SPRITE_KNIGHT_AXE_4, SPRITE_KNIGHT_AXE_5, SPRITE_KNIGHT_AXE_6, SPRITE_KNIGHT_AXE_7, SPRITE_KNIGHT_AXE_8, },  },    
+
+    {   WEAPON_SPRITE_WIZARD_POTION,    Folio::Core::Game::ALL_DIRECTIONS,  {   SPRITE_WIZARD_POTION_1, SPRITE_WIZARD_POTION_2, SPRITE_WIZARD_POTION_3,                                                                                                 },  },    
+
+    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::N,               {   SPRITE_SERF_SWORD_5,                                                                                                                                                    },  },
+    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::S,               {   SPRITE_SERF_SWORD_1,                                                                                                                                                    },  },
+    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::E,               {   SPRITE_SERF_SWORD_3,                                                                                                                                                    },  },
+    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::W,               {   SPRITE_SERF_SWORD_7,                                                                                                                                                    },  },
+    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::NE,              {   SPRITE_SERF_SWORD_6,                                                                                                                                                    },  },
+    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::NW,              {   SPRITE_SERF_SWORD_4,                                                                                                                                                    },  },
+    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::SE,              {   SPRITE_SERF_SWORD_2,                                                                                                                                                    },  },
+    {   WEAPON_SPRITE_SERF_SWORD,       Folio::Core::Game::SW,              {   SPRITE_SERF_SWORD_8,                                                                                                                                                    },  },
 };
 
 
@@ -49,63 +71,52 @@ WeaponSprite::~WeaponSprite ()
 } // Endproc.
 
 
-FolioStatus WeaponSprite::Create (FolioHandle               dcHandle,
-                                  WEAPON_SPRITE_ID          weaponSpriteId,
-                                  const SpriteGraphicsMap   &spriteGraphicsMap,
-                                  const Gdiplus::Rect       &mainPlayerRect,      
-                                  Direction                 initialDirection)
+FolioStatus WeaponSprite::Create (FolioHandle                           dcHandle,
+                                  WEAPON_SPRITE_ID                      weaponSpriteId,
+                                  Folio::Core::Game::ZxSpectrum::COLOUR weaponSpriteColour)
 {
     static  const   UInt32  MAX_NUM_AUTO_MOVES = 25;
-
-    // Get the weapon sprite's colour.
-
-    Folio::Core::Game::ZxSpectrum::COLOUR   weaponSpriteColour = GetColour (weaponSpriteId);
-
+    
     // Query the weapon sprite's graphics.
 
-    SpriteGraphicAttributesList spriteGraphicAttributesList;
+    Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<WEAPON_SPRITE_ID, SPRITE_ID> (dcHandle,
+                                                                                                       g_resourceGraphicsCache,
+                                                                                                       OWNER_ID_WEAPON_SPRITE,
+                                                                                                       DRAWING_ELEMENT_WEAPON_SPRITE,
                                                                                                        weaponSpriteId,
-                                                                                                       spriteGraphicsMap,
                                                                                                        weaponSpriteColour,
-                                                                                                       g_weaponSpriteGraphicAttributes,
+                                                                                                       g_weaponSpriteGraphicCharacteristics,
                                                                                                        spriteGraphicAttributesList);
 
-    if (status == ERROR_SUCCESS)
+    if (status == ERR_SUCCESS)
     {
-        // Get the weapon sprite's graphic.
-
-        const SpriteGraphic &spriteGraphic(spriteGraphicAttributesList.front ().m_spriteGraphics.front ());
-
         // Create the weapon sprite.
 
         status = Folio::Core::Game::AWeaponSprite::Create (dcHandle,
                                                            spriteGraphicAttributesList,
-                                                           GetInitialScreenXLeft (mainPlayerRect, spriteGraphic->GetGraphicWidth ()),
-                                                           GetInitialScreenYTop (mainPlayerRect, spriteGraphic->GetGraphicHeight ()),
+                                                           Folio::Core::Game::ZxSpectrum::UNDEFINED,
+                                                           Folio::Core::Game::ZxSpectrum::UNDEFINED,
                                                            Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE,
-                                                           weaponSpriteColour,
-                                                           initialDirection,
+                                                           Folio::Core::Game::ZxSpectrum::MapInkColour (weaponSpriteColour),
+                                                           Folio::Core::Game::E,
+                                                           &(g_resourceGraphicsCache),
                                                            MAX_NUM_AUTO_MOVES);
 
-        if (status == ERROR_SUCCESS)
+        if (status == ERR_SUCCESS)
         {
-            // Create the weapon sprite sound samples.
+            // Create the weapon sprite's sound samples.
 
             CreateWeaponSpriteSoundSamples (weaponSpriteId);
 
-            // Set the weapon sprite's rebound sound samples.
+            // Set the weapon sprite's sound samples.
 
-            status = SetReboundSoundSamples (weaponSpriteId);
+            SetSoundSamples (weaponSpriteId);
 
-            if (status == ERROR_SUCCESS)
-            {
-                // Note the weapon sprite's attributes.
+            // Note the weapon sprite's attributes.
 
-                m_weaponSpriteId = weaponSpriteId;
-            } // Endif.
-
+            m_weaponSpriteId = weaponSpriteId;
         } // Endif.
 
     } // Endif.
@@ -114,32 +125,60 @@ FolioStatus WeaponSprite::Create (FolioHandle               dcHandle,
 } // Endproc.
 
 
+FolioStatus WeaponSprite::Start ()
+{
+    // Get the main player rect.
+
+    Gdiplus::Rect   mainPlayerRect(g_mainPlayer->GetScreenRect ());
+
+    // Recreate the weapon sprite.
+
+    FolioStatus status = Recreate (GetInitialScreenXLeft (mainPlayerRect), 
+                                   GetInitialScreenYTop (mainPlayerRect),
+                                   g_mainPlayer->GetDirection ());  // Direction is the same as the main player.
+
+    if (status == ERR_SUCCESS)
+    {
+        // The weapon sprite is initialised.
+
+        SetState (STATE_INITIALISED);
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus WeaponSprite::Stop (bool bPlayTerminatedSound)
+{
+    // The weapon sprite is terminated.
+
+    SetState (STATE_TERMINATED, bPlayTerminatedSound);
+
+    return (ERR_SUCCESS);
+} // Endproc.
+
+
 FolioStatus WeaponSprite::Move (Gdiplus::Graphics   &graphics,
                                 CollisionGrid       &collisionGrid)
 {
     // Move the weapon sprite.
 
-    return (Folio::Core::Game::AWeaponSprite::Move (graphics, WEAPON_SPRITE_SPEED, collisionGrid));
+    return (Folio::Core::Game::AWeaponSprite::Move (graphics, 
+                                                    WEAPON_SPRITE_SPEED, 
+                                                    collisionGrid));
 } // Endproc.
 
 
-void    WeaponSprite::PlayWeaponsSpriteSound () const
+void    WeaponSprite::PlayWeaponSpriteInitialisedSound () const
 {
-    switch (m_state)
-    {
-    case STATE_INITIALISED:
-        PlayWeaponSpriteInitialisedSound (m_weaponSpriteId);
-        break;
+    PlaySpriteInitialisedSound ();
+} // Endproc.
 
-    case STATE_TERMINATED:
-        PlayWeaponSpriteTerminatedSound (m_weaponSpriteId);
-        break;
-    
-    default:
-        break;
-    } // Endswitch.
 
-} // Endif.
+void    WeaponSprite::PlayWeaponSpriteTerminatedSound () const
+{
+    PlaySpriteTerminatedSound ();
+} // Endproc.
 
 
 WEAPON_SPRITE_ID   WeaponSprite::GetWeaponSpriteId () const
@@ -148,44 +187,88 @@ WEAPON_SPRITE_ID   WeaponSprite::GetWeaponSpriteId () const
 } // Endproc.
 
 
-FolioStatus WeaponSprite::SetReboundSoundSamples (WEAPON_SPRITE_ID weaponSpriteId)
+WEAPON_SPRITE_ID    WeaponSprite::GetMainPlayerWeaponSpriteId ()
 {
-    // Set the weapon sprite's rebound sound samples.
+    // The weapon is dependent on the main player.
 
-    return (SetSpriteReboundSoundSamples (SpriteReboundSoundAttributesList(1, 
-                                                                           SpriteReboundSoundAttributes(ALL_DIRECTIONS, SpriteReboundSoundSample(new SpriteReboundSoundSample::element_type(m_weaponSpriteReboundSoundSample))))));
+    switch (g_mainPlayer->GetPlayerSpriteId ())
+    {
+    case PLAYER_SPRITE_WIZARD:
+        return (WEAPON_SPRITE_WIZARD_POTION);
+
+    case PLAYER_SPRITE_SERF:
+        return (WEAPON_SPRITE_SERF_SWORD);
+
+    case PLAYER_SPRITE_KNIGHT:
+        return (WEAPON_SPRITE_KNIGHT_AXE);
+
+    default:
+        return (WEAPON_SPRITE_UNDEFINED);
+    } // Endswitch.
+
 } // Endproc.
 
 
-Int32   WeaponSprite::GetInitialScreenXLeft (const Gdiplus::Rect    &mainPlayerRect,
-                                             Int32                  weaponSpriteWidth)
+Int32   WeaponSprite::GetInitialScreenXLeft (const Gdiplus::Rect &mainPlayerRect) const
 {
-    return (mainPlayerRect.X + (mainPlayerRect.Width - weaponSpriteWidth) / 2);
+    return (mainPlayerRect.X + (mainPlayerRect.Width - GetCurrentSpriteGraphicWidth ()) / 2);
 } // Endproc.
 
 
-Int32   WeaponSprite::GetInitialScreenYTop (const Gdiplus::Rect &mainPlayerRect,
-                                            Int32               weaponSpriteHeight)
+Int32   WeaponSprite::GetInitialScreenYTop (const Gdiplus::Rect &mainPlayerRect) const
 {
-    return (mainPlayerRect.Y + (mainPlayerRect.Height - weaponSpriteHeight) / 2);
+    return (mainPlayerRect.Y + (mainPlayerRect.Height - GetCurrentSpriteGraphicHeight ()) / 2);
 } // Endproc.
 
 
-Folio::Core::Game::ZxSpectrum::COLOUR   WeaponSprite::GetColour (WEAPON_SPRITE_ID weaponSpriteId)
+void    WeaponSprite::SetSoundSamples (WEAPON_SPRITE_ID weaponSpriteId)
+{
+    // Set the weapon sprite's initialised sound sample.
+
+    SetInitialisedSoundSample (weaponSpriteId);
+
+    // Set the weapon sprite's terminated sound sample.
+
+    SetTerminatedSoundSample (weaponSpriteId);
+
+    // Set the weapon sprite's rebound sound sample.
+
+    SetReboundSoundSample (weaponSpriteId);
+} // Endproc.
+
+
+void    WeaponSprite::SetInitialisedSoundSample (WEAPON_SPRITE_ID weaponSpriteId)
 {
     switch (weaponSpriteId)
     {
-    case WEAPON_SPRITE_WIZARD_POTION:             
-        return (Folio::Core::Game::ZxSpectrum::UNDEFINED);
-                                                 
-    case WEAPON_SPRITE_SERF_SWORD:              
-        return (Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::YELLOW);
-    
-    case WEAPON_SPRITE_KNIGHT_AXE:            
+    case WEAPON_SPRITE_WIZARD_POTION:
+        SetSpriteInitialisedSoundSample (Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(m_wizardWeaponSpriteInitialisedSoundSample)));
+        break;
+
+    case WEAPON_SPRITE_SERF_SWORD:
+        SetSpriteInitialisedSoundSample (Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(m_serfWeaponSpriteInitialisedSoundSample)));
+        break;
+
+    case WEAPON_SPRITE_KNIGHT_AXE:
+        SetSpriteInitialisedSoundSample (Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(m_knightWeaponSpriteInitialisedSoundSample)));
+        break;
+
     default:
-        return (Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::RED);
+        break;
     } // Endswitch.
 
+} // Endproc.
+
+
+void    WeaponSprite::SetTerminatedSoundSample (WEAPON_SPRITE_ID weaponSpriteId)
+{
+    SetSpriteTerminatedSoundSample (Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(m_weaponSpriteTerminatedSoundSample)));
+} // Endproc.
+
+
+void    WeaponSprite::SetReboundSoundSample (WEAPON_SPRITE_ID weaponSpriteId)
+{
+    SetSpriteReboundSoundSample (Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(m_weaponSpriteReboundSoundSample)));
 } // Endproc.
 
 
@@ -206,10 +289,12 @@ void    WeaponSprite::CreateWeaponSpriteSoundSamples (WEAPON_SPRITE_ID weaponSpr
         break;
 
     case WEAPON_SPRITE_KNIGHT_AXE:
-    default:
         // Create the knight weapon sprite initialised sound sample.
 
         CreateKnightWeaponSpriteInitialisedSoundSample ();
+        break;
+
+    default:
         break;
     } // Endswitch.
 
@@ -225,9 +310,11 @@ void    WeaponSprite::CreateWeaponSpriteSoundSamples (WEAPON_SPRITE_ID weaponSpr
 
 void    WeaponSprite::CreateKnightWeaponSpriteInitialisedSoundSample ()
 {
+    // Has the knight weapon sprite initialised sound sample been created?
+
     if (!m_knightWeaponSpriteInitialisedSoundSample.IsSoundSampleGenerated ())
     {
-        // Create the sound sample representing the required sound.
+        // No. Create the sound sample representing the required sound.
     
         Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x06;
 
@@ -255,9 +342,11 @@ void    WeaponSprite::CreateKnightWeaponSpriteInitialisedSoundSample ()
 
 void    WeaponSprite::CreateWizardWeaponSpriteInitialisedSoundSample ()
 {
+    // Has the wizard weapon sprite initialised sound sample been created?
+
     if (!m_wizardWeaponSpriteInitialisedSoundSample.IsSoundSampleGenerated ())
     {
-        // Create the sound sample representing the required sound.
+        // No. Create the sound sample representing the required sound.
     
         for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0xef; frequency <= 0xfd; frequency += 0x02)
         {
@@ -271,9 +360,11 @@ void    WeaponSprite::CreateWizardWeaponSpriteInitialisedSoundSample ()
 
 void    WeaponSprite::CreateSerfWeaponSpriteInitialisedSoundSample ()
 {
+    // Has the serf weapon sprite initialised sound sample been created?
+    
     if (!m_serfWeaponSpriteInitialisedSoundSample.IsSoundSampleGenerated ())
     {
-        // Create the sound sample representing the required sound.
+        // No. Create the sound sample representing the required sound.
     
         Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x1d;
 
@@ -306,13 +397,15 @@ void    WeaponSprite::CreateSerfWeaponSpriteInitialisedSoundSample ()
 
 void    WeaponSprite::CreateWeaponSpriteTerminatedSoundSample ()
 {
+    // Has the weapon sprite terminated sound sample been created?
+
     if (!m_weaponSpriteTerminatedSoundSample.IsSoundSampleGenerated ())
     {
-        // Create the sound sample representing the required sound.
+        // No. Create the sound sample representing the required sound.
     
         for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x3f; frequency >= 0x21; frequency -= 2)
         {
-           m_weaponSpriteTerminatedSoundSample.AddSoundSample (Ultimate::MapMakeSound (frequency, 0x01));
+            m_weaponSpriteTerminatedSoundSample.AddSoundSample (Ultimate::MapMakeSound (frequency, 0x01));
         } // Endfor.
 
     } // Endif.
@@ -322,13 +415,15 @@ void    WeaponSprite::CreateWeaponSpriteTerminatedSoundSample ()
 
 void    WeaponSprite::CreateWeaponSpriteReboundSoundSample ()
 {
+    // Has the weapon sprite rebound sound sample been created?
+
     if (!m_weaponSpriteReboundSoundSample.IsSoundSampleGenerated ())
     {
-        // Create the sound sample representing the required sound.
+        // No. Create the sound sample representing the required sound.
     
         for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x21; frequency <= 0x3f; frequency += 2)
         {
-           m_weaponSpriteReboundSoundSample.AddSoundSample (Ultimate::MapMakeSound (frequency, 0x01));
+            m_weaponSpriteReboundSoundSample.AddSoundSample (Ultimate::MapMakeSound (frequency, 0x01));
         } // Endfor.
 
     } // Endif.
@@ -336,50 +431,43 @@ void    WeaponSprite::CreateWeaponSpriteReboundSoundSample ()
 } // Endproc.
 
 
-void    WeaponSprite::PlayWeaponSpriteInitialisedSound (WEAPON_SPRITE_ID weaponSpriteId)
+FolioStatus CreateWeaponSprites (FolioHandle        dcHandle,
+                                 WeaponSpritesMap   &weaponSpritesMap)
 {
-    switch (weaponSpriteId)
+    FolioStatus status = ERR_SUCCESS;
+
+    weaponSpritesMap.clear ();   // Initialise!
+
+    // Build the weapon sprites map.
+
+    for (UInt32 index = 0; 
+         (status == ERR_SUCCESS) && (index < (sizeof (g_weaponSpriteAttributesTable) / sizeof (WeaponSpriteAttributes)));
+         ++index)
+    {              
+        // Create a weapon sprite.
+
+        WeaponSpritePtr weaponSprite(new WeaponSprite);
+
+        status = weaponSprite->Create (dcHandle,
+                                       g_weaponSpriteAttributesTable [index].m_weaponSpriteId,
+                                       g_weaponSpriteAttributesTable [index].m_weaponSpriteColour);
+
+        if (status == ERR_SUCCESS)
+        {
+            // Store the weapon sprite in the weapon sprites map.
+        
+            weaponSpritesMap.insert (WeaponSpritesMap::value_type(g_weaponSpriteAttributesTable [index].m_weaponSpriteId, 
+                                                                  weaponSprite));
+        } // Endif.
+
+    } // Endfor.
+
+    if (status != ERR_SUCCESS)
     {
-    case WEAPON_SPRITE_WIZARD_POTION:
-        Folio::Core::Util::Sound::PlaySoundSample (m_wizardWeaponSpriteInitialisedSoundSample);
-        break;
+        weaponSpritesMap.clear ();
+    } // Endif.
 
-    case WEAPON_SPRITE_SERF_SWORD:
-        Folio::Core::Util::Sound::PlaySoundSample (m_serfWeaponSpriteInitialisedSoundSample);
-        break;
-
-    case WEAPON_SPRITE_KNIGHT_AXE:
-    default:
-        Folio::Core::Util::Sound::PlaySoundSample (m_knightWeaponSpriteInitialisedSoundSample);
-        break;
-    } // Endswitch.
-
-} // Endproc.
-
-
-void    WeaponSprite::PlayWeaponSpriteTerminatedSound (WEAPON_SPRITE_ID weaponSpriteId)
-{
-    Folio::Core::Util::Sound::PlaySoundSample (m_weaponSpriteTerminatedSoundSample);
-} // Endproc.
-
-
-WEAPON_SPRITE_ID    GetMainPlayerWeaponSpriteId (const PlayerSpritePtr &mainPlayer)
-{
-    // Weapon is dependent on the main player
-
-    switch (mainPlayer->GetPlayerSpriteId ())
-    {
-    case PLAYER_SPRITE_WIZARD:
-        return (WEAPON_SPRITE_WIZARD_POTION);
-
-    case PLAYER_SPRITE_SERF:
-        return (WEAPON_SPRITE_SERF_SWORD);
-
-    case PLAYER_SPRITE_KNIGHT:
-    default:
-        return (WEAPON_SPRITE_KNIGHT_AXE);
-    } // Endswitch.
-
+    return (status);
 } // Endproc.
 
 } // Endnamespace.

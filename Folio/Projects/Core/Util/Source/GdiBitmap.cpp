@@ -70,11 +70,6 @@ FolioStatus CreateCompatibleBitmap (FolioHandle     dcHandle,
                                 bitmapHeight);
     } // Endif.
 
-    else
-    {
-        g_handleMonitor.AddHandle (bitmapHandle, TXT("CreateCompatibleBitmap"));
-    } // Endelse.
-
     return (status);
 } // Endproc.
 
@@ -124,8 +119,6 @@ FolioStatus CreateMonochromeBitmap (FolioHandle         dcHandle,
 
         if (monochromeBitmapHandle != FOLIO_INVALID_HANDLE)
         {
-            g_handleMonitor.AddHandle (monochromeBitmapHandle, TXT("CreateMonochromeBitmap"));
-
             // Create a compatible memory DC for the monochrome bitmap.
 
             FolioHandle monochromeMemoryDcHandle = FOLIO_INVALID_HANDLE;    // Initialise!
@@ -264,11 +257,6 @@ FolioStatus CreateCompatibleBitmap (FolioHandle     dcHandle,
                                     diBitmapHandle);
         } // Endif.
 
-        else
-        {
-            g_handleMonitor.AddHandle (bitmapHandle, TXT("CreateCompatibleBitmap2"));
-        } // Endelse.
-
         delete [] diBitmapPixels;
     } // Endif.
 
@@ -325,8 +313,6 @@ FolioStatus CreateCopiedDiBitmap (FolioHandle   dcHandle,
 
         if (copiedDiBitmapHandle != FOLIO_INVALID_HANDLE)
         {
-            g_handleMonitor.AddHandle (copiedDiBitmapHandle, TXT("CreateCopiedDiBitmap"));
-
             // Copy the device-independent bitmap's pixels.
 
             ::memcpy (copiedDiBitmapPixels, diBitmapPixels, diBitmapInfo.bmiHeader.biSizeImage);
@@ -450,8 +436,6 @@ FolioStatus CreateRotatedDiBitmap (FolioHandle      dcHandle,
 
         if (rotatedDiBitmapHandle != FOLIO_INVALID_HANDLE)
         {
-            g_handleMonitor.AddHandle (rotatedDiBitmapHandle, TXT("CreateRotateddDiBitmap"));
-
             // Find the background colour in the colour table.
 
 		    for (UInt32 colourIndex = 0; colourIndex < numColours; ++colourIndex)
@@ -880,6 +864,75 @@ FolioStatus QueryColourTableIndexInDiBitmap (FolioHandle        dcHandle,
 
 
 /**
+ * Function that will obtain the colour of a specified colour table index in a 
+ * device-independent bitmap.
+ *
+ * @param [in] dcHandle
+ * The device context handle.
+ *
+ * @param [in] bitmapHandle
+ * The handle of the bitmap.
+ *
+ * @param [in] colourTableIndex
+ * The index of the colour within the colour table.
+ *
+ * @param [out] colourRef
+ * The colour.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if the colour was obtained successfully.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus QueryColourInDiBitmap (FolioHandle  dcHandle,
+                                   FolioHandle  bitmapHandle,
+                                   UInt32       colourTableIndex,
+                                   COLORREF&    colourRef)
+{
+    colourRef = 0;   // Initialise!
+
+    // Select the bitmap into the DC.
+        
+    FolioHandle oldBitmapHandle = FOLIO_INVALID_HANDLE; // Initialise!
+
+    FolioStatus status = SelectObjectIntoDC (dcHandle, bitmapHandle, &(oldBitmapHandle));
+
+    if (status == ERR_SUCCESS)
+    {  
+        // Get the colour table.
+
+        RGBQUAD rgbColors [256] = {0};  // Initialise!
+
+        UInt32  numColours = ::GetDIBColorTable (static_cast<HDC> (dcHandle), 
+                                                 0, 
+                                                 sizeof (rgbColors) / sizeof (RGBQUAD), 
+                                                 rgbColors);
+
+        if (numColours && (colourTableIndex < numColours))
+        {
+            // Find the colour in the colour table.
+
+            colourRef = RGB(rgbColors [colourTableIndex].rgbRed, 
+                            rgbColors [colourTableIndex].rgbGreen, 
+                            rgbColors [colourTableIndex].rgbBlue);
+        } // Endif.
+
+        else
+        {
+            status = ERR_INVALID_PARAM3;
+        } // Endelse.
+
+        // Reselect the old bitmap into the DC.
+        
+        SelectObjectIntoDC (dcHandle, oldBitmapHandle);  
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+/**
  * Function that will change a colour in a device-independent bitmap.
  *
  * @param [in] dcHandle
@@ -947,6 +1000,11 @@ FolioStatus ChangeColourInDiBitmap (FolioHandle     dcHandle,
             } // Endif.
 
         } // Endif.
+
+        else
+        {
+            status = ERR_INVALID_PARAM3;
+        } // Endelse.
         
         // Reselect the old bitmap into the DC.
         
@@ -1309,8 +1367,6 @@ FolioStatus ScaleBitmap (FolioHandle    destinationDcHandle,
  */
 FolioStatus DestroyBitmap (FolioHandle bitmapHandle)
 {
-    g_handleMonitor.RemoveHandle (bitmapHandle);
-
     return (DestroyObject (bitmapHandle));
 } // Endproc.
 

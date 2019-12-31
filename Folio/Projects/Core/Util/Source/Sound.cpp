@@ -16,6 +16,137 @@ namespace Util
 namespace Sound
 {
 
+ /**
+ * Function that will load a sound resource.
+ *
+ * @param [in] instanceHandle
+ * The application instance handle.
+ *
+ * @param [in] resourceId
+ * The resource identifier of the sound resource to load.
+ *
+ * @param [out] soundHandle
+ * On return, will hold the sound resource handle, if successful. If this method fails 
+ * then this parameter is undefined.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if the sound resource was successfully loaded.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus LoadSound (FolioHandle  instanceHandle,
+                       UInt16       resourceId,
+                       FolioHandle& soundHandle)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Find the WAVE resource. 
+ 
+    FolioHandle resourceHandle = ::FindResource (static_cast<HINSTANCE> (instanceHandle), 
+                                                 MAKEINTRESOURCE(resourceId), 
+                                                 TXT("WAVE"));
+
+    if (resourceHandle != NULL)
+    {
+        // Load the sound resource.
+
+        soundHandle = ::LoadResource (static_cast<HINSTANCE> (instanceHandle), 
+                                      static_cast<HRSRC> (resourceHandle));
+
+        if (soundHandle == FOLIO_INVALID_HANDLE)
+        {
+            // Build and log an error.
+
+            status = FOLIO_MAKE_OS_ERROR(::GetLastError ());
+
+            FOLIO_LOG_CALL_ERROR_2 (TXT("LoadResource"),
+                                    status,
+                                    instanceHandle,
+                                    resourceId);
+        } // Endif.
+
+    } // Endif.
+
+    else
+    {
+        // Build and log an error.
+
+        status = FOLIO_MAKE_OS_ERROR(::GetLastError ());
+
+        FOLIO_LOG_CALL_ERROR_2 (TXT("FindResource"),
+                                status,
+                                instanceHandle,
+                                resourceId);
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+ /**
+ * Function that will play a sound resource.
+ *
+ * @param [in] soundHandle
+ * The sound resource handle.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if the sound resource was successfully loaded.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus PlayAsyncSound (FolioHandle soundHandle)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Lock the sound resource and play it. 
+ 
+    LPVOID  lpvResource = ::LockResource (soundHandle);
+
+    if (lpvResource != NULL) 
+    { 
+        if (!::sndPlaySound (reinterpret_cast<LPCWSTR> (lpvResource), 
+                             SND_MEMORY | SND_SYNC | SND_NODEFAULT))
+        {
+            status = FOLIO_MAKE_OS_ERROR(::GetLastError ());
+        } // Endif.
+
+        UnlockResource (soundHandle); 
+    } // Endif.
+
+    else
+    {
+        status = FOLIO_MAKE_OS_ERROR(::GetLastError ());
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+ /**
+ * Function that will stop a sound resource.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if the sound resource was successfully loaded.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus StopSound ()
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    if (!::sndPlaySound (NULL,
+                        SND_SYNC | SND_NODEFAULT))
+    {
+        status = FOLIO_MAKE_OS_ERROR(::GetLastError ());
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
 /**
  * Function that will play a sound sample.
  *

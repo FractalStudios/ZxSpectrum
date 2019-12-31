@@ -34,10 +34,10 @@ enum PLAYER_SPRITE_ID
 class PlayerSprite : public Folio::Core::Game::APlayerSprite
 {
 public:
-    static  const   Action  ACTION_SWIPE_SWORD  = 0x00000001;    // Swipe sword action.
-    static  const   Action  ACTION_FALLING      = 0x00000002;    // Falling action.
-    static  const   Action  ACTION_SITTING      = 0x00000004;    // Sitting action.
-    static  const   Action  ACTION_GAME_OVER    = 0x00000008;    // Game over action.
+    static  const   Folio::Core::Game::Action   ACTION_SWIPE_SWORD  = 0x00000001;    // Swipe sword action.
+    static  const   Folio::Core::Game::Action   ACTION_FALLING      = 0x00000002;    // Falling action.
+    static  const   Folio::Core::Game::Action   ACTION_SITTING      = 0x00000004;    // Sitting action.
+    static  const   Folio::Core::Game::Action   ACTION_GAME_OVER    = 0x00000008;    // Game over action.
 
     PlayerSprite ();
     ~PlayerSprite ();
@@ -45,8 +45,8 @@ public:
     FolioStatus Create (FolioHandle                 dcHandle,
                         const SpriteGraphicsMapPtr  &spriteGraphicsMap);
     FolioStatus Start ();
-    Direction   UpdateDirection (Direction  direction, 
-                                 bool       keyDown);
+    Folio::Core::Game::Direction    UpdateDirection (Folio::Core::Game::Direction   direction, 
+                                                     bool                           keyDown);
     FolioStatus CheckPlayer (Gdiplus::Graphics      &graphics,
                              const CollisionGrid    &collisionGrid);
 
@@ -76,7 +76,7 @@ private:
 
     static  const   Folio::Core::Game::ZxSpectrum::COLOUR   INITIAL_COLOUR = Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::WHITE); // The initial colour of the player sprite.
     
-    static  const   Direction   INITIAL_DIRECTION = W;  // The initial direction of the player sprite.
+    static  const   Folio::Core::Game::Direction    INITIAL_DIRECTION = Folio::Core::Game::W;   // The initial direction of the player sprite.
 
     UInt32  m_playerSpriteSpeed;    // The speed of the player sprite.
 
@@ -107,7 +107,7 @@ private:
     bool    IsTemporaryConfusion () const;
     bool    IsTemporarySickness () const;
 
-    FolioStatus SetMovementSoundSamples ();
+    void    SetMovementSoundSamples ();
 
     // APlayerSprite method(s).
     virtual Int32   CalculateCollisionXLeft () const;

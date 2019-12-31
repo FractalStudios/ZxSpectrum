@@ -13,22 +13,22 @@ namespace Games
 namespace SabreWulf
 {
 
-// Player sprite graphic attributes.
-static  const   Folio::Core::Game::SpriteGraphicsAttributesList<PLAYER_SPRITE_ID, SPRITE_ID>    g_playerSpriteGraphicAttributes =
+// Player sprite graphic characteristics.
+static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<PLAYER_SPRITE_ID, SPRITE_ID>    g_playerSpriteGraphicCharacteristics =
 {
-//      m_spriteId                  m_direction                             m_spriteGraphicIdsList                                                                                                                                                                                                                                                  m_action
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::APlayerSprite::E,    {   SPRITE_SABRE_MAN_RIGHT, SPRITE_SABRE_MAN_WALKING_RIGHT_1, SPRITE_SABRE_MAN_RIGHT, SPRITE_SABRE_MAN_WALKING_RIGHT_2,                                                                                                                                             },                                      },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::APlayerSprite::W,    {   SPRITE_SABRE_MAN_LEFT, SPRITE_SABRE_MAN_WALKING_LEFT_1, SPRITE_SABRE_MAN_LEFT, SPRITE_SABRE_MAN_WALKING_LEFT_2,                                                                                                                                                 },                                      },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::APlayerSprite::N,    {   SPRITE_SABRE_MAN_UP, SPRITE_SABRE_MAN_WALKING_UP_1, SPRITE_SABRE_MAN_UP, SPRITE_SABRE_MAN_WALKING_UP_2,                                                                                                                                                         },                                      },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::APlayerSprite::S,    {   SPRITE_SABRE_MAN_DOWN, SPRITE_SABRE_MAN_WALKING_DOWN_1, SPRITE_SABRE_MAN_DOWN, SPRITE_SABRE_MAN_WALKING_DOWN_2,                                                                                                                                                 },                                      },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::APlayerSprite::E,    {   SPRITE_SABRE_MAN_SWORD_RIGHT_1, SPRITE_SABRE_MAN_SWORD_RIGHT_2, SPRITE_SABRE_MAN_SWORD_RIGHT_3, SPRITE_SABRE_MAN_SWORD_RIGHT_4, SPRITE_SABRE_MAN_SWORD_RIGHT_5, SPRITE_SABRE_MAN_SWORD_RIGHT_4, SPRITE_SABRE_MAN_SWORD_RIGHT_6, SPRITE_SABRE_MAN_SWORD_RIGHT_2, },  PlayerSprite::ACTION_SWIPE_SWORD,   },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::APlayerSprite::W,    {   SPRITE_SABRE_MAN_SWORD_LEFT_1, SPRITE_SABRE_MAN_SWORD_LEFT_2, SPRITE_SABRE_MAN_SWORD_LEFT_3, SPRITE_SABRE_MAN_SWORD_LEFT_4, SPRITE_SABRE_MAN_SWORD_LEFT_5, SPRITE_SABRE_MAN_SWORD_LEFT_4, SPRITE_SABRE_MAN_SWORD_LEFT_6, SPRITE_SABRE_MAN_SWORD_LEFT_2,         },  PlayerSprite::ACTION_SWIPE_SWORD,   },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::APlayerSprite::E,    {   SPRITE_SABRE_MAN_FALLING_RIGHT,                                                                                                                                                                                                                                 },  PlayerSprite::ACTION_FALLING,       },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::APlayerSprite::W,    {   SPRITE_SABRE_MAN_FALLING_LEFT,                                                                                                                                                                                                                                  },  PlayerSprite::ACTION_FALLING,       },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::APlayerSprite::E,    {   SPRITE_SABRE_MAN_SITTING_RIGHT,                                                                                                                                                                                                                                 },  PlayerSprite::ACTION_SITTING,       },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::APlayerSprite::W,    {   SPRITE_SABRE_MAN_SITTING_LEFT,                                                                                                                                                                                                                                  },  PlayerSprite::ACTION_SITTING,       },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::APlayerSprite::E,    {   SPRITE_SABRE_MAN_GAME_OVER_RIGHT,                                                                                                                                                                                                                               },  PlayerSprite::ACTION_GAME_OVER,     },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::APlayerSprite::W,    {   SPRITE_SABRE_MAN_GAME_OVER_LEFT,                                                                                                                                                                                                                                },  PlayerSprite::ACTION_GAME_OVER,     },
+//      m_spriteId                  m_direction             m_spriteGraphicIdsList                                                                                                                                                                                                                                                  m_action
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::E,   {   SPRITE_SABRE_MAN_RIGHT, SPRITE_SABRE_MAN_WALKING_RIGHT_1, SPRITE_SABRE_MAN_RIGHT, SPRITE_SABRE_MAN_WALKING_RIGHT_2,                                                                                                                                             },                                      },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::W,   {   SPRITE_SABRE_MAN_LEFT, SPRITE_SABRE_MAN_WALKING_LEFT_1, SPRITE_SABRE_MAN_LEFT, SPRITE_SABRE_MAN_WALKING_LEFT_2,                                                                                                                                                 },                                      },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::N,   {   SPRITE_SABRE_MAN_UP, SPRITE_SABRE_MAN_WALKING_UP_1, SPRITE_SABRE_MAN_UP, SPRITE_SABRE_MAN_WALKING_UP_2,                                                                                                                                                         },                                      },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::S,   {   SPRITE_SABRE_MAN_DOWN, SPRITE_SABRE_MAN_WALKING_DOWN_1, SPRITE_SABRE_MAN_DOWN, SPRITE_SABRE_MAN_WALKING_DOWN_2,                                                                                                                                                 },                                      },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::E,   {   SPRITE_SABRE_MAN_SWORD_RIGHT_1, SPRITE_SABRE_MAN_SWORD_RIGHT_2, SPRITE_SABRE_MAN_SWORD_RIGHT_3, SPRITE_SABRE_MAN_SWORD_RIGHT_4, SPRITE_SABRE_MAN_SWORD_RIGHT_5, SPRITE_SABRE_MAN_SWORD_RIGHT_4, SPRITE_SABRE_MAN_SWORD_RIGHT_6, SPRITE_SABRE_MAN_SWORD_RIGHT_2, },  PlayerSprite::ACTION_SWIPE_SWORD,   },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::W,   {   SPRITE_SABRE_MAN_SWORD_LEFT_1, SPRITE_SABRE_MAN_SWORD_LEFT_2, SPRITE_SABRE_MAN_SWORD_LEFT_3, SPRITE_SABRE_MAN_SWORD_LEFT_4, SPRITE_SABRE_MAN_SWORD_LEFT_5, SPRITE_SABRE_MAN_SWORD_LEFT_4, SPRITE_SABRE_MAN_SWORD_LEFT_6, SPRITE_SABRE_MAN_SWORD_LEFT_2,         },  PlayerSprite::ACTION_SWIPE_SWORD,   },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::E,   {   SPRITE_SABRE_MAN_FALLING_RIGHT,                                                                                                                                                                                                                                 },  PlayerSprite::ACTION_FALLING,       },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::W,   {   SPRITE_SABRE_MAN_FALLING_LEFT,                                                                                                                                                                                                                                  },  PlayerSprite::ACTION_FALLING,       },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::E,   {   SPRITE_SABRE_MAN_SITTING_RIGHT,                                                                                                                                                                                                                                 },  PlayerSprite::ACTION_SITTING,       },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::W,   {   SPRITE_SABRE_MAN_SITTING_LEFT,                                                                                                                                                                                                                                  },  PlayerSprite::ACTION_SITTING,       },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::E,   {   SPRITE_SABRE_MAN_GAME_OVER_RIGHT,                                                                                                                                                                                                                               },  PlayerSprite::ACTION_GAME_OVER,     },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::W,   {   SPRITE_SABRE_MAN_GAME_OVER_LEFT,                                                                                                                                                                                                                                },  PlayerSprite::ACTION_GAME_OVER,     },
 };
 
 
@@ -53,16 +53,16 @@ FolioStatus PlayerSprite::Create (FolioHandle                   dcHandle,
 
     // Query the player sprite's graphics.
 
-    SpriteGraphicAttributesList    spriteGraphicAttributesList;
+    Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<PLAYER_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                        PLAYER_SPRITE_SABRE_MAN,
                                                                                                        *spriteGraphicsMap,
                                                                                                        INITIAL_COLOUR,
-                                                                                                       g_playerSpriteGraphicAttributes,
+                                                                                                       g_playerSpriteGraphicCharacteristics,
                                                                                                        spriteGraphicAttributesList);
 
-    if (status == ERROR_SUCCESS)
+    if (status == ERR_SUCCESS)
     {
         // Create the player sprite.
 
@@ -73,20 +73,21 @@ FolioStatus PlayerSprite::Create (FolioHandle                   dcHandle,
                                                            Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE,
                                                            Folio::Core::Game::ZxSpectrum::MapInkColour (INITIAL_COLOUR),
                                                            INITIAL_DIRECTION,
+                                                           0,   // No resource graphics cache.
                                                            MAX_NUM_AUTO_MOVES);
 
-        if (status == ERROR_SUCCESS)
+        if (status == ERR_SUCCESS)
         {
             // Set the player sprite's terminating mode.
                 
             status = SetTerminatingMode (dcHandle, 
                                          spriteGraphicsMap); 
 
-            if (status == ERROR_SUCCESS)
+            if (status == ERR_SUCCESS)
             {
                 // Set the player sprite's movement sound samples.
 
-                status = SetMovementSoundSamples ();
+                SetMovementSoundSamples ();
             } // Endif.
 
         } // Endif.
@@ -114,8 +115,8 @@ FolioStatus PlayerSprite::Start ()
 } // Endproc.
 
 
-PlayerSprite::Direction PlayerSprite::UpdateDirection (Direction    direction, 
-                                                       bool         keyDown)
+Folio::Core::Game::Direction    PlayerSprite::UpdateDirection (Folio::Core::Game::Direction direction, 
+                                                               bool                         keyDown)
 {
     if (!IsTemporarySickness ())
     {
@@ -131,36 +132,36 @@ PlayerSprite::Direction PlayerSprite::UpdateDirection (Direction    direction,
 
                 switch (direction)
                 {
-                case N:
-                    direction = S;
+                case Folio::Core::Game::N:
+                    direction = Folio::Core::Game::S;
                     break;
 
-                case S:
-                    direction = N;
+                case Folio::Core::Game::S:
+                    direction = Folio::Core::Game::N;
                     break;
             
-                case E:
-                    direction = W;
+                case Folio::Core::Game::E:
+                    direction = Folio::Core::Game::W;
                     break;
             
-                case W:
-                    direction = E;
+                case Folio::Core::Game::W:
+                    direction = Folio::Core::Game::E;
                     break;
             
-                case NE:
-                    direction = SW;
+                case Folio::Core::Game::NE:
+                    direction = Folio::Core::Game::SW;
                     break;
             
-                case NW:
-                    direction = SE;
+                case Folio::Core::Game::NW:
+                    direction = Folio::Core::Game::SE;
                     break;
             
-                case SE:
-                    direction = NW;
+                case Folio::Core::Game::SE:
+                    direction = Folio::Core::Game::NW;
                     break;
             
-                case SW:
-                    direction = NE;
+                case Folio::Core::Game::SW:
+                    direction = Folio::Core::Game::NE;
                     break;
             
                 default:
@@ -179,7 +180,7 @@ PlayerSprite::Direction PlayerSprite::UpdateDirection (Direction    direction,
 
                 // Set the current sprite bitmaps.
 
-                SetCurrentSpriteBitmaps (direction, m_spriteDrawingAttributesList);
+                SetCurrentSpriteBitmaps (direction, m_spriteDrawingList);
             } // Endif.
 
             // The player sprite is moving in the direction.
@@ -191,7 +192,7 @@ PlayerSprite::Direction PlayerSprite::UpdateDirection (Direction    direction,
         // All keys are up. In auto-move mode?
 
         else
-        if (!m_inAutoMoveMode)
+        if (!IsInAutoMoveMode ())
         {
             // No. Get the auto-move state.
         
@@ -284,11 +285,11 @@ void    PlayerSprite::SetFireKeyDown (bool fireKeyDown)
         } // Endif.
     
         else
-        if (m_action != DEFAULT_ACTION)
+        if (m_action != Folio::Core::Game::NO_ACTION)
         {
             // Reset the player sprite's action.
 
-            SetAction (DEFAULT_ACTION);
+            SetAction (Folio::Core::Game::NO_ACTION);
 
             m_playerSpriteSpeed = DEFAULT_SPEED;
         } // Endelseif.
@@ -336,22 +337,24 @@ bool    PlayerSprite::IsDead (const CollisionGrid::CellElement& cellElement)
                 
             switch (reinterpret_cast<NastySprite *> (cellElement.m_userData)->GetDirection ())
             {
-            case E:
-            case NE:
-            case SE:
-                isDead = (m_direction & E) || 
-                       (((m_direction == N )|| (m_direction == S)) && (m_previousHorizontalDirection & E));
+            case Folio::Core::Game::E:
+            case Folio::Core::Game::NE:
+            case Folio::Core::Game::SE:
+                isDead = (m_direction & Folio::Core::Game::E) || 
+                       (((m_direction == Folio::Core::Game::N) || (m_direction == Folio::Core::Game::S)) && 
+                         (m_previousHorizontalDirection & Folio::Core::Game::E));
                 break;
             
-            case W:
-            case NW:
-            case SW:
-                isDead = (m_direction & W) || 
-                       (((m_direction == N )|| (m_direction == S)) && (m_previousHorizontalDirection & W));
+            case Folio::Core::Game::W:
+            case Folio::Core::Game::NW:
+            case Folio::Core::Game::SW:
+                isDead = (m_direction & Folio::Core::Game::W) || 
+                       (((m_direction == Folio::Core::Game::N )|| (m_direction == Folio::Core::Game::S)) && 
+                         (m_previousHorizontalDirection & Folio::Core::Game::W));
                 break;
 
-            case N:
-            case S:
+            case Folio::Core::Game::N:
+            case Folio::Core::Game::S:
             default:
                 isDead = true;
                 break;
@@ -366,7 +369,7 @@ bool    PlayerSprite::IsDead (const CollisionGrid::CellElement& cellElement)
             isDead = false;
             break;
 
-        case DEFAULT_ACTION:
+        case Folio::Core::Game::NO_ACTION:
         default:
             isDead = true;
             break;
@@ -402,17 +405,17 @@ FolioStatus PlayerSprite::SetTerminatingMode (FolioHandle                   dcHa
 {
     static  const   UInt32  MAX_SEQUENCE_COUNT = 6;
 
-    // Player sprite terminating sprite attributes.
-    static  const   Folio::Core::Game::SpriteGraphicsAttributesList<PLAYER_SPRITE_ID, SPRITE_ID>    s_terminatingSpriteGraphicAttributes = 
+    // Player sprite terminating sprite characteristics.
+    static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<PLAYER_SPRITE_ID, SPRITE_ID>    s_terminatingSpriteGraphicAttributes = 
     {
-    //      m_spriteId                  m_direction                             m_spriteGraphicIdsList
-        {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::APlayerSprite::W,    {   SPRITE_SABRE_MAN_SITTING_LEFT,  },  },
-        {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::APlayerSprite::E,    {   SPRITE_SABRE_MAN_SITTING_RIGHT, },  },
+    //      m_spriteId                  m_direction             m_spriteGraphicIdsList
+        {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::W,   {   SPRITE_SABRE_MAN_SITTING_LEFT,  },  },
+        {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::E,   {   SPRITE_SABRE_MAN_SITTING_RIGHT, },  },
     };
 
     // Query the player sprite's terminating graphics.
 
-    SpriteGraphicAttributesList    spriteGraphicAttributesList;
+    Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<PLAYER_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                        *spriteGraphicsMap,
@@ -438,13 +441,13 @@ FolioStatus PlayerSprite::SetTemporaryState (TEMPORARY_STATE                    
 {
     // Set the player sprite's action.
 
-    SetAction (temporaryState == SICKNESS ? ACTION_SITTING : DEFAULT_ACTION);
+    SetAction (temporaryState == SICKNESS ? ACTION_SITTING : Folio::Core::Game::NO_ACTION);
 
     // Change the player sprite's colour.
 
     FolioStatus status = ChangeSpriteInkColour (Folio::Core::Game::ZxSpectrum::MapInkColour (playerSpriteColour),   
-                                                false, 
-                                                false);
+                                                false,  // Don't change the sprite's initialising graphics. 
+                                                false); // Don't change the sprite's terminating graphics.
 
     if (status == ERR_SUCCESS)
     {
@@ -518,19 +521,19 @@ bool    PlayerSprite::IsTemporarySickness () const
 } // Endproc.
 
 
-FolioStatus PlayerSprite::SetMovementSoundSamples ()
+void    PlayerSprite::SetMovementSoundSamples ()
 {
-    // Player sprite movement sound sample list.
-    static  const   SpriteMovementSoundSamplesList  s_playerSpriteMovementSoundSampleList =
+    // Player sprite sound sample list.
+    static  const   Folio::Core::Game::SpriteSoundSamplesList   s_playerSpriteMovementSoundSampleList =
     {
-        {   SpriteMovementSoundSample(new SpriteMovementSoundSample::element_type(Ultimate::MapMakeSound (0x30, 0x08))),  },
-        {   SpriteMovementSoundSample(new SpriteMovementSoundSample::element_type(Ultimate::MapMakeSound (0x40, 0x08))),  },
+        {   Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(Ultimate::MapMakeSound (0x30, 0x08))),  },
+        {   Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(Ultimate::MapMakeSound (0x40, 0x08))),  },
     };
 
     // Set the player sprite's movement sound samples.
 
-    return (SetSpriteMovementSoundSamples (SpriteMovementSoundAttributesList(1, 
-                                                                             SpriteMovementSoundAttributes(ALL_DIRECTIONS, s_playerSpriteMovementSoundSampleList))));
+    SetSpriteMovementSoundSamples (Folio::Core::Game::SpriteMovementSoundSamplesList(1, 
+                                                                                     Folio::Core::Game::SpriteMovementSoundSample(Folio::Core::Game::ALL_DIRECTIONS, s_playerSpriteMovementSoundSampleList)));
 } // Endproc.
 
 
@@ -540,22 +543,22 @@ Int32   PlayerSprite::CalculateCollisionXLeft () const
     {
         switch (m_direction)
         {
-        case N:
-        case S:
-            if (m_previousHorizontalDirection == W)
+        case Folio::Core::Game::N:
+        case Folio::Core::Game::S:
+            if (m_previousHorizontalDirection == Folio::Core::Game::W)
             {
                 return (m_screenRect.X + m_screenRect.Width - m_collisionRect.Width);
             } // Endif.
             break;
 
-        case W:
-        case NW:
-        case SW:
+        case Folio::Core::Game::W:
+        case Folio::Core::Game::NW:
+        case Folio::Core::Game::SW:
             return (m_screenRect.X + m_screenRect.Width - m_collisionRect.Width);
 
-        case E:
-        case NE:
-        case SE:
+        case Folio::Core::Game::E:
+        case Folio::Core::Game::NE:
+        case Folio::Core::Game::SE:
         default:
             break;
         } // Endswitch.
@@ -570,22 +573,22 @@ Int32   PlayerSprite::CalculateScreenXLeft (CollisionGrid::DIRECTION collisionGr
 {
     switch (m_direction)
     {
-    case N:
-    case S:
-        if (m_previousHorizontalDirection == W)
+    case Folio::Core::Game::N:
+    case Folio::Core::Game::S:
+        if (m_previousHorizontalDirection == Folio::Core::Game::W)
         {
             return (m_collisionRect.X + m_collisionRect.Width - m_screenRect.Width);
         } // Endif.
         break;
 
-    case W:
-    case NW:
-    case SW:
+    case Folio::Core::Game::W:
+    case Folio::Core::Game::NW:
+    case Folio::Core::Game::SW:
         return (m_collisionRect.X + m_collisionRect.Width - m_screenRect.Width);
 
-    case E:
-    case NE:
-    case SE:
+    case Folio::Core::Game::E:
+    case Folio::Core::Game::NE:
+    case Folio::Core::Game::SE:
     default:
         break;
     } // Endswitch.
@@ -598,22 +601,22 @@ Int32   PlayerSprite::CalculateScreenXLeft (Int32 bitmapScreenWidth) const
 {
     switch (m_direction)
     {
-    case N:
-    case S:
-        if (m_previousHorizontalDirection == W)
+    case Folio::Core::Game::N:
+    case Folio::Core::Game::S:
+        if (m_previousHorizontalDirection == Folio::Core::Game::W)
         {
             return (m_collisionRect.X + m_collisionRect.Width - bitmapScreenWidth);
         } // Endif.
         break;
 
-    case W:
-    case NW:
-    case SW:
+    case Folio::Core::Game::W:
+    case Folio::Core::Game::NW:
+    case Folio::Core::Game::SW:
         return (m_collisionRect.X + m_collisionRect.Width - bitmapScreenWidth);
 
-    case E:
-    case NE:
-    case SE:
+    case Folio::Core::Game::E:
+    case Folio::Core::Game::NE:
+    case Folio::Core::Game::SE:
     default:
         break;
     } // Endswitch.

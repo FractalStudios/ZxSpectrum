@@ -23,146 +23,8 @@ APlayerSprite::~APlayerSprite ()
 } // Endproc.
 
 
-FolioStatus APlayerSprite::SetBottomUpInitialisingMode (const ColourList&                           initialisingColourList,
-                                                        const SpriteInitialisingSoundSamplesList&   initialisingSoundSamplesList)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Only set the initialising mode if the current state is created or initialise required.
-
-    switch (m_state)
-    {
-    case STATE_CREATED:
-    case STATE_INITIALISE_RQD:
-        // Note the sprite's initialising attributes.
-
-        m_initialisingDrawingMode                   = DM_BOTTOM_UP;
-        m_initialisingColourList                    = initialisingColourList;
-        m_initialisingSoundSamplesList              = initialisingSoundSamplesList;
-        m_initialisingCurrentSoundSamplesListIndex  = 0;
-        m_playSpriteInitialisingSound               = true;
-        break;
-
-    default:
-        status = ERR_INVALID_SEQUENCE;
-        break;
-    } // Endswitch.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus APlayerSprite::SetTopDownInitialisingMode (const ColourList&                            initialisingColourList,
-                                                       const SpriteInitialisingSoundSamplesList&    initialisingSoundSamplesList)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Only set the initialising mode if the current state is created or initialise required.
-
-    switch (m_state)
-    {
-    case STATE_CREATED:
-    case STATE_INITIALISE_RQD:
-        // Note the sprite's initialising attributes.
-        
-        m_initialisingDrawingMode                   = DM_TOP_DOWN;
-        m_initialisingColourList                    = initialisingColourList;
-        m_initialisingSoundSamplesList              = initialisingSoundSamplesList;
-        m_initialisingCurrentSoundSamplesListIndex  = 0;
-        m_playSpriteInitialisingSound               = true;
-        break;
-
-    default:
-        status = ERR_INVALID_SEQUENCE;
-        break;
-    } // Endswitch.
-
-    return (status);
-} // Endproc.
-
-
-UInt32  APlayerSprite::GetInitialisingPauseTime () const
-{
-    return (DEFAULT_INITIALISING_PAUSE_TIME);
-} // Endproc.
-
-
-FolioStatus APlayerSprite::SetBottomUpTerminatingMode (const ColourList&                        terminatingColourList,
-                                                       const SpriteTerminatingSoundSamplesList& terminatingSoundSamplesList)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Only set the terminating mode if the current state is created, initialise 
-    // required, terminate required, static or moving.
-
-    switch (m_state)
-    {
-    case STATE_CREATED:
-    case STATE_INITIALISE_RQD:
-    case STATE_TERMINATE_RQD:
-    case STATE_STATIC:
-    case STATE_MOVING:
-    case STATE_FALLING:
-        // Note the sprite's terminating attributes.
-        
-        m_terminatingDrawingMode                    = DM_BOTTOM_UP;
-        m_terminatingColourList                     = terminatingColourList;
-        m_terminatingSoundSamplesList               = terminatingSoundSamplesList;
-        m_terminatingCurrentSoundSamplesListIndex   = 0;
-        m_playSpriteTerminatingSound                = true;
-        break;
-
-    default:
-        status = ERR_INVALID_SEQUENCE;
-        break;
-    } // Endswitch.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus APlayerSprite::SetTopDownTerminatingMode (const ColourList&                         terminatingColourList,
-                                                      const SpriteTerminatingSoundSamplesList&  terminatingSoundSamplesList)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Only set the terminating mode if the current state is created, initialise 
-    // required, terminate required, static or moving.
-
-    switch (m_state)
-    {
-    case STATE_CREATED:
-    case STATE_INITIALISE_RQD:
-    case STATE_TERMINATE_RQD:
-    case STATE_STATIC:
-    case STATE_MOVING:
-    case STATE_FALLING:
-        // Note the sprite's terminating attributes.
-
-        m_terminatingDrawingMode                    = DM_TOP_DOWN;
-        m_terminatingColourList                     = terminatingColourList;
-        m_terminatingSoundSamplesList               = terminatingSoundSamplesList;
-        m_terminatingCurrentSoundSamplesListIndex   = 0;
-        m_playSpriteTerminatingSound                = true;
-        break;
-
-    default:
-        status = ERR_INVALID_SEQUENCE;
-        break;
-    } // Endswitch.
-
-    return (status);
-} // Endproc.
-
-
-UInt32  APlayerSprite::GetTerminatingPauseTime () const
-{
-    return (DEFAULT_TERMINATING_PAUSE_TIME);
-} // Endproc.
-
-
-APlayerSprite::Direction  APlayerSprite::UpdateDirection (Direction direction, 
-                                                          bool      keyDown)
+Direction   APlayerSprite::UpdateDirection (Direction   direction, 
+                                            bool        keyDown)
 {
     // Is a key down?
 
@@ -172,22 +34,17 @@ APlayerSprite::Direction  APlayerSprite::UpdateDirection (Direction direction,
 
         if (direction != m_direction)
         {
-            // Yes. Set previous last sprite direction. 
-        
-            SetPreviousSpriteDirection (m_direction);
-
-            // Set the current sprite bitmaps.
-
-            SetCurrentSpriteBitmaps (direction, m_spriteDrawingAttributesList);
+            // Yes. Set the player sprite's direction.
+    
+            SetDirection (direction);
         } // Endif.
 
         // The player sprite is moving in the direction.
         
-        m_direction = direction;
-        m_state     = STATE_MOVING; 
+        m_state = STATE_MOVING; 
     } // Endif.
 
-    // All keys are up. In auto-move mode?
+    // All keys are up. Is the player sprte in auto-move mode?
 
     else
     if (!m_inAutoMoveMode)
@@ -225,45 +82,25 @@ bool    APlayerSprite::IsGameCompleted () const
 } // Endproc.
 
 
-FolioStatus APlayerSprite::Recreate (Int32      screenXLeft,
-                                     Int32      screenYTop,
-                                     Direction  direction)
+FolioStatus APlayerSprite::Restart (Int32       screenXLeft,
+                                    Int32       screenYTop,
+                                    Direction   direction)
 {
-    m_state     = STATE_CREATED;
-    m_direction = direction;
-    m_action    = DEFAULT_ACTION;
+    // Restart the player sprite.
 
-    // Set the previous sprite direction. 
-        
-    SetPreviousSpriteDirection (m_direction);
+    m_inAutoMoveMode    = false;    // Initialise!
+    m_isGameOver        = false;
+    m_isGameCompleted   = false;
 
-    // Set the current sprite bitmaps.
+    // Recreate the player sprite.
 
-    FolioStatus status = SetCurrentSpriteBitmaps (direction, m_spriteDrawingAttributesList, true);
-
-    if (status == ERR_SUCCESS)
-    {
-        // Set the player sprite's top-left screen position.
-
-        SetScreenTopLeft (screenXLeft, screenYTop);
-
-        m_isAtLockedScreenExit  = false;    // Initialise!
-        m_isInScreenExit        = false;
-        m_isExitedScreen        = false;
-        m_isEnteringScreen      = false;
-
-        m_inAutoMoveMode    = false;    // Initialise!
-        m_isGameOver        = false;
-        m_isGameCompleted   = false;
-    } // Endif.
-
-    return (status);
+    return (Recreate (screenXLeft, screenYTop, direction));
 } // Endproc.
 
 
 APlayerSprite::STATE    APlayerSprite::GetAutoMoveState (bool keyUp)
 {
-    APlayerSprite::STATE    state = STATE_STATIC;   // Initialise!
+    STATE   state = STATE_STATIC;   // Initialise!
 
     // The player sprite is moving if the player sprite is entering a screen.
 
@@ -278,6 +115,8 @@ APlayerSprite::STATE    APlayerSprite::GetAutoMoveState (bool keyUp)
     else
     if (keyUp && m_maxNumAutoMoves)
     {
+        // The player sprite is moving in auto-move mode.
+
         m_inAutoMoveMode        = true;
         m_remainingNumAutoMoves = m_maxNumAutoMoves;
 
@@ -285,6 +124,128 @@ APlayerSprite::STATE    APlayerSprite::GetAutoMoveState (bool keyUp)
     } // Endelseif.
 
     return (state);
+} // Endproc.
+
+
+bool    APlayerSprite::IsInAutoMoveMode () const
+{
+    return (m_inAutoMoveMode);
+} // Endproc.
+
+
+FolioStatus APlayerSprite::SetBottomUpInitialisingMode (const ColourList&                       initialisingColourList,
+                                                        const SpriteStationarySoundSamplesList& initialisingSpriteSoundSamplesList)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    switch (m_state)
+    {
+    case STATE_CREATED:
+    case STATE_INITIALISE_RQD:
+        // Note the player sprite's initialising attributes.
+
+        m_initialisingDrawingMode                           = DM_BOTTOM_UP;
+        m_initialisingColourList                            = initialisingColourList;
+        m_initialisingSpriteSoundSamplesList                = initialisingSpriteSoundSamplesList;
+        m_currentInitialisingSpriteSoundSamplesListIndex    = 0;
+        m_playSpriteInitialisingSound                       = true;
+        break;
+
+    default:
+        status = ERR_INVALID_SEQUENCE;
+        break;
+    } // Endswitch.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus APlayerSprite::SetTopDownInitialisingMode (const ColourList&                        initialisingColourList,
+                                                       const SpriteStationarySoundSamplesList&  initialisingSpriteSoundSamplesList)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    switch (m_state)
+    {
+    case STATE_CREATED:
+    case STATE_INITIALISE_RQD:
+        // Note the player sprite's initialising attributes.
+        
+        m_initialisingDrawingMode                           = DM_TOP_DOWN;
+        m_initialisingColourList                            = initialisingColourList;
+        m_initialisingSpriteSoundSamplesList                = initialisingSpriteSoundSamplesList;
+        m_currentInitialisingSpriteSoundSamplesListIndex    = 0;
+        m_playSpriteInitialisingSound                       = true;
+        break;
+
+    default:
+        status = ERR_INVALID_SEQUENCE;
+        break;
+    } // Endswitch.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus APlayerSprite::SetBottomUpTerminatingMode (const ColourList&                        terminatingColourList,
+                                                       const SpriteStationarySoundSamplesList&  terminatingSpriteSoundSamplesList)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    switch (m_state)
+    {
+    case STATE_CREATED:
+    case STATE_INITIALISE_RQD:
+    case STATE_TERMINATE_RQD:
+    case STATE_STATIC:
+    case STATE_MOVING:
+    case STATE_FALLING:
+        // Note the player sprite's terminating attributes.
+        
+        m_terminatingDrawingMode                        = DM_BOTTOM_UP;
+        m_terminatingColourList                         = terminatingColourList;
+        m_terminatingSpriteSoundSamplesList             = terminatingSpriteSoundSamplesList;
+        m_currentTerminatingSpriteSoundSamplesListIndex = 0;
+        m_playSpriteTerminatingSound                    = true;
+        break;
+
+    default:
+        status = ERR_INVALID_SEQUENCE;
+        break;
+    } // Endswitch.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus APlayerSprite::SetTopDownTerminatingMode (const ColourList&                         terminatingColourList,
+                                                      const SpriteStationarySoundSamplesList&   terminatingSpriteSoundSamplesList)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    switch (m_state)
+    {
+    case STATE_CREATED:
+    case STATE_INITIALISE_RQD:
+    case STATE_TERMINATE_RQD:
+    case STATE_STATIC:
+    case STATE_MOVING:
+    case STATE_FALLING:
+        // Note the player sprite's terminating attributes.
+
+        m_terminatingDrawingMode                        = DM_TOP_DOWN;
+        m_terminatingColourList                         = terminatingColourList;
+        m_terminatingSpriteSoundSamplesList             = terminatingSpriteSoundSamplesList;
+        m_currentTerminatingSpriteSoundSamplesListIndex = 0;
+        m_playSpriteTerminatingSound                    = true;
+        break;
+
+    default:
+        status = ERR_INVALID_SEQUENCE;
+        break;
+    } // Endswitch.
+
+    return (status);
 } // Endproc.
 
 
@@ -348,7 +309,7 @@ FolioStatus APlayerSprite::HandleMoveSprite (Gdiplus::Graphics&     graphics,
         {
             // Yes. Is this the same wall the player sprite was at previously?
 
-            if ((m_action == DEFAULT_ACTION)                &&
+            if ((m_action == NO_ACTION)                     &&
                 (m_wallBound.m_direction == m_direction)    &&
                  m_wallBound.m_screenRect.Equals (m_collisionRect))
             {
@@ -401,6 +362,10 @@ FolioStatus APlayerSprite::HandleMoveSprite (Gdiplus::Graphics&     graphics,
 
                 m_inAutoMoveMode = false;
 
+                // Reset the remaining number of auto-moves.
+
+                m_remainingNumAutoMoves = m_maxNumAutoMoves;
+
                 // The player sprite is static.
 
                 m_state = STATE_STATIC;
@@ -449,67 +414,67 @@ FolioStatus APlayerSprite::PerformBottomUpOrTopDownInitialising (Gdiplus::Graphi
 {
     // Obtain the player sprite's current bitmaps.
 
-    SpriteDrawingBitmap spriteDrawingBitmap;
-    SpriteDrawingBitmap spriteMaskedDrawingBitmap;
+    SpriteDrawing::SpriteBitmap spriteBitmap;
+    SpriteDrawing::SpriteBitmap spriteMaskedBitmap;
 
-    FolioStatus status = QueryCurrentSpriteBitmaps (spriteDrawingBitmap,
-                                                    spriteMaskedDrawingBitmap, 
+    FolioStatus status = QueryCurrentSpriteBitmaps (spriteBitmap,
+                                                    spriteMaskedBitmap, 
                                                     false);
 
     if (status == ERR_SUCCESS)
     {
-        // Increment the player sprite's masked drawing bitmap height.
+        // Increment the player sprite's masked bitmap height.
 
-        status = spriteMaskedDrawingBitmap->IncrementDrawingHeight (m_initialisingDrawingMode);
+        status = spriteMaskedBitmap->IncrementDrawingHeight (m_initialisingDrawingMode);
 
         if (status == ERR_SUCCESS)
         {
-            // Draw the player sprite's masked drawing bitmap.
+            // Draw the player sprite's masked bitmap.
 
-            status = spriteMaskedDrawingBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics);
+            status = spriteMaskedBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics);
 
             if (status == ERR_SUCCESS)
             {
-                // Get the the player sprite's drawing bitmap height asjustment.
+                // Get the player sprite's bitmap height adjustment.
 
-                Int32   drawingHeightAsjustment = spriteDrawingBitmap->GetDrawingHeightAdjustment ();
+                Int32   drawingHeightAdjustment = spriteBitmap->GetDrawingHeightAdjustment ();
 
-                // Increment the player sprite's drawing bitmap height.
+                // Increment the player sprite's bitmap height.
 
-                status = spriteDrawingBitmap->IncrementDrawingHeight (m_initialisingDrawingMode);
+                status = spriteBitmap->IncrementDrawingHeight (m_initialisingDrawingMode);
 
                 if (status == ERR_SUCCESS)
                 {
                     // We are initialising until the player sprite is fully drawn.
 
-                    m_state = spriteDrawingBitmap->IsBitmapFullyDrawn () ? STATE_INITIALISED : STATE_INITIALISING;
+                    m_state = spriteBitmap->IsBitmapFullyDrawn () ? STATE_INITIALISED : STATE_INITIALISING;
                             
-                    // Change the player sprite's drawing bitmap colour.
+                    // Change the player sprite's bitmap colour.
 
                     Gdiplus::ARGB   currentColour   = m_spriteInkColour;   // Initialise!
                     Gdiplus::ARGB   newColour       = GetNewInitialisingColour (currentColour);
 
-                    status = spriteDrawingBitmap->ChangeColour (currentColour, 
-                                                                (m_state == STATE_INITIALISING) ? newColour : m_spriteInkColour);
+                    status = spriteBitmap->ChangeColour (currentColour, 
+                                                         (m_state == STATE_INITIALISING) ? newColour : m_spriteInkColour);
 
                     if (status == ERR_SUCCESS)
                     {
-                        // Draw the player sprite's drawing bitmap.
+                        // Draw the player sprite's bitmap.
 
-                        status = spriteDrawingBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics, rects);
+                        status = spriteBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics, rects);
 
                         if (status == ERR_SUCCESS) 
                         {
-                            // Play the player sprite's initialising sound.
+                            // Play the player sprite's initialising sound synchronously.
 
-                            PlaySpriteInitialisingSound (std::abs (drawingHeightAsjustment));
+                            PlaySpriteInitialisingSound (std::abs (drawingHeightAdjustment), false);
 
                             if (m_state == STATE_INITIALISED)
                             {
                                 // Important to reset the drawing adjustment mode of the 
-                                // player sprite's masked drawing bitmap.
+                                // player sprite's masked bitmap.
                                     
-                                spriteMaskedDrawingBitmap->ResetDrawingAdjustmentMode ();
+                                spriteMaskedBitmap->ResetDrawingAdjustmentMode ();
                             } // Endif.
 
                         } // Endif.
@@ -559,72 +524,72 @@ FolioStatus APlayerSprite::PerformBottomUpOrTopDownTerminating (Gdiplus::Graphic
 {
     // Obtain the player sprite's current bitmaps.
 
-    SpriteDrawingBitmap spriteDrawingBitmap;
-    SpriteDrawingBitmap spriteMaskedDrawingBitmap;
+    SpriteDrawing::SpriteBitmap spriteBitmap;
+    SpriteDrawing::SpriteBitmap spriteMaskedBitmap;
 
-    FolioStatus status = QueryCurrentSpriteBitmaps (spriteDrawingBitmap,
-                                                    spriteMaskedDrawingBitmap,
+    FolioStatus status = QueryCurrentSpriteBitmaps (spriteBitmap,
+                                                    spriteMaskedBitmap,
                                                     false);
 
     if (status == ERR_SUCCESS)
     {
-        // Decrement the player sprite's masked drawing bitmap height.
+        // Decrement the player sprite's masked bitmap height.
 
-        status = spriteMaskedDrawingBitmap->DecrementDrawingHeight (-m_terminatingDrawingMode);
+        status = spriteMaskedBitmap->DecrementDrawingHeight (-m_terminatingDrawingMode);
 
         if (status == ERR_SUCCESS)
         {
-            // Draw the player sprite's masked drawing bitmap.
+            // Draw the player sprite's masked bitmap.
 
-            status = spriteMaskedDrawingBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics);
+            status = spriteMaskedBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics);
 
             if (status == ERR_SUCCESS)
             {
-                // Get the the player sprite's drawing bitmap height asjustment.
+                // Get the player sprite's bitmap height adjustment.
 
-                Int32   drawingHeightAsjustment = spriteDrawingBitmap->GetDrawingHeightAdjustment ();
+                Int32   drawingHeightAdjustment = spriteBitmap->GetDrawingHeightAdjustment ();
 
-                // Decrement the player sprite's drawing bitmap height.
+                // Decrement the player sprite's bitmap height.
 
-                status = spriteDrawingBitmap->DecrementDrawingHeight (-m_terminatingDrawingMode);
+                status = spriteBitmap->DecrementDrawingHeight (-m_terminatingDrawingMode);
 
                 if (status == ERR_SUCCESS)
                 {
-                    // Change the player sprite's drawing bitmap colour.
+                    // Change the player sprite's bitmap colour.
 
                     Gdiplus::ARGB   currentColour   = m_spriteInkColour;   // Initialise!
                     Gdiplus::ARGB   newColour       = GetNewTerminatingColour (currentColour);
 
-                    status = spriteDrawingBitmap->ChangeColour (currentColour, newColour);
+                    status = spriteBitmap->ChangeColour (currentColour, newColour);
 
                     if (status == ERR_SUCCESS)
                     {
-                        // Draw the player sprite's drawing bitmap.
+                        // Draw the player sprite's bitmap.
 
-                        status = spriteDrawingBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics, rects);
+                        status = spriteBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics, rects);
                             
                         if (status == ERR_SUCCESS)
                         {
                             // We are terminating until the player sprite is no longer drawn.
 
-                            m_state = spriteDrawingBitmap->IsBitmapNoLongerDrawn () ? STATE_TERMINATED : STATE_TERMINATING;
+                            m_state = spriteBitmap->IsBitmapNoLongerDrawn () ? STATE_TERMINATED : STATE_TERMINATING;
                             
                             if (status == ERR_SUCCESS)
                             {
-                                // Play the player sprite's terminating sound.
+                                // Play the player sprite's terminating sound synchronously.
 
-                                PlaySpriteTerminatingSound (std::abs (drawingHeightAsjustment));
+                                PlaySpriteTerminatingSound (std::abs (drawingHeightAdjustment), false);
 
                                 if (m_state == STATE_TERMINATED)
                                 {
                                     // Important to reset the drawing adjustment mode of the 
-                                    // player sprite's masked drawing bitmap.
+                                    // player sprite's masked bitmap.
                                     
-                                    spriteMaskedDrawingBitmap->ResetDrawingAdjustmentMode ();
+                                    spriteMaskedBitmap->ResetDrawingAdjustmentMode ();
 
                                     // Set back the default player colour.
 
-                                    status = spriteDrawingBitmap->ChangeColour (newColour, m_spriteInkColour);
+                                    status = spriteBitmap->ChangeColour (newColour, m_spriteInkColour);
                                 } // Endif.
 
                             } // Endif.

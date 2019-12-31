@@ -156,9 +156,9 @@ bool    SelectionScreen::IsPlayerFireKeyDown () const
 } // Endproc.
 
 
-bool    SelectionScreen::IsPlayerDirectionKeyDown (Folio::Core::Game::APlayerSprite::Direction &direction) const
+bool    SelectionScreen::IsPlayerDirectionKeyDown (Folio::Core::Game::Direction &direction) const
 {
-    direction = Folio::Core::Game::APlayerSprite::NO_DIRECTION; // Initialise!
+    direction = Folio::Core::Game::NO_DIRECTION;    // Initialise!
 
     switch (m_gameControl)
     {
@@ -170,24 +170,24 @@ bool    SelectionScreen::IsPlayerDirectionKeyDown (Folio::Core::Game::APlayerSpr
     
             if (gamepad.IsDPadUpButtonDown (m_controllerId))
             {
-                direction = Folio::Core::Game::APlayerSprite::N;
+                direction = Folio::Core::Game::N;
             } // Endif.
 
             else
             if (gamepad.IsDPadDownButtonDown (m_controllerId))
             {
-                direction = Folio::Core::Game::APlayerSprite::S;
+                direction = Folio::Core::Game::S;
             } // Endelseif.
 
             if (gamepad.IsDPadRightButtonDown (m_controllerId))
             {
-                direction |= Folio::Core::Game::APlayerSprite::E;
+                direction |= Folio::Core::Game::E;
             } // Endif.
 
             else
             if (gamepad.IsDPadLeftButtonDown (m_controllerId))
             {
-                direction |= Folio::Core::Game::APlayerSprite::W;
+                direction |= Folio::Core::Game::W;
             } // Endelseif.
     
         } // Endscope.
@@ -196,24 +196,24 @@ bool    SelectionScreen::IsPlayerDirectionKeyDown (Folio::Core::Game::APlayerSpr
     case GAME_CONTROL_CURSOR_JOYSTICK:
         if (Folio::Core::Util::KeyInput::IsKeyDown (VK_UP))
         {
-            direction = Folio::Core::Game::APlayerSprite::N;
+            direction = Folio::Core::Game::N;
         } // Endif.
 
         else
         if (Folio::Core::Util::KeyInput::IsKeyDown (VK_DOWN))
         {
-            direction = Folio::Core::Game::APlayerSprite::S;
+            direction = Folio::Core::Game::S;
         } // Endelseif.
 
         if (Folio::Core::Util::KeyInput::IsKeyDown (VK_RIGHT))
         {
-            direction |= Folio::Core::Game::APlayerSprite::E;
+            direction |= Folio::Core::Game::E;
         } // Endif.
 
         else
         if (Folio::Core::Util::KeyInput::IsKeyDown (VK_LEFT))
         {
-            direction |= Folio::Core::Game::APlayerSprite::W;
+            direction |= Folio::Core::Game::W;
         } // Endelseif.
         break;
 
@@ -222,29 +222,29 @@ bool    SelectionScreen::IsPlayerDirectionKeyDown (Folio::Core::Game::APlayerSpr
     default:
         if (Folio::Core::Util::KeyInput::IsKeyDown ('R'))
         {
-            direction = Folio::Core::Game::APlayerSprite::N;
+            direction = Folio::Core::Game::N;
         } // Endif.
 
         else
         if (Folio::Core::Util::KeyInput::IsKeyDown ('E'))
         {
-            direction = Folio::Core::Game::APlayerSprite::S;
+            direction = Folio::Core::Game::S;
         } // Endelseif.
 
         if (Folio::Core::Util::KeyInput::IsKeyDown ('W'))
         {
-            direction |= Folio::Core::Game::APlayerSprite::E;
+            direction |= Folio::Core::Game::E;
         } // Endif.
 
         else
         if (Folio::Core::Util::KeyInput::IsKeyDown ('Q'))
         {
-            direction |= Folio::Core::Game::APlayerSprite::W;
+            direction |= Folio::Core::Game::W;
         } // Endelseif.
         break;
     } // Endswitch.
 
-    return (direction != Folio::Core::Game::APlayerSprite::NO_DIRECTION);
+    return (direction != Folio::Core::Game::NO_DIRECTION);
 } // Endproc.
 
 

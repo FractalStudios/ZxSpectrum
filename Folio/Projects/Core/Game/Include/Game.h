@@ -15,9 +15,10 @@
 #include    "GraphicItem.h"
 #include    "ItemAttributes.h"
 #include    "ResourceGraphic.h"
+#include    "ResourceGraphicsCache.h"
 #include    "SpriteDrawingElement.h"
-#include    "SpriteGraphicsAttributes.h"
-#include    "SpriteMovementSoundAttributes.h"
+#include    "SpriteGraphics.h"
+#include    "SpriteSound.h"
 #include    "TextItem.h"
 #include    "ZxSpectrum.h"
 

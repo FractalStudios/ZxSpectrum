@@ -4,17 +4,11 @@
 // "Home-made" includes.
 #include    <Applet.h>
 #include    <Graphic.h>
-#include    "BackgroundItemGraphics.h"
-#include    "BackgroundItem.h"
-#include    "DrawingElement.h"
 #include    "FallingSimulationScreen.h"
 #include    "GameOverScreen.h"
+#include    "Globals.h"
 #include    "InformationPanel.h"
 #include    "LoadingScreen.h"
-#include    "PlayerSprite.h"
-#include    "SpriteGraphics.h"
-#include    "StaticSprite.h"
-#include    "RoomGraphics.h"
 #include    "Screen.h"
 #include    "SelectionScreen.h"
 
@@ -40,6 +34,9 @@ public:
     virtual FolioStatus HandleCreateCanvasMsg (FolioHandle  wndHandle,
                                                UInt32       wParam,
                                                UInt32       lParam);
+    virtual FolioStatus HandleDestroyCanvasMsg (FolioHandle wndHandle,
+                                                UInt32      wParam,
+                                                UInt32      lParam);
     virtual FolioStatus HandleProcessFrame (FolioHandle wndHandle,
                                             UInt32      &frameRateIncrement);
 
@@ -61,21 +58,13 @@ private:
     UInt32  m_currentScreenNumber;  // The current screen number.
     Screen* m_currentScreen;        // The current screen.
 
-    LoadingScreen               m_loadingScreen;                // The loading screen.
-    SelectionScreen             m_selectionScreen;              // The selection screen.
-    FallingSimulationScreen     m_fallingSimulationScreen;      // The falling simulation screen.
-    RoomGraphicsMap             m_roomGraphicsMap;              // The room graphics.
-    BackgroundItemGraphicsMap   m_backgroundItemGraphicsMap;    // The background item graphics.
-    BackgroundItemsList         m_backgroundItemsList;          // The background items.
-    SpriteGraphicsMap           m_spriteGraphicsMap;            // The sprite graphics.
-    StaticSpritesList           m_staticSpritesList;            // The static sprites.
-    InformationPanel            m_informationPanel;             // The information panel.
-    ScreensList                 m_screensList;                  // The screens.
-    PlayerSpritesMap            m_playerSpritesMap;             // The player sprites.
+    LoadingScreen           m_loadingScreen;            // The loading screen.
+    SelectionScreen         m_selectionScreen;          // The selection screen.
+    FallingSimulationScreen m_fallingSimulationScreen;  // The falling simulation screen.
+    InformationPanel        m_informationPanel;         // The information panel.
+    ScreensList             m_screensList;              // The screens.
 
     std::unique_ptr<GameOverScreen> m_gameOverScreen;   // The game over screen.
-
-    PlayerSpritePtr m_mainPlayer;    // The main player.
 
     FolioStatus HandleProcessLoadingStateFrame (FolioHandle wndHandle,
                                                 UInt32      *frameRateIncrement = 0);
@@ -100,7 +89,9 @@ private:
     FolioStatus DisplayGameOverScreen (bool mainPlayerCompletedGame);
 
     FolioStatus SetCanvasBackground (const Gdiplus::Region *clippingRegion = 0);
+
     FolioStatus Initialise ();
+    FolioStatus Terminate ();
 
     void    DisplayFrameRate () const;
 

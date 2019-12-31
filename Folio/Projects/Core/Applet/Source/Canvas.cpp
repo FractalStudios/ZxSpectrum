@@ -527,7 +527,7 @@ bool    Canvas::IsRedrawRqd ()
  * The screen rect to clear.
  *
  * @param [in] drawCanvas
- * Indicates if the the canvas should be drawn to the applet window.
+ * Indicates if the canvas should be drawn to the applet window.
  *
  * @return
  * The possible return values are:<ul>

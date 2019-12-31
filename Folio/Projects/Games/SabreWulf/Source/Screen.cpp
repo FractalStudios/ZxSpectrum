@@ -695,7 +695,7 @@ FolioStatus Screen::CheckNastySprites (Gdiplus::Graphics &graphics)
 
             if (itr->m_sprite->IsDead ())
             {
-                // Yes. Remove it from the the screen's nasty sprites list.
+                // Yes. Remove it from the screen's nasty sprites list.
 
                 itr = m_nastySpriteDrawingElementsList.erase (itr);
             } // Endif.

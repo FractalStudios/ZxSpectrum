@@ -215,8 +215,7 @@ typedef std::shared_ptr<SpriteGraphicsMap>  SpriteGraphicsMapPtr;
 
 // Routines.
 
-extern  FolioStatus CreateSpriteGraphics (FolioHandle           dcHandle, 
-                                          FolioHandle           instanceHandle,
+extern  FolioStatus CreateSpriteGraphics (FolioHandle           instanceHandle,
                                           SpriteGraphicsMapPtr  &spriteGraphicsMap);
 extern  FolioStatus FindSpriteGraphic (SPRITE_ID                                spriteId,
                                        const SpriteGraphicsMapPtr               &spriteGraphicsMap,

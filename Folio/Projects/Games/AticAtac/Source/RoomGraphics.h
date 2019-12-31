@@ -1,7 +1,6 @@
 #pragma once
 
 // STL includes.
-#include    <map>
 #include    <memory>
 
 // "Home-made" includes.
@@ -26,18 +25,18 @@ static  const   Int32   MAX_ROOM_HEIGHT = 192;  // Maximum height of a room.
 enum ROOM_ID
 {
     ROOM_UNDEFINED = Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED,
-    ROOM_0 = 0,
-    ROOM_1,
-    ROOM_2,
-    ROOM_3,
-    ROOM_4,
-    ROOM_5,
-    ROOM_6,
-    ROOM_7,
-    ROOM_8,
-    ROOM_9,
-    ROOM_10,
-    ROOM_11,
+    ROOM_0  = IDB_BITMAP_ROOM_0,
+    ROOM_1  = IDB_BITMAP_ROOM_1,
+    ROOM_2  = IDB_BITMAP_ROOM_2,
+    ROOM_3  = IDB_BITMAP_ROOM_3,
+    ROOM_4  = IDB_BITMAP_ROOM_4,
+    ROOM_5  = IDB_BITMAP_ROOM_5,
+    ROOM_6  = IDB_BITMAP_ROOM_6,
+    ROOM_7  = IDB_BITMAP_ROOM_7,
+    ROOM_8  = IDB_BITMAP_ROOM_8,
+    ROOM_9  = IDB_BITMAP_ROOM_9,
+    ROOM_10 = IDB_BITMAP_ROOM_10,
+    ROOM_11 = IDB_BITMAP_ROOM_11,
 }; // Endenum.
 
 
@@ -48,8 +47,7 @@ public:
     RoomGraphic ();
     ~RoomGraphic ();
 
-    FolioStatus Create (FolioHandle dcHandle,
-                        FolioHandle instanceHandle,
+    FolioStatus Create (FolioHandle instanceHandle,
                         UInt16      bitmapResourceId,
                         Int32       floorXLeft,
                         Int32       floorYTop,
@@ -76,15 +74,14 @@ private:
 // Room graphics pointer.
 typedef std::shared_ptr<RoomGraphic>    RoomGraphicPtr;
 
-// Room graphics map.
-typedef std::map<ROOM_ID, RoomGraphicPtr>  RoomGraphicsMap;
-             
 
 // Routines.
 
-extern  FolioStatus BuildRoomGraphics (FolioHandle      dcHandle, 
-                                       FolioHandle      instanceHandle,
-                                       RoomGraphicsMap  &roomGraphicsMap);
+extern  FolioStatus CreateRoomGraphics (FolioHandle instanceHandle);
+extern  FolioStatus QueryRoomGraphic (Folio::Core::Game::ResourceGraphicsCache::OwnerId ownerId,
+                                      ROOM_ID                                           roomId, 
+                                      RoomGraphicPtr                                    &roomGraphic);
+extern  FolioStatus ReleaseRoomGraphic (const RoomGraphic &roomGraphic);
 
 } // Endnamespace.
 

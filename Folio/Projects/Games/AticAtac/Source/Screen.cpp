@@ -1,5 +1,7 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
+#include    "DrawingElement.h"
+#include    "Globals.h"
 #include    "Screen.h"
 #include    "Ultimate.h"
 
@@ -179,7 +181,7 @@ Folio::Core::Util::Sound::SoundSample   Screen::m_closeDoorSoundSample(16, 8883.
 Screen::Screen ()
 :   m_canvas(0),
     m_informationPanel(0),
-    m_spriteGraphicsMap(0),
+    m_screenInitialised(false),
     m_screenNumber(SCREEN_NUMBER_UNDEFINED),
     m_roomId(ROOM_UNDEFINED),
     m_roomColour(Folio::Core::Game::ZxSpectrum::UNDEFINED),
@@ -193,8 +195,8 @@ Screen::Screen (UInt32                                  screenNumber,
                 ROOM_ID                                 roomId,
                 Folio::Core::Game::ZxSpectrum::COLOUR   roomColour)
 :   m_canvas(0),
-    m_spriteGraphicsMap(0),
     m_informationPanel(0),
+    m_screenInitialised(false),
     m_screenNumber(screenNumber),
     m_roomId(roomId),
     m_roomColour(roomColour),
@@ -206,6 +208,9 @@ Screen::Screen (UInt32                                  screenNumber,
 
 Screen::~Screen ()
 {
+    // Release the screen's resource graphics.
+
+    ReleaseResourceGraphics ();
 } // Endproc.
 
 
@@ -215,29 +220,15 @@ void    Screen::SetCanvas (Folio::Core::Applet::Canvas &canvas)
 } // Endproc.
 
 
-void    Screen::SetRoomGraphic (const RoomGraphicsMap &roomGraphicsMap)
+void    Screen::SetBackgroundItemsList (const BackgroundItemsList &backgroundItemsList)
 {
-    // Find the room in the room graphics map.
-
-    RoomGraphicsMap::const_iterator itr = roomGraphicsMap.find (m_roomId);
-
-    if (itr != roomGraphicsMap.end ())
-    {
-        // Note the room graphic.
-
-        m_roomGraphic = itr->second;
-
-        // Get the room's collision grid.
-
-        m_collisionGrid = m_roomGraphic->GetCollisionGrid ();
-    } // Endif.
-
+    m_backgroundItemsList = backgroundItemsList;
 } // Endproc.
 
 
-void    Screen::SetSpriteGraphicsMap (const SpriteGraphicsMap &spriteGraphicsMap)
+void    Screen::SetStaticSpritesList (const StaticSpritesList &staticSpritesList)
 {
-    m_spriteGraphicsMap = const_cast<SpriteGraphicsMap *> (&(spriteGraphicsMap));
+    m_staticSpritesList = staticSpritesList;
 } // Endproc.
 
 
@@ -265,71 +256,47 @@ Folio::Core::Game::ZxSpectrum::COLOUR   Screen::GetRoomColour () const
 } // Endproc.
 
 
-void    Screen::SetBackgroundItemsList (const BackgroundItemsList &backgroundItemsList)
-{
-    m_backgroundItemsList = backgroundItemsList;
-} // Endproc.
-
-
-void    Screen::SetStaticSpritesList (const StaticSpritesList &staticSpritesList)
-{
-    m_staticSpritesList = staticSpritesList;
-} // Endproc.
-
-
-FolioStatus Screen::QueryDrawingElements (const PlayerSpritePtr                     &mainPlayer,
-                                          Folio::Core::Game::DrawingElementsList    &drawingElementsList)
+FolioStatus Screen::QueryDrawingElements (Folio::Core::Game::DrawingElementsList &drawingElementsList)
 {
     FolioStatus status = ERR_SUCCESS;
 
     drawingElementsList.clear();    // Initialise!
 
-    // Has the screen's drawing elements been set?
+    // Is the screen initialised?
 
-    if (m_drawingElementsSet.empty ())
+    if (IsScreenInitialised ())
     {
-        // No. Note the main player.
+        // Yes. Enter the screen.
 
-        m_mainPlayer = mainPlayer;
-
-        // Initialise the screen.
-
-        status = InitialiseScreen ();
-
-        if (status == ERR_SUCCESS)
-        {
-            // Increment the number of rooms visited.
-
-            m_informationPanel->IncrementNumRoomsVisited ();
-        } // Endif.
-
+        status = EnterScreen ();
     } // Endif.
 
     else
     {
-        m_createNastySpriteTickCount = 0;   // Reset the create nasty sprite tick count.
+        // No. Initialise the screen.
 
-        // Update the screen.
-
-        status = UpdateScreen ();
+        status = InitialiseScreen ();
     } // Endelse.
 
     if (status == ERR_SUCCESS)
     {
-        if (!m_drawingElementsSet.empty ())
-        {
-            // Add the drawing elements of the screen.
-
-            std::copy (m_drawingElementsSet.begin (), 
-                       m_drawingElementsSet.end (), 
-                       std::back_inserter (drawingElementsList));
-        } // Endif.
+        // Start any screen boss sprite.
+                                    
+        status = StartBossSprite ();
 
         if (status == ERR_SUCCESS)
         {
-            // Start any screen boss sprite.
-                                    
-            status = StartBossSprite ();
+            // Any screen drawing elements?
+
+            if (!m_drawingElementsSet.empty ())
+            {
+                // Yes. Add the drawing elements of the screen to the drawing elements list.
+
+                std::copy (m_drawingElementsSet.begin (), 
+                           m_drawingElementsSet.end (), 
+                           std::back_inserter (drawingElementsList));
+            } // Endif.
+
         } // Endif.
 
     } // Endif.
@@ -377,25 +344,9 @@ FolioStatus Screen::HandleProcessFrame (bool    &isStarting,
 
                 if (mainPlayerIsDead && (status == ERR_SUCCESS))
                 {
-                    // Yes. Kill the nasty sprites.
+                    // Yes.
 
-                    status = KillNastySprites ();
-
-                    if (status == ERR_SUCCESS)
-                    {
-                        // Remove the weapon sprite.
-
-                        status = RemoveWeaponSprite ();
-
-                        if (status == ERR_SUCCESS)
-                        {
-                            // The main player is dead.
-
-                            m_mainPlayer->SetDead ();
-                        } // Endif.
-
-                    } // Endif.
-
+                    status = HandleMainPlayerDead ();
                 } // Endif.
 
             } // Endif.
@@ -408,75 +359,98 @@ FolioStatus Screen::HandleProcessFrame (bool    &isStarting,
 } // Endproc.
 
 
-UInt32  Screen::MoveToNewScreen (const BackgroundItemsList &backgroundItemsList)
+FolioStatus Screen::QueryNewScreen (UInt32 &newScreenNumber)
 {
-    // Get the current screen exit.
+    newScreenNumber = SCREEN_NUMBER_UNDEFINED;  // Initialise!
 
-    CollisionGrid::ScreenExit   screenExit(m_mainPlayer->GetScreenExit ());
+    // Exit the current screen.
 
-    // Get the new screen.
+    FolioStatus status = ExitScreen ();
 
-    BackgroundItemPtr   screenEntranceBackgroundItem;
-
-    UInt32  screenNumber = GetNewScreenNumber (reinterpret_cast<BackgroundItem *> (screenExit.m_userData), 
-                                               backgroundItemsList, 
-                                               screenEntranceBackgroundItem);
-
-    // Is the screen entrance locked?
-
-    if (BackgroundItem::IsLockedDoor (screenEntranceBackgroundItem->GetBackgroundItemFlags ()))
+    if (status == ERR_SUCCESS)
     {
-        // Yes. Unlock it.
+        // Get the current screen exit.
 
-        screenEntranceBackgroundItem->SetDoorUnlocked ();
+        BackgroundItem  *screenExitBackgroundItem(reinterpret_cast<BackgroundItem *> (g_mainPlayer->GetScreenExit ().m_userData));
+        
+       // Get the new screen number.
+
+        newScreenNumber = GetNewScreenNumber (screenExitBackgroundItem, g_backgroundItemsList);
+
+        // Get the new screen entrance.
+
+        BackgroundItemPtr   screenEntranceBackgroundItem(GetOppositeDoor (screenExitBackgroundItem, g_backgroundItemsList));
+
+        // Is the new screen's entrance closed?
+
+        if (BackgroundItem::IsClosedDoor (screenEntranceBackgroundItem->GetBackgroundItemFlags ()))
+        {
+            // Yes. Open it.
+
+            status = screenEntranceBackgroundItem->SetDoorOpen ();
+        } // Endif.
+
+        // Is the new screen's entrance locked?
+
+        else
+        if (BackgroundItem::IsLockedDoor (screenEntranceBackgroundItem->GetBackgroundItemFlags ()))
+        {
+            // Yes. Unlock it.
+
+            status = screenEntranceBackgroundItem->SetDoorUnlocked ();
+        } // Endelseif.
+
+        if (status == ERR_SUCCESS)
+        {
+            // Set the main player's position.
+
+            switch (screenEntranceBackgroundItem->GetDoorOrientation ())
+            {
+            case CollisionGrid::ScreenExit::TOP:
+            case CollisionGrid::ScreenExit::FLOOR:
+                status = g_mainPlayer->SetScreenTopLeft (screenEntranceBackgroundItem->GetScreenXLeft () + (screenEntranceBackgroundItem->GetScreenWidth () - g_mainPlayer->GetScreenWidth ()) / 2,
+                                                         screenEntranceBackgroundItem->GetScreenYTop ());
+                break;
+
+            case CollisionGrid::ScreenExit::BOTTOM:
+                status = g_mainPlayer->SetScreenTopLeft (screenEntranceBackgroundItem->GetScreenXLeft () + (screenEntranceBackgroundItem->GetScreenWidth () - g_mainPlayer->GetScreenWidth ()) / 2,
+                                                         screenEntranceBackgroundItem->GetScreenYTop () + screenEntranceBackgroundItem->GetScreenHeight () - g_mainPlayer->GetScreenHeight ());
+                break;
+
+            case CollisionGrid::ScreenExit::LEFT:
+                status = g_mainPlayer->SetScreenTopLeft (screenEntranceBackgroundItem->GetScreenXLeft (),
+                                                         screenEntranceBackgroundItem->GetScreenYTop () + (screenEntranceBackgroundItem->GetScreenHeight () - g_mainPlayer->GetScreenHeight ()) / 2);
+                break;
+
+            case CollisionGrid::ScreenExit::RIGHT:
+                status = g_mainPlayer->SetScreenTopLeft (screenEntranceBackgroundItem->GetScreenXLeft (),
+                                                         screenEntranceBackgroundItem->GetScreenYTop () + (screenEntranceBackgroundItem->GetScreenHeight () - g_mainPlayer->GetScreenHeight ()) / 2);
+                break;
+
+            default:
+                break;
+            } // Endswitch.
+
+            if (status == ERR_SUCCESS)
+            {
+                // The main player is at a screen entrance.
+
+                g_mainPlayer->SetScreenEntrance (CollisionGrid::ScreenEntrance(screenEntranceBackgroundItem->GetDoorOrientation (),
+                                                                               screenEntranceBackgroundItem->GetScreenRect (),
+                                                                               CollisionGrid::ScreenEntrance::OPEN,
+                                                                               screenEntranceBackgroundItem.get ()));
+
+                // Play the entered screen sound.
+
+                m_playEnteredScreenSound                = true;
+                m_currentEnteredScreenSoundSampleIndex  = 0;
+            } // Endif.
+
+        } // Endif.
+
     } // Endif.
 
-    // Set the main player's position.
-
-    switch (screenEntranceBackgroundItem->GetDoorOrientation ())
-    {
-    case CollisionGrid::ScreenExit::TOP:
-    case CollisionGrid::ScreenExit::FLOOR:
-        m_mainPlayer->SetScreenTopLeft (screenEntranceBackgroundItem->GetScreenXLeft () + (screenEntranceBackgroundItem->GetScreenWidth () - m_mainPlayer->GetScreenWidth ()) / 2,
-                                        screenEntranceBackgroundItem->GetScreenYTop ());
-        break;
-
-    case CollisionGrid::ScreenExit::BOTTOM:
-        m_mainPlayer->SetScreenTopLeft (screenEntranceBackgroundItem->GetScreenXLeft () + (screenEntranceBackgroundItem->GetScreenWidth () - m_mainPlayer->GetScreenWidth ()) / 2,
-                                        screenEntranceBackgroundItem->GetScreenYTop () + screenEntranceBackgroundItem->GetScreenHeight () - m_mainPlayer->GetScreenHeight ());
-        break;
-
-    case CollisionGrid::ScreenExit::LEFT:
-        m_mainPlayer->SetScreenTopLeft (screenEntranceBackgroundItem->GetScreenXLeft (),
-                                        screenEntranceBackgroundItem->GetScreenYTop () + (screenEntranceBackgroundItem->GetScreenHeight () - m_mainPlayer->GetScreenHeight ()) / 2);
-        break;
-
-    case CollisionGrid::ScreenExit::RIGHT:
-        m_mainPlayer->SetScreenTopLeft (screenEntranceBackgroundItem->GetScreenXLeft (),
-                                        screenEntranceBackgroundItem->GetScreenYTop () + (screenEntranceBackgroundItem->GetScreenHeight () - m_mainPlayer->GetScreenHeight ()) / 2);
-        break;
-
-    default:
-        break;
-    } // Endswitch.
-
-    // The main player is at a screen entrance.
-
-    m_mainPlayer->SetScreenEntrance (CollisionGrid::ScreenEntrance(screenEntranceBackgroundItem->GetDoorOrientation (),
-                                                                   screenEntranceBackgroundItem->GetScreenRect (),
-                                                                   CollisionGrid::ScreenEntrance::OPEN,
-                                                                   screenEntranceBackgroundItem.get ()));
-
-    // Note the exit screen tick count for the old screen.
-
-    m_exitScreenTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
-
-    // Start playing the entered screen sound.
-
-    m_playEnteredScreenSound                = true;
-    m_currentEnteredScreenSoundSampleIndex  = 0;
-    
-    return (screenNumber);
+    return (status);
 } // Endproc.
 
 
@@ -491,26 +465,25 @@ FolioStatus Screen::StoreSpriteBackgrounds (Gdiplus::Graphics &graphics)
     {
         // Store the nasty sprites' underlying backgrounds.
     
-        status = Folio::Core::Game::StoreSpriteBackgrounds<NastySpriteDrawingElementsList> (graphics, 
-                                                                                            m_nastySpriteDrawingElementsList);
+        status = StoreNastySpriteBackgrounds (graphics);
 
         if (status == ERR_SUCCESS)
         {
             // Store the boss sprite's underlying background.
     
-            status = m_bossSpriteDrawingElement.StoreSpriteBackground (graphics);
+            status = g_bossSpriteDrawingElement.StoreSpriteBackground (graphics);
 
             if (status == ERR_SUCCESS)
             {
                 // Store the weapon sprite's underlying background.
     
-                status = m_weaponSpriteDrawingElement.StoreSpriteBackground (graphics);
+                status = g_weaponSpriteDrawingElement.StoreSpriteBackground (graphics);
 
                 if (status == ERR_SUCCESS)
                 {
                     // Store the main player's underlying background.
 
-                    status = m_mainPlayer->StoreUnderlyingBackground (graphics);
+                    status = g_mainPlayer->StoreUnderlyingBackground (graphics);
                 } // Endif.
     
             } // Endif.
@@ -534,26 +507,25 @@ FolioStatus Screen::RestoreSpriteBackgrounds (Gdiplus::Graphics &graphics)
     {
         // Restore the nasty sprites' underlying backgrounds.
     
-        status = Folio::Core::Game::RestoreSpriteBackgrounds<NastySpriteDrawingElementsList> (graphics, 
-                                                                                              m_nastySpriteDrawingElementsList);
+        status = RestoreNastySpriteBackgrounds (graphics);
 
         if (status == ERR_SUCCESS)
         {
             // Restore the boss sprite's underlying background.
     
-            status = m_bossSpriteDrawingElement.RestoreSpriteBackground (graphics);
+            status = g_bossSpriteDrawingElement.RestoreSpriteBackground (graphics);
 
             if (status == ERR_SUCCESS)
             {
                 // Restore the weapon sprite's underlying background.
     
-                status = m_weaponSpriteDrawingElement.RestoreSpriteBackground (graphics);
+                status = g_weaponSpriteDrawingElement.RestoreSpriteBackground (graphics);
 
                 if (status == ERR_SUCCESS)
                 {
                     // Restore the main player's underlying background.
         
-                    status = m_mainPlayer->RestoreUnderlyingBackground (graphics);
+                    status = g_mainPlayer->RestoreUnderlyingBackground (graphics);
                 } // Endif.
     
             } // Endif.
@@ -577,26 +549,25 @@ FolioStatus Screen::DrawSprites (Gdiplus::Graphics &graphics)
     {
         // Draw the nasty sprites.
     
-        status = Folio::Core::Game::DrawSprites<NastySpriteDrawingElementsList> (graphics, 
-                                                                                 m_nastySpriteDrawingElementsList);
+        status = DrawNastySprites (graphics);
 
         if (status == ERR_SUCCESS)
         {
             // Draw the boss sprite.
     
-            status = m_bossSpriteDrawingElement.DrawSprite (graphics);
+            status = g_bossSpriteDrawingElement.DrawSprite (graphics);
 
             if (status == ERR_SUCCESS)
             {
                 // Draw the weapon sprite.
     
-                status = m_weaponSpriteDrawingElement.DrawSprite (graphics);
+                status = g_weaponSpriteDrawingElement.DrawSprite (graphics);
 
                 if (status == ERR_SUCCESS)
                 {
                     // Draw the main player.
 
-                    status = m_mainPlayer->Draw (graphics);
+                    status = g_mainPlayer->Draw (graphics);
 
                     if (status == ERR_SUCCESS)
                     {
@@ -621,13 +592,19 @@ FolioStatus Screen::AddGravestone ()
 {
     // Add a gravestone to the screen.
 
-    return (AddStaticSprite (STATIC_SPRITE_GRAVESTONE, m_mainPlayer->GetScreenRect ()));
+    return (AddStaticSprite (STATIC_SPRITE_GRAVESTONE, g_mainPlayer->GetScreenRect ()));
 } // Endproc.
 
 
 UInt32  Screen::GetTotalNumRooms ()
 {
     return (sizeof (g_screensTable) / sizeof (Screen));
+} // Endproc.
+
+
+bool    Screen::IsScreenInitialised () const
+{
+    return (m_screenInitialised);
 } // Endproc.
 
 
@@ -645,7 +622,7 @@ FolioStatus Screen::InitialiseScreen ()
     {
         // Build the screen's drawing elements.
 
-        status = BuildScreenDrawingElements ();
+        status = BuildScreenDrawingElements (true);
 
         if (status == ERR_SUCCESS)
         {
@@ -655,9 +632,19 @@ FolioStatus Screen::InitialiseScreen ()
 
             if (status == ERR_SUCCESS)
             {
-                // Initialise the screen's static sprites.
+                // Build the screen's static sprites.
 
-                status = InitialiseStaticSprites ();
+                status = BuildStaticSprites (true);
+
+                if (status == ERR_SUCCESS)
+                {
+                    // Increment the number of rooms visited.
+
+                    m_informationPanel->IncrementNumRoomsVisited ();
+
+                    m_screenInitialised = true;
+                } // Endif.
+        
             } // Endif.
 
         } // Endif.
@@ -668,61 +655,81 @@ FolioStatus Screen::InitialiseScreen ()
 } // Endproc.
 
 
-FolioStatus Screen::UpdateScreen ()
+FolioStatus Screen::EnterScreen ()
 {
     FolioStatus status = ERR_SUCCESS;
 
-    // Should the nasty sprites be removed?
+    // Should the screen's nasty sprites be removed?
 
-    if (Folio::Core::Util::DateTime::GetCurrentTickCount () > (m_exitScreenTickCount + MAX_REMOVE_NASTY_SPRITES_TICK_COUNT))
+    if (m_exitScreenTickCount &&
+        (Folio::Core::Util::DateTime::GetCurrentTickCount () > (m_exitScreenTickCount + MAX_REMOVE_NASTY_SPRITES_TICK_COUNT)))
     {
-        // Yes.
+        // Yes. Remove the screen's nasty sprites.
 
         status = RemoveNastySprites ();
     } // Endif.
 
     if (status == ERR_SUCCESS)
     {
-        // Remove the weapon sprite.
+        m_exitScreenTickCount           = 0;    // Reset the screen's exit screen tick count.
+        m_createNastySpriteTickCount    = 0;    // Reset the screen's nasty sprite tick count.
 
-        status = RemoveWeaponSprite ();
+        // Destroy the weapon sprite's drawing element.
+
+        g_weaponSpriteDrawingElement.DestroyDrawingElement ();
+
+        // Build the screen's drawing elements.
+
+        status = BuildScreenDrawingElements (false);
 
         if (status == ERR_SUCCESS)
         {
-            // Reset the weapon sprite
+            // Build the screen's static sprites.
 
-            m_weaponSpriteDrawingElement.Reset ();
-        
-            // Remove the information panel's drawing elements from the screen's drawing elements.
-
-            status = RemoveScreenDrawingElements (DRAWING_ELEMENT_INFORMATION_PANEL_ITEM);
+            status = BuildStaticSprites (false);
 
             if (status == ERR_SUCCESS)
             {
-                // Get the information panel's drawing elements.
+                // Open or close the screen's doors.
 
-                Folio::Core::Game::DrawingElementsList  informationPanelDrawingElementsList;
-
-                status = m_informationPanel->QueryDrawingElements (m_canvas->GetCanvasDcHandle (),
-                                                                   m_roomColour, 
-                                                                   informationPanelDrawingElementsList);
-
-                if (status == ERR_SUCCESS)
-                {
-                    // Add the information panel's drawing elements to the screen's drawing elements.
-
-                    m_drawingElementsSet.insert (informationPanelDrawingElementsList.begin (),
-                                                 informationPanelDrawingElementsList.end ());
-
-                    // Open or close the screen's doors.
-
-                    status = CheckDoors (true); // We're building the screen.
-                } // Endif.
-
+                status = CheckDoors (true); // We're entering the screen.
             } // Endif.
-
+        
         } // Endif.
 
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus Screen::ExitScreen ()
+{
+    // Release the screen's graphics from the resource graphics cache.
+
+    FolioStatus status = ReleaseResourceGraphics ();
+
+    if (status == ERR_SUCCESS)
+    {
+        // Clear the screen's drawing elements.
+
+        m_drawingElementsSet.clear ();
+
+        // Clear the screen's static sprite drawing elements.
+        
+        m_staticSpriteDrawingElementsList.clear ();
+
+        // Remove the boss sprite.
+
+        RemoveBossSprite ();
+
+        // Destroy the weapon sprite's drawing element.
+
+        g_weaponSpriteDrawingElement.DestroyDrawingElement ();
+
+        // Note the screen's exit screen tick count.
+
+        m_exitScreenTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
     } // Endif.
 
     return (status);
@@ -759,7 +766,7 @@ FolioStatus Screen::InitialiseDoors ()
             {
                 // Yes. The door cannot be closed if the main player is in it.
 
-                if (!m_mainPlayer->IsInScreenExit (backgroundItem.GetScreenRect ()) &&
+                if (!g_mainPlayer->IsInScreenExit (backgroundItem.GetScreenRect ()) &&
                     (Folio::Core::Util::Random::GetRandomNumber (DEFAULT_DOOR_TRANSITION) == 0))
                 {
                     // Force the door to be closed once the screen has been drawn.
@@ -775,16 +782,6 @@ FolioStatus Screen::InitialiseDoors ()
                 } // Endelse.
 
             } // Endif.
-
-            // Is this an unlocked door?
-
-            else
-            if (BackgroundItem::IsUnlockedDoor (backgroundItemflags))
-            {
-                // Yes. Open the door.
-
-                backgroundItem.SetDoorOpen ();
-            } // Endelseif.
         
         } // Endif.
 
@@ -794,7 +791,7 @@ FolioStatus Screen::InitialiseDoors ()
 } // Endproc.
 
 
-FolioStatus Screen::CheckDoors (bool buildingScreen)
+FolioStatus Screen::CheckDoors (bool enteringScreen)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -816,86 +813,79 @@ FolioStatus Screen::CheckDoors (bool buildingScreen)
 
         if (BackgroundItem::IsDoor (backgroundItemflags))
         {
-            // Is this a door that can be closed?
-
-            if (BackgroundItem::CanDoorBeClosed (backgroundItemflags))
+            // Yes. Is the screen being entered?
+            
+            if (enteringScreen)
             {
-                // Yes. Is the screen being built?
+                // Yes. Is this an open door?
 
-                if (buildingScreen)
+                if (BackgroundItem::IsOpenDoor (backgroundItemflags))
                 {
-                    // Yes. Just restart the door transition.
-
-                    backgroundItem.SetDoorTransitionTickCount (Folio::Core::Util::DateTime::GetCurrentTickCount ());
+                    // Yes. Make sure the door is open.
+                        
+                    status = OpenDoor (backgroundItem, enteringScreen);
                 } // Endif.
-                
-                // Should the door be closed? 
+
+                // Is this a closed door?
 
                 else
-                if (backgroundItem.IsDoorTransition (Folio::Core::Util::DateTime::GetCurrentTickCount ()))
+                if (BackgroundItem::IsClosedDoor (backgroundItemflags))
                 {
-                    // Yes. The door cannot be closed if the main player is in it.
-
-                    if (m_mainPlayer->IsInScreenExit (backgroundItem.GetScreenRect ()))
-                    {
-                        // Just restart the door transition.
-
-                        backgroundItem.SetDoorTransitionTickCount (Folio::Core::Util::DateTime::GetCurrentTickCount ());
-                    } // Endif.
-
-                    else
-                    {
-                        // Close the door.
+                    // Yes. Make sure the door is closed.
                 
-                       status = CloseDoor (backgroundItem, buildingScreen);
-                    } // Endelse.
-
+                    status = CloseDoor (backgroundItem, enteringScreen);
                 } // Endelseif.
 
             } // Endif.
-
-            // Is this a closed door?
-
+            
             else
-            if (BackgroundItem::IsClosedDoor (backgroundItemflags))
             {
-                // Yes. Is the screen being built?
+                // Is this a door that can be closed?
 
-                if (buildingScreen)
+                if (BackgroundItem::CanDoorBeClosed (backgroundItemflags))
                 {
-                    // Yes. Close the door.
+                    // Yes. Should the door be closed? 
+
+                    if (backgroundItem.IsDoorTransition (Folio::Core::Util::DateTime::GetCurrentTickCount ()))
+                    {
+                        // Yes. The door cannot be closed if the main player is in it.
+
+                        if (g_mainPlayer->IsInScreenExit (backgroundItem.GetScreenRect ()))
+                        {
+                            // Just restart the door transition.
+
+                            backgroundItem.SetDoorTransitionTickCount (Folio::Core::Util::DateTime::GetCurrentTickCount ());
+                        } // Endif.
+
+                        else
+                        {
+                            // Close the door.
                 
-                    status = CloseDoor (backgroundItem, buildingScreen);
+                           status = CloseDoor (backgroundItem, enteringScreen);
+                        } // Endelse.
+
+                    } // Endif.
+
                 } // Endif.
 
-                // The door cannot be closed if the main player is in it.
+                // Is this a closed door?
 
                 else
-                if (m_mainPlayer->IsInScreenExit (backgroundItem.GetScreenRect ()))
+                if (BackgroundItem::IsClosedDoor (backgroundItemflags))
                 {
-                    backgroundItem.SetDoorTransitionTickCount (Folio::Core::Util::DateTime::GetCurrentTickCount ());
-                } // Endelseif.
-
-                else
-                if (backgroundItem.IsDoorTransition (Folio::Core::Util::DateTime::GetCurrentTickCount ()))
-                {
-                    // Open the door.
+                    // Yes. Should the door be opened? 
                 
-                    status = OpenDoor (backgroundItem, buildingScreen);
-                } // Endelseif.
-
-            } // Endelseif.
-        
-            // Is this an unlocked door?
-
-            else
-            if (BackgroundItem::IsUnlockedDoor (backgroundItemflags))
-            {
-                // Yes. Open the door.
+                    if (backgroundItem.IsDoorTransition (Folio::Core::Util::DateTime::GetCurrentTickCount ()))
+                    {
+                        // Yes. Open the door.
                 
-                status = OpenDoor (backgroundItem, buildingScreen);
-            } // Endelseif.
+                        status = OpenDoor (backgroundItem, enteringScreen);
+                    } // Endif.
+
+                } // Endelseif.
         
+            } // Endelse.
+
         } // Endif.
 
     } // Endfor.
@@ -905,26 +895,26 @@ FolioStatus Screen::CheckDoors (bool buildingScreen)
 
 
 FolioStatus Screen::OpenDoor (BackgroundItem    &backgroundItem, 
-                              bool              buildingScreen)
+                              bool              enteringScreen)
 {
     // Open the door.
 
-    return (UpdateDoor (backgroundItem, true, buildingScreen));
+    return (UpdateDoor (backgroundItem, true, enteringScreen));
 } // Endproc.
 
 
 FolioStatus Screen::CloseDoor (BackgroundItem   &backgroundItem, 
-                               bool             buildingScreen)
+                               bool             enteringScreen)
 {
     // Close the door.
 
-    return (UpdateDoor (backgroundItem, false, buildingScreen));
+    return (UpdateDoor (backgroundItem, false, enteringScreen));
 } // Endproc.
 
 
 FolioStatus Screen::UpdateDoor (BackgroundItem  &backgroundItem,
                                 bool            openDoor,
-                                bool            buildingScreen)
+                                bool            enteringScreen)
 {
     // Remove the background item's drawing elements from the screen's drawing elements.
 
@@ -936,22 +926,30 @@ FolioStatus Screen::UpdateDoor (BackgroundItem  &backgroundItem,
         {
             // Open the door.
 
-            backgroundItem.SetDoorOpen ();
+            status = backgroundItem.SetDoorOpen (true);
 
-            // Open the screen exit.
+            if (status == ERR_SUCCESS)
+            {
+                // Open the screen exit.
 
-            status = m_collisionGrid.OpenScreenExit (&(backgroundItem));
+                status = m_collisionGrid.OpenScreenExit (&(backgroundItem));
+            } // Endif.
+
         } // Endif.
 
         else
         {
             // Close the door.
 
-            backgroundItem.SetDoorClosed ();
+            status = backgroundItem.SetDoorClosed (true);
 
-            // Close the screen exit.
+            if (status == ERR_SUCCESS)
+            {
+                // Close the screen exit.
 
-            status = m_collisionGrid.CloseScreenExit (&(backgroundItem));
+                status = m_collisionGrid.CloseScreenExit (&(backgroundItem));
+            } // Endif.
+
         } // Endelse.
 
         if (status == ERR_SUCCESS)
@@ -963,11 +961,11 @@ FolioStatus Screen::UpdateDoor (BackgroundItem  &backgroundItem,
             FolioStatus status = backgroundItem.QueryDrawingElements (m_canvas->GetCanvasDcHandle (),
                                                                       m_roomColour,
                                                                       drawingElementsList,
-                                                                      openDoor || !buildingScreen ? true : false);  // If the door is closed and the screen is being built, the mask is not required.
+                                                                      openDoor || !enteringScreen ? true : false);  // If the door is closed and the screen is being entered, the mask is not required.
 
             if ((status == ERR_SUCCESS) && !drawingElementsList.empty ())
             {
-                // Add the background item's drawing elements.
+                // Add the background item's drawing elements to the screen's drawing elements.
 
                 status = AddBackgroundItemDrawingElements (drawingElementsList);
 
@@ -977,19 +975,12 @@ FolioStatus Screen::UpdateDoor (BackgroundItem  &backgroundItem,
 
                     backgroundItem.SetDoorTransitionTickCount (Folio::Core::Util::DateTime::GetCurrentTickCount ());
 
-                    if (openDoor)
+                    if (!enteringScreen)
                     {
-                        // Play the open door sound.
+                        // Play the open/close door sound sample.
 
-                        Folio::Core::Util::Sound::PlaySoundSample (m_openDoorSoundSample);
+                        Folio::Core::Util::Sound::PlaySoundSample (openDoor ? m_openDoorSoundSample : m_closeDoorSoundSample);
                     } // Endif.
-
-                    else
-                    {
-                        // Play the close door sound.
-
-                        Folio::Core::Util::Sound::PlaySoundSample (m_closeDoorSoundSample);
-                    } // Endelse.
 
                 } // Endif.
 
@@ -1003,7 +994,7 @@ FolioStatus Screen::UpdateDoor (BackgroundItem  &backgroundItem,
 } // Endproc.
 
 
-bool    Screen::IsDoor(const BackgroundItem  &backgroundItem) const
+bool    Screen::IsDoor (const BackgroundItem &backgroundItem) const
 {
     bool    isDoor = false; // Initialise!
 
@@ -1013,7 +1004,7 @@ bool    Screen::IsDoor(const BackgroundItem  &backgroundItem) const
 
     // Depending on the main player, certain background items are secret doors.
 
-    switch (m_mainPlayer->GetPlayerSpriteId ())
+    switch (g_mainPlayer->GetPlayerSpriteId ())
     {
     case PLAYER_SPRITE_WIZARD:
         isDoor = BackgroundItem::IsDoor (backgroundItemflags) && 
@@ -1075,7 +1066,7 @@ CollisionGrid::ScreenExit::STATE    Screen::GetDoorState (const BackgroundItem &
     {
         // Depending on the main player, certain background items are secret doors.
 
-        switch (m_mainPlayer->GetPlayerSpriteId ())
+        switch (g_mainPlayer->GetPlayerSpriteId ())
         {
         case PLAYER_SPRITE_WIZARD:
             if (BackgroundItem::IsWizardDoor (backgroundItemflags))
@@ -1179,7 +1170,7 @@ FolioStatus Screen::CheckSprites (Gdiplus::Graphics &graphics)
 } // Endproc.
 
 
-FolioStatus Screen::InitialiseStaticSprites ()
+FolioStatus Screen::BuildStaticSprites (bool initialise)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -1187,15 +1178,27 @@ FolioStatus Screen::InitialiseStaticSprites ()
 
     if (!m_staticSpritesList.empty ())
     {
+        // Get the canvas device context.
+
+        FolioHandle dcHandle = m_canvas->GetCanvasDcHandle ();
+
         // Add each static sprite to the screen.
 
         for (StaticSpritesList::const_iterator itr = m_staticSpritesList.begin ();
              (status == ERR_SUCCESS) && (itr != m_staticSpritesList.end ());
              ++itr)
         {
-            // Add the static sprite to the screen.
+            // Create the static sprite.
 
-            status = AddStaticSprite (*itr);
+            status = itr->get ()->Create (dcHandle);
+
+            if (status == ERR_SUCCESS)
+            {
+                // Add the static sprite to the screen.
+
+                status = AddStaticSprite (*itr, false);
+            } // Endif.
+
         } // Endfor.
 
     } // Endif.
@@ -1239,8 +1242,16 @@ FolioStatus Screen::CheckStaticSprites (Gdiplus::Graphics &graphics)
 } // Endproc.
 
 
-FolioStatus Screen::AddStaticSprite (const StaticSpritePtr &staticSprite)
+FolioStatus Screen::AddStaticSprite (const StaticSpritePtr  &staticSprite,
+                                     bool                   addToStaticSpritesList)
 {
+    if (addToStaticSpritesList)
+    {
+        // Add to the screen's static sprite list.
+
+        m_staticSpritesList.push_back (staticSprite);
+    } // Endif.
+    
     // Create a static sprite drawing element.
 
     StaticSpriteDrawingElement  staticSpriteDrawingElement(DRAWING_ELEMENT_STATIC_SPRITE,
@@ -1266,11 +1277,10 @@ FolioStatus Screen::AddStaticSprite (STATIC_SPRITE_ID       staticSpriteId,
     
     FolioStatus status = staticSprite->Create (m_canvas->GetCanvasDcHandle (),
                                                staticSpriteId,
-                                               *m_spriteGraphicsMap,
                                                m_screenNumber,
                                                screenRect.X,
                                                screenRect.Y + screenRect.Height - 1, // Screen Y bottom.
-                                               GetStaticSpriteColour (staticSpriteId));
+                                               StaticSprite::GetStaticSpriteColour (staticSpriteId));
 
     if (status == ERR_SUCCESS)
     {
@@ -1287,7 +1297,7 @@ FolioStatus Screen::AddStaticSprite (STATIC_SPRITE_ID       staticSpriteId,
         {
             // Restore the boss sprite's underlying background.
     
-            status = m_bossSpriteDrawingElement.RestoreSpriteBackground (*graphics);
+            status = g_bossSpriteDrawingElement.RestoreSpriteBackground (*graphics);
 
             if (status == ERR_SUCCESS)
             {
@@ -1306,7 +1316,7 @@ FolioStatus Screen::AddStaticSprite (STATIC_SPRITE_ID       staticSpriteId,
                     {
                         // Store the boss sprite's underlying background.
         
-                        status = m_bossSpriteDrawingElement.StoreSpriteBackground (*graphics);
+                        status = g_bossSpriteDrawingElement.StoreSpriteBackground (*graphics);
                     } // Endif.
  
                 } // Endif.
@@ -1344,6 +1354,24 @@ FolioStatus Screen::RemoveStaticSprite (const StaticSpritePtr &staticSprite)
     
     } // Endif.
 
+    if (status == ERR_SUCCESS)
+    {
+        // Release the sprite's graphic resource.
+
+        status = staticSprite->ReleaseResourceGraphics ();
+
+        if (status == ERR_SUCCESS)
+        {
+            // Remove the static sprite from the screen's static sprite list.
+
+            m_staticSpritesList.erase (std::remove(m_staticSpritesList.begin (), 
+                                                   m_staticSpritesList.end (), 
+                                                   staticSprite), 
+                                       m_staticSpritesList.end ());
+        } // Endif.
+
+    } // Endif.
+
     return (status);
 } // Endproc.
 
@@ -1361,26 +1389,33 @@ FolioStatus Screen::CheckNastySprites (Gdiplus::Graphics &graphics)
 
     // Is the main player ready or dying?
 
-    bool    isMainPlayerReady   = m_mainPlayer->IsReady ();
-    bool    isMainPlayerDying   = m_mainPlayer->IsDying ();
+    bool    isMainPlayerReady   = g_mainPlayer->IsReady ();
+    bool    isMainPlayerDying   = g_mainPlayer->IsDying ();
 
     if (isMainPlayerReady || isMainPlayerDying)
     {
-        // Yes. Have we created all the nasty sprites?
+        // Yes. Is the main player ready?
 
-        if (isMainPlayerReady && 
-            (m_nastySpriteDrawingElementsList.size () < MAX_NUM_NASTY_SPRITES))
+        if (isMainPlayerReady)
         {
-            // No. Start any nasty sprites.
+            // Yes. Have we created all the nasty sprites for this screen?
 
-            status = StartNastySprites (graphics);
+            UInt32  numNastySpritesOnScreen = GetNumNastySpritesOnScreen ();
+
+            if (numNastySpritesOnScreen < MAX_NASTY_SPRITES_PER_SCREEN)
+            {
+                // No. Start any nasty sprites.
+
+                status = StartNastySprites (graphics, numNastySpritesOnScreen);
+            } // Endif.
+
         } // Endif.
 
-        if ((status == ERR_SUCCESS) && !m_nastySpriteDrawingElementsList.empty ())
+        if ((status == ERR_SUCCESS) && !g_nastySpriteDrawingElementsList.empty ())
         {
-            // Process the nasty sprites.
+            // Process all the nasty sprites for this screen.
 
-            NastySpriteDrawingElementsList::iterator    itr = m_nastySpriteDrawingElementsList.begin ();
+            NastySpriteDrawingElementsList::iterator    itr = g_nastySpriteDrawingElementsList.begin ();
 
             do
             {
@@ -1388,62 +1423,81 @@ FolioStatus Screen::CheckNastySprites (Gdiplus::Graphics &graphics)
 
                 NastySpritePtr  &nastySprite(itr->m_sprite);
 
-                // Get the state of the nasty sprite.
+                // Is the nasty sprite on this screen?
 
-                switch (nastySprite->GetState ())
+                if (nastySprite->GetNastySpriteScreenNumber () == m_screenNumber)
                 {
-                case NastySprite::STATE_INITIALISED:
-                    // The nasty sprite is initialised.
+                    // Yes. Get the state of the nasty sprite.
 
-                    // Set the nasty sprite's drawing element's collision grid cell value.
-
-                    itr->m_drawingElement->SetCollisionGridCellValue (CollisionGrid::CELL_VALUE_NASTY_SPRITE);
-
-                    status = nastySprite->Static (graphics, m_collisionGrid);
-                    break;
-
-                case NastySprite::STATE_TERMINATED:
-                    // The nasty sprite is terminated.
-                    break;
-
-                case NastySprite::STATE_STATIC:
-                case NastySprite::STATE_MOVING:
-                    // Move the nasty sprite.
-
-                    status = nastySprite->Move (graphics, m_collisionGrid);
-
-                    if (status == ERR_SUCCESS)
+                    switch (nastySprite->GetState ())
                     {
-                        // Set the nasty sprite's drawing element's top-left screen position.
+                    case NastySprite::STATE_INITIALISED:
+                        // The nasty sprite is initialised.
 
-                        itr->m_drawingElement->SetScreenTopLeft (nastySprite->GetScreenXLeft (), nastySprite->GetScreenYTop ());
+                        // Set the nasty sprite's drawing element's collision grid cell value.
 
-                        // Update the nasty sprite in the screen's collision grid.
+                        itr->m_drawingElement->SetCollisionGridCellValue (CollisionGrid::CELL_VALUE_NASTY_SPRITE);
 
-                        status = UpdateCollisionGridDrawingElement (*(itr->m_drawingElement));
+                        status = nastySprite->Static (graphics, m_collisionGrid);
+                        break;
+
+                    case NastySprite::STATE_TERMINATED:
+                        // The nasty sprite is terminated.
+                        break;
+
+                    case NastySprite::STATE_STATIC:
+                    case NastySprite::STATE_MOVING:
+                        // Move the nasty sprite.
+
+                        status = nastySprite->Move (graphics, m_collisionGrid);
+
+                        if (status == ERR_SUCCESS)
+                        {
+                            // Set the nasty sprite's drawing element's top-left screen position.
+
+                            status = itr->m_drawingElement->SetScreenTopLeft (nastySprite->GetScreenXLeft (), 
+                                                                              nastySprite->GetScreenYTop ());
+
+                            if (status == ERR_SUCCESS)
+                            {
+                                // Update the nasty sprite in the screen's collision grid.
+
+                                status = UpdateCollisionGridDrawingElement (*(itr->m_drawingElement));
+                            } // Endif.
+
+                        } // Endif.
+                        break;
+
+                    default:
+                        break;
+                    } // Endswitch.
+
+                    // Is the nasty sprite dead?
+
+                    if (nastySprite->IsDead ())
+                    {
+                        // Yes. Remove the nasty sprite from the nasty sprite 
+                        // drawing elements list.
+
+                        itr = g_nastySpriteDrawingElementsList.erase (itr);
                     } // Endif.
-                    break;
-
-                default:
-                    break;
-                } // Endswitch.
-
-                // Is the nasty sprite dead?
-
-                if (nastySprite->IsDead ())
-                {
-                    // Yes. Remove it from the the screen's nasty sprites list.
-
-                    itr = m_nastySpriteDrawingElementsList.erase (itr);
-                } // Endif.
                 
+                    else
+                    {
+                        ++itr;  // Next nasty sprite.
+                    } // Endelse.
+
+                } // Endif.
+
                 else
                 {
+                    // No.
+
                     ++itr;  // Next nasty sprite.
                 } // Endelse.
 
             } // Enddo.
-            while ((status == ERR_SUCCESS) && (itr != m_nastySpriteDrawingElementsList.end ()));
+            while ((status == ERR_SUCCESS) && (itr != g_nastySpriteDrawingElementsList.end ()));
         } // Endif.
 
     } // Endif.
@@ -1452,7 +1506,8 @@ FolioStatus Screen::CheckNastySprites (Gdiplus::Graphics &graphics)
 } // Endproc.
 
 
-FolioStatus Screen::StartNastySprites (Gdiplus::Graphics &graphics)
+FolioStatus Screen::StartNastySprites (Gdiplus::Graphics    &graphics,
+                                       UInt32               numNastySpritesOnScreen)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -1470,7 +1525,7 @@ FolioStatus Screen::StartNastySprites (Gdiplus::Graphics &graphics)
         {
             // Yes. Calculate the number of nasty sprites to create.
 
-            UInt32  numNastySpritesToCreate = Folio::Core::Util::Random::GetRandomNumber(1, MAX_NUM_NASTY_SPRITES - m_nastySpriteDrawingElementsList.size ());
+            UInt32  numNastySpritesToCreate = Folio::Core::Util::Random::GetRandomNumber(1, MAX_NASTY_SPRITES_PER_SCREEN - numNastySpritesOnScreen);
 
             for (UInt32 nastySpriteCount = 0; 
                  (status == ERR_SUCCESS) && (nastySpriteCount < numNastySpritesToCreate); 
@@ -1505,86 +1560,138 @@ FolioStatus Screen::StartNastySprites (Gdiplus::Graphics &graphics)
 
 FolioStatus Screen::AddNastySprite (NASTY_SPRITE_ID nastySpriteId)
 {
-    // Create the nasty sprite.
+    // Remove a nasty sprite drawing element from the nasty sprite drawing 
+    // elements list, as required.
 
-    NastySpritePtr  nastySprite(new NastySpritePtr::element_type);
-    
-    FolioStatus status = nastySprite->Create (m_canvas->GetCanvasDcHandle (),
-                                              nastySpriteId,
-                                              *m_spriteGraphicsMap,
-                                              m_collisionGrid);
+    FolioStatus status = RemoveNastySpriteDrawingElement (m_screenNumber,
+                                                          MAX_NASTY_SPRITE_DRAWING_ELEMENTS,
+                                                          g_nastySpriteDrawingElementsList);
 
     if (status == ERR_SUCCESS)
     {
-        // The nasty sprite is alive.
+        // Create the nasty sprite.
 
-        nastySprite->SetAlive ();
+        NastySpritePtr  nastySprite(new NastySpritePtr::element_type);
+    
+        status = nastySprite->Create (m_canvas->GetCanvasDcHandle (),
+                                      nastySpriteId,
+                                      m_screenNumber,
+                                      m_collisionGrid);
+       
+        if (status == ERR_SUCCESS)
+        {
+            // Create a nasty sprite drawing element.
 
-        // Create a nasty sprite drawing element.
+            NastySpriteDrawingElement   nastySpriteDrawingElement(DRAWING_ELEMENT_NASTY_SPRITE, 
+                                                                  nastySprite,
+                                                                  nastySprite->GetCollisionGridCellValue ());
 
-        NastySpriteDrawingElement   nastySpriteDrawingElement(DRAWING_ELEMENT_NASTY_SPRITE, nastySprite);
+            // Add the nasty sprite drawing element to the nasty sprite drawing 
+            // elements list.
 
-        // Add to the screen's nasty sprite drawing elements list.
+            status = AddNastySpriteDrawingElement (nastySpriteDrawingElement,
+                                                   g_nastySpriteDrawingElementsList);
 
-        m_nastySpriteDrawingElementsList.push_back (nastySpriteDrawingElement);
+            if (status == ERR_SUCCESS)
+            {
+                // Add nasty sprite to the screen's collision grid.
+
+                status = AddCollisionGridDrawingElement (*(nastySpriteDrawingElement.m_drawingElement));
+            } // Endif.
+
+        } // Endif.
+
     } // Endif.
 
     return (status);
 } // Endproc.
 
 
-FolioStatus Screen::RemoveNastySprites ()
+FolioStatus Screen::RemoveNastySprites (bool onScreenEntry)
 {
     FolioStatus status = ERR_SUCCESS;
 
-    if (!m_nastySpriteDrawingElementsList.empty ())
+    if (!g_nastySpriteDrawingElementsList.empty ())
     {
-        // Remove all the nasty sprites.
+        // Remove all the nasty sprites on the screen.
 
-        NastySpriteDrawingElementsList::iterator    itr = m_nastySpriteDrawingElementsList.begin ();
+        NastySpriteDrawingElementsList::iterator    itr = g_nastySpriteDrawingElementsList.begin ();
 
         do
         {
-            // Remove the nasty sprite from the screen's collision grid.
+            // Get the nasty sprite.
 
-            status = RemoveCollisionGridDrawingElement (*(itr->m_drawingElement));
+            NastySpritePtr  &nastySprite(itr->m_sprite);
 
-            if (status == ERR_SUCCESS)
+            // Is the nasty sprite on this screen?
+
+            if (nastySprite->GetNastySpriteScreenNumber () == m_screenNumber)
             {
-                // Remove from the screen's nasty sprite drawing elements list.
+                // Yes. Remove the nasty sprite from the screen's collision grid.
 
-                itr = m_nastySpriteDrawingElementsList.erase (itr);
+                status = RemoveCollisionGridDrawingElement (*(itr->m_drawingElement));
+
+                if (status == ERR_SUCCESS)
+                {
+                    if (onScreenEntry)
+                    {
+                        // Remove the nasty sprite from the nasty sprite drawing 
+                        // elements list.
+
+                        itr = g_nastySpriteDrawingElementsList.erase (itr);
+                    } // Endif.
+
+                    else
+                    {
+                        // The nasty sprite is dead.
+
+                        nastySprite->SetDead (false); // Don't play its terminating sound.
+                        
+                        ++itr;  // Next nasty sprite.
+                    } // Endelse.
+
+                } // Endif.
+            
             } // Endif.
 
+            else
+            {
+                // No.
+
+                ++itr;  // Next nasty sprite.
+            } // Endelse.
+
         } // Enddo.
-        while ((status == ERR_SUCCESS) && (itr != m_nastySpriteDrawingElementsList.end ()));
+        while ((status == ERR_SUCCESS) && (itr != g_nastySpriteDrawingElementsList.end ()));
     } // Endif.
 
     return (status);
 } // Endproc.
 
 
-FolioStatus Screen::KillNastySprites ()
+FolioStatus Screen::StoreNastySpriteBackgrounds (Gdiplus::Graphics &graphics)
 {
     FolioStatus status = ERR_SUCCESS;
 
-    if (!m_nastySpriteDrawingElementsList.empty ())
+    if (!g_nastySpriteDrawingElementsList.empty ())
     {
-        // Kill all the nasty sprites.
+        // Store all the nasty sprites' backgrounds for this screen.
 
-        for (NastySpriteDrawingElementsList::iterator itr = m_nastySpriteDrawingElementsList.begin ();
-             (status == ERR_SUCCESS) && (itr != m_nastySpriteDrawingElementsList.end ());
+        for (NastySpriteDrawingElementsList::iterator itr = g_nastySpriteDrawingElementsList.begin ();
+             (status == ERR_SUCCESS) && (itr != g_nastySpriteDrawingElementsList.end ());
              ++itr)
         {
-            // Remove the nasty sprite from the screen's collision grid.
+            // Get the nasty sprite.
 
-            status = RemoveCollisionGridDrawingElement (*(itr->m_drawingElement));
+            NastySpritePtr  &nastySprite(itr->m_sprite);
 
-            if (status == ERR_SUCCESS)
+            // Is the nasty sprite on this screen?
+
+            if (nastySprite->GetNastySpriteScreenNumber () == m_screenNumber)
             {
-                // The nasty sprite is dead.
+                // Yes. Store the nasty sprite's background.
 
-                itr->m_sprite->SetDead (false); // Don't play its terminating sound.
+                status = nastySprite->StoreUnderlyingBackground (graphics);
             } // Endif.
 
         } // Endfor.
@@ -1595,10 +1702,104 @@ FolioStatus Screen::KillNastySprites ()
 } // Endproc.
 
 
+FolioStatus Screen::RestoreNastySpriteBackgrounds (Gdiplus::Graphics &graphics)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    if (!g_nastySpriteDrawingElementsList.empty ())
+    {
+        // Restore all the nasty sprites' backgrounds for this screen.
+
+        for (NastySpriteDrawingElementsList::iterator itr = g_nastySpriteDrawingElementsList.begin ();
+             (status == ERR_SUCCESS) && (itr != g_nastySpriteDrawingElementsList.end ());
+             ++itr)
+        {
+            // Get the nasty sprite.
+
+            NastySpritePtr  &nastySprite(itr->m_sprite);
+
+            // Is the nasty sprite on this screen?
+
+            if (nastySprite->GetNastySpriteScreenNumber () == m_screenNumber)
+            {
+                // Yes. Restore the nasty sprite's background.
+
+                status = nastySprite->RestoreUnderlyingBackground (graphics);
+            } // Endif.
+
+        } // Endfor.
+    
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus Screen::DrawNastySprites (Gdiplus::Graphics &graphics)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    if (!g_nastySpriteDrawingElementsList.empty ())
+    {
+        // Draw all the nasty sprites for this screen.
+
+        for (NastySpriteDrawingElementsList::iterator itr = g_nastySpriteDrawingElementsList.begin ();
+             (status == ERR_SUCCESS) && (itr != g_nastySpriteDrawingElementsList.end ());
+             ++itr)
+        {
+            // Get the nasty sprite.
+
+            NastySpritePtr  &nastySprite(itr->m_sprite);
+
+            // Is the nasty sprite on this screen?
+
+            if (nastySprite->GetNastySpriteScreenNumber () == m_screenNumber)
+            {
+                // Draw the nasty sprite.
+
+                status = nastySprite->Draw (graphics);
+            } // Endif.
+
+        } // Endfor.
+    
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+UInt32  Screen::GetNumNastySpritesOnScreen () const
+{
+    UInt32  numNastySpritesOnScreen = 0;    // Initialise!
+
+    if (!g_nastySpriteDrawingElementsList.empty ())
+    {
+        for (NastySpriteDrawingElementsList::const_iterator itr = g_nastySpriteDrawingElementsList.begin ();
+             itr != g_nastySpriteDrawingElementsList.end ();
+             ++itr)
+        {
+            // Get the nasty sprite.
+
+            const NastySpritePtr    &nastySprite(itr->m_sprite);
+
+            // Is the nasty sprite on this screen?
+
+            if (nastySprite->GetNastySpriteScreenNumber () == m_screenNumber)
+            {
+                numNastySpritesOnScreen++;
+            } // Endif.
+
+        } // Endfor.
+    
+    } // Endif.
+
+    return (numNastySpritesOnScreen);
+} // Endproc.
+
+
 void    Screen::SetCreateNastySpriteTickCount (UInt32   currentTickCount,
                                                UInt32   minNumSeconds, 
                                                UInt32   maxNumSeconds)
-
 {
     m_createNastySpriteTickCount = currentTickCount + 
                                    500 * Folio::Core::Util::Random::GetRandomNumber (minNumSeconds, maxNumSeconds);
@@ -1611,11 +1812,11 @@ FolioStatus Screen::CheckBossSprite (Gdiplus::Graphics &graphics)
 
     // Has the boss sprite been created?
 
-    if (m_bossSpriteDrawingElement.IsCreated ())
+    if (g_bossSpriteDrawingElement.IsCreated ())
     {
         // Yes. Get the boss sprite.
 
-        BossSpritePtr   &bossSprite(m_bossSpriteDrawingElement.m_sprite);
+        BossSpritePtr   &bossSprite(g_bossSpriteDrawingElement.m_sprite);
 
         // Get the state of the boss sprite.
 
@@ -1630,9 +1831,9 @@ FolioStatus Screen::CheckBossSprite (Gdiplus::Graphics &graphics)
         case BossSprite::STATE_TERMINATED:
             // The boss sprite is terminated.
 
-            // Kill the boss sprite
+            // Destroy the boss sprite.
 
-            m_bossSpriteDrawingElement.Kill ();
+            g_bossSpriteDrawingElement.Destroy ();
             break;
 
         case BossSprite::STATE_STATIC:
@@ -1645,12 +1846,16 @@ FolioStatus Screen::CheckBossSprite (Gdiplus::Graphics &graphics)
             {
                 // Set the boss sprite's drawing element's top-left screen position.
 
-                m_bossSpriteDrawingElement.m_drawingElement->SetScreenTopLeft (bossSprite->GetScreenXLeft (), 
-                                                                               bossSprite->GetScreenYTop ());
+                status = g_bossSpriteDrawingElement.m_drawingElement->SetScreenTopLeft (bossSprite->GetScreenXLeft (), 
+                                                                                        bossSprite->GetScreenYTop ());
 
-                // Update the boss sprite in the screen's collision grid.
+                if (status == ERR_SUCCESS)
+                {
+                    // Update the boss sprite in the screen's collision grid.
 
-                status = UpdateCollisionGridDrawingElement (*(m_bossSpriteDrawingElement.m_drawingElement));
+                    status = UpdateCollisionGridDrawingElement (*(g_bossSpriteDrawingElement.m_drawingElement));
+                } // Endif.
+
             } // Endif.
             break;
 
@@ -1668,83 +1873,93 @@ FolioStatus Screen::StartBossSprite ()
 {
     FolioStatus status = ERR_SUCCESS;
 
-    // Has the boss sprite been created?
+    // Does the screen support a boss sprite?
 
-    if (m_bossSpriteDrawingElement.IsCreated ())
+    if (g_bossSpriteDrawingElement.IsSprite ())
     {
         // Yes. Get the boss sprite.
 
-        BossSpritePtr   &bossSprite(m_bossSpriteDrawingElement.m_sprite);
+        BossSpritePtr   &bossSprite(g_bossSpriteDrawingElement.m_sprite);
 
-        // Reset the boss sprite.
+        // Is the boss sprite alive?
 
-        bool    removeBossSprite = false;   // Initialise!
-
-        status = bossSprite->Reset (m_collisionGrid, removeBossSprite);
-
-        if (removeBossSprite && (status == ERR_SUCCESS))
+        if (bossSprite->IsAlive ())
         {
-            // Remove the boss sprite from the screen's collision grid.
+            // Yes. Add the boss sprite to the screen.
 
-            status = RemoveCollisionGridDrawingElement (*(m_bossSpriteDrawingElement.m_drawingElement));
-
-            if (status == ERR_SUCCESS)
-            {
-                // Kill the boss sprite
-
-                m_bossSpriteDrawingElement.Kill ();
-            } // Endif.
-
+            status = AddBossSprite ();
         } // Endif.
 
     } // Endif.
-
-    // Has the boss sprite been killed?
-
-    else
-    if (!m_bossSpriteDrawingElement.IsKilled ())
-    {
-        // No. Is there a boss sprite on the screen?
-
-        BOSS_SPRITE_ID  bossSpriteId = GetScreenBossSpriteId (m_screenNumber, GetTotalNumRooms ());
-
-        if (bossSpriteId != BOSS_SPRITE_UNDEFINED)
-        {
-            // Yes. Add it.
-
-            status = AddBossSprite (bossSpriteId);
-        } // Endif.
-    
-    } // Endelse.
 
     return (status);
 } // Endproc.
 
 
-FolioStatus Screen::AddBossSprite (BOSS_SPRITE_ID bossSpriteId)
+FolioStatus Screen::AddBossSprite ()
 {
-    // Create the boss sprite.
+    // Get the boss sprite.
 
-    BossSpritePtr   bossSprite(new BossSpritePtr::element_type);
-    
-    FolioStatus status = bossSprite->Create (m_canvas->GetCanvasDcHandle (),
-                                             bossSpriteId,
-                                             *m_spriteGraphicsMap,
-                                             m_mainPlayer,
-                                             *m_informationPanel,
-                                             m_collisionGrid);
+    BossSpritePtr   &bossSprite(g_bossSpriteDrawingElement.m_sprite);
+
+    // Start the boss sprite.
+
+    FolioStatus status = bossSprite->Start (*m_informationPanel, m_collisionGrid);
 
     if (status == ERR_SUCCESS)
     {
-        // The boss sprite is alive.
-
-        bossSprite->SetAlive ();
-
         // Create a boss sprite drawing element.
 
-        status = m_bossSpriteDrawingElement.Create (DRAWING_ELEMENT_BOSS_SPRITE, 
-                                                    bossSprite, 
-                                                    bossSprite->GetCollisionGridCellValue ());
+        status = g_bossSpriteDrawingElement.CreateDrawingElement (DRAWING_ELEMENT_BOSS_SPRITE, 
+                                                                  bossSprite->GetCollisionGridCellValue ());
+
+        if (status == ERR_SUCCESS)
+        {
+            // Add boss sprite to the screen's collision grid.
+
+            status = AddCollisionGridDrawingElement (*(g_bossSpriteDrawingElement.m_drawingElement));
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus Screen::RemoveBossSprite (bool onScreenExit)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Has the boss sprite been created?
+
+    if (g_bossSpriteDrawingElement.IsCreated ())
+    {
+        // Yes. Remove the boss sprite from the screen's collision grid.
+
+        status = RemoveCollisionGridDrawingElement (*(g_bossSpriteDrawingElement.m_drawingElement));
+
+        if (status == ERR_SUCCESS)
+        {
+            if (onScreenExit)
+            {
+                // Destroy the boss sprite.
+
+                g_bossSpriteDrawingElement.Destroy ();
+            } // Endif.
+
+            else
+            {
+                // Get the boss sprite.
+
+                BossSpritePtr   &bossSprite(g_bossSpriteDrawingElement.m_sprite);
+
+                // The boss sprite is dead.
+
+                bossSprite->SetDead ();
+            } // Endelse.
+        
+        } // Endif.
+
     } // Endif.
 
     return (status);
@@ -1757,11 +1972,11 @@ FolioStatus Screen::CheckWeaponSprite (Gdiplus::Graphics &graphics)
 
     // Has the weapon sprite been created?
 
-    if (m_weaponSpriteDrawingElement.IsCreated ())
+    if (g_weaponSpriteDrawingElement.IsCreated ())
     {
         // Yes. Get the weapon sprite.
 
-        WeaponSpritePtr &weaponSprite(m_weaponSpriteDrawingElement.m_sprite);
+        WeaponSpritePtr &weaponSprite(g_weaponSpriteDrawingElement.m_sprite);
 
         // Get the state of the weapon sprite.
 
@@ -1772,11 +1987,11 @@ FolioStatus Screen::CheckWeaponSprite (Gdiplus::Graphics &graphics)
 
             // Play the weapon sprite terminated sound.
 
-            weaponSprite->PlayWeaponsSpriteSound ();
+            weaponSprite->PlayWeaponSpriteTerminatedSound ();
           
-            // Reset the weapon sprite
+            // Destroy the weapon sprite's drawing element.
 
-            m_weaponSpriteDrawingElement.Reset ();
+            g_weaponSpriteDrawingElement.DestroyDrawingElement ();
             break;
 
         case WeaponSprite::STATE_INITIALISED:
@@ -1784,7 +1999,7 @@ FolioStatus Screen::CheckWeaponSprite (Gdiplus::Graphics &graphics)
 
             // Play the weapon sprite initialised sound.
 
-            weaponSprite->PlayWeaponsSpriteSound ();
+            weaponSprite->PlayWeaponSpriteInitialisedSound ();
             
             // Carefull.
             //          .
@@ -1800,20 +2015,24 @@ FolioStatus Screen::CheckWeaponSprite (Gdiplus::Graphics &graphics)
             {
                 // Set the weapon sprite's drawing element's top-left screen position.
 
-                m_weaponSpriteDrawingElement.m_drawingElement->SetScreenTopLeft (weaponSprite->GetScreenXLeft (), 
-                                                                                 weaponSprite->GetScreenYTop ());
+                status = g_weaponSpriteDrawingElement.m_drawingElement->SetScreenTopLeft (weaponSprite->GetScreenXLeft (), 
+                                                                                          weaponSprite->GetScreenYTop ());
 
-                // Has the weapon sprite collided with a nasty sprite?
-
-                CollisionGrid::CellElements cellElements;
-
-                if (m_collisionGrid.IsCollision (m_weaponSpriteDrawingElement.m_drawingElement->GetScreenRect (),
-                                                 CollisionGrid::CELL_VALUE_NASTY_SPRITE,
-                                                 cellElements))
+                if (status == ERR_SUCCESS)
                 {
-                    // Yes. Handle the collision.
+                    // Has the weapon sprite collided with a nasty sprite?
 
-                    status = HandleCollision (cellElements, false);    // Weapon collision.
+                    CollisionGrid::CellElements cellElements;
+
+                    if (m_collisionGrid.IsCollision (g_weaponSpriteDrawingElement.m_drawingElement->GetScreenRect (),
+                                                     CollisionGrid::CELL_VALUE_NASTY_SPRITE,
+                                                     cellElements))
+                    {
+                        // Yes. Handle the collision.
+
+                        status = HandleCollision (cellElements, false);    // Weapon collision.
+                    } // Endif.
+
                 } // Endif.
 
             } // Endif.
@@ -1831,56 +2050,49 @@ FolioStatus Screen::CheckWeaponSprite (Gdiplus::Graphics &graphics)
 
 FolioStatus Screen::StartWeaponSprite ()
 {
-    // If a weapon sprites has not been created, then add add a weapon sprite to the screen.
+    // If a weapon sprite has not been created, then add add a weapon sprite to the screen.
 
-    return (m_weaponSpriteDrawingElement.IsCreated () ? ERR_SUCCESS : AddWeaponSprite (GetMainPlayerWeaponSpriteId (m_mainPlayer)));
+    return (g_weaponSpriteDrawingElement.IsCreated () ? ERR_SUCCESS : AddWeaponSprite ());
 } // Endproc.
 
 
-FolioStatus Screen::AddWeaponSprite (WEAPON_SPRITE_ID weaponSpriteId)
+FolioStatus Screen::AddWeaponSprite ()
 {
-    // Create the weapon sprite.
+    // Get the weapon sprite.
 
-    WeaponSpritePtr   weaponSprite(new WeaponSpritePtr::element_type);
-    
-    FolioStatus status = weaponSprite->Create (m_canvas->GetCanvasDcHandle (),
-                                               weaponSpriteId,
-                                               *m_spriteGraphicsMap,
-                                               m_mainPlayer->GetScreenRect (),
-                                               m_mainPlayer->GetDirection ());
+    WeaponSpritePtr &weaponSprite(g_weaponSpriteDrawingElement.m_sprite);
+
+    // Start the weapon sprite.
+
+    FolioStatus status = weaponSprite->Start ();
 
     if (status == ERR_SUCCESS)
     {
-        // The weapon sprite is initialised.
-
-        weaponSprite->SetState (WeaponSprite::STATE_INITIALISED);
-
         // Create a weapon sprite drawing element.
 
-        status = m_weaponSpriteDrawingElement.Create (DRAWING_ELEMENT_WEAPON_SPRITE, 
-                                                      weaponSprite,
-                                                      weaponSprite->GetCollisionGridCellValue ());
+        status = g_weaponSpriteDrawingElement.CreateDrawingElement (DRAWING_ELEMENT_WEAPON_SPRITE, 
+                                                                    weaponSprite->GetCollisionGridCellValue ());
     } // Endif.
 
     return (status);
 } // Endproc.
 
 
-FolioStatus Screen::RemoveWeaponSprite ()
+FolioStatus Screen::RemoveWeaponSprite (bool bPlayTerminatedSound)
 {
     FolioStatus status = ERR_SUCCESS;
 
     // Has the weapon sprite been created?
 
-    if (m_weaponSpriteDrawingElement.IsCreated ())
+    if (g_weaponSpriteDrawingElement.IsCreated ())
     {
         // Yes. Get the weapon sprite.
 
-        WeaponSpritePtr &weaponSprite(m_weaponSpriteDrawingElement.m_sprite);
+        WeaponSpritePtr &weaponSprite(g_weaponSpriteDrawingElement.m_sprite);
 
-        // The weapon sprite should be terminated,
+        // The weapon sprite is stopped,
 
-        weaponSprite->SetState (WeaponSprite::STATE_TERMINATE_RQD);
+        weaponSprite->Stop (bPlayTerminatedSound);
     } // Endif.
     
     return (status);
@@ -1893,13 +2105,14 @@ FolioStatus Screen::CheckMainPlayer (Gdiplus::Graphics &graphics)
 
     // Get the state of the main player.
 
-    switch (m_mainPlayer->GetState ())
+    switch (g_mainPlayer->GetState ())
     {
     case PlayerSprite::STATE_INITIALISED:
     case PlayerSprite::STATE_STATIC:
+    case PlayerSprite::STATE_FALLING:   //iac for AUTO_TEST.
         // The main player is static.
 
-        status = m_mainPlayer->Static (graphics, m_collisionGrid);
+        status = g_mainPlayer->Static (graphics, m_collisionGrid);
 
         if (status == ERR_SUCCESS)
         {
@@ -1912,7 +2125,7 @@ FolioStatus Screen::CheckMainPlayer (Gdiplus::Graphics &graphics)
     case PlayerSprite::STATE_MOVING:
         // Move the main player.
 
-        status = m_mainPlayer->Move (graphics, PlayerSprite::MAIN_PLAYER_SPEED, m_collisionGrid);
+        status = g_mainPlayer->Move (graphics, PlayerSprite::MAIN_PLAYER_SPEED, m_collisionGrid);
 
         if (status == ERR_SUCCESS)
         {
@@ -1936,15 +2149,15 @@ FolioStatus Screen::ProcessMainPlayer (Gdiplus::Graphics &graphics)
 
     // Has the main player exited a screen?
 
-    if (m_mainPlayer->IsExitedScreen ())
+    if (g_mainPlayer->IsExitedScreen ())
     {
         // Yes. Did the main player exit the screen though a trap door?
 
-        if (BackgroundItem::IsTrapDoor (reinterpret_cast<BackgroundItem *> (m_mainPlayer->GetScreenExit ().m_userData)->GetBackgroundItemId ()))
+        if (BackgroundItem::IsTrapDoor (reinterpret_cast<BackgroundItem *> (g_mainPlayer->GetScreenExit ().m_userData)->GetBackgroundItemId ()))
         {
             // Yes. The main player is falling.
 
-            m_mainPlayer->SetState (PlayerSprite::STATE_FALLING);
+            g_mainPlayer->SetState (PlayerSprite::STATE_FALLING);
         } // Endif.
 
     } // Endif.
@@ -1953,30 +2166,50 @@ FolioStatus Screen::ProcessMainPlayer (Gdiplus::Graphics &graphics)
     {
         // No. Is the main player at a locked exit?
 
-        if (m_mainPlayer->IsAtLockedScreenExit ()) 
+        if (g_mainPlayer->IsAtLockedScreenExit ()) 
         {
-            // Yes. Get the background item.
+            // Yes. Get the screen exit.
 
-            BackgroundItem  &backgroundItem(*reinterpret_cast<BackgroundItem *> (m_mainPlayer->GetScreenExit ().m_userData));
+            BackgroundItem  *screenExitBackgroundItem(reinterpret_cast<BackgroundItem *> (g_mainPlayer->GetScreenExit ().m_userData));
 
             // Can the door be unlocked?
 
-            if (CanDoorBeUnlocked (backgroundItem))
+            if (CanDoorBeUnlocked (*screenExitBackgroundItem))
             {
                 // Yes. Is this the exit door?
 
-                if (BackgroundItem::IsExitDoor (backgroundItem.GetBackgroundItemFlags ()))
+                if (BackgroundItem::IsExitDoor (screenExitBackgroundItem->GetBackgroundItemFlags ()))
                 {   
                     // Yes. The main player has completed the game.
 
-                    m_mainPlayer->SetGameCompleted ();
+                    g_mainPlayer->SetGameCompleted ();
                 } // Endif.
 
                 else
                 {
-                    // No. Open the door
+                    // No. Unlock the door.
 
-                    status = OpenDoor (backgroundItem);
+                    status = screenExitBackgroundItem->SetDoorUnlocked (true);
+
+                    if (status == ERR_SUCCESS)
+                    {
+                        // Get the opposite door.
+
+                        BackgroundItemPtr   oppositeExitBackgroundItem(GetOppositeDoor (screenExitBackgroundItem, g_backgroundItemsList));
+                    
+                        // Unlock the opposite door.
+
+                        status = oppositeExitBackgroundItem->SetDoorUnlocked ();
+
+                        if (status == ERR_SUCCESS)
+                        {
+                            // Open the door.
+
+                            status = OpenDoor (*screenExitBackgroundItem);
+                        } // Endif.
+
+                    } // Endif.
+
                 } // Endelse.
 
             } // Endif.
@@ -1989,7 +2222,7 @@ FolioStatus Screen::ProcessMainPlayer (Gdiplus::Graphics &graphics)
 
             CollisionGrid::CellElements cellElements;
 
-            if (m_collisionGrid.IsCollision (m_mainPlayer->GetScreenRect (), cellElements))
+            if (m_collisionGrid.IsCollision (g_mainPlayer->GetScreenRect (), cellElements))
             {
                 // Yes. Handle the collision.
 
@@ -2000,9 +2233,9 @@ FolioStatus Screen::ProcessMainPlayer (Gdiplus::Graphics &graphics)
             {
                 // Can the main player fire a weapon?
 
-                if (m_mainPlayer->CanFireWeapon ())
+                if (g_mainPlayer->CanFireWeapon ())
                 {
-                    // Yes. Start it.
+                    // Yes. Start the weapon sprite.
 
                     status = StartWeaponSprite ();
                 } // Endif.
@@ -2011,7 +2244,7 @@ FolioStatus Screen::ProcessMainPlayer (Gdiplus::Graphics &graphics)
                 // items in the information panel?
 
                 else
-                if (m_mainPlayer->CanCollectItems () && 
+                if (g_mainPlayer->CanCollectItems () && 
                     m_informationPanel->IsAnyCollectedItem ())
                 {
                     // Yes. We need to cycle the collected items in the information panel.
@@ -2063,7 +2296,7 @@ FolioStatus Screen::HandleCollision (const CollisionGrid::CellElements  &cellEle
         case CollisionGrid::CELL_VALUE_COLLECTABLE_ITEM:
             // Can the main player collect items?
 
-            if (m_mainPlayer->CanCollectItems ())
+            if (g_mainPlayer->CanCollectItems ())
             {
                 // Yes. Handle the collision with a collectable item.
 
@@ -2071,7 +2304,7 @@ FolioStatus Screen::HandleCollision (const CollisionGrid::CellElements  &cellEle
 
                 // The main player can no longer collect items.
 
-                m_mainPlayer->SetCanCollectItems (false);
+                g_mainPlayer->SetCanCollectItems (false);
             } // Endif.
             break;
 
@@ -2120,15 +2353,15 @@ FolioStatus Screen::HandleSolidItemCollision (const CollisionGrid::CellElement  
     {
         // Yes. The main player is bound to the solid item.
 
-        Gdiplus::Rect   mainPlayerScreenRect(m_mainPlayer->GetScreenRect ());
+        Gdiplus::Rect   mainPlayerScreenRect(g_mainPlayer->GetScreenRect ());
                 
-        m_collisionGrid.ToScreenRectBound (m_mainPlayer->GetDirection (), 
+        m_collisionGrid.ToScreenRectBound (g_mainPlayer->GetDirection (), 
                                            cellElement.m_screenRect,
                                            mainPlayerScreenRect);
 
         // Set the main player's position.
 
-        m_mainPlayer->SetScreenTopLeft (mainPlayerScreenRect.X, mainPlayerScreenRect.Y);
+        status = g_mainPlayer->SetScreenTopLeft (mainPlayerScreenRect.X, mainPlayerScreenRect.Y);
     } // Endif.
 
     return (status);
@@ -2282,17 +2515,22 @@ FolioStatus Screen::HandleNastySpriteCollision (const CollisionGrid::CellElement
 
     bool    found = false;  // Initialise!
 
-    for (NastySpriteDrawingElementsList::iterator itr = m_nastySpriteDrawingElementsList.begin ();
-         !found && (status == ERR_SUCCESS) && (itr != m_nastySpriteDrawingElementsList.end ());
+    for (NastySpriteDrawingElementsList::iterator itr = g_nastySpriteDrawingElementsList.begin ();
+         !found && (status == ERR_SUCCESS) && (itr != g_nastySpriteDrawingElementsList.end ());
          ++itr)
     {              
-        // Is this the nasty sprite that has been collided with?
+        // Get the nasty sprite.
 
-        if (itr->m_sprite.get () == cellElement.m_userData)
+        NastySpritePtr  &nastySprite(itr->m_sprite);
+
+        // Is the nasty sprite on this screen and has it been collided with?
+
+        if ((nastySprite->GetNastySpriteScreenNumber () == m_screenNumber) && 
+            (nastySprite.get () == cellElement.m_userData))
         {
             // Yes. Is the nasty sprite ready?
             
-            if (itr->m_sprite->IsReady ())
+            if (nastySprite->IsReady ())
             {
                 // Yes. Remove the nasty sprite from the screen's collision grid.
 
@@ -2311,7 +2549,8 @@ FolioStatus Screen::HandleNastySpriteCollision (const CollisionGrid::CellElement
 
                     else
                     {
-                        // No. Remove the weapon sprite.
+                        // No. Nasty sprite can only have collided with the 
+                        // weapon sprite. Remove the screen's weapon sprite.
 
                         status = RemoveWeaponSprite ();
                     } // Endelse.
@@ -2320,7 +2559,7 @@ FolioStatus Screen::HandleNastySpriteCollision (const CollisionGrid::CellElement
                     {
                         // The nasty sprite is dead.
 
-                        itr->m_sprite->SetDead ();
+                        nastySprite->SetDead ();
 
                         // Increment the score.
 
@@ -2334,7 +2573,7 @@ FolioStatus Screen::HandleNastySpriteCollision (const CollisionGrid::CellElement
             found = true;   // Found the nasty sprite.
         } // Endif.
 
-    } // Endif.
+    } // Endfor.
 
     return (status);
 } // Endproc.
@@ -2351,7 +2590,7 @@ FolioStatus Screen::HandleBossSpriteCollision (const CollisionGrid::CellElement 
     {
         // Yes. Get the boss sprite.
 
-        BossSpritePtr   &bossSprite(m_bossSpriteDrawingElement.m_sprite);
+        BossSpritePtr   &bossSprite(g_bossSpriteDrawingElement.m_sprite);
 
         // Is the boss sprite ready?
             
@@ -2361,16 +2600,12 @@ FolioStatus Screen::HandleBossSpriteCollision (const CollisionGrid::CellElement 
 
             if (bossSprite->CanBeKilled (*m_informationPanel))
             {
-                // Yes. Remove the boss sprite from the screen's collision grid.
+                // Yes. Remove the boss sprite.
 
-                status = RemoveCollisionGridDrawingElement (*(m_bossSpriteDrawingElement.m_drawingElement));
+                status = RemoveBossSprite (false);
 
                 if (status == ERR_SUCCESS)
                 {
-                    // The boss sprite is dead.
-
-                    bossSprite->SetDead ();
-
                     // Increment the score.
 
                     m_informationPanel->IncrementScore (InformationPanel::SCORE_BOSS_SPRITE_DEAD);
@@ -2406,25 +2641,9 @@ FolioStatus Screen::DecrementMainPlayerHealth (UInt32 healthDecrement)
 
     if (mainPlayerIsDead && (status == ERR_SUCCESS))
     {
-        // Yes. Kill the nasty sprites.
-
-        status = KillNastySprites ();
-
-        if (status == ERR_SUCCESS)
-        {
-            // Remove the weapon sprite.
-
-            status = RemoveWeaponSprite ();
-
-            if (status == ERR_SUCCESS)
-            {
-                // The main player is dead.
-
-                m_mainPlayer->SetDead ();
-            } // Endif.
-
-        } // Endif.
-
+        // Yes. 
+        
+        status = HandleMainPlayerDead ();
     } // Endif.
 
     return (status);
@@ -2437,17 +2656,318 @@ FolioStatus Screen::IncrementMainPlayerHealth (UInt32 healthIncrement)
 } // Endproc.
 
 
+FolioStatus Screen::HandleMainPlayerDead ()
+{
+    // Remove the screen's nasty sprites. They should all be killed. 
+
+    FolioStatus status = RemoveNastySprites (false);
+
+    if (status == ERR_SUCCESS)
+    {
+        // Remove the screen's weapon sprite. Don't play the terminated sound.
+
+        status = RemoveWeaponSprite (false);
+
+        if (status == ERR_SUCCESS)
+        {
+            // The main player is dead.
+
+            g_mainPlayer->SetDead ();
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
 FolioStatus Screen::AddDroppedItem (InformationPanel::DroppedItem &droppedItem)
 {
-    // Set the dropped item's static sprite position.
+    // Gain the dropped item's static sprite's graphic resource.
 
-    droppedItem.m_staticSprite->SetScreenTopLeft (m_mainPlayer->GetScreenXLeft (),
-                                                  m_mainPlayer->GetScreenYBottom () - droppedItem.m_staticSprite->GetScreenHeight () + 1);
+    FolioStatus status = droppedItem.m_staticSprite->GainResourceGraphics (m_screenNumber);
 
-    // Add the dropped item's static sprite.
+    if (status == ERR_SUCCESS)
+    {
+        // Set the dropped item's static sprite position.
 
-    return (AddStaticSprite (droppedItem.m_staticSprite));
+        status = droppedItem.m_staticSprite->SetScreenTopLeft (g_mainPlayer->GetScreenXLeft (),
+                                                               g_mainPlayer->GetScreenYBottom () - droppedItem.m_staticSprite->GetScreenHeight () + 1);
+
+        if (status == ERR_SUCCESS)
+        {
+            // Add the dropped item's static sprite.
+
+            status = AddStaticSprite (droppedItem.m_staticSprite);
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
 } // Endproc.
+
+
+FolioStatus Screen::BuildScreenDrawingElements (bool initialise)
+{
+    m_drawingElementsSet.clear ();  // Initialise!
+
+    // Get the canvas device context.
+
+    FolioHandle dcHandle = m_canvas->GetCanvasDcHandle ();
+
+    // Build the screen's room drawing elements.
+
+    FolioStatus status = BuildRoomDrawingElements (dcHandle, initialise);
+
+    if (status == ERR_SUCCESS)
+    {
+        // Build the screen's background item drawing elements.
+
+        status = BuildBackgroundItemDrawingElements (dcHandle, initialise);
+
+        if (status == ERR_SUCCESS)
+        {
+            status = BuildInformationPanelDrawingElements (dcHandle, initialise);
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus Screen::BuildRoomDrawingElements (FolioHandle   dcHandle,
+                                              bool          initialise)
+{
+    // Query the room graphic.
+
+    RoomGraphicPtr  roomGraphic;
+
+    FolioStatus status = QueryRoomGraphic (m_screenNumber,
+                                           m_roomId, 
+                                           roomGraphic);
+
+    if (status == ERR_SUCCESS)
+    {
+        // Query the room's drawing elements.
+
+        Folio::Core::Game::DrawingElementsList  drawingElementsList;
+
+        status = roomGraphic->QueryDrawingElements (dcHandle,
+                                                    m_roomColour,
+                                                    drawingElementsList);
+
+        if (status == ERR_SUCCESS)
+        {
+            // Add the room's drawing element to the screen's drawing elements.
+
+            m_drawingElementsSet.insert (drawingElementsList.begin (),
+                                         drawingElementsList.end ());
+
+            if (initialise)
+            {
+                // Note the room's collision grid.
+
+                m_collisionGrid = roomGraphic->GetCollisionGrid ();
+            } // Endif.
+
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus Screen::BuildBackgroundItemDrawingElements (FolioHandle dcHandle,
+                                                        bool        initialise)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Add the screen's background items to the screen's drawing elements.
+
+    for (BackgroundItemsList::const_iterator itr = m_backgroundItemsList.begin ();
+         (status == ERR_SUCCESS) && (itr != m_backgroundItemsList.end ());
+         ++itr)
+    {
+        // Set the background item's graphic.
+
+        status = itr->get ()->SetBackgroundItemGraphic ();
+
+        if (status == ERR_SUCCESS)
+        {
+            // Query the background item's drawing elements.
+
+            Folio::Core::Game::DrawingElementsList  drawingElementsList;
+
+            status = itr->get ()->QueryDrawingElements (dcHandle,
+                                                        m_roomColour,
+                                                        drawingElementsList);
+
+            if (status == ERR_SUCCESS)
+            {
+                // Add the background item's drawing elements to the screen's 
+                // drawing elements.
+
+                m_drawingElementsSet.insert (drawingElementsList.begin (),
+                                             drawingElementsList.end ());
+            } // Endif.
+
+        } // Endif.
+
+    } // Endfor.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus Screen::BuildInformationPanelDrawingElements (FolioHandle   dcHandle,
+                                                          bool          initialise)
+{
+    // Get the information panel's drawing elements.
+
+    Folio::Core::Game::DrawingElementsList  drawingElementsList;
+
+    FolioStatus status = m_informationPanel->QueryDrawingElements (dcHandle,
+                                                                   m_roomColour, 
+                                                                   drawingElementsList);
+
+    if (status == ERR_SUCCESS)
+    {
+        // Add the information panel's drawing elements to the screen's drawing elements.
+
+        m_drawingElementsSet.insert (drawingElementsList.begin (),
+                                     drawingElementsList.end ());
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus Screen::AddBackgroundItemDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList)
+{
+    // Add the background item's drawing elements to the screen's drawing elements.
+    // But don't remove from the screen's collision grid.
+
+    return (AddScreenDrawingElements (drawingElementsList, false)); 
+} // Endproc.
+
+
+FolioStatus Screen::RemoveBackgroundItemDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList)
+{
+    // Remove the background item's drawing elements from the screen's drawing elements.
+    // But don't remove from the screen's collision grid.
+
+    return (RemoveScreenDrawingElements (drawingElementsList, false)); 
+} // Endproc.
+
+
+FolioStatus Screen::AddScreenDrawingElements (const Folio::Core::Game::DrawingElementsList  &drawingElementsList, 
+                                              bool                                          addToCollisionGrid)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Add the drawing elements to the screen's drawing elements.
+
+    m_drawingElementsSet.insert (drawingElementsList.begin (),
+                                 drawingElementsList.end ());
+
+    // Add the drawing elements to the screen's collision grid?
+
+    if (addToCollisionGrid)
+    {
+        // Add the drawing elements to the screen's collision grid.
+
+        status = AddCollisionGridDrawingElements (drawingElementsList);
+    } // Endif.
+
+    if (status == ERR_SUCCESS)
+    {
+        // Draw the drawing elements in the canvas.
+
+        status = m_canvas->DrawDrawingElements (drawingElementsList);
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus Screen::RemoveScreenDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList, 
+                                                 bool                                         removeFromCollisionGrid)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Remove the drawing elements from the screen's collision grid?
+
+    if (removeFromCollisionGrid)
+    {
+        // Yes.
+
+        status = RemoveCollisionGridDrawingElements (drawingElementsList);
+    } // Endif.
+
+    if (status == ERR_SUCCESS)
+    {
+        // Remove the drawing elements from the screen's drawing elements.
+
+        for (Folio::Core::Game::DrawingElementsList::const_iterator itr = drawingElementsList.begin ();
+             (status == ERR_SUCCESS) && (itr != drawingElementsList.end ());
+             ++itr)
+        {
+            // Remove the drawing elements that match the user data.
+
+            status = RemoveScreenDrawingElements (itr->GetUserData ());
+        } // Endfor.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus Screen::RemoveScreenDrawingElements (Folio::Core::Game::DrawingElement::UserData userData)
+{
+    // Remove the drawing elements that match the user data.
+
+    Folio::Core::Game::DrawingElementsSet::iterator itr = m_drawingElementsSet.begin ();
+
+    while (itr != m_drawingElementsSet.end ())
+    {
+        if (itr->GetUserData () == userData)
+        {
+            // Remove the drawing element from the screen's drawing elements set.
+
+            itr = m_drawingElementsSet.erase (itr);
+        } // Endif.
+
+        else
+        {
+            ++itr;
+        } // Endelse.
+
+    } // Endwhile.
+
+    return (ERR_SUCCESS);
+} // Endproc.
+
+
+Folio::Core::Game::DrawingElementsList  Screen::FindScreenDrawingElements (Folio::Core::Game::DrawingElement::UserData userData) const
+{
+    Folio::Core::Game::DrawingElementsList  drawingElementsList;
+
+    for (Folio::Core::Game::DrawingElementsSet::iterator itr = m_drawingElementsSet.begin ();
+         itr != m_drawingElementsSet.end ();
+         ++itr)
+    {
+        if (itr->GetUserData () == userData)
+        {
+            drawingElementsList.push_back (*itr);
+        } // Endif.
+
+    } // Endfor.
+
+    return (drawingElementsList);
+} // Endfor.
 
 
 FolioStatus Screen::InitialiseCollisionGrid ()
@@ -2745,230 +3265,12 @@ FolioStatus Screen::UpdateCollisionGridDrawingElement (const Folio::Core::Game::
 } // Endproc.
 
 
-FolioStatus Screen::AddBackgroundItemDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList)
+FolioStatus Screen::ReleaseResourceGraphics ()
 {
-    // Add the drawing elements to the screen's drawing elements.
+    // Release the screen's graphics from the resource graphics cache.
 
-    m_drawingElementsSet.insert (drawingElementsList.begin (),
-                                 drawingElementsList.end ());
-
-    // Add the drawing elements to the screen's collision grid.
-
-    FolioStatus status = AddCollisionGridDrawingElements (drawingElementsList);
-
-    if (status == ERR_SUCCESS)
-    {
-        // Draw the drawing elements in the canvas.
-
-        status = m_canvas->DrawDrawingElements (drawingElementsList);
-    } // Endif.
-
-    return (status);
-} // Endif.
-
-
-FolioStatus Screen::RemoveBackgroundItemDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList)
-{
-    // Remove the background item's drawing elements from the screen's drawing elements.
-    // But don't remove from the screen's collision grid.
-
-    return (RemoveScreenDrawingElements (drawingElementsList, false)); 
-} // Endif.
-
-
-FolioStatus Screen::BuildScreenDrawingElements ()
-{
-    // Get the canvas device context.
-
-    FolioHandle dcHandle = m_canvas->GetCanvasDcHandle ();
-
-    // Query the room's drawing elements.
-
-    Folio::Core::Game::DrawingElementsList  roomDrawingElementsList;
-
-    FolioStatus status = m_roomGraphic->QueryDrawingElements (dcHandle,
-                                                              m_roomColour,
-                                                              roomDrawingElementsList);
-
-    if (status == ERR_SUCCESS)
-    {
-        // Add the room's drawing element to the screen's drawing elements.
-
-        m_drawingElementsSet.insert (roomDrawingElementsList.begin (),
-                                     roomDrawingElementsList.end ());
-
-        // Add the screen's background items to the screen's drawing elements.
-
-        for (BackgroundItemsList::const_iterator itr = m_backgroundItemsList.begin ();
-             (status == ERR_SUCCESS) && (itr != m_backgroundItemsList.end ());
-             ++itr)
-        {
-            // Get the background item's drawing elements.
-
-            Folio::Core::Game::DrawingElementsList  backgroundItemDrawingElementsList;
-
-            status = itr->get ()->QueryDrawingElements (dcHandle,
-                                                        m_roomColour,
-                                                        backgroundItemDrawingElementsList);
-
-            if (status == ERR_SUCCESS)
-            {
-                // Add the background item's drawing elements to the screen's 
-                // drawing elements.
-
-                m_drawingElementsSet.insert (backgroundItemDrawingElementsList.begin (),
-                                             backgroundItemDrawingElementsList.end ());
-            } // Endif.
-
-        } // Endfor.
-
-        if (status == ERR_SUCCESS)
-        {
-            // Get the information panel's drawing elements.
-
-            Folio::Core::Game::DrawingElementsList  informationPanelDrawingElementsList;
-
-            status = m_informationPanel->QueryDrawingElements (dcHandle,
-                                                               m_roomColour, 
-                                                               informationPanelDrawingElementsList);
-
-            if (status == ERR_SUCCESS)
-            {
-                // Add the information panel's drawing elements to the screen's drawing elements.
-
-                m_drawingElementsSet.insert (informationPanelDrawingElementsList.begin (),
-                                             informationPanelDrawingElementsList.end ());
-            } // Endif.
-
-        } // Endif.
-
-    } // Endif.
-
-    return (status);
+    return (g_resourceGraphicsCache.ReleaseResourceGraphics (m_screenNumber));
 } // Endproc.
-
-
-FolioStatus Screen::RemoveScreenDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList, 
-                                                 bool                                         removeFromCollisionGrid)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Remove the drawing elements from the screen's collision grid?
-
-    if (removeFromCollisionGrid)
-    {
-        // Yes.
-
-        status = RemoveCollisionGridDrawingElements (drawingElementsList);
-    } // Endif.
-
-    if (status == ERR_SUCCESS)
-    {
-        // Remove the drawing elements from the screen's drawing elements.
-
-        for (Folio::Core::Game::DrawingElementsList::const_iterator itr = drawingElementsList.begin ();
-             (status == ERR_SUCCESS) && (itr != drawingElementsList.end ());
-             ++itr)
-        {
-            // Remove the drawing elements that match the user data.
-
-            status = RemoveScreenDrawingElements (itr->GetUserData ());
-        } // Endfor.
-
-    } // Endif.
-
-    return (status);
-} // Endif.
-
-
-FolioStatus Screen::RemoveScreenDrawingElements (Folio::Core::Game::DrawingElement::UserData userData)
-{
-    // Remove the drawing elements that match the user data.
-
-    Folio::Core::Game::DrawingElementsSet::iterator itr = m_drawingElementsSet.begin ();
-
-    while (itr != m_drawingElementsSet.end ())
-    {
-        if (itr->GetUserData () == userData)
-        {
-            // Remove the drawing element from the screen's drawing elements set.
-
-            itr = m_drawingElementsSet.erase (itr);
-        } // Endif.
-
-        else
-        {
-            ++itr;
-        } // Endelse.
-
-    } // Endwhile.
-
-    return (ERR_SUCCESS);
-} // Endproc.
-
-
-FolioStatus Screen::RemoveScreenDrawingElements (DRAWING_ELEMENT_ID drawingElementId)
-{
-    // Remove the drawing elements that match the drawing element identifier.
-
-    Folio::Core::Game::DrawingElementsSet::iterator itr = m_drawingElementsSet.begin ();
-
-    while (itr != m_drawingElementsSet.end ())
-    {
-        if (itr->GetDrawingElementId () == drawingElementId)
-        {
-            // Remove the drawing element from the screen's drawing elements set.
-
-            itr = m_drawingElementsSet.erase (itr);
-        } // Endif.
-
-        else
-        {
-            ++itr;
-        } // Endelse.
-
-    } // Endwhile.
-
-    return (ERR_SUCCESS);
-} // Endproc.
-
-
-Folio::Core::Game::DrawingElementsList  Screen::FindScreenDrawingElements (Folio::Core::Game::DrawingElement::UserData userData) const
-{
-    Folio::Core::Game::DrawingElementsList  drawingElementsList;
-
-    for (Folio::Core::Game::DrawingElementsSet::iterator itr = m_drawingElementsSet.begin ();
-         itr != m_drawingElementsSet.end ();
-         ++itr)
-    {
-        if (itr->GetUserData () == userData)
-        {
-            drawingElementsList.push_back (*itr);
-        } // Endif.
-
-    } // Endfor.
-
-    return (drawingElementsList);
-} // Endfor.
-
-
-Folio::Core::Game::DrawingElementsList  Screen::FindScreenDrawingElements (DRAWING_ELEMENT_ID drawingElementId) const
-{
-    Folio::Core::Game::DrawingElementsList  drawingElementsList;
-
-    for (Folio::Core::Game::DrawingElementsSet::iterator itr = m_drawingElementsSet.begin ();
-         itr != m_drawingElementsSet.end ();
-         ++itr)
-    {
-        if (itr->GetDrawingElementId () == drawingElementId)
-        {
-            drawingElementsList.push_back (*itr);
-        } // Endif.
-
-    } // Endfor.
-
-    return (drawingElementsList);
-} // Endfor.
 
 
 void    Screen::CreateScreenSoundSamples ()
@@ -3024,11 +3326,11 @@ bool    Screen::PlayEnteredScreenSound ()
 
     if (m_playEnteredScreenSound)
     {
-        // Yes. Play the entered screen sound.
+        // Yes. Play the entered screen sound sample.
 
         Folio::Core::Util::Sound::PlaySoundSample (m_enteredScreenSoundSamples [m_currentEnteredScreenSoundSampleIndex]);
 
-        // All entered screen sounds played?
+        // All entered screen sound samples played?
 
         if (++m_currentEnteredScreenSoundSampleIndex >= m_enteredScreenSoundSamples.size ())
         {
@@ -3045,14 +3347,11 @@ bool    Screen::PlayEnteredScreenSound ()
 } // Endproc.
 
 
-FolioStatus BuildScreens (Folio::Core::Applet::Canvas       &canvas,
-                          const RoomGraphicsMap             &roomGraphicsMap,
-                          const BackgroundItemGraphicsMap   &backgroundItemGraphicsMap,
-                          const SpriteGraphicsMap           &spriteGraphicsMap,
-                          const BackgroundItemsList         &backgroundItemsList,
-                          const StaticSpritesList           &staticSpritesList,
-                          const InformationPanel            &informationPanel,
-                          ScreensList                       &screensList)
+FolioStatus BuildScreens (Folio::Core::Applet::Canvas   &canvas,
+                          const BackgroundItemsList     &backgroundItemsList,
+                          const StaticSpritesList       &staticSpritesList,
+                          const InformationPanel        &informationPanel,
+                          ScreensList                   &screensList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -3068,21 +3367,9 @@ FolioStatus BuildScreens (Folio::Core::Applet::Canvas       &canvas,
          itr != screensList.end ();
          ++itr)
     {
-        // Set the canvas.
+        // Set the screen's canvas.
 
         itr->SetCanvas (canvas);
-
-        // Set the screen's room graphic.
-
-        itr->SetRoomGraphic (roomGraphicsMap);
-
-        // Set the sprite graphics map.
-
-        itr->SetSpriteGraphicsMap (spriteGraphicsMap);
-
-        // Set the information panel.
-
-        itr->SetInformationPanel (informationPanel);
 
         // Set the screen's background items.
 
@@ -3091,6 +3378,10 @@ FolioStatus BuildScreens (Folio::Core::Applet::Canvas       &canvas,
         // Set the screen's static sprites.
 
         itr->SetStaticSpritesList (GetScreenStaticSpritesList (itr->GetScreenNumber (), staticSpritesList));
+
+        // Set the information panel.
+
+        itr->SetInformationPanel (informationPanel);
     } // Endfor.
 
     return (status);

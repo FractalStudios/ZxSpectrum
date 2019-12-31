@@ -39,7 +39,7 @@ public:
     /// Type definition for an interator to type T.
     typedef       T*    iterator;
 
-    ~AParticle ();
+    virtual ~AParticle ();
 
     FolioStatus Create (FolioHandle     dcHandle,
                         const_reference position);

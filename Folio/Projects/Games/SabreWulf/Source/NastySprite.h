@@ -69,7 +69,7 @@ private:
     NASTY_SPRITE_ID m_nastySpriteId;    // The identifier of the nasty sprite.
     UInt32          m_nastySpriteSpeed; // The speed of the nasty sprite.
 
-    //IAC static  SpriteTerminatingSoundSamplesList   m_nastySpriteTerminatingSoundSamplesList;   // The nasty sprite's terminating sound samples.
+    static  Folio::Core::Game::SpriteStationarySoundSamplesList m_nastySpriteTerminatingSoundSamplesList;   // The nasty sprite's terminating sound samples.
 
     FolioStatus SetInitialisingMode (FolioHandle                            dcHandle,
                                      const SpriteGraphicsMapPtr             &spriteGraphicsMap,
@@ -82,7 +82,7 @@ private:
                       CollisionGrid     &collisionGrid);
 
     bool    IsUpdateNastySpriteDirectionRqd (const CollisionGrid &collisionGrid);
-    Direction   GetNastySpriteDirection (const CollisionGrid &collisionGrid);
+    Folio::Core::Game::Direction    GetNastySpriteDirection (const CollisionGrid &collisionGrid);
     
     static  void    QueryInitialScreenTopLeft (const CollisionGrid  &collisionGrid,
                                                Int32                &initialScreenXLeft,
@@ -94,7 +94,7 @@ private:
     static  Folio::Core::Game::ZxSpectrum::COLOUR   GetNastySpriteColour (NASTY_SPRITE_ID nastySpriteId);
     static  UInt32  GetNastySpriteSpeed (NASTY_SPRITE_ID nastySpriteId);
 
-    //IAC static  SpriteTerminatingSoundSamplesList   GetNastySpriteTerminatingSoundSamples ();
+    static  Folio::Core::Game::SpriteStationarySoundSamplesList GetNastySpriteTerminatingSoundSamples ();
 
     // Private copy constructor to prevent copying.
     NastySprite (const NastySprite& rhs);

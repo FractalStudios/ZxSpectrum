@@ -1,6 +1,8 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
 #include    "DrawingElement.h"
+#include    "Globals.h"
+#include    "Screen.h"
 #include    "StaticSprite.h"
 
 namespace Folio
@@ -144,35 +146,35 @@ static  const   StaticSpriteAttributes  g_staticSpriteAttributesTable [] =
 };
 
 
-// Static sprite graphic attributes.
-static  const   Folio::Core::Game::SpriteGraphicsAttributesList<STATIC_SPRITE_ID, SPRITE_ID>    g_staticSpriteGraphicAttributes  =
+// Static sprite graphic characteristics.
+static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<STATIC_SPRITE_ID, SPRITE_ID>    g_staticSpriteGraphicCharacteristics =
 {
-//      m_spriteId                          m_direction                                         m_spriteGraphicIdsList
-    {   STATIC_SPRITE_LEAF,                 Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_LEAF,            },  },  
-    {   STATIC_SPRITE_KEY,                  Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_KEY,             },  },
-    {   STATIC_SPRITE_BOTTLE,               Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_BOTTLE,          },  },
-    {   STATIC_SPRITE_MEDICINE_BOTTLE,      Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_MEDICINE_BOTTLE, },  },
-    {   STATIC_SPRITE_BROKEN,               Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_BROKEN,          },  },
-    {   STATIC_SPRITE_ROPE,                 Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_ROPE,            },  },
-    {   STATIC_SPRITE_ARM,                  Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_ARM,             },  },
-    {   STATIC_SPRITE_BOWL,                 Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_BOWL,            },  },
-    {   STATIC_SPRITE_APPLE,                Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_APPLE,           },  },
-    {   STATIC_SPRITE_CANDY_BAR,            Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_CANDY_BAR,       },  },
-    {   STATIC_SPRITE_HAM,                  Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_HAM,             },  },
-    {   STATIC_SPRITE_LOLLIPOP,             Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_LOLLIPOP,        },  },
-    {   STATIC_SPRITE_MONEY_BAG,            Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_MONEY_BAG,       },  },
-    {   STATIC_SPRITE_GOBSTOPPER,           Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_GOBSTOPPER,      },  },
-    {   STATIC_SPRITE_AMULET,               Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_AMULET,          },  },
-    {   STATIC_SPRITE_CAN,                  Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_CAN,             },  },
-    {   STATIC_SPRITE_ICE_CREAM_CONE,       Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_ICE_CREAM_CONE,  },  },
-    {   STATIC_SPRITE_CRUCIFIX,             Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_CRUCIFIX,        },  },
-    {   STATIC_SPRITE_SKULL,                Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_SKULL,           },  },
-    {   STATIC_SPRITE_SPANNER,              Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_SPANNER,         },  },
-    {   STATIC_SPRITE_ACG_KEY_LEFT,         Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_ACG_KEY_LEFT,    },  },
-    {   STATIC_SPRITE_ACG_KEY_MIDDLE,       Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_ACG_KEY_MIDDLE,  },  },
-    {   STATIC_SPRITE_ACG_KEY_RIGHT,        Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_ACG_KEY_RIGHT,   },  },
-    {   STATIC_SPRITE_MUSHROOM,             Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_MUSHROOM,        },  },
-    {   STATIC_SPRITE_GRAVESTONE,           Folio::Core::Game::AStaticSprite::NO_DIRECTION,     {   SPRITE_GRAVESTONE,      },  },
+//      m_spriteId                          m_direction                         m_spriteGraphicIdsList
+    {   STATIC_SPRITE_LEAF,                 Folio::Core::Game::NO_DIRECTION,    {   SPRITE_LEAF,            },  },  
+    {   STATIC_SPRITE_KEY,                  Folio::Core::Game::NO_DIRECTION,    {   SPRITE_KEY,             },  },
+    {   STATIC_SPRITE_BOTTLE,               Folio::Core::Game::NO_DIRECTION,    {   SPRITE_BOTTLE,          },  },
+    {   STATIC_SPRITE_MEDICINE_BOTTLE,      Folio::Core::Game::NO_DIRECTION,    {   SPRITE_MEDICINE_BOTTLE, },  },
+    {   STATIC_SPRITE_BROKEN,               Folio::Core::Game::NO_DIRECTION,    {   SPRITE_BROKEN,          },  },
+    {   STATIC_SPRITE_ROPE,                 Folio::Core::Game::NO_DIRECTION,    {   SPRITE_ROPE,            },  },
+    {   STATIC_SPRITE_ARM,                  Folio::Core::Game::NO_DIRECTION,    {   SPRITE_ARM,             },  },
+    {   STATIC_SPRITE_BOWL,                 Folio::Core::Game::NO_DIRECTION,    {   SPRITE_BOWL,            },  },
+    {   STATIC_SPRITE_APPLE,                Folio::Core::Game::NO_DIRECTION,    {   SPRITE_APPLE,           },  },
+    {   STATIC_SPRITE_CANDY_BAR,            Folio::Core::Game::NO_DIRECTION,    {   SPRITE_CANDY_BAR,       },  },
+    {   STATIC_SPRITE_HAM,                  Folio::Core::Game::NO_DIRECTION,    {   SPRITE_HAM,             },  },
+    {   STATIC_SPRITE_LOLLIPOP,             Folio::Core::Game::NO_DIRECTION,    {   SPRITE_LOLLIPOP,        },  },
+    {   STATIC_SPRITE_MONEY_BAG,            Folio::Core::Game::NO_DIRECTION,    {   SPRITE_MONEY_BAG,       },  },
+    {   STATIC_SPRITE_GOBSTOPPER,           Folio::Core::Game::NO_DIRECTION,    {   SPRITE_GOBSTOPPER,      },  },
+    {   STATIC_SPRITE_AMULET,               Folio::Core::Game::NO_DIRECTION,    {   SPRITE_AMULET,          },  },
+    {   STATIC_SPRITE_CAN,                  Folio::Core::Game::NO_DIRECTION,    {   SPRITE_CAN,             },  },
+    {   STATIC_SPRITE_ICE_CREAM_CONE,       Folio::Core::Game::NO_DIRECTION,    {   SPRITE_ICE_CREAM_CONE,  },  },
+    {   STATIC_SPRITE_CRUCIFIX,             Folio::Core::Game::NO_DIRECTION,    {   SPRITE_CRUCIFIX,        },  },
+    {   STATIC_SPRITE_SKULL,                Folio::Core::Game::NO_DIRECTION,    {   SPRITE_SKULL,           },  },
+    {   STATIC_SPRITE_SPANNER,              Folio::Core::Game::NO_DIRECTION,    {   SPRITE_SPANNER,         },  },
+    {   STATIC_SPRITE_ACG_KEY_LEFT,         Folio::Core::Game::NO_DIRECTION,    {   SPRITE_ACG_KEY_LEFT,    },  },
+    {   STATIC_SPRITE_ACG_KEY_MIDDLE,       Folio::Core::Game::NO_DIRECTION,    {   SPRITE_ACG_KEY_MIDDLE,  },  },
+    {   STATIC_SPRITE_ACG_KEY_RIGHT,        Folio::Core::Game::NO_DIRECTION,    {   SPRITE_ACG_KEY_RIGHT,   },  },
+    {   STATIC_SPRITE_MUSHROOM,             Folio::Core::Game::NO_DIRECTION,    {   SPRITE_MUSHROOM,        },  },
+    {   STATIC_SPRITE_GRAVESTONE,           Folio::Core::Game::NO_DIRECTION,    {   SPRITE_GRAVESTONE,      },  },
 };
 
 
@@ -227,6 +229,23 @@ StaticSprite::StaticSprite ()
 } // Endproc.
 
 
+StaticSprite::StaticSprite (STATIC_SPRITE_ID                        staticSpriteId,
+                            UInt32                                  initialScreenNumber,
+                            Int32                                   initialScreenXLeft,
+                            Int32                                   initialScreenYBottom,
+                            Folio::Core::Game::ZxSpectrum::COLOUR   staticSpriteColour,
+                            UInt32                                  staticSpriteFlags)
+:   m_staticSpriteId(staticSpriteId),
+    m_screenNumber(initialScreenNumber),
+    m_screenXLeft(initialScreenXLeft),
+    m_screenYTop(initialScreenYBottom), // Need to calculate.
+    m_staticSpriteColour(staticSpriteColour),
+    m_staticSpriteFlags(staticSpriteFlags),
+    m_colourChangeIndex(FOLIO_INVALID_INDEX)
+{
+} // Endproc.
+
+
 StaticSprite::~StaticSprite ()
 {
 } // Endproc.
@@ -234,7 +253,6 @@ StaticSprite::~StaticSprite ()
 
 FolioStatus StaticSprite::Create (FolioHandle                           dcHandle, 
                                   STATIC_SPRITE_ID                      staticSpriteId,
-                                  const SpriteGraphicsMap               &spriteGraphicsMap,
                                   UInt32                                initialScreenNumber,
                                   Int32                                 initialScreenXLeft,
                                   Int32                                 initialScreenYBottom,
@@ -243,26 +261,28 @@ FolioStatus StaticSprite::Create (FolioHandle                           dcHandle
 {
     // Query the static sprite's graphics.
 
-    SpriteGraphicAttributesList    spriteGraphicAttributesList;
+    Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<STATIC_SPRITE_ID, SPRITE_ID> (dcHandle,
+                                                                                                       g_resourceGraphicsCache,
+                                                                                                       initialScreenNumber,
+                                                                                                       DRAWING_ELEMENT_STATIC_SPRITE,
                                                                                                        staticSpriteId,
-                                                                                                       spriteGraphicsMap,
                                                                                                        staticSpriteColour,
-                                                                                                       g_staticSpriteGraphicAttributes,
+                                                                                                       g_staticSpriteGraphicCharacteristics,
                                                                                                        spriteGraphicAttributesList);
 
-    if (status == ERROR_SUCCESS)
+    if (status == ERR_SUCCESS)
     {
-        // Get the static sprite's graphic.
+        // Get the current sprite graphic.
 
-        m_spriteGraphic = spriteGraphicAttributesList.front ().m_spriteGraphics.front ();
+        SpriteGraphic   spriteGraphic(spriteGraphicAttributesList.front ().m_spriteGraphicsList.front ());
 
         // Calculate the initial screen Y top.
 
         Int32   initialScreenYTop = Folio::Core::Game::ZxSpectrum::CalculateScreenYTop (initialScreenYBottom, 
-                                                                                        m_spriteGraphic->GetGraphicWidth (),
-                                                                                        m_spriteGraphic->GetGraphicHeight ());
+                                                                                        spriteGraphic->GetGraphicWidth (),
+                                                                                        spriteGraphic->GetGraphicHeight ());
 
         // Create the static sprite.
 
@@ -272,15 +292,16 @@ FolioStatus StaticSprite::Create (FolioHandle                           dcHandle
                                                            initialScreenYTop,
                                                            Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE,
                                                            Folio::Core::Game::ZxSpectrum::MapInkColour (staticSpriteColour),
-                                                           Folio::Core::Game::AStaticSprite::NO_DIRECTION);
+                                                           Folio::Core::Game::NO_DIRECTION,
+                                                           &(g_resourceGraphicsCache));
 
-        if (status == ERROR_SUCCESS)
+        if (status == ERR_SUCCESS)
         {
             // Static sprite is static.
 
             SetState (STATE_STATIC);
 
-            // Note the static sprite's attributes.
+            // Set the static sprite attributes.
 
             m_staticSpriteId        = staticSpriteId;
             m_screenNumber          = initialScreenNumber;
@@ -291,8 +312,69 @@ FolioStatus StaticSprite::Create (FolioHandle                           dcHandle
         } // Endif.
 
     } // Endif.
+    
+    return (status);
+} // Endproc.
+
+
+FolioStatus StaticSprite::Create (FolioHandle dcHandle)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Has the static sprite already been created?
+
+    if (IsCreated ())
+    {
+        // Yes. Gain the static sprite's graphic from the resource cache.
+
+        status = GainResourceGraphics (m_screenNumber);
+
+        if (status == ERR_SUCCESS)
+        {
+            // Get the mapped sprite colour.
+
+            Gdiplus::ARGB   mappedSpriteColour = Folio::Core::Game::ZxSpectrum::MapInkColour (m_staticSpriteColour);
+
+            // Does the static sprite's colour need to be changed?
+
+            if (mappedSpriteColour != GetCurrentSpriteGraphic ()->GetCurrentChangeableColour ())
+            {
+                // Yes. Change the static sprite's colour.
+
+                status = ChangeSpriteInkColour (mappedSpriteColour,
+                                                true,   // Change the sprite's initialising graphics.
+                                                true,   // Change the sprite's terminating graphics.
+                                                true);  // Force the colour change.
+            } // Endif.
+
+        } // Endif.
+
+    } // Endif.
+
+    else
+    {
+        status = Create (dcHandle, 
+                         m_staticSpriteId,
+                         m_screenNumber,
+                         m_screenXLeft,
+                         m_screenYTop,
+                         m_staticSpriteColour,
+                         m_staticSpriteFlags);
+    } // Endelse.
 
     return (status);
+} // Endproc.
+
+
+void    StaticSprite::SetScreenNumber (UInt32 screenNumber)
+{
+    m_screenNumber = screenNumber;
+} // Endproc.
+
+
+UInt32  StaticSprite::GetScreenNumber () const
+{
+    return (m_screenNumber);
 } // Endproc.
 
 
@@ -314,24 +396,6 @@ UInt32  StaticSprite::GetStaticSpriteFlags () const
 } // Endproc.
 
 
-SpriteGraphic   StaticSprite::GetSpriteGraphic () const
-{
-    return (m_spriteGraphic);
-} // Endproc.
-
-
-void    StaticSprite::SetScreenNumber (UInt32 screenNumber)
-{
-    m_screenNumber = screenNumber;
-} // Endproc.
-
-
-UInt32  StaticSprite::GetScreenNumber () const
-{
-    return (m_screenNumber);
-} // Endproc.
-
-
 FolioStatus StaticSprite::ChangeStaticSpriteColour ()
 {
     // Colour list type.
@@ -346,20 +410,30 @@ FolioStatus StaticSprite::ChangeStaticSpriteColour ()
         {   Folio::Core::Game::ZxSpectrum::MapInkColour (Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::MAGENTA),   },
     };
 
-    if (m_colourChangeIndex == FOLIO_INVALID_INDEX)
+    FolioStatus status = ERR_NOT_SUPPORTED;
+
+    // Does the static sprite support colour change?
+
+    if (SupportsColourChange (m_staticSpriteFlags))
     {
-        // Start randomly within the colour list.
+        // Yes.
+
+        if (m_colourChangeIndex == FOLIO_INVALID_INDEX)
+        {
+            // Start randomly within the colour list.
         
-        m_colourChangeIndex = Folio::Core::Util::Random::GetRandomNumber (s_colourList.size () - 1);
-    } // Endif.
+            m_colourChangeIndex = Folio::Core::Util::Random::GetRandomNumber (s_colourList.size () - 1);
+        } // Endif.
 
-    // Change the colour.
+        // Change the static sprite's colour.
 
-    FolioStatus status = ChangeSpriteInkColour (s_colourList [m_colourChangeIndex]);
+        status = ChangeSpriteInkColour (s_colourList [m_colourChangeIndex]);
 
-    if (++m_colourChangeIndex >= s_colourList.size ()) 
-    {
-        m_colourChangeIndex = 0;
+        if (++m_colourChangeIndex >= s_colourList.size ()) 
+        {
+            m_colourChangeIndex = 0;
+        } // Endif.
+    
     } // Endif.
 
     return (status);
@@ -368,14 +442,157 @@ FolioStatus StaticSprite::ChangeStaticSpriteColour ()
 
 bool    StaticSprite::SupportsColourChange (UInt32 staticSpriteFlags)
 {
-    return ((staticSpriteFlags & StaticSprite::FLAGS_SUPPORTS_COLOUR_CHANGE) == StaticSprite::FLAGS_SUPPORTS_COLOUR_CHANGE);
+    return ((staticSpriteFlags & FLAGS_SUPPORTS_COLOUR_CHANGE) == FLAGS_SUPPORTS_COLOUR_CHANGE);
 } // Endproc.
 
 
-FolioStatus ScatterStaticSprites (StaticSpritesList &staticSpritesList)
+Folio::Core::Game::ZxSpectrum::COLOUR   StaticSprite::GetStaticSpriteColour (STATIC_SPRITE_ID staticSpriteId)
+{
+    Folio::Core::Game::ZxSpectrum::COLOUR   staticSpriteColour = Folio::Core::Game::ZxSpectrum::WHITE; // Initialise!
+
+    // Get the static sprite's colour.
+
+    switch (staticSpriteId)
+    {
+    case STATIC_SPRITE_GRAVESTONE:
+        staticSpriteColour = Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN;
+        break;
+
+    default:
+        staticSpriteColour = Folio::Core::Game::ZxSpectrum::WHITE;
+        break;
+    } // Endswitch.
+
+    return (staticSpriteColour);
+} // Endproc.
+
+
+UInt32  GetMaxStaticSpritesOnScreen (STATIC_SPRITE_ID staticSpriteId)
+{
+    UInt32  maxStaticSpritesOnScreen = 0;   // Initialise!
+
+    switch (staticSpriteId)
+    {
+    case STATIC_SPRITE_ACG_KEY_LEFT:
+    case STATIC_SPRITE_ACG_KEY_MIDDLE:
+    case STATIC_SPRITE_ACG_KEY_RIGHT:
+        maxStaticSpritesOnScreen = 1;
+        break;
+
+    case STATIC_SPRITE_KEY:
+    case STATIC_SPRITE_GRAVESTONE:
+        maxStaticSpritesOnScreen = 4;
+        break;
+
+    case STATIC_SPRITE_LEAF:
+    case STATIC_SPRITE_BOTTLE:
+    case STATIC_SPRITE_MEDICINE_BOTTLE:
+    case STATIC_SPRITE_BROKEN:
+    case STATIC_SPRITE_ROPE:
+    case STATIC_SPRITE_ARM:
+    case STATIC_SPRITE_BOWL:
+    case STATIC_SPRITE_APPLE:
+    case STATIC_SPRITE_CANDY_BAR:
+    case STATIC_SPRITE_HAM:
+    case STATIC_SPRITE_LOLLIPOP:
+    case STATIC_SPRITE_MONEY_BAG:
+    case STATIC_SPRITE_GOBSTOPPER:
+    case STATIC_SPRITE_AMULET:
+    case STATIC_SPRITE_CAN:
+    case STATIC_SPRITE_ICE_CREAM_CONE:
+    case STATIC_SPRITE_CRUCIFIX:
+    case STATIC_SPRITE_SKULL:
+    case STATIC_SPRITE_SPANNER:
+    case STATIC_SPRITE_MUSHROOM:
+    default:
+        // Get the maximum static sprites on any single screen.
+
+        for (UInt32 screenNumber = MIN_SCREEN_NUMBER; screenNumber <= MAX_SCREEN_NUMBER; ++screenNumber)
+        {
+            UInt32  numOfStaticSpritesOnScreen = 0;   // Initialise!
+
+            for (UInt32 index = 0; 
+                 index < (sizeof (g_staticSpriteAttributesTable) / sizeof (StaticSpriteAttributes));
+                 ++index)
+            {              
+                if ((g_staticSpriteAttributesTable [index].m_initialScreenNumber == screenNumber) &&
+                    (g_staticSpriteAttributesTable [index].m_staticSpriteId == staticSpriteId))
+                {
+                    numOfStaticSpritesOnScreen++;
+                } // Endif.
+
+            } // Endfor.
+
+            if (numOfStaticSpritesOnScreen > maxStaticSpritesOnScreen)
+            {
+                maxStaticSpritesOnScreen = numOfStaticSpritesOnScreen;
+            } // Endif.
+
+        } // Endfor.
+        break;
+    } // Endswitch.
+
+    return (maxStaticSpritesOnScreen);
+} // Endproc.
+
+
+FolioStatus CreateStaticSprites (StaticSpritesList &staticSpritesList)
 {
     FolioStatus status = ERR_SUCCESS;
 
+    staticSpritesList.clear ();   // Initialise!
+
+    // Build the static sprites list.
+
+    for (UInt32 index = 0; 
+         (status == ERR_SUCCESS) && (index < (sizeof (g_staticSpriteAttributesTable) / sizeof (StaticSpriteAttributes)));
+         ++index)
+    {              
+        // Store the static sprite in the static sprites list.
+
+        staticSpritesList.push_back (StaticSpritePtr(new StaticSprite(g_staticSpriteAttributesTable [index].m_staticSpriteId,
+                                                                      g_staticSpriteAttributesTable [index].m_initialScreenNumber,
+                                                                      g_staticSpriteAttributesTable [index].m_initialScreenXLeft,
+                                                                      g_staticSpriteAttributesTable [index].m_initialScreenYBottom,
+                                                                      g_staticSpriteAttributesTable [index].m_staticSpriteColour,
+                                                                      g_staticSpriteAttributesTable [index].m_staticSpriteFlags)));
+    } // Endfor.
+
+    if (status != ERR_SUCCESS)
+    {
+        staticSpritesList.clear ();
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+StaticSpritesList   GetScreenStaticSpritesList (UInt32                  screenNumber,
+                                                const StaticSpritesList &staticSpritesList)
+{
+    StaticSpritesList   screenStaticSpritesList;
+
+    // Get the static sprites list for the specified screen number.
+
+    for (StaticSpritesList::const_iterator itr = staticSpritesList.begin ();
+         itr != staticSpritesList.end ();
+         ++itr)
+    {
+        if (itr->get()->GetScreenNumber () == screenNumber)
+        {
+            // Add the static sprite.
+
+            screenStaticSpritesList.push_back (*itr);
+        } // Endif.
+
+    } // Endfor.
+
+    return (screenStaticSpritesList);
+} // Endproc.
+
+
+void    ScatterStaticSprites (StaticSpritesList &staticSpritesList)
+{
     // Calculate the static sprite location table index.
 
     CalculateStaticSpriteLocationTableIndex ();
@@ -432,97 +649,6 @@ FolioStatus ScatterStaticSprites (StaticSpritesList &staticSpritesList)
     
     } // Endfor.
 
-    return (status);
-} // Endproc.
-
-
-FolioStatus BuildStaticSprites (FolioHandle             dcHandle,
-                                const SpriteGraphicsMap &spriteGraphicsMap,
-                                StaticSpritesList       &staticSpritesList)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    staticSpritesList.clear ();   // Initialise!
-
-    // Build the static sprites map.
-
-    for (UInt32 index = 0; 
-         (status == ERR_SUCCESS) && (index < (sizeof (g_staticSpriteAttributesTable) / sizeof (StaticSpriteAttributes)));
-         ++index)
-    {              
-        // Create a static sprite.
-
-        StaticSpritePtr staticSprite(new StaticSprite);
-
-        status = staticSprite->Create (dcHandle,
-                                       g_staticSpriteAttributesTable [index].m_staticSpriteId,
-                                       spriteGraphicsMap,
-                                       g_staticSpriteAttributesTable [index].m_initialScreenNumber,
-                                       g_staticSpriteAttributesTable [index].m_initialScreenXLeft,
-                                       g_staticSpriteAttributesTable [index].m_initialScreenYBottom,
-                                       g_staticSpriteAttributesTable [index].m_staticSpriteColour,
-                                       g_staticSpriteAttributesTable [index].m_staticSpriteFlags);
-
-        if (status == ERR_SUCCESS)
-        {
-            // Store the static sprite in the static sprites list.
-
-            staticSpritesList.push_back (staticSprite);
-        } // Endif.
-
-    } // Endfor.
-
-    if (status != ERR_SUCCESS)
-    {
-        staticSpritesList.clear ();
-    } // Endif.
-
-    return (status);
-} // Endproc.
-
-
-StaticSpritesList   GetScreenStaticSpritesList (UInt32                  screenNumber,
-                                                const StaticSpritesList &staticSpritesList)
-{
-    StaticSpritesList   screenStaticSpritesList;
-
-    // Get the static sprites list for the specified screen number.
-
-    for (StaticSpritesList::const_iterator itr = staticSpritesList.begin ();
-         itr != staticSpritesList.end ();
-         ++itr)
-    {
-        if (itr->get()->GetScreenNumber () == screenNumber)
-        {
-            // Add the static sprite.
-
-            screenStaticSpritesList.push_back (*itr);
-        } // Endif.
-
-    } // Endfor.
-
-    return (screenStaticSpritesList);
-} // Endproc.
-
-
-Folio::Core::Game::ZxSpectrum::COLOUR   GetStaticSpriteColour (STATIC_SPRITE_ID staticSpriteId)
-{
-    Folio::Core::Game::ZxSpectrum::COLOUR   staticSpriteColour = Folio::Core::Game::ZxSpectrum::WHITE; // Initialise!
-
-    // Get the static sprite's colour.
-
-    switch (staticSpriteId)
-    {
-    case STATIC_SPRITE_GRAVESTONE:
-        staticSpriteColour = Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN;
-        break;
-
-    default:
-        staticSpriteColour = Folio::Core::Game::ZxSpectrum::WHITE;
-        break;
-    } // Endswitch.
-
-    return (staticSpriteColour);
 } // Endproc.
 
 
@@ -534,7 +660,7 @@ UInt32  GetAcgKeyLeftLocation ()
 
 bool    IsAcgKeyLeftLocation (UInt32 screenNumber)
 {
-    return (g_staticSpriteLocationsTable [g_staticSpriteLocationTableIndex].m_acgKeyLeft == screenNumber);
+    return (GetAcgKeyLeftLocation () == screenNumber);
 } // Endproc.
 
 
@@ -546,7 +672,7 @@ UInt32  GetAcgKeyMiddleLocation ()
 
 bool    IsAcgKeyMiddleLocation (UInt32 screenNumber)
 {
-    return (g_staticSpriteLocationsTable [g_staticSpriteLocationTableIndex].m_acgKeyMiddle == screenNumber);
+    return (GetAcgKeyMiddleLocation () == screenNumber);
 } // Endproc.
 
 
@@ -558,7 +684,7 @@ UInt32  GetAcgKeyRightLocation ()
 
 bool    IsAcgKeyRightLocation (UInt32 screenNumber)
 {
-    return (g_staticSpriteLocationsTable [g_staticSpriteLocationTableIndex].m_acgKeyRight == screenNumber);
+    return (GetAcgKeyRightLocation () == screenNumber);
 } // Endproc.
 
 
@@ -570,7 +696,7 @@ UInt32  GetRedKeyLocation ()
 
 bool    IsRedKeyLocation (UInt32 screenNumber)
 {
-    return (g_staticSpriteLocationsTable [g_staticSpriteLocationTableIndex].m_redKey == screenNumber);
+    return (GetRedKeyLocation () == screenNumber);
 } // Endproc.
 
 
@@ -582,7 +708,7 @@ UInt32  GetGreenKeyLocation ()
 
 bool    IsGreenKeyLocation (UInt32 screenNumber)
 {
-    return (g_staticSpriteLocationsTable [g_staticSpriteLocationTableIndex].m_greenKey == screenNumber);
+    return (GetGreenKeyLocation () == screenNumber);
 } // Endproc.
 
 
@@ -594,7 +720,7 @@ UInt32  GetCyanKeyLocation ()
 
 bool    IsCyanKeyLocation (UInt32 screenNumber)
 {
-    return (g_staticSpriteLocationsTable [g_staticSpriteLocationTableIndex].m_cyanKey == screenNumber);
+    return (GetCyanKeyLocation () == screenNumber);
 } // Endproc.
 
 
@@ -606,7 +732,7 @@ UInt32  GetYellowKeyLocation ()
 
 bool    IsYellowKeyLocation (UInt32 screenNumber)
 {
-    return (g_staticSpriteLocationsTable [g_staticSpriteLocationTableIndex].m_yellowKey == screenNumber);
+    return (GetYellowKeyLocation () == screenNumber);
 } // Endproc.
 
 } // Endnamespace.

@@ -659,7 +659,7 @@ FolioStatus SetWndText (FolioHandle         wndHandle,
     {
         // Was there an error?
 
-        if (::GetLastError () != ERR_SUCCESS)
+        if (::GetLastError () != ERROR_SUCCESS)
         {
             // Build and log an error.
 
@@ -718,7 +718,7 @@ FolioStatus SetWndData (FolioHandle wndHandle,
     {
         // Was there an error?
 
-        if (::GetLastError () != ERR_SUCCESS)
+        if (::GetLastError () != ERROR_SUCCESS)
         {
             // Build and log an error.
 
@@ -771,7 +771,7 @@ FolioStatus QueryWndData (FolioHandle   wndHandle,
     // make sure that we do have an error.
 
     if ((data == 0) &&
-        (::GetLastError () != ERR_SUCCESS))
+        (::GetLastError () != ERROR_SUCCESS))
     {
         // Build and log an error.
 

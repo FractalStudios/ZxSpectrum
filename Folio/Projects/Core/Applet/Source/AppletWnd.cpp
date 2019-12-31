@@ -266,7 +266,9 @@ FolioStatus AppletWnd::Initialise ()
 {
     FolioStatus status = ERR_SUCCESS;
 
-    //iac Folio::Core::Util::Wnd::ShowCursor (false);
+#ifndef _DEBUG
+    Folio::Core::Util::Wnd::ShowCursor (false);
+#endif
 
     // Register with GDI+.
 

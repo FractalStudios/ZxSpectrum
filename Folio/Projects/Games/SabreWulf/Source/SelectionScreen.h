@@ -66,7 +66,7 @@ public:
 
     bool    IsPauseGameKeyDown () const;
     bool    IsPlayerFireKeyDown () const;
-    bool    IsPlayerDirectionKeyDown (Folio::Core::Game::APlayerSprite::Direction &direction) const;
+    bool    IsPlayerDirectionKeyDown (Folio::Core::Game::Direction &direction) const;
 
 private:
     static  const   UInt32  MAX_DISPLAY_SCREEN_TIME = 30 * 1000;    // 30 seconds.

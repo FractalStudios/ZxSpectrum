@@ -4,6 +4,9 @@
 #include    <Util.h>
 #include    "MainCanvasMsgHandler.h"
 
+//#define _AUTO_TEST_
+#define AUTO_TEST_SCREEN_TIME 5 * 1000
+
 namespace Folio
 {
 
@@ -31,7 +34,7 @@ namespace Games
 
 namespace AticAtac
 {
-
+      
 MainCanvasMsgHandler::MainCanvasMsgHandler (Int32   maxScreenXPixels,           
                                             Int32   maxScreenYPixels,
                                             UInt32  screenScale)
@@ -62,11 +65,21 @@ FolioStatus MainCanvasMsgHandler::HandleCreateCanvasMsg (FolioHandle    wndHandl
 } // Endproc.
 
 
+FolioStatus MainCanvasMsgHandler::HandleDestroyCanvasMsg (FolioHandle   wndHandle,
+                                                          UInt32        wParam,
+                                                          UInt32        lParam)
+{
+    // Terminate.
+
+    return (Terminate ());
+} // Endproc.
+
+
 FolioStatus MainCanvasMsgHandler::HandleProcessFrame (FolioHandle   wndHandle, 
                                                       UInt32        &frameRateIncrement)
 {
 #ifdef _DEBUG
-    DisplayFrameRate ();
+    //DisplayFrameRate ();
 #endif
 
     FolioStatus status = ERR_SUCCESS;
@@ -179,13 +192,52 @@ FolioStatus MainCanvasMsgHandler::HandleProcessStartingStateFrame (FolioHandle  
         
         // The main player is alive.
 
-        m_mainPlayer->SetAlive ();
+        g_mainPlayer->SetAlive ();
     } // Endif.
 
     return (status);
 } // Endproc.
 
+#ifdef _AUTO_TEST_
+FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   wndHandle,
+                                                                  UInt32        *frameRateIncrement)
+{
+    static  UInt32  s_screenTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
 
+    // Let the current screen process the frame.
+
+    bool    isStarting = false; // Initialise!
+
+    FolioStatus status = m_currentScreen->HandleProcessFrame (isStarting, frameRateIncrement);
+        
+    if (status == ERR_SUCCESS)
+    {
+        //if (m_selectionScreen.IsMainPlayerFireWeaponKeyDown ())
+        if (Folio::Core::Util::DateTime::GetCurrentTickCount () > (s_screenTickCount + AUTO_TEST_SCREEN_TIME))
+        {
+            m_currentScreen->ExitScreen ();
+
+            s_screenTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
+
+            m_currentScreenNumber++;
+
+            if (m_currentScreenNumber > MAX_SCREEN_NUMBER)
+            {
+                //Folio::Core::Util::g_handleMonitor.Dump ();
+                //g_resourceGraphicsCache.Dump (false);
+                g_resourceGraphicsCache.DumpNumUsedBitmaps (false);
+
+                m_currentScreenNumber = INITIAL_SCREEN_NUMBER;
+            } // Endif.
+            
+            status = DisplayScreen (m_currentScreenNumber);
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+#else
 FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   wndHandle,
                                                                   UInt32        *frameRateIncrement)
 {
@@ -205,7 +257,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   
         {
             // Has the main player completed the game?
 
-            if (m_mainPlayer->IsGameCompleted ())
+            if (g_mainPlayer->IsGameCompleted ())
             {
                 // Yes. Display the game over screen.
 
@@ -215,11 +267,11 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   
             // Has the main player exited a screen?
         
             else
-            if (m_mainPlayer->IsExitedScreen ())
+            if (g_mainPlayer->IsExitedScreen ())
             {
                 // Yes. Is the main player falling?
 
-                if (m_mainPlayer->IsFalling ())
+                if (g_mainPlayer->IsFalling ())
                 {
                     // Yes. We're falling.
 
@@ -228,9 +280,19 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   
 
                 else
                 {
-                    // No. Display the new screen.
+                    // No. Query the new screen.
+                    
+                    UInt32  newScreenNumber = SCREEN_NUMBER_UNDEFINED;  // Initialise!
 
-                    status = DisplayScreen (m_currentScreen->MoveToNewScreen (m_backgroundItemsList));
+                    status = m_currentScreen->QueryNewScreen (newScreenNumber);
+
+                    if (status == ERR_SUCCESS)
+                    {
+                        // Display the new screen.
+
+                        status = DisplayScreen (newScreenNumber);
+                    } // Endif.
+
                 } // Endelse.
 
             } // Endelseif.
@@ -238,7 +300,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   
             // Is the main player dead?
         
             else
-            if (m_mainPlayer->IsDead ())
+            if (g_mainPlayer->IsDead ())
             {
                 // Yes. Add a gravestone to the current screen.
 
@@ -267,7 +329,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   
                         {
                             // No. Restart the main player.
 
-                            status = m_mainPlayer->Restart ();
+                            status = g_mainPlayer->Restart ();
 
                             if (status == ERR_SUCCESS)
                             {
@@ -288,16 +350,16 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   
     
         // The main player can no longer fire a weapon.
 
-        m_mainPlayer->SetCanFireWeapon (false);
+        g_mainPlayer->SetCanFireWeapon (false);
 
         // The main player can no longer collect items.
 
-        m_mainPlayer->SetCanCollectItems (false);
+        g_mainPlayer->SetCanCollectItems (false);
     } // Endif.
 
     return (status);
 } // Endproc.
-
+#endif
 
 FolioStatus MainCanvasMsgHandler::HandleProcessMainPlayerFallingStateFrame (FolioHandle wndHandle,
                                                                             UInt32      *frameRateIncrement)
@@ -318,11 +380,21 @@ FolioStatus MainCanvasMsgHandler::HandleProcessMainPlayerFallingStateFrame (Foli
 
             // The main player is moving.
 
-            m_mainPlayer->SetState (PlayerSprite::STATE_MOVING);
+            g_mainPlayer->SetState (PlayerSprite::STATE_MOVING);
 
-            // Display the new screen.
+            // Query the new screen.
 
-            status = DisplayScreen (m_currentScreen->MoveToNewScreen (m_backgroundItemsList));
+            UInt32  newScreenNumber = SCREEN_NUMBER_UNDEFINED;  // Initialise!
+
+            status = m_currentScreen->QueryNewScreen (newScreenNumber);
+
+            if (status == ERR_SUCCESS)
+            {
+                // Display the new screen.
+
+                status = DisplayScreen (newScreenNumber);
+            } // Endif.
+
         } // Endif.
 
         else
@@ -389,7 +461,7 @@ FolioStatus MainCanvasMsgHandler::CheckPlayingStateInput ()
 
     // Is the main player ready?
 
-    if (m_mainPlayer->IsReady ())
+    if (g_mainPlayer->IsReady ())
     {
         // Yes. Main player fire weapon key down?  
 
@@ -397,7 +469,7 @@ FolioStatus MainCanvasMsgHandler::CheckPlayingStateInput ()
         {
             // Yes. The main player can fire a weapon.
 
-            m_mainPlayer->SetCanFireWeapon (true);
+            g_mainPlayer->SetCanFireWeapon (true);
         } // Endif.
 
         // Main player collect items key down?  
@@ -407,7 +479,7 @@ FolioStatus MainCanvasMsgHandler::CheckPlayingStateInput ()
         {
             // Yes. The main player can collect items.
 
-            m_mainPlayer->SetCanCollectItems (true);
+            g_mainPlayer->SetCanCollectItems (true);
         } // Endelseif.
 
         // Pause game key down?  
@@ -424,24 +496,24 @@ FolioStatus MainCanvasMsgHandler::CheckPlayingStateInput ()
         {
             // Is a main player's direction key down?
 
-            Folio::Core::Game::APlayerSprite::Direction direction =  
-                Folio::Core::Game::APlayerSprite::NO_DIRECTION; // Initialise!
+            Folio::Core::Game::Direction direction =  
+                Folio::Core::Game::NO_DIRECTION;    // Initialise!
 
             if (m_selectionScreen.IsMainPlayerDirectionKeyDown (direction))
             {
                 // Yes. Update the main player's direction.
 
-                m_mainPlayer->UpdateDirection (direction, true);
+                g_mainPlayer->UpdateDirection (direction, true);
             } // Endif.
 
             // Is the main player moving?
 
             else
-            if (m_mainPlayer->IsMoving ())
+            if (g_mainPlayer->IsMoving ())
             {
                 // Yes. Update the main player's direction.
 
-                m_mainPlayer->UpdateDirection (direction, false);
+                g_mainPlayer->UpdateDirection (direction, false);
             } // Endelseif.
 
         } // Endelse.
@@ -454,38 +526,51 @@ FolioStatus MainCanvasMsgHandler::CheckPlayingStateInput ()
 
 FolioStatus MainCanvasMsgHandler::StartPlaying ()
 {
-    // Yes. Get our main player (hero!).
+    // Get the canvas device context.
 
-    m_mainPlayer = m_playerSpritesMap [static_cast<PLAYER_SPRITE_ID> (m_selectionScreen.GetMainPlayer ())];
+    FolioHandle dcHandle = m_canvas->GetCanvasDcHandle ();
+    
+    // Initialise globals.
 
-    // Restart the main player.
-
-    FolioStatus status = m_mainPlayer->Restart ();
+    FolioStatus status = InitialiseGlobals (dcHandle);
 
     if (status == ERR_SUCCESS)
     {
-        // Create the information panel.
+        // Get our main player (hero!).
 
-        status = m_informationPanel.Create (*m_canvas,
-                                            Screen::GetTotalNumRooms (),
-                                            m_selectionScreen.GetMainPlayerResourceId ());
+        g_mainPlayer = g_playerSpritesMap [static_cast<PLAYER_SPRITE_ID> (m_selectionScreen.GetMainPlayer ())];
+
+        // All the boss sprites are alive.
+
+        SetBossSpritesAlive (g_bossSpritesMap);
+
+        // Set our main player's weapon sprite.
+
+        g_weaponSpriteDrawingElement.SetSprite (g_weaponSpritesMap [WeaponSprite::GetMainPlayerWeaponSpriteId ()]);
+
+        // Restart the main player.
+
+        status = g_mainPlayer->Restart ();
 
         if (status == ERR_SUCCESS)
         {
-            // Scatter the static sprites.
+            // Create the information panel.
 
-            status = ScatterStaticSprites (m_staticSpritesList);
+            status = m_informationPanel.Create (*m_canvas,
+                                                Screen::GetTotalNumRooms (),
+                                                m_selectionScreen.GetMainPlayerResourceId ());
 
             if (status == ERR_SUCCESS)
             {
+                // Scatter the static sprites.
+
+                ScatterStaticSprites (g_staticSpritesList);
+
                 // Build the screens.
 
                 status = BuildScreens (*m_canvas,
-                                       m_roomGraphicsMap, 
-                                       m_backgroundItemGraphicsMap,
-                                       m_spriteGraphicsMap,
-                                       m_backgroundItemsList,
-                                       m_staticSpritesList,
+                                       g_backgroundItemsList,
+                                       g_staticSpritesList,
                                        m_informationPanel,
                                        m_screensList);
 
@@ -509,7 +594,7 @@ FolioStatus MainCanvasMsgHandler::StartPlaying ()
             } // Endif.
 
         } // Endif.
-
+    
     } // Endif.
 
     return (status);
@@ -543,11 +628,29 @@ FolioStatus MainCanvasMsgHandler::DisplayScreen (UInt32 screenNumber)
 
     m_currentScreen = &(m_screensList [m_currentScreenNumber]);
 
+    // Does this screen support a boss sprite?
+
+    BOSS_SPRITE_ID  bossSpriteId = BossSprite::GetScreenBossSpriteId (m_currentScreenNumber, Screen::GetTotalNumRooms ());
+    
+    if (bossSpriteId != BOSS_SPRITE_UNDEFINED)
+    {
+        // Yes. Set the screen's boss sprite.
+
+        g_bossSpriteDrawingElement.SetSprite (g_bossSpritesMap [bossSpriteId]);
+    } // Endif.
+
+    else
+    {
+        // Destroy the boss sprite.
+
+        g_bossSpriteDrawingElement.Destroy ();
+    } // Endelse.
+
     // Get the current screen's drawing elements.
     
     Folio::Core::Game::DrawingElementsList  drawingElementsList;
 
-    FolioStatus status = m_currentScreen->QueryDrawingElements (m_mainPlayer, drawingElementsList);
+    FolioStatus status = m_currentScreen->QueryDrawingElements (drawingElementsList);
 
     if (status == ERR_SUCCESS)
     {
@@ -643,64 +746,29 @@ FolioStatus MainCanvasMsgHandler::Initialise ()
             // Create falling simulation screen.
 
             status = m_fallingSimulationScreen.Create (*m_canvas,
-                                                       Gdiplus::Rect(0, 0, MAX_ROOM_WIDTH, MAX_ROOM_HEIGHT));
+                                                        Gdiplus::Rect(0, 0, MAX_ROOM_WIDTH, MAX_ROOM_HEIGHT));
 
             if (status == ERR_SUCCESS)
             {
-                // Build the room graphics.
+                // Create the room graphics.
 
-                status = BuildRoomGraphics (dcHandle,
-                                            instanceHandle,
-                                            m_roomGraphicsMap);
+                status = CreateRoomGraphics (instanceHandle);
 
                 if (status == ERR_SUCCESS)
                 {
-                    // Build the background item graphics.
+                    // Create the background item graphics.
 
-                    status = BuildBackgroundItemGraphics (dcHandle,
-                                                          instanceHandle,
-                                                          m_backgroundItemGraphicsMap);
+                    status = CreateBackgroundItemGraphics (instanceHandle);
 
                     if (status == ERR_SUCCESS)
                     {
-                        // Build the background items.
+                        // Create the sprite graphics.
 
-                        status = BuildBackgroundItems (m_backgroundItemGraphicsMap,
-                                                       m_backgroundItemsList);
-
-                        if (status == ERR_SUCCESS)
-                        {
-                            // Build the sprite graphics.
-
-                            status = BuildSpriteGraphics (dcHandle,
-                                                          instanceHandle,
-                                                          m_spriteGraphicsMap);
-
-                            if (status == ERR_SUCCESS)
-                            {
-                                // Build the static sprites.
-
-                                status = BuildStaticSprites (dcHandle,
-                                                             m_spriteGraphicsMap,
-                                                             m_staticSpritesList);
-
-                                if (status == ERR_SUCCESS)
-                                {
-                                    // Build the player sprites.
-
-                                    status = BuildPlayerSprites (dcHandle,
-                                                                 m_spriteGraphicsMap,
-                                                                 m_playerSpritesMap);
-                                } // Endif.
-
-                            } // Endif.
-
-                        } // Endif.
-
+                        status = CreateSpriteGraphics (instanceHandle);
                     } // Endif.
-
-                } // Endif.
     
+                } // Endif.
+
             } // Endif.
 
         } // Endif.
@@ -708,6 +776,14 @@ FolioStatus MainCanvasMsgHandler::Initialise ()
     } // Endif.
 
     return (status);
+} // Endproc.
+
+
+FolioStatus MainCanvasMsgHandler::Terminate ()
+{
+    // Terminate globals.
+
+    return (TerminateGlobals ());
 } // Endproc.
 
 

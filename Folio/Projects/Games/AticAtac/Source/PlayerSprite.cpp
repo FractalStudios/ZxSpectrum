@@ -1,7 +1,10 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
 #include    "DrawingElement.h"
+#include    "Globals.h"
 #include    "PlayerSprite.h"
+#include    "ResourceOwnerId.h"
+#include    "SpriteGraphics.h"
 #include    "Ultimate.h"
 
 namespace Folio
@@ -16,55 +19,54 @@ namespace AticAtac
 // Player sprite attributes.
 struct PlayerSpriteAttributes
 {
-    PLAYER_SPRITE_ID                            m_playerSpriteId;       // The identifier of the player sprite.
-    Int32                                       m_initialScreenXLeft;   // The initial screen X left (in pixels) of the player sprite.
-    Int32                                       m_initialScreenYTop;    // The initial screen Y top (in pixels) of the player sprite.
-    Folio::Core::Game::ZxSpectrum::COLOUR       m_playerSpriteColour;   // The colour of the player sprite.
-    Folio::Core::Game::APlayerSprite::Direction m_initialDirection;     // The initial direction of the player sprite.
-    UInt32                                      m_playerSpriteFlags;    // The flags of the player sprite.
+    PLAYER_SPRITE_ID                        m_playerSpriteId;       // The identifier of the player sprite.
+    Int32                                   m_initialScreenXLeft;   // The initial screen X left (in pixels) of the player sprite.
+    Int32                                   m_initialScreenYTop;    // The initial screen Y top (in pixels) of the player sprite.
+    Folio::Core::Game::ZxSpectrum::COLOUR   m_playerSpriteColour;   // The colour of the player sprite.
+    Folio::Core::Game::Direction            m_initialDirection;     // The initial direction of the player sprite.
+    UInt32                                  m_playerSpriteFlags;    // The flags of the player sprite.
 }; // Endstruct.
 
 // Player sprite attributes table.
 static  const   PlayerSpriteAttributes  g_playerSpriteAttributesTable [] =
 {
-//      m_playerSpriteId        m_initialScreenXLeft    m_initialScreenYTop     m_playerSpriteColour                                                            m_initialDirection  m_playerSpriteFlags
-    {   PLAYER_SPRITE_KNIGHT,   96,                     88,                     Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   PlayerSprite::E,    PlayerSprite::FLAGS_INITIALISED_BOTTOM_UP | PlayerSprite::FLAGS_TERMINATED_TOP_DOWN,    },
-    {   PLAYER_SPRITE_WIZARD,   96,                     88,                     Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   PlayerSprite::E,    PlayerSprite::FLAGS_INITIALISED_BOTTOM_UP | PlayerSprite::FLAGS_TERMINATED_TOP_DOWN,    },
-    {   PLAYER_SPRITE_SERF,     96,                     88,                     Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   PlayerSprite::E,    PlayerSprite::FLAGS_INITIALISED_BOTTOM_UP | PlayerSprite::FLAGS_TERMINATED_TOP_DOWN,    },
+//      m_playerSpriteId        m_initialScreenXLeft    m_initialScreenYTop     m_playerSpriteColour                                                            m_initialDirection      m_playerSpriteFlags
+    {   PLAYER_SPRITE_KNIGHT,   96,                     88,                     Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   Folio::Core::Game::E,   PlayerSprite::FLAGS_INITIALISED_BOTTOM_UP | PlayerSprite::FLAGS_TERMINATED_TOP_DOWN,    },
+    {   PLAYER_SPRITE_WIZARD,   96,                     88,                     Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   Folio::Core::Game::E,   PlayerSprite::FLAGS_INITIALISED_BOTTOM_UP | PlayerSprite::FLAGS_TERMINATED_TOP_DOWN,    },
+    {   PLAYER_SPRITE_SERF,     96,                     88,                     Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   Folio::Core::Game::E,   PlayerSprite::FLAGS_INITIALISED_BOTTOM_UP | PlayerSprite::FLAGS_TERMINATED_TOP_DOWN,    },
 };
 
 
-// Player sprite graphic attributes.
-static  const   Folio::Core::Game::SpriteGraphicsAttributesList<PLAYER_SPRITE_ID, SPRITE_ID>    g_playerSpriteGraphicAttributes =
+// Player sprite graphic characteristics.
+static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<PLAYER_SPRITE_ID, SPRITE_ID>    g_playerSpriteGraphicCharacteristics =
 {
-//      m_spriteId              m_direction                             m_spriteGraphicIdsList
-    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::APlayerSprite::E,    {   SPRITE_KNIGHT_RIGHT, SPRITE_KNIGHT_WALKING_RIGHT_1, SPRITE_KNIGHT_RIGHT, SPRITE_KNIGHT_WALKING_RIGHT_2, },  },
-    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::APlayerSprite::W,    {   SPRITE_KNIGHT_LEFT, SPRITE_KNIGHT_WALKING_LEFT_1, SPRITE_KNIGHT_LEFT, SPRITE_KNIGHT_WALKING_LEFT_2,     },  },
-    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::APlayerSprite::N,    {   SPRITE_KNIGHT_UP, SPRITE_KNIGHT_WALKING_UP_1, SPRITE_KNIGHT_UP, SPRITE_KNIGHT_WALKING_UP_2,             },  },
-    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::APlayerSprite::S,    {   SPRITE_KNIGHT_DOWN, SPRITE_KNIGHT_WALKING_DOWN_1, SPRITE_KNIGHT_DOWN, SPRITE_KNIGHT_WALKING_DOWN_2,     },  },
+//      m_spriteId              m_direction             m_spriteGraphicIdsList
+    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::E,   {   SPRITE_KNIGHT_RIGHT, SPRITE_KNIGHT_WALKING_RIGHT_1, SPRITE_KNIGHT_RIGHT, SPRITE_KNIGHT_WALKING_RIGHT_2, },  },
+    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::W,   {   SPRITE_KNIGHT_LEFT, SPRITE_KNIGHT_WALKING_LEFT_1, SPRITE_KNIGHT_LEFT, SPRITE_KNIGHT_WALKING_LEFT_2,     },  },
+    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::N,   {   SPRITE_KNIGHT_UP, SPRITE_KNIGHT_WALKING_UP_1, SPRITE_KNIGHT_UP, SPRITE_KNIGHT_WALKING_UP_2,             },  },
+    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::S,   {   SPRITE_KNIGHT_DOWN, SPRITE_KNIGHT_WALKING_DOWN_1, SPRITE_KNIGHT_DOWN, SPRITE_KNIGHT_WALKING_DOWN_2,     },  },
 
-    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::APlayerSprite::E,    {   SPRITE_WIZARD_RIGHT, SPRITE_WIZARD_WALKING_RIGHT_1, SPRITE_WIZARD_RIGHT, SPRITE_WIZARD_WALKING_RIGHT_2, },  },
-    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::APlayerSprite::W,    {   SPRITE_WIZARD_LEFT, SPRITE_WIZARD_WALKING_LEFT_1, SPRITE_WIZARD_LEFT, SPRITE_WIZARD_WALKING_LEFT_2,     },  },
-    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::APlayerSprite::N,    {   SPRITE_WIZARD_UP, SPRITE_WIZARD_WALKING_UP_1, SPRITE_WIZARD_UP, SPRITE_WIZARD_WALKING_UP_2,             },  },
-    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::APlayerSprite::S,    {   SPRITE_WIZARD_DOWN, SPRITE_WIZARD_WALKING_DOWN_1, SPRITE_WIZARD_DOWN, SPRITE_WIZARD_WALKING_DOWN_2,     },  },
+    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::E,   {   SPRITE_WIZARD_RIGHT, SPRITE_WIZARD_WALKING_RIGHT_1, SPRITE_WIZARD_RIGHT, SPRITE_WIZARD_WALKING_RIGHT_2, },  },
+    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::W,   {   SPRITE_WIZARD_LEFT, SPRITE_WIZARD_WALKING_LEFT_1, SPRITE_WIZARD_LEFT, SPRITE_WIZARD_WALKING_LEFT_2,     },  },
+    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::N,   {   SPRITE_WIZARD_UP, SPRITE_WIZARD_WALKING_UP_1, SPRITE_WIZARD_UP, SPRITE_WIZARD_WALKING_UP_2,             },  },
+    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::S,   {   SPRITE_WIZARD_DOWN, SPRITE_WIZARD_WALKING_DOWN_1, SPRITE_WIZARD_DOWN, SPRITE_WIZARD_WALKING_DOWN_2,     },  },
 
-    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::APlayerSprite::E,    {   SPRITE_SERF_RIGHT, SPRITE_SERF_WALKING_RIGHT_1, SPRITE_SERF_RIGHT, SPRITE_SERF_WALKING_RIGHT_2,         },  },
-    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::APlayerSprite::W,    {   SPRITE_SERF_LEFT, SPRITE_SERF_WALKING_LEFT_1, SPRITE_SERF_LEFT, SPRITE_SERF_WALKING_LEFT_2,             },  },
-    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::APlayerSprite::N,    {   SPRITE_SERF_UP, SPRITE_SERF_WALKING_UP_1, SPRITE_SERF_UP, SPRITE_SERF_WALKING_UP_2,                     },  },
-    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::APlayerSprite::S,    {   SPRITE_SERF_DOWN, SPRITE_SERF_WALKING_DOWN_1, SPRITE_SERF_DOWN, SPRITE_SERF_WALKING_DOWN_2,             },  },
+    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::E,   {   SPRITE_SERF_RIGHT, SPRITE_SERF_WALKING_RIGHT_1, SPRITE_SERF_RIGHT, SPRITE_SERF_WALKING_RIGHT_2,         },  },
+    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::W,   {   SPRITE_SERF_LEFT, SPRITE_SERF_WALKING_LEFT_1, SPRITE_SERF_LEFT, SPRITE_SERF_WALKING_LEFT_2,             },  },
+    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::N,   {   SPRITE_SERF_UP, SPRITE_SERF_WALKING_UP_1, SPRITE_SERF_UP, SPRITE_SERF_WALKING_UP_2,                     },  },
+    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::S,   {   SPRITE_SERF_DOWN, SPRITE_SERF_WALKING_DOWN_1, SPRITE_SERF_DOWN, SPRITE_SERF_WALKING_DOWN_2,             },  },
 };
 
 
 // Player sprite static members.
-PlayerSprite::SpriteInitialisingSoundSamplesList    PlayerSprite::m_playerSpriteInitialisingSoundSamplesList;   // The player sprite's initialising sound samples.
-PlayerSprite::SpriteTerminatingSoundSamplesList     PlayerSprite::m_playerSpriteTerminatingSoundSamplesList;    // The player sprite's terminating sound samples.
+Folio::Core::Game::SpriteStationarySoundSamplesList PlayerSprite::m_playerSpriteInitialisingSoundSamplesList;   // The player sprite's initialising sound samples.
+Folio::Core::Game::SpriteStationarySoundSamplesList PlayerSprite::m_playerSpriteTerminatingSoundSamplesList;    // The player sprite's terminating sound samples.
 
 PlayerSprite::PlayerSprite ()
 :   m_playerSpriteId(PLAYER_SPRITE_UNDEFINED),
     m_initialScreenXLeft(Folio::Core::Game::ZxSpectrum::UNDEFINED),
     m_initialScreenYTop(Folio::Core::Game::ZxSpectrum::UNDEFINED),
-    m_playerSpriteColour(Folio::Core::Game::ZxSpectrum::UNDEFINED),
-    m_initialDirection(NO_DIRECTION),
+    m_initialDirection(Folio::Core::Game::NO_DIRECTION),
     m_playerSpriteFlags(FLAGS_NONE),
     m_canFireWeapon(false),
     m_canCollectItems(false)
@@ -79,27 +81,28 @@ PlayerSprite::~PlayerSprite ()
 
 FolioStatus PlayerSprite::Create (FolioHandle                           dcHandle, 
                                   PLAYER_SPRITE_ID                      playerSpriteId,
-                                  const SpriteGraphicsMap               &spriteGraphicsMap,
                                   Int32                                 initialScreenXLeft,
                                   Int32                                 initialScreenYTop,
                                   Folio::Core::Game::ZxSpectrum::COLOUR playerSpriteColour,
-                                  Direction                             initialDirection,
+                                  Folio::Core::Game::Direction          initialDirection,
                                   UInt32                                playerSpriteFlags)
 {
     static  const   UInt32  MAX_NUM_AUTO_MOVES = 3;
 
     // Query the player sprite's graphics.
 
-    SpriteGraphicAttributesList    spriteGraphicAttributesList;
+    Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<PLAYER_SPRITE_ID, SPRITE_ID> (dcHandle,
+                                                                                                       g_resourceGraphicsCache,
+                                                                                                       OWNER_ID_MAIN_PLAYER_SPRITE,
+                                                                                                       DRAWING_ELEMENT_MAIN_PLAYER_SPRITE,
                                                                                                        playerSpriteId,
-                                                                                                       spriteGraphicsMap,
                                                                                                        playerSpriteColour,
-                                                                                                       g_playerSpriteGraphicAttributes,
+                                                                                                       g_playerSpriteGraphicCharacteristics,
                                                                                                        spriteGraphicAttributesList);
 
-    if (status == ERROR_SUCCESS)
+    if (status == ERR_SUCCESS)
     {
         // Create the player sprite.
 
@@ -110,42 +113,38 @@ FolioStatus PlayerSprite::Create (FolioHandle                           dcHandle
                                                            Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE,
                                                            Folio::Core::Game::ZxSpectrum::MapInkColour (playerSpriteColour),
                                                            initialDirection,
+                                                           &(g_resourceGraphicsCache),
                                                            MAX_NUM_AUTO_MOVES);
 
-        if (status == ERROR_SUCCESS)
+        if (status == ERR_SUCCESS)
         {
-            // Set the player sprite's movement sound samples.
+            // Set the player sprite's initialising mode.
+            
+            status = SetInitialisingMode (playerSpriteFlags);
 
-            status = SetMovementSoundSamples (playerSpriteId);
-
-            if (status == ERROR_SUCCESS)
+            if (status == ERR_SUCCESS)
             {
-                // Set the player sprite's initialising mode.
-            
-                status = SetInitialisingMode (playerSpriteFlags);
+                // Set the player sprite's terminating mode.
 
-                if (status == ERROR_SUCCESS)
+                status = SetTerminatingMode (playerSpriteFlags);
+
+                if (status == ERR_SUCCESS)
                 {
-                    // Set the player sprite's terminating mode.
+                    // Set the player sprite's movement sound samples.
 
-                    status = SetTerminatingMode (playerSpriteFlags);
+                    SetMovementSoundSamples ();
 
-                    if (status == ERROR_SUCCESS)
-                    {
-                        // Note the player sprite's attributes.
+                    // Note the player sprite's attributes.
 
-                        m_playerSpriteId        = playerSpriteId;
-                        m_initialScreenXLeft    = initialScreenXLeft;
-                        m_initialScreenYTop     = initialScreenYTop;
-                        m_playerSpriteColour    = playerSpriteColour;
-                        m_initialDirection      = initialDirection;
-                        m_playerSpriteFlags     = playerSpriteFlags;
-                    } // Endif.
-            
+                    m_playerSpriteId        = playerSpriteId;
+                    m_initialScreenXLeft    = initialScreenXLeft;
+                    m_initialScreenYTop     = initialScreenYTop;
+                    m_initialDirection      = initialDirection;
+                    m_playerSpriteFlags     = playerSpriteFlags;
                 } // Endif.
-
+            
             } // Endif.
-        
+
         } // Endif.
 
     } // Endif.
@@ -156,9 +155,11 @@ FolioStatus PlayerSprite::Create (FolioHandle                           dcHandle
 
 FolioStatus PlayerSprite::Restart ()
 {
-    // Recreate the player sprite.
+    // Restart the player sprite.
 
-    FolioStatus status = Recreate (m_initialScreenXLeft, m_initialScreenYTop, m_initialDirection);
+    FolioStatus status = Folio::Core::Game::APlayerSprite::Restart (m_initialScreenXLeft, 
+                                                                    m_initialScreenYTop, 
+                                                                    m_initialDirection);
 
     if (status == ERR_SUCCESS)
     {
@@ -173,12 +174,6 @@ FolioStatus PlayerSprite::Restart ()
 PLAYER_SPRITE_ID   PlayerSprite::GetPlayerSpriteId () const
 {
     return (m_playerSpriteId);
-} // Endproc.
-
-
-Folio::Core::Game::ZxSpectrum::COLOUR   PlayerSprite::GetPlayerSpriteColour () const
-{
-    return (m_playerSpriteColour);
 } // Endproc.
 
 
@@ -198,7 +193,7 @@ bool    PlayerSprite::CanFireWeapon () const
 {
     // Cannot fire a weapon if in screen exit.
 
-    return (m_canFireWeapon && !m_isInScreenExit);
+    return (m_canFireWeapon && !IsInScreenExit ());
 } // Endproc.
 
 
@@ -235,22 +230,6 @@ bool    PlayerSprite::IsTerminatedBottomUp (UInt32 playerSpriteflags)
 bool    PlayerSprite::IsTerminatedTopDown (UInt32 playerSpriteflags)
 {
     return ((playerSpriteflags & FLAGS_TERMINATED_TOP_DOWN) == FLAGS_TERMINATED_TOP_DOWN);
-} // Endproc.
-
-
-FolioStatus PlayerSprite::SetMovementSoundSamples (PLAYER_SPRITE_ID playerSpriteId)
-{
-    // Player sprite movement sound sample list.
-    static  const   SpriteMovementSoundSamplesList  s_playerSpriteMovementSoundSampleList =
-    {
-        {   SpriteMovementSoundSample(new SpriteMovementSoundSample::element_type(Ultimate::MapMakeSound (0x30, 0x08))),  },
-        {   SpriteMovementSoundSample(new SpriteMovementSoundSample::element_type(Ultimate::MapMakeSound (0x40, 0x08))),  },
-    };
-
-    // Set the player sprite's movement sound samples.
-
-    return (SetSpriteMovementSoundSamples (SpriteMovementSoundAttributesList(1, 
-                                                                             SpriteMovementSoundAttributes(ALL_DIRECTIONS, s_playerSpriteMovementSoundSampleList))));
 } // Endproc.
 
 
@@ -336,17 +315,35 @@ FolioStatus PlayerSprite::SetTerminatingMode (UInt32 playerSpriteFlags)
 } // Endproc.
 
 
-PlayerSprite::SpriteInitialisingSoundSamplesList    PlayerSprite::GetPlayerSpriteInitialisingSoundSamples (bool isBottomUpMode)
+void    PlayerSprite::SetMovementSoundSamples ()
 {
+    // Player sprite sound sample list.
+    static  const   Folio::Core::Game::SpriteSoundSamplesList   s_playerSpriteMovementSoundSampleList =
+    {
+        {   Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(Ultimate::MapMakeSound (0x30, 0x08))),  },
+        {   Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(Ultimate::MapMakeSound (0x40, 0x08))),  },
+    };
+
+    // Set the player sprite's movement sound samples.
+
+    SetSpriteMovementSoundSamples (Folio::Core::Game::SpriteMovementSoundSamplesList(1, 
+                                                                                     Folio::Core::Game::SpriteMovementSoundSample(Folio::Core::Game::ALL_DIRECTIONS, s_playerSpriteMovementSoundSampleList)));
+} // Endproc.
+
+
+Folio::Core::Game::SpriteStationarySoundSamplesList PlayerSprite::GetPlayerSpriteInitialisingSoundSamples (bool isBottomUpMode)
+{
+    // Has the player sprite's initialising sound samples been created?
+
     if (m_playerSpriteInitialisingSoundSamplesList.empty ())
     {
-        // Create each sound sample representing the required sound.
+        // No. Create each sound sample representing the required sound.
 
         if (isBottomUpMode)
         {
             for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x7f; frequency >= 0x5d; frequency -= 0x02)
             {
-                m_playerSpriteInitialisingSoundSamplesList.push_back (SpriteInitialisingSoundSample(Ultimate::MapMakeSound (frequency, 0x10), 4));
+                m_playerSpriteInitialisingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::MapMakeSound (frequency, 0x10), 4));
             } // Endfor.
     
         } // Endif.
@@ -355,7 +352,7 @@ PlayerSprite::SpriteInitialisingSoundSamplesList    PlayerSprite::GetPlayerSprit
         {
             for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x5d; frequency <= 0x7f; frequency += 0x02)
             {
-                m_playerSpriteInitialisingSoundSamplesList.push_back (SpriteInitialisingSoundSample(Ultimate::MapMakeSound (frequency, 0x10), 4));
+                m_playerSpriteInitialisingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::MapMakeSound (frequency, 0x10), 4));
             } // Endfor.
     
         } // Endelse.
@@ -366,17 +363,19 @@ PlayerSprite::SpriteInitialisingSoundSamplesList    PlayerSprite::GetPlayerSprit
 } // Endproc.
 
 
-PlayerSprite::SpriteTerminatingSoundSamplesList PlayerSprite::GetPlayerSpriteTerminatingSoundSamples (bool isBottomUpMode)
+Folio::Core::Game::SpriteStationarySoundSamplesList PlayerSprite::GetPlayerSpriteTerminatingSoundSamples (bool isBottomUpMode)
 {
+    // Has the player sprite's terminating sound samples been created?
+    
     if (m_playerSpriteTerminatingSoundSamplesList.empty ())
     {
-        // Create each sound sample representing the required sound.
+        // No. Create each sound sample representing the required sound.
 
         if (isBottomUpMode)
         {
             for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x7f; frequency >= 0x5d; frequency -= 0x02)
             {
-                m_playerSpriteTerminatingSoundSamplesList.push_back (SpriteTerminatingSoundSample(Ultimate::MapMakeSound (frequency, 0x10)));
+                m_playerSpriteTerminatingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::MapMakeSound (frequency, 0x10), 2));
             } // Endfor.
     
         } // Endif.
@@ -385,7 +384,7 @@ PlayerSprite::SpriteTerminatingSoundSamplesList PlayerSprite::GetPlayerSpriteTer
         {
             for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x5d; frequency <= 0x7f; frequency += 0x02)
             {
-                m_playerSpriteTerminatingSoundSamplesList.push_back (SpriteTerminatingSoundSample(Ultimate::MapMakeSound (frequency, 0x10)));
+                m_playerSpriteTerminatingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::MapMakeSound (frequency, 0x10), 2));
             } // Endfor.
     
         } // Endelse.
@@ -396,9 +395,8 @@ PlayerSprite::SpriteTerminatingSoundSamplesList PlayerSprite::GetPlayerSpriteTer
 } // Endproc.
 
 
-FolioStatus BuildPlayerSprites (FolioHandle             dcHandle,
-                                const SpriteGraphicsMap &spriteGraphicsMap,
-                                PlayerSpritesMap        &playerSpritesMap)
+FolioStatus CreatePlayerSprites (FolioHandle        dcHandle,
+                                 PlayerSpritesMap   &playerSpritesMap)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -416,7 +414,6 @@ FolioStatus BuildPlayerSprites (FolioHandle             dcHandle,
 
         status = playerSprite->Create (dcHandle,
                                        g_playerSpriteAttributesTable [index].m_playerSpriteId,
-                                       spriteGraphicsMap,
                                        g_playerSpriteAttributesTable [index].m_initialScreenXLeft,
                                        g_playerSpriteAttributesTable [index].m_initialScreenYTop,
                                        g_playerSpriteAttributesTable [index].m_playerSpriteColour,

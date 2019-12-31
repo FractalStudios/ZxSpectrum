@@ -85,8 +85,7 @@ typedef std::shared_ptr<BackgroundItemGraphicsMap>  BackgroundItemGraphicsMapPtr
 
 // Routines.
 
-extern  FolioStatus CreateBackgroundItemGraphics (FolioHandle                   dcHandle, 
-                                                  FolioHandle                   instanceHandle,
+extern  FolioStatus CreateBackgroundItemGraphics (FolioHandle                   instanceHandle,
                                                   BackgroundItemGraphicsMapPtr  &backgroundItemGraphicsMap);
 
 } // Endnamespace.

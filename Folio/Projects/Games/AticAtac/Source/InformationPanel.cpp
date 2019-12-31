@@ -2,7 +2,9 @@
 #include    "StdAfx.h"
 #include    "DrawingElement.h"
 #include    "Font.h"
+#include    "Globals.h"
 #include    "InformationPanel.h"
+#include    "ResourceOwnerId.h"
 #include    "Ultimate.h"
 
 namespace Folio
@@ -20,18 +22,18 @@ typedef Folio::Core::Game::ItemAttributes<INFORMATION_PANEL_ITEM_ID>    Informat
 // Information panel item attributes table.
 static  const   InformationPanelItemAttributes  g_informationPanelAttributesTable [] =
 {
-//      m_itemId                                m_bitmapResourceId                  m_screenXLeft   m_screenYTop    m_colour
-    {   INFORMATION_PANEL_ITEM_SCROLL,          IDB_BITMAP_SCROLL,                   0,               0,            Folio::Core::Game::ZxSpectrum::UNDEFINED,                                       },
-    {   INFORMATION_PANEL_ITEM_SCROLL_SEAL,     IDB_BITMAP_SCROLL_SEAL,              8,             144,            Folio::Core::Game::ZxSpectrum::UNDEFINED,                                       },
-    {   INFORMATION_PANEL_ITEM_TIME_TEXT,       0,                                  16,              56,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::MAGENTA, },
-    {   INFORMATION_PANEL_ITEM_TIME_VALUE,      0,                                   8,              64,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
-    {   INFORMATION_PANEL_ITEM_SCORE_TEXT,      0,                                  12,              72,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    },
-    {   INFORMATION_PANEL_ITEM_SCORE_VALUE,     0,                                   8,              80,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
-    {   INFORMATION_PANEL_ITEM_TURKEY_CARCASS,  IDB_BITMAP_TURKEY_CARCASS,           8,              90,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::YELLOW,  },
-    {   INFORMATION_PANEL_ITEM_TURKEY,          IDB_BITMAP_FULL_TURKEY,              8,              90,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::YELLOW,  },
-    {   INFORMATION_PANEL_ITEM_PLAYER_LIFE_1,   IDB_BITMAP_KNIGHT_WALKING_LEFT_1,    8,             122,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
-    {   INFORMATION_PANEL_ITEM_PLAYER_LIFE_2,   IDB_BITMAP_KNIGHT_WALKING_LEFT_1,   24,             122,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
-    {   INFORMATION_PANEL_ITEM_PLAYER_LIFE_3,   IDB_BITMAP_KNIGHT_WALKING_LEFT_1,   40,             122,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+//      m_itemId                                    m_bitmapResourceId                  m_screenXLeft   m_screenYTop    m_colour
+    {   INFORMATION_PANEL_ITEM_SCROLL,              IDB_BITMAP_SCROLL,                   0,               0,            Folio::Core::Game::ZxSpectrum::UNDEFINED,                                       },
+    {   INFORMATION_PANEL_ITEM_SCROLL_SEAL,         IDB_BITMAP_SCROLL_SEAL,              8,             144,            Folio::Core::Game::ZxSpectrum::UNDEFINED,                                       },
+    {   INFORMATION_PANEL_ITEM_TIME_TEXT,           0,                                  16,              56,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::MAGENTA, },
+    {   INFORMATION_PANEL_ITEM_TIME_VALUE,          0,                                   8,              64,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   INFORMATION_PANEL_ITEM_SCORE_TEXT,          0,                                  12,              72,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN,    },
+    {   INFORMATION_PANEL_ITEM_SCORE_VALUE,         0,                                   8,              80,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   INFORMATION_PANEL_ITEM_TURKEY_CARCASS,      IDB_BITMAP_TURKEY_CARCASS,           8,              90,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::YELLOW,  },
+    {   INFORMATION_PANEL_ITEM_TURKEY,              IDB_BITMAP_FULL_TURKEY,              8,              90,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::YELLOW,  },
+    {   INFORMATION_PANEL_ITEM_PLAYER_LIFE_1,       IDB_BITMAP_KNIGHT_WALKING_LEFT_1,    8,             122,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   INFORMATION_PANEL_ITEM_PLAYER_LIFE_2,       IDB_BITMAP_KNIGHT_WALKING_LEFT_1,   24,             122,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
+    {   INFORMATION_PANEL_ITEM_PLAYER_LIFE_3,       IDB_BITMAP_KNIGHT_WALKING_LEFT_1,   40,             122,            Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   },
 };
 
 
@@ -66,6 +68,9 @@ InformationPanel::InformationPanel ()
 
 InformationPanel::~InformationPanel ()
 {
+    // Release the information panel's resource graphics.
+
+    ReleaseResourceGraphics ();
 } // Endproc.
 
 
@@ -86,6 +91,10 @@ FolioStatus InformationPanel::Create (Folio::Core::Applet::Canvas   &canvas,
     m_totalNumRooms                 = totalNumRooms;
     m_numRoomsVisited               = 0;
     m_invertScoreColours            = false;
+
+    // Release the information panel's resource graphics.
+
+    ReleaseResourceGraphics ();
 
     m_heldItemsList.clear ();   // Initialise!
 
@@ -243,7 +252,7 @@ FolioStatus InformationPanel::AddCollectedItem (const HeldItem  &heldItem,
 
     if (status == ERR_SUCCESS)
     {
-         // Play collected item sound.
+         // Play the collected item sound sample.
 
         Folio::Core::Util::Sound::PlaySoundSample (m_collectedItemSoundSample);
         
@@ -251,7 +260,7 @@ FolioStatus InformationPanel::AddCollectedItem (const HeldItem  &heldItem,
 
         if ((status == ERR_SUCCESS) && droppedItem.IsPopulated ())
         {
-            // Yes. Play dropped item sound.
+            // Yes. Play the dropped item sound sample.
 
             Folio::Core::Util::Sound::PlaySoundSample (m_droppedItemSoundSample);
         } // Endif.
@@ -272,7 +281,7 @@ FolioStatus InformationPanel::CycleCollectedItems (DroppedItem &droppedItem)
 
     if ((status == ERR_SUCCESS) && droppedItem.IsPopulated ())
     {
-        // Yes. Play dropped item sound.
+        // Yes. Play the dropped item sound sample.
 
         Folio::Core::Util::Sound::PlaySoundSample (m_droppedItemSoundSample);
     } // Endif.
@@ -390,21 +399,20 @@ FolioStatus InformationPanel::IncrementMainPlayerHealth (UInt32 healthIncrement,
         // Update the main player's health.
 
         status = Update (UPDATE_HEALTH);
+    } // Endif.
 
-        if (!m_playIncrementMainPlayerHealthSound && 
-            (status == ERR_SUCCESS))
-        {
-            // Start playing the increment main player health sound.
+    if (!m_playIncrementMainPlayerHealthSound && 
+        (status == ERR_SUCCESS))
+    {
+        // Start playing the increment main player health sound.
 
-            m_playIncrementMainPlayerHealthSound                = true;
-            m_currentIncrementMainPlayerHealthSoundSampleIndex  = 0;
+        m_playIncrementMainPlayerHealthSound                = true;
+        m_currentIncrementMainPlayerHealthSoundSampleIndex  = 0;
 
-            // Stop playing the decrement main player health sound.
+        // Stop playing the decrement main player health sound.
 
-            m_playDecrementMainPlayerHealthSound                = false;
-            m_currentDecrementMainPlayerHealthSoundSampleIndex  = 0;
-        } // Endif.
-
+        m_playDecrementMainPlayerHealthSound                = false;
+        m_currentDecrementMainPlayerHealthSoundSampleIndex  = 0;
     } // Endif.
 
     return (status);
@@ -416,7 +424,7 @@ FolioStatus InformationPanel::DecrementMainPlayerHealth (UInt32 healthDecrement,
                                                          bool   playSound)
 {
     FolioStatus status = ERR_SUCCESS;
-
+   
     mainPlayerIsDead = false;    // Initialise!
 
     if (m_health >= MIN_HEALTH)
@@ -604,7 +612,7 @@ FolioStatus InformationPanel::BuildItems (FolioHandle   dcHandle,
                                        Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour (),
                                        Folio::Core::Graphic::DEFAULT_FOREGROUND_COLOUR,
                                        Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR,
-                                       true);   // Mask required.
+                                       g_informationPanelAttributesTable [index].m_itemId == INFORMATION_PANEL_ITEM_SCROLL_SEAL);   // Mask required.
 
                 if (status == ERR_SUCCESS)
                 {
@@ -927,7 +935,7 @@ FolioStatus InformationPanel::Update (UPDATE update)
 
                 if (status == ERR_SUCCESS)
                 {
-                    // Play starting sound.
+                    // Play the starting sound sample.
 
                     Folio::Core::Util::Sound::PlaySoundSample (m_startingSoundSample);
                 } // Endif.
@@ -1125,36 +1133,41 @@ FolioStatus InformationPanel::AddHeldItem  (const HeldItem  &heldItem,
         m_heldItemsList.push_front (heldItem);
         m_heldItemsList.front ().m_itemId = itemId; // Note its information panel identifier.
 
-        // Create an information panel graphic item representing the held item.
+        // Gain the sprite's graphic resource.
 
-        Folio::Core::Game::GraphicItemPtr   item(new Folio::Core::Game::GraphicItemPtr::element_type);
-            
-        status = item->Create (m_canvas->GetCanvasDcHandle (),
-                               m_canvas->GetAppletInstanceHandle (),
-                               DRAWING_ELEMENT_INFORMATION_PANEL_ITEM,
-                               heldItem.m_staticSprite->GetSpriteGraphic ()->GetBitmapResourceId (),
-                               itemId,
-                               HELD_ITEM_ORIGIN_X_LEFT, 
-                               HELD_ITEM_ORIGIN_Y_TOP,
-                               Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE, 
-                               Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour (),
-                               Folio::Core::Game::ZxSpectrum::MapInkColour (heldItem.m_staticSprite->GetStaticSpriteColour ()));
+        status = heldItem.m_staticSprite->GainResourceGraphics (OWNER_ID_INFORMATION_PANEL);
 
         if (status == ERR_SUCCESS)
         {
-            // Store the information panel item in the information panel items list.
+            // Create an information panel graphic item representing the held item.
 
-            m_itemsList.push_back (item);
+            Folio::Core::Game::GraphicItemPtr   item(new Folio::Core::Game::GraphicItemPtr::element_type);
 
-            // Clear the held items rectangle in the information panel.
-
-            status = ClearHeldItemsRectangle ();
+            status = item->Create (m_canvas->GetCanvasDcHandle (),
+                                   heldItem.m_staticSprite->GetCurrentSpriteGraphic (),
+                                   DRAWING_ELEMENT_INFORMATION_PANEL_ITEM,
+                                   itemId,
+                                   HELD_ITEM_ORIGIN_X_LEFT, 
+                                   HELD_ITEM_ORIGIN_Y_TOP,
+                                   Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE);
 
             if (status == ERR_SUCCESS)
             {
-                // Update the held items.
+                // Store the information panel item in the information panel items list.
 
-                status = Update (UPDATE_HELD_ITEMS);
+                m_itemsList.push_back (item);
+
+                // Clear the held items rectangle in the information panel.
+
+                status = ClearHeldItemsRectangle ();
+
+                if (status == ERR_SUCCESS)
+                {
+                    // Update the held items.
+
+                    status = Update (UPDATE_HELD_ITEMS);
+                } // Endif.
+
             } // Endif.
 
         } // Endif.
@@ -1245,6 +1258,9 @@ FolioStatus InformationPanel::RemoveLastHeldItem (DroppedItem &droppedItem)
                 m_itemsList.erase (itr);
             } // Endif.
         
+            // Release the sprite's graphic resource.
+
+            status = droppedItem.m_staticSprite->ReleaseResourceGraphics ();
         } // Endif.
 
     } // Endif.
@@ -1471,6 +1487,14 @@ Folio::Core::Game::ZxSpectrum::COLOUR   InformationPanel::GetScrollItemColour (I
 } // Endproc.
 
 
+FolioStatus InformationPanel::ReleaseResourceGraphics ()
+{
+    // Release the information panel's resource graphics.
+
+    return (g_resourceGraphicsCache.ReleaseResourceGraphics (OWNER_ID_INFORMATION_PANEL));
+} // Endproc.
+
+
 void    InformationPanel::CreateInformationPanelSoundSamples ()
 {
     // Create the increment main player health sound samples.
@@ -1554,11 +1578,11 @@ bool    InformationPanel::PlayIncrementMainPlayerHealthSound ()
 
     if (m_playIncrementMainPlayerHealthSound)
     {
-        // Yes. Play the increment main player health sound.
+        // Yes. Play the increment main player health sound sample.
 
         Folio::Core::Util::Sound::PlaySoundSample (m_incrementMainPlayerHealthSoundSamplesList [m_currentIncrementMainPlayerHealthSoundSampleIndex]);
 
-        // All increment main player health sounds played?
+        // All increment main player health sound samples played?
 
         if (++m_currentIncrementMainPlayerHealthSoundSampleIndex >= m_incrementMainPlayerHealthSoundSamplesList.size ())
         {
@@ -1583,11 +1607,11 @@ bool    InformationPanel::PlayDecrementMainPlayerHealthSound ()
 
     if (m_playDecrementMainPlayerHealthSound)
     {
-        // Yes. Play the decrement main player health sound.
+        // Yes. Play the decrement main player health sound sample.
 
         Folio::Core::Util::Sound::PlaySoundSample (m_decrementMainPlayerHealthSoundSamplesList [m_currentDecrementMainPlayerHealthSoundSampleIndex]);
 
-        // All decrement main player health sounds played?
+        // All decrement main player health sound samples played?
 
         if (++m_currentDecrementMainPlayerHealthSoundSampleIndex >= m_decrementMainPlayerHealthSoundSamplesList.size ())
         {

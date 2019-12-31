@@ -19,7 +19,8 @@ using   namespace   Folio::Core::Util::Gdi;
  * The default class constructor.
  */
 GdiDiBitmap::GdiDiBitmap ()
-:   m_bitmapHandle(FOLIO_INVALID_HANDLE)
+:   m_resourceId(FOLIO_UNDEFINED),
+    m_bitmapHandle(FOLIO_INVALID_HANDLE)
 {
 } // Endproc.
 
@@ -99,7 +100,7 @@ FolioStatus GdiDiBitmap::Create (FolioHandle    instanceHandle,
         {
             // Initialise the bitmap.
 
-            status = InitialiseBitmap ();
+            status = InitialiseBitmap (resourceId);
         } // Endif.
 
     } // Endelse.
@@ -145,7 +146,7 @@ FolioStatus GdiDiBitmap::Create (const FolioString &fileName)
         {
             // Initialise the bitmap.
 
-            status = InitialiseBitmap ();
+            status = InitialiseBitmap (FOLIO_UNDEFINED);
         } // Endif.
 
     } // Endelse.
@@ -199,9 +200,15 @@ FolioStatus GdiDiBitmap::Create (const GdiDiBitmap& gdiDiBitmap)
 
             if (status == ERR_SUCCESS)
             {
+                // Add to the handle monitor.
+
+                //Folio::Core::Util::g_handleMonitor.AddHandle (m_bitmapHandle,
+                //                                              gdiDiBitmap.GetResourceId (),
+                //                                              TXT("GdiDiBitmap::Create::CreateCopiedDiBitmap"));
+
                 // Initialise the bitmap.
 
-                status = InitialiseBitmap ();
+                status = InitialiseBitmap (gdiDiBitmap.GetResourceId ());
             } // Endif.
 
             // Destroy the memory device context.
@@ -271,9 +278,15 @@ FolioStatus GdiDiBitmap::Create (const GdiDiBitmap      &gdiDiBitmap,
 
             if (status == ERR_SUCCESS)
             {
+                // Add to the handle monitor.
+
+                //Folio::Core::Util::g_handleMonitor.AddHandle (m_bitmapHandle,
+                //                                              gdiDiBitmap.GetResourceId (),
+                //                                              TXT("GdiDiBitmap::Create::CreateRotateddDiBitmap"));
+
                 // Initialise the bitmap.
 
-                status = InitialiseBitmap ();
+                status = InitialiseBitmap (gdiDiBitmap.GetResourceId ());
             } // Endif.
 
             // Destroy the memory device context.
@@ -330,6 +343,71 @@ UInt32  GdiDiBitmap::GetColourTableIndex (const Gdiplus::Color& colour)
     } // Endif.
 
     return (colourTableIndex);
+} // Endproc. 
+
+
+/**
+ * Method that will query the colour of a specified colour table index in the 
+ * bitmap's colour table.
+ *
+ * @param [in] colourTableIndex
+ * The index of the colour within the colour table.
+ *
+ * @param [out] colour
+ * The colour.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if the bitmap colour was queried successfully.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus GdiDiBitmap::QueryColour (UInt32            colourTableIndex,
+                                      Gdiplus::Color&   colour)
+{  
+    FolioStatus status = ERR_SUCCESS;
+
+    // Have we created a bitmap?
+
+    if (IsCreated ())
+    {
+        // Yes. Create a display compatible memory DC.
+
+        FolioHandle memoryDcHandle = FOLIO_INVALID_HANDLE;
+
+        status = CreateCompatibleMemoryDC (0, memoryDcHandle);
+
+        if (status == ERR_SUCCESS)
+        {
+            // Query the bitmap colour.
+
+            COLORREF    colourRef = 0;  // Initialise!
+
+            status = QueryColourInDiBitmap (memoryDcHandle, 
+                                            m_bitmapHandle,
+                                            colourTableIndex,
+                                            colourRef);
+
+            if (status == ERR_SUCCESS)
+            {
+                colour.SetFromCOLORREF (colourRef);
+            } // Endif.
+
+            // Destroy the memory device context.
+
+            DestroyMemoryDC (memoryDcHandle);
+        } // Endif.
+
+    } // Endif.
+
+    else
+    {
+        // No.
+
+        status = ERR_INVALID_SEQUENCE;
+    } // Endelse.
+
+    return (status);
 } // Endproc. 
 
 
@@ -454,6 +532,18 @@ FolioStatus GdiDiBitmap::ChangeColour (const Gdiplus::Color&    colour,
 
 
 /**
+ * Method that is used to get the resource identifier of the bitmap.
+ *
+ * @return
+ * The resource identifier of the bitmap.
+ */
+UInt16  GdiDiBitmap::GetResourceId () const
+{
+    return (m_resourceId);
+} // Endproc.
+
+
+/**
  * Method that is used to get the rect of the bitmap.
  *
  * @return
@@ -528,6 +618,8 @@ FolioHandle GdiDiBitmap::GetBitmapHandle () const
 /**
  * Method that is used to initialise the bitmap.
  *
+ * @param [in] resourceId
+ * The resource identifier of the bitmap.
  *
  * @return
  * The possible return values are:<ul>
@@ -535,7 +627,7 @@ FolioHandle GdiDiBitmap::GetBitmapHandle () const
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus GdiDiBitmap::InitialiseBitmap ()
+FolioStatus GdiDiBitmap::InitialiseBitmap (UInt16 resourceId)
 {
     // Query the bitmap's dimensions.
 
@@ -547,6 +639,8 @@ FolioStatus GdiDiBitmap::InitialiseBitmap ()
     if (status == ERR_SUCCESS)
     {
         // Set the bitmap's attributes.
+
+        m_resourceId = resourceId;
 
         m_bitmapRect.X      = 0;
         m_bitmapRect.Y      = 0;

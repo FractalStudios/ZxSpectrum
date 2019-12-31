@@ -512,7 +512,7 @@ FolioStatus File::SetFilePointer (UInt32 distanceFromStart) const
                                distanceFromStart,
                                0, 
                                FILE_BEGIN) == INVALID_SET_FILE_POINTER) &&
-            (::GetLastError () != ERR_SUCCESS))
+            (::GetLastError () != ERROR_SUCCESS))
         {
             // Build and log an error.
 

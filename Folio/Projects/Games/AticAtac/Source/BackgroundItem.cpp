@@ -574,8 +574,7 @@ BackgroundItem::BackgroundItem ()
     m_screenYBottom(Folio::Core::Game::ZxSpectrum::UNDEFINED),
     m_backgroundItemflags(FLAGS_NONE),
     m_drawingFlags(Folio::Core::Game::ResourceGraphic::NO_DRAWING_FLAGS),
-    m_doorTransitionTickCount(0),
-    m_backgroundItemGraphicsMap(0)
+    m_doorTransitionTickCount(0)
 {
 } // Endproc.
 
@@ -592,8 +591,7 @@ BackgroundItem::BackgroundItem (BACKGROUND_ITEM_ID  backgroundItemId,
     m_screenYBottom(screenYBottom),
     m_backgroundItemflags(backgroundItemflags),
     m_drawingFlags(drawingFlags),
-    m_doorTransitionTickCount(0),
-    m_backgroundItemGraphicsMap(0)
+    m_doorTransitionTickCount(0)
 {
 } // Endproc.
 
@@ -603,15 +601,27 @@ BackgroundItem::~BackgroundItem ()
 } // Endproc.
 
 
-void    BackgroundItem::SetBackgroundItemGraphic (const BackgroundItemGraphicsMap &backgroundItemGraphicsMap)
+FolioStatus BackgroundItem::SetBackgroundItemGraphic ()
 {
-    // Note the background item graphics map.
+    FolioStatus status = ERR_SUCCESS;
 
-    m_backgroundItemGraphicsMap = const_cast<BackgroundItemGraphicsMap *> (&(backgroundItemGraphicsMap));
+    if (m_backgroundItemGraphic)
+    {
+        // Release the background item's graphic from the resource graphics cache.
 
-    // Set the background item's graphic.
+        status = ReleaseBackgroundItemGraphic (m_backgroundItemGraphic);
+    } // Endif.
 
-    SetBackgroundItemGraphic (m_backgroundItemId);
+    if (status == ERR_SUCCESS)
+    {
+        // Query the background item's graphic.
+
+        status = QueryBackgroundItemGraphic (m_screenNumber,
+                                             m_backgroundItemId,
+                                             m_backgroundItemGraphic);
+    } // Endif.
+
+    return (status);
 } // Endproc.
 
 
@@ -645,9 +655,11 @@ UInt32    BackgroundItem::GetDrawingFlags () const
 } // Endproc.
 
 
-void    BackgroundItem::SetScreenTopLeft (Int32 screenXLeft,
-                                          Int32 screenYTop)
+FolioStatus BackgroundItem::SetScreenTopLeft (Int32 screenXLeft,
+                                              Int32 screenYTop)
 {
+    FolioStatus status = ERR_SUCCESS;
+
     if (m_backgroundItemGraphic)
     {
         m_screenXLeft   = screenXLeft;
@@ -656,6 +668,7 @@ void    BackgroundItem::SetScreenTopLeft (Int32 screenXLeft,
                                                                                  m_backgroundItemGraphic->GetGraphicHeight ());
     } // Endif.
 
+    return (status);
 } // Endproc.
 
 
@@ -827,7 +840,16 @@ CollisionGrid::ScreenExit::ORIENTATION  BackgroundItem::GetDoorOrientation () co
 
 void    BackgroundItem::SetDoorTransitionTickCount (UInt32 currentTickCount)
 {
-    m_doorTransitionTickCount = currentTickCount + 1000 * Folio::Core::Util::Random::GetRandomNumber (5, 25);
+    if (currentTickCount)
+    {
+        m_doorTransitionTickCount = currentTickCount + 1000 * Folio::Core::Util::Random::GetRandomNumber (5, 25);
+    } // Endif.
+
+    else
+    {
+        m_doorTransitionTickCount = 0;
+    } // Endelse.
+
 } // Endproc.
 
 
@@ -843,65 +865,91 @@ bool    BackgroundItem::IsDoorTransition (UInt32 currentTickCount) const
 } // Endproc.
 
 
-void    BackgroundItem::SetDoorOpen ()
+FolioStatus BackgroundItem::SetDoorOpen (bool setBackgroundItemGraphic)
 {
-    // If the door is closed then open it.
+    FolioStatus status = ERR_SUCCESS;
+
+    // Is the door closed?
 
     if (IsClosedDoor (m_backgroundItemflags))
     {
-        // The door is open and can be closed.
+        // Yes. The door is now open and can be closed.
 
         m_backgroundItemflags = FLAGS_OPEN_DOOR | FLAGS_CAN_BE_CLOSED;
 
-        // Set the background item's graphic.
+        // Get the new background item identifier.
 
-        SetBackgroundItemGraphic (GetNewBackgroundItemId ());
+        m_backgroundItemId = GetNewBackgroundItemId ();
+
+        if (setBackgroundItemGraphic)
+        {
+            // Set the background item's new graphic.
+
+            status = SetBackgroundItemGraphic ();
+        } // Endif.
+
     } // Endif.
 
-    // If the door is unlocked then open it.
-
-    else
-    if (IsUnlockedDoor (m_backgroundItemflags))
-    {
-        // The door is open and it cannot be closed.
-
-        m_backgroundItemflags = FLAGS_OPEN_DOOR;
-
-        // Set the background item's graphic.
-
-        SetBackgroundItemGraphic (GetNewBackgroundItemId ());
-    } // Endelseif.
-
+    return (status);
 } // Endproc.
 
 
-void    BackgroundItem::SetDoorClosed ()
+FolioStatus BackgroundItem::SetDoorClosed (bool setBackgroundItemGraphic)
 {
-    // Can the door be closed?
+    FolioStatus status = ERR_SUCCESS;
 
-    if (CanDoorBeClosed (m_backgroundItemflags))
+    // If the door is open then can the door be closed?
+
+    if (IsOpenDoor (m_backgroundItemflags) && 
+        CanDoorBeClosed (m_backgroundItemflags))
     {
-        // Yes.
+        // Yes. The door is now closed.
 
         m_backgroundItemflags = FLAGS_CLOSED_DOOR;
 
-        // Set the background item's graphic.
+        // Get the new background item identifier.
 
-        SetBackgroundItemGraphic (GetNewBackgroundItemId ());
+        m_backgroundItemId = GetNewBackgroundItemId ();
+
+        if (setBackgroundItemGraphic)
+        {
+            // Set the background item's new graphic.
+
+            status = SetBackgroundItemGraphic ();
+        } // Endif.
+
     } // Endif.
 
+    return (status);
 } // Endproc.
 
 
-void    BackgroundItem::SetDoorUnlocked ()
+FolioStatus BackgroundItem::SetDoorUnlocked (bool setBackgroundItemGraphic)
 {
-    // If the door is locked then unlock it.
+    FolioStatus status = ERR_SUCCESS;
+
+    // Is the door locked?
 
     if (IsLockedDoor (m_backgroundItemflags))
     {
-        m_backgroundItemflags = FLAGS_UNLOCKED_DOOR;
+        // Yes. The door is now open and it cannot be closed.
+
+        m_backgroundItemflags = FLAGS_OPEN_DOOR;
+
+        // Get the new background item identifier.
+
+        m_backgroundItemId = GetNewBackgroundItemId ();
+
+        if (setBackgroundItemGraphic)
+        {
+            // Set the background item's new graphic.
+
+            status = SetBackgroundItemGraphic ();
+        } // Endif.
+
     } // Endif.
 
+    return (status);
 } // Endproc.
 
 
@@ -935,12 +983,6 @@ bool    BackgroundItem::IsClosedDoor (UInt32 backgroundItemflags)
 bool    BackgroundItem::IsLockedDoor (UInt32 backgroundItemflags)
 {
     return ((backgroundItemflags & BackgroundItem::FLAGS_LOCKED_DOOR) == BackgroundItem::FLAGS_LOCKED_DOOR);
-} // Endproc.
-
-
-bool    BackgroundItem::IsUnlockedDoor (UInt32 backgroundItemflags)
-{
-    return ((backgroundItemflags & BackgroundItem::FLAGS_UNLOCKED_DOOR) == BackgroundItem::FLAGS_UNLOCKED_DOOR);
 } // Endproc.
 
 
@@ -1108,13 +1150,18 @@ bool    BackgroundItem::IsLockedExitDoor (BACKGROUND_ITEM_ID backgroundItemId)
 } // Endproc.
 
 
-BACKGROUND_ITEM_ID  BackgroundItem::GetNewBackgroundItemId ()
+BACKGROUND_ITEM_ID  BackgroundItem::GetNewBackgroundItemId () const
 {
+    BACKGROUND_ITEM_ID  backgroundItemId = m_backgroundItemId;  // Initialise!
+
     switch (m_backgroundItemId)
     {
     case BACKGROUND_ITEM_NORMAL_DOOR_FRAME:
     case BACKGROUND_ITEM_OPEN_NORMAL_DOOR:
-        m_backgroundItemId = BACKGROUND_ITEM_CLOSED_NORMAL_DOOR;
+        if (IsClosedDoor (m_backgroundItemflags))
+        {
+            backgroundItemId = BACKGROUND_ITEM_CLOSED_NORMAL_DOOR;
+        } // Endif.
         break;
 
     case BACKGROUND_ITEM_CLOSED_NORMAL_DOOR:
@@ -1122,12 +1169,18 @@ BACKGROUND_ITEM_ID  BackgroundItem::GetNewBackgroundItemId ()
     case BACKGROUND_ITEM_GREEN_LOCKED_NORMAL_DOOR:
     case BACKGROUND_ITEM_CYAN_LOCKED_NORMAL_DOOR:
     case BACKGROUND_ITEM_YELLOW_LOCKED_NORMAL_DOOR:
-        m_backgroundItemId = BACKGROUND_ITEM_OPEN_NORMAL_DOOR;
+        if (IsOpenDoor (m_backgroundItemflags))
+        {
+            backgroundItemId = BACKGROUND_ITEM_OPEN_NORMAL_DOOR;
+        } // Endif.
         break;
 
     case BACKGROUND_ITEM_CAVE_DOOR_FRAME:
     case BACKGROUND_ITEM_OPEN_CAVE_DOOR:
-        m_backgroundItemId = BACKGROUND_ITEM_CLOSED_CAVE_DOOR;
+        if (IsClosedDoor (m_backgroundItemflags))
+        {
+            backgroundItemId = BACKGROUND_ITEM_CLOSED_CAVE_DOOR;
+        } // Endif.
         break;
 
     case BACKGROUND_ITEM_CLOSED_CAVE_DOOR:
@@ -1135,41 +1188,212 @@ BACKGROUND_ITEM_ID  BackgroundItem::GetNewBackgroundItemId ()
     case BACKGROUND_ITEM_GREEN_LOCKED_CAVE_DOOR:
     case BACKGROUND_ITEM_CYAN_LOCKED_CAVE_DOOR:
     case BACKGROUND_ITEM_YELLOW_LOCKED_CAVE_DOOR:
-        m_backgroundItemId = BACKGROUND_ITEM_OPEN_CAVE_DOOR;
+        if (IsOpenDoor (m_backgroundItemflags))
+        {
+            backgroundItemId = BACKGROUND_ITEM_OPEN_CAVE_DOOR;
+        } // Endif.
         break;
 
     case BACKGROUND_ITEM_CLOSED_TRAP_DOOR:
-        m_backgroundItemId = BACKGROUND_ITEM_OPEN_TRAP_DOOR;
+        if (IsOpenDoor (m_backgroundItemflags))
+        {
+            backgroundItemId = BACKGROUND_ITEM_OPEN_TRAP_DOOR;
+        } // Endif.
         break;
 
     case BACKGROUND_ITEM_OPEN_TRAP_DOOR:
-        m_backgroundItemId = BACKGROUND_ITEM_CLOSED_TRAP_DOOR;
+        if (IsClosedDoor (m_backgroundItemflags))
+        {
+            backgroundItemId = BACKGROUND_ITEM_CLOSED_TRAP_DOOR;
+        } // Endif.
         break;
 
     default:
         break;
     } // Endswitch.
 
-    return (m_backgroundItemId);
+    return (backgroundItemId);
 } // Endproc.
 
 
-void    BackgroundItem::SetBackgroundItemGraphic (BACKGROUND_ITEM_ID backgroundItemId)
+UInt32  GetMaxBackgroundItemsOnScreen (BACKGROUND_ITEM_ID backgroundItemId)
 {
-    BackgroundItemGraphicsMap::const_iterator   itr = m_backgroundItemGraphicsMap->find (backgroundItemId);
+    UInt32  maxBackgroundItemsOnScreen = 0; // Initialise!
 
-    if (itr != m_backgroundItemGraphicsMap->end ())
+    switch (backgroundItemId)
     {
-        // Note the background item's graphic.
+    case BACKGROUND_ITEM_CLOSED_TRAP_DOOR:
+        // Get the maximum background items on any single screen.
 
-        m_backgroundItemGraphic = itr->second;
-    } // Endif.
+        for (UInt32 screenNumber = MIN_SCREEN_NUMBER; screenNumber <= MAX_SCREEN_NUMBER; ++screenNumber)
+        {
+            UInt32  numOfBackgroundItemsOnScreen = 0;   // Initialise!
 
+            for (UInt32 index = 0; 
+                 index < (sizeof (g_backgroundItemsTable) / sizeof (BackgroundItem));
+                 ++index)
+            {              
+                if (g_backgroundItemsTable [index].GetScreenNumber () == screenNumber)
+                {
+                    switch (g_backgroundItemsTable [index].GetBackgroundItemId ())
+                    {
+                    case BACKGROUND_ITEM_OPEN_TRAP_DOOR:
+                        numOfBackgroundItemsOnScreen++;
+                        break;
+                    default:
+                        break;
+                    } // Endswitch.
+
+                } // Endif.
+
+            } // Endfor.
+
+            if (numOfBackgroundItemsOnScreen > maxBackgroundItemsOnScreen)
+            {
+                maxBackgroundItemsOnScreen = numOfBackgroundItemsOnScreen;
+            } // Endif.
+
+        } // Endfor.
+        break;
+
+    case BACKGROUND_ITEM_CLOSED_NORMAL_DOOR:
+    case BACKGROUND_ITEM_OPEN_NORMAL_DOOR:
+        // Get the maximum background items on any single screen.
+
+        for (UInt32 screenNumber = MIN_SCREEN_NUMBER; screenNumber <= MAX_SCREEN_NUMBER; ++screenNumber)
+        {
+            UInt32  numOfBackgroundItemsOnScreen = 1;   // Initialise!
+
+            for (UInt32 index = 0; 
+                 index < (sizeof (g_backgroundItemsTable) / sizeof (BackgroundItem));
+                 ++index)
+            {              
+                if (g_backgroundItemsTable [index].GetScreenNumber () == screenNumber)
+                {
+                    switch (g_backgroundItemsTable [index].GetBackgroundItemId ())
+                    {
+                    case BACKGROUND_ITEM_NORMAL_DOOR_FRAME:
+                    case BACKGROUND_ITEM_RED_LOCKED_NORMAL_DOOR:      
+                    case BACKGROUND_ITEM_GREEN_LOCKED_NORMAL_DOOR:    
+                    case BACKGROUND_ITEM_CYAN_LOCKED_NORMAL_DOOR:     
+                    case BACKGROUND_ITEM_YELLOW_LOCKED_NORMAL_DOOR:   
+                        numOfBackgroundItemsOnScreen++;
+                        break;
+                    default:
+                        break;
+                    } // Endswitch.
+
+                } // Endif.
+
+            } // Endfor.
+
+            if (numOfBackgroundItemsOnScreen > maxBackgroundItemsOnScreen)
+            {
+                maxBackgroundItemsOnScreen = numOfBackgroundItemsOnScreen;
+            } // Endif.
+
+        } // Endfor.
+        break;
+
+    case BACKGROUND_ITEM_CLOSED_CAVE_DOOR:
+    case BACKGROUND_ITEM_OPEN_CAVE_DOOR:
+        // Get the maximum background items on any single screen.
+
+        for (UInt32 screenNumber = MIN_SCREEN_NUMBER; screenNumber <= MAX_SCREEN_NUMBER; ++screenNumber)
+        {
+            UInt32  numOfBackgroundItemsOnScreen = 0;   // Initialise!
+
+            for (UInt32 index = 0; 
+                 index < (sizeof (g_backgroundItemsTable) / sizeof (BackgroundItem));
+                 ++index)
+            {              
+                if (g_backgroundItemsTable [index].GetScreenNumber () == screenNumber)
+                {
+                    switch (g_backgroundItemsTable [index].GetBackgroundItemId ())
+                    {
+                    case BACKGROUND_ITEM_CAVE_DOOR_FRAME:
+                    case BACKGROUND_ITEM_RED_LOCKED_CAVE_DOOR:      
+                    case BACKGROUND_ITEM_GREEN_LOCKED_CAVE_DOOR:    
+                    case BACKGROUND_ITEM_CYAN_LOCKED_CAVE_DOOR:     
+                    case BACKGROUND_ITEM_YELLOW_LOCKED_CAVE_DOOR:   
+                        numOfBackgroundItemsOnScreen++;
+                        break;
+                    default:
+                        break;
+                    } // Endswitch.
+
+                } // Endif.
+
+            } // Endfor.
+
+            if (numOfBackgroundItemsOnScreen > maxBackgroundItemsOnScreen)
+            {
+                maxBackgroundItemsOnScreen = numOfBackgroundItemsOnScreen;
+            } // Endif.
+
+        } // Endfor.
+        break;
+
+    case BACKGROUND_ITEM_BIG_DOOR_FRAME:
+    case BACKGROUND_ITEM_CAVE_DOOR_FRAME:
+    case BACKGROUND_ITEM_NORMAL_DOOR_FRAME:
+    case BACKGROUND_ITEM_RED_LOCKED_NORMAL_DOOR:
+    case BACKGROUND_ITEM_GREEN_LOCKED_NORMAL_DOOR:
+    case BACKGROUND_ITEM_CYAN_LOCKED_NORMAL_DOOR:
+    case BACKGROUND_ITEM_YELLOW_LOCKED_NORMAL_DOOR:
+    case BACKGROUND_ITEM_RED_LOCKED_CAVE_DOOR:
+    case BACKGROUND_ITEM_GREEN_LOCKED_CAVE_DOOR:
+    case BACKGROUND_ITEM_CYAN_LOCKED_CAVE_DOOR:
+    case BACKGROUND_ITEM_YELLOW_LOCKED_CAVE_DOOR:
+    case BACKGROUND_ITEM_CLOCK:
+    case BACKGROUND_ITEM_PICTURE:
+    case BACKGROUND_ITEM_TABLE:
+    case BACKGROUND_ITEM_ANTLER_TROPHY:
+    case BACKGROUND_ITEM_TROPHY:
+    case BACKGROUND_ITEM_BOOKCASE:
+    case BACKGROUND_ITEM_OPEN_TRAP_DOOR:
+    case BACKGROUND_ITEM_BARREL:
+    case BACKGROUND_ITEM_RUG:
+    case BACKGROUND_ITEM_ACG_SHIELD:
+    case BACKGROUND_ITEM_SHIELD:
+    case BACKGROUND_ITEM_KNIGHT:
+    case BACKGROUND_ITEM_ACG_EXIT_DOOR:
+    case BACKGROUND_ITEM_PICTURE_2:
+    case BACKGROUND_ITEM_SKELETON:
+    case BACKGROUND_ITEM_BARRELS:
+    default:
+        // Get the maximum background items on any single screen.
+
+        for (UInt32 screenNumber = MIN_SCREEN_NUMBER; screenNumber <= MAX_SCREEN_NUMBER; ++screenNumber)
+        {
+            UInt32  numOfBackgroundItemsOnScreen = 0;   // Initialise!
+
+            for (UInt32 index = 0; 
+                 index < (sizeof (g_backgroundItemsTable) / sizeof (BackgroundItem));
+                 ++index)
+            {              
+                if ((g_backgroundItemsTable [index].GetScreenNumber () == screenNumber) &&
+                    (g_backgroundItemsTable [index].GetBackgroundItemId () == backgroundItemId))
+                {
+                    numOfBackgroundItemsOnScreen++;
+                } // Endif.
+
+            } // Endfor.
+
+            if (numOfBackgroundItemsOnScreen > maxBackgroundItemsOnScreen)
+            {
+                maxBackgroundItemsOnScreen = numOfBackgroundItemsOnScreen;
+            } // Endif.
+
+        } // Endfor.
+        break;
+    } // Endswitch.
+
+    return (maxBackgroundItemsOnScreen);
 } // Endproc.
 
 
-FolioStatus BuildBackgroundItems (const BackgroundItemGraphicsMap   &backgroundItemGraphicsMap,
-                                  BackgroundItemsList               &backgroundItemsList)
+FolioStatus CreateBackgroundItems (BackgroundItemsList &backgroundItemsList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -1181,17 +1405,9 @@ FolioStatus BuildBackgroundItems (const BackgroundItemGraphicsMap   &backgroundI
          (status == ERR_SUCCESS) && (index < (sizeof (g_backgroundItemsTable) / sizeof (BackgroundItem)));
          ++index)
     {              
-        // Create a background item.
-
-        BackgroundItemPtr   backgroundItem(new BackgroundItem(g_backgroundItemsTable [index]));
-
-        // Set the background item's graphic.
-
-        backgroundItem.get ()->SetBackgroundItemGraphic (backgroundItemGraphicsMap);
-
         // Store the background item in the list of background items.
 
-        backgroundItemsList.push_back (backgroundItem);
+        backgroundItemsList.push_back (BackgroundItemPtr(new BackgroundItem(g_backgroundItemsTable [index])));
     } // Endif.
 
     if (status != ERR_SUCCESS)
@@ -1221,43 +1437,66 @@ BackgroundItemsList GetScreenBackgroundItemsList (UInt32                    scre
             screenBackgroundItemsList.push_back (*itr);
         } // Endif.
 
+
     } // Endfor.
 
     return (screenBackgroundItemsList);
 } // Endproc.
 
 
-UInt32  GetNewScreenNumber (const BackgroundItem        *currentBackgroundItem,
-                            const BackgroundItemsList   &backgroundItemsList,
-                            BackgroundItemPtr           &newScreenEntranceBackgroundItem)
+BackgroundItemPtr   GetOppositeDoor (const BackgroundItem       *currentDoorBackgroundItem,
+                                     const BackgroundItemsList  &backgroundItemsList,
+                                     bool                       setBackgroundItemGraphic)
 {
-    UInt32    screenNumber = SCREEN_NUMBER_UNDEFINED; // Initialise!
+    BackgroundItemPtr   oppositeDoorBackgroundItem;
 
-    // Find the background item in the background items list.
+    // Is this a door?
 
-    bool    found = false;  // Initialise!
-
-    for (BackgroundItemsList::const_iterator itr = backgroundItemsList.begin ();
-         !found && (itr != backgroundItemsList.end ());
-         ++itr)
+    if (currentDoorBackgroundItem &&
+        currentDoorBackgroundItem->IsDoor (currentDoorBackgroundItem->GetBackgroundItemFlags ()))
     {
-        if (itr->get () == currentBackgroundItem)
+        // Yes. Find the door in the background items list.
+
+        for (BackgroundItemsList::const_iterator itr = backgroundItemsList.begin ();
+             itr != backgroundItemsList.end ();
+             ++itr)
         {
-            // Get the new screen entrance background item.
+            if (itr->get () == currentDoorBackgroundItem)
+            {
+                // Get the opposite door.
 
-            newScreenEntranceBackgroundItem = 
-                std::distance (backgroundItemsList.begin (), itr) % 2 ? *(itr - 1) : *(itr + 1);
+                oppositeDoorBackgroundItem = std::distance (backgroundItemsList.begin (), itr) % 2 
+                                             ? *(itr - 1) 
+                                             : *(itr + 1);
 
-            // Get the new screen number.
+                if (setBackgroundItemGraphic)
+                {
+                    // Set the opposite door's new graphic.
 
-            screenNumber = newScreenEntranceBackgroundItem->GetScreenNumber ();
+                    oppositeDoorBackgroundItem->SetBackgroundItemGraphic ();
+                } // Endif.
 
-            found = true;   // Found the new screen.
-        } // Endif.
+                break;  // Get-outta-here!
+            } // Endif.
 
-    } // Endfor.
+        } // Endfor.
+    
+    } // Endif.
 
-    return (screenNumber);
+    return (oppositeDoorBackgroundItem);
+} // Endproc.
+
+
+UInt32  GetNewScreenNumber (const BackgroundItem        *currentDoorBackgroundItem,
+                            const BackgroundItemsList   &backgroundItemsList)
+{
+    // Get the door opposite to the specified current door.
+
+    BackgroundItemPtr   oppositeDoorBackgroundItem(GetOppositeDoor (currentDoorBackgroundItem, 
+                                                                    backgroundItemsList, 
+                                                                    true));
+
+    return (oppositeDoorBackgroundItem ? oppositeDoorBackgroundItem->GetScreenNumber () : SCREEN_NUMBER_UNDEFINED);
 } // Endproc.
 
 } // Endnamespace.

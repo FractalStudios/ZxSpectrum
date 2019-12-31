@@ -152,7 +152,7 @@ FolioStatus QueryData (UInt32   tlsIndex,
     // make sure that we do have an error.
 
     if ((data == 0) &&
-        (::GetLastError () != ERR_SUCCESS))
+        (::GetLastError () != ERROR_SUCCESS))
     {
         // Build and log an error.
 

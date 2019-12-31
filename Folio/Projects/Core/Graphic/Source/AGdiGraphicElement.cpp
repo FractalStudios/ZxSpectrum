@@ -18,7 +18,9 @@ using   namespace   Gdiplus;
 AGdiGraphicElement::AGdiGraphicElement ()
 :   m_screenWidth(0),
     m_screenHeight(0), 
-    m_screenScale(1)
+    m_screenScale(1),
+    m_scaledWidth(0),
+    m_scaledHeight(0) 
 {
 } // Endproc.
 

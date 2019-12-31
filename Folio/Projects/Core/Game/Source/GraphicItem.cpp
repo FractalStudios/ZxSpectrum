@@ -46,14 +46,16 @@ FolioStatus GraphicItem::Create (FolioHandle        dcHandle,
     {
         // No. Note the item's attributes.
 
-        m_itemId = itemId;
+        m_itemId        = itemId;
+        m_screenXLeft   = screenXLeft;
+        m_screenYTop    = screenYTop;
+        m_screenScale   = screenScale;
     
         // Create a resource graphic.
 
         m_resourceGraphic.reset (new ResourceGraphicPtr::element_type);
 
-        status = m_resourceGraphic->Create (dcHandle,
-                                            instanceHandle,
+        status = m_resourceGraphic->Create (instanceHandle,
                                             drawingElementId,
                                             bitmapResourceId,
                                             maskedBitmapDrawingElementRqd,
@@ -117,8 +119,7 @@ FolioStatus GraphicItem::Create (FolioHandle        dcHandle,
 
         m_resourceGraphic.reset (new ResourceGraphicPtr::element_type);
 
-        status = m_resourceGraphic->Create (dcHandle,
-                                            instanceHandle,
+        status = m_resourceGraphic->Create (instanceHandle,
                                             drawingElementId,
                                             bitmapResourceId,
                                             changeColour,
@@ -138,6 +139,49 @@ FolioStatus GraphicItem::Create (FolioHandle        dcHandle,
                                             foregroundColour);
         } // Endif.
 
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus GraphicItem::Create (FolioHandle                dcHandle,
+                                 const ResourceGraphicPtr&  resourceGraphic,
+                                 DrawingElement::Id         drawingElementId,
+                                 Id                         itemId,
+                                 Int32                      screenXLeft,
+                                 Int32                      screenYTop,
+                                 UInt32                     screenScale)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Have we created a graphic item already?
+
+    if (IsCreated ())
+    {
+        // Yes.
+
+        status = ERR_INVALID_SEQUENCE;
+    } // Endif.
+
+    else
+    {
+        // No. Note the item's attributes.
+
+        m_itemId        = itemId;
+        m_screenXLeft   = screenXLeft;
+        m_screenYTop    = screenYTop;
+        m_screenScale   = screenScale;
+
+        m_resourceGraphic = resourceGraphic;
+
+        // Create the drawing elements.
+
+        status = CreateDrawingElements (dcHandle,
+                                        drawingElementId,
+                                        screenXLeft,
+                                        screenYTop,
+                                        screenScale);
     } // Endelse.
 
     return (status);
@@ -197,6 +241,26 @@ FolioStatus GraphicItem::QueryDrawingElements (FolioHandle              dcHandle
 Folio::Core::Graphic::GdiBitmapPtr  GraphicItem::GetGdiBitmap () const
 {
     return (std::dynamic_pointer_cast<Folio::Core::Graphic::GdiBitmap> (GetGdiGraphicElement ()));
+} // Endproc.
+
+
+FolioStatus GraphicItem::CreateDrawingElements (FolioHandle         dcHandle,
+                                                DrawingElement::Id  drawingElementId,
+                                                Int32               screenXLeft,
+                                                Int32               screenYTop,
+                                                UInt32              screenScale)
+{
+    m_drawingElementsList.clear (); // Initialise!
+
+    // Query the resource graphic's drawing elements.
+
+    return (m_resourceGraphic->QueryDrawingElements (dcHandle,
+                                                     screenXLeft,
+                                                     screenYTop,
+                                                     screenScale,
+                                                     ResourceGraphic::NO_DRAWING_FLAGS,
+                                                     this, // Drawing element user data.
+                                                     m_drawingElementsList));
 } // Endproc.
 
 

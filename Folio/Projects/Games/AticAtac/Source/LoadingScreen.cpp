@@ -146,7 +146,7 @@ void    LoadingScreen::PlaySoundSample ()
 
     if (m_currentSoundSampleIndex < m_soundSamplesList.size ())
     {
-        // No. Play the current sound sample.
+        // No. Play the current sound sample sample.
 
         Folio::Core::Util::Sound::PlaySoundSample (m_soundSamplesList [m_currentSoundSampleIndex++]);
     } // Endif.

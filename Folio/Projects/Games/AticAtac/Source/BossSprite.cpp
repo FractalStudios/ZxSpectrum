@@ -2,6 +2,9 @@
 #include    "StdAfx.h"
 #include    "BossSprite.h"
 #include    "DrawingElement.h"
+#include    "Globals.h"
+#include    "ResourceOwnerId.h"
+#include    "SpriteGraphics.h"
 #include    "Ultimate.h"
 
 namespace Folio
@@ -13,24 +16,44 @@ namespace Games
 namespace AticAtac
 {
 
-// Boss sprite graphic attributes.
-static  const   Folio::Core::Game::SpriteGraphicsAttributesList<BOSS_SPRITE_ID, SPRITE_ID>  g_bossSpriteGraphicAttributes =
+// Boss sprite attributes.
+struct BossSpriteAttributes
 {
-//      m_spriteId                  m_direction                                         m_spriteGraphicIdsList
-    {   BOSS_SPRITE_MUMMY,          Folio::Core::Game::ABossSprite::ALL_DIRECTIONS,     {   SPRITE_MUMMY_1, SPRITE_MUMMY_2, SPRITE_MUMMY_3, SPRITE_MUMMY_2,                             },  },    
-    {   BOSS_SPRITE_HUNCHBACK,      Folio::Core::Game::ABossSprite::ALL_DIRECTIONS,     {   SPRITE_HUNCHBACK_1, SPRITE_HUNCHBACK_2, SPRITE_HUNCHBACK_3, SPRITE_HUNCHBACK_2,             },  },    
-    {   BOSS_SPRITE_DRACULA,        Folio::Core::Game::ABossSprite::ALL_DIRECTIONS,     {   SPRITE_DRACULA_1, SPRITE_DRACULA_2, SPRITE_DRACULA_3, SPRITE_DRACULA_2,                     },  },    
-    {   BOSS_SPRITE_FRANKENSTEIN,   Folio::Core::Game::ABossSprite::ALL_DIRECTIONS,     {   SPRITE_FRANKENSTEIN_1, SPRITE_FRANKENSTEIN_2, SPRITE_FRANKENSTEIN_3, SPRITE_FRANKENSTEIN_2, },  },    
-    {   BOSS_SPRITE_DEVIL,          Folio::Core::Game::ABossSprite::ALL_DIRECTIONS,     {   SPRITE_DEVIL_1, SPRITE_DEVIL_2, SPRITE_DEVIL_3, SPRITE_DEVIL_2,                             },  },    
+    BOSS_SPRITE_ID                          m_bossSpriteId;         // The identifier of the boss sprite.
+    Folio::Core::Game::ZxSpectrum::COLOUR   m_bossSpriteColour;     // The colour of the boss sprite.
+    UInt32                                  m_bossSpriteFlags;      // The flags of the boss sprite.
+}; // Endstruct.
+
+// Boss sprite attributes table.
+static  const   BossSpriteAttributes  g_bossSpriteAttributesTable [] =
+{
+//      m_bossSpriteId              m_bossSpriteColour                                                              m_bossSpriteFlags
+    {   BOSS_SPRITE_MUMMY,          Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE,   BossSprite::FLAGS_NONE,                     },
+    {   BOSS_SPRITE_HUNCHBACK,      Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::RED,     BossSprite::FLAGS_NONE,                     },
+    {   BOSS_SPRITE_DRACULA,        Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::GREEN,   BossSprite::FLAGS_NONE,                     },
+    {   BOSS_SPRITE_FRANKENSTEIN,   Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::RED,     BossSprite::FLAGS_TERMINATED_BY_GRAPHIC,    },
+    {   BOSS_SPRITE_DEVIL,          Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::MAGENTA, BossSprite::FLAGS_NONE,                     },
+};
+
+
+// Boss sprite graphic characteristics.
+static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<BOSS_SPRITE_ID, SPRITE_ID>  g_bossSpriteGraphicCharacteristics =
+{
+//      m_spriteId                  m_direction                         m_spriteGraphicIdsList
+    {   BOSS_SPRITE_MUMMY,          Folio::Core::Game::ALL_DIRECTIONS,  {   SPRITE_MUMMY_1, SPRITE_MUMMY_2, SPRITE_MUMMY_3, SPRITE_MUMMY_2,                             },  },    
+    {   BOSS_SPRITE_HUNCHBACK,      Folio::Core::Game::ALL_DIRECTIONS,  {   SPRITE_HUNCHBACK_1, SPRITE_HUNCHBACK_2, SPRITE_HUNCHBACK_3, SPRITE_HUNCHBACK_2,             },  },    
+    {   BOSS_SPRITE_DRACULA,        Folio::Core::Game::ALL_DIRECTIONS,  {   SPRITE_DRACULA_1, SPRITE_DRACULA_2, SPRITE_DRACULA_3, SPRITE_DRACULA_2,                     },  },    
+    {   BOSS_SPRITE_FRANKENSTEIN,   Folio::Core::Game::ALL_DIRECTIONS,  {   SPRITE_FRANKENSTEIN_1, SPRITE_FRANKENSTEIN_2, SPRITE_FRANKENSTEIN_3, SPRITE_FRANKENSTEIN_2, },  },    
+    {   BOSS_SPRITE_DEVIL,          Folio::Core::Game::ALL_DIRECTIONS,  {   SPRITE_DEVIL_1, SPRITE_DEVIL_2, SPRITE_DEVIL_3, SPRITE_DEVIL_2,                             },  },    
 };
 
 
 // Boss sprite static members.
-BossSprite::SpriteTerminatingSoundSamplesList  BossSprite::m_bossSpriteTerminatingSoundSamplesList;  // The boss sprite's terminating sound samples.
+Folio::Core::Game::SpriteStationarySoundSamplesList BossSprite::m_bossSpriteTerminatingSoundSamplesList;  // The boss sprite's terminating sound samples.
 
 BossSprite::BossSprite ()
 :   m_bossSpriteId(BOSS_SPRITE_UNDEFINED),
-    m_bossSpriteFlags(NastySprite::FLAGS_NONE)
+    m_bossSpriteFlags(FLAGS_NONE)
 {
 } // Endproc.
 
@@ -40,67 +63,54 @@ BossSprite::~BossSprite ()
 } // Endproc.
 
 
-FolioStatus BossSprite::Create (FolioHandle             dcHandle,
-                                BOSS_SPRITE_ID          bossSpriteId,
-                                const SpriteGraphicsMap &spriteGraphicsMap,
-                                const PlayerSpritePtr   &mainPlayer,                            
-                                const InformationPanel  &informationPanel,
-                                const CollisionGrid     &collisionGrid)
+FolioStatus BossSprite::Create (FolioHandle                             dcHandle,
+                                BOSS_SPRITE_ID                          bossSpriteId,
+                                Folio::Core::Game::ZxSpectrum::COLOUR   bossSpriteColour,
+                                UInt32                                  bossSpriteFlags)
 {
-    // Note the main player.
-
-    m_mainPlayer = mainPlayer;
-
-    // Get the boss sprite's colour.
-
-    Folio::Core::Game::ZxSpectrum::COLOUR  bossSpriteColour = GetColour (bossSpriteId);
-
     // Query the boss sprite's graphics.
 
-    SpriteGraphicAttributesList spriteGraphicAttributesList;
+    Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<BOSS_SPRITE_ID, SPRITE_ID> (dcHandle,
+                                                                                                     g_resourceGraphicsCache,
+                                                                                                     OWNER_ID_BOSS_SPRITE,
+                                                                                                     DRAWING_ELEMENT_BOSS_SPRITE,
                                                                                                      bossSpriteId,
-                                                                                                     spriteGraphicsMap,
                                                                                                      bossSpriteColour,
-                                                                                                     g_bossSpriteGraphicAttributes,
+                                                                                                     g_bossSpriteGraphicCharacteristics,
                                                                                                      spriteGraphicAttributesList);
 
-    if (status == ERROR_SUCCESS)
+    if (status == ERR_SUCCESS)
     {
         // Create the boss sprite.
 
         status = Folio::Core::Game::ABossSprite::Create (dcHandle,
                                                          spriteGraphicAttributesList,
-                                                         GetInitialScreenXLeft (bossSpriteId, mainPlayer, collisionGrid),
-                                                         GetInitialScreenYTop (bossSpriteId, mainPlayer, collisionGrid),
+                                                         Folio::Core::Game::ZxSpectrum::UNDEFINED,
+                                                         Folio::Core::Game::ZxSpectrum::UNDEFINED,
                                                          Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE,
                                                          Folio::Core::Game::ZxSpectrum::MapInkColour (bossSpriteColour),
-                                                         GetDirection (informationPanel, collisionGrid));
+                                                         Folio::Core::Game::E,
+                                                         &(g_resourceGraphicsCache));
 
-        if (status == ERROR_SUCCESS)
+        if (status == ERR_SUCCESS)
         {
-            // Get the boss sprite's flags.
-
-            UInt32  bossSpriteFlags = GetBossSpriteFlags (bossSpriteId);
-
             // Set the boss sprite's initialising mode.
             
             status = SetInitialisingMode (dcHandle, 
-                                          spriteGraphicsMap, 
                                           bossSpriteColour,
                                           bossSpriteFlags); 
 
-            if (status == ERROR_SUCCESS)
+            if (status == ERR_SUCCESS)
             {
                 // Set the boss sprite's terminating mode.
                 
                 status = SetTerminatingMode (dcHandle, 
-                                             spriteGraphicsMap, 
                                              bossSpriteColour,
                                              bossSpriteFlags); 
 
-                if (status == ERROR_SUCCESS)
+                if (status == ERR_SUCCESS)
                 {
                     // Note the boss sprite's attributes.
 
@@ -113,37 +123,26 @@ FolioStatus BossSprite::Create (FolioHandle             dcHandle,
         } // Endif.
 
     } // Endif.
-
+    
     return (status);
 } // Endproc.
 
 
-FolioStatus BossSprite::Reset (const CollisionGrid  &collisionGrid,
-                               bool                 &removeBossSprite)
+FolioStatus BossSprite::Start (const InformationPanel   &informationPanel,
+                               const CollisionGrid      &collisionGrid)
 {
-    FolioStatus status = ERR_SUCCESS;
+    // Recreate the boss sprite.
 
-    removeBossSprite = false;   // Initialise!
+    FolioStatus status = Recreate (GetInitialScreenXLeft (m_bossSpriteId, collisionGrid),
+                                   GetInitialScreenYTop (m_bossSpriteId, collisionGrid),
+                                   GetDirection (informationPanel, collisionGrid));
 
-    switch (m_bossSpriteId)
+    if (status == ERR_SUCCESS)
     {
-    case BOSS_SPRITE_DRACULA:
-        removeBossSprite = true;
-        break;
-    
-    case BOSS_SPRITE_MUMMY:            
-    case BOSS_SPRITE_HUNCHBACK:
-        break;
+        // The boss sprite is initialised.
 
-    case BOSS_SPRITE_FRANKENSTEIN:
-    case BOSS_SPRITE_DEVIL:                
-    default:
-        // Set the boss sprite's position.
-
-        status = SetScreenTopLeft (GetInitialScreenXLeft (m_bossSpriteId, m_mainPlayer, collisionGrid),
-                                   GetInitialScreenYTop (m_bossSpriteId, m_mainPlayer, collisionGrid));
-        break;
-    } // Endswitch.
+        SetState (STATE_INITIALISED);
+    } // Endif.
 
     return (status);
 } // Endproc.
@@ -174,14 +173,18 @@ FolioStatus BossSprite::Move (Gdiplus::Graphics         &graphics,
 
         if (IsUpdateDirectionRqd (collisionGrid))
         {
-            // Yes. Update the boss sprite's direction.
+            // Yes. Set the boss sprite's direction.
 
-            UpdateDirection (GetDirection (informationPanel, collisionGrid));
+            status = SetDirection (GetDirection (informationPanel, collisionGrid));
         } // Endif.
 
-        // Move the boss sprite.
+        if (status == ERR_SUCCESS)
+        {
+            // Move the boss sprite.
 
-        status = Folio::Core::Game::ABossSprite::Move (graphics, speed, collisionGrid);
+            status = Folio::Core::Game::ABossSprite::Move (graphics, speed, collisionGrid);
+        } // Endif.
+
     } // Endelse.
 
     return (status);
@@ -198,7 +201,7 @@ UInt32  BossSprite::GetBossSpriteFlags () const
 {
     return (m_bossSpriteFlags);
 } // Endproc.
-       
+
 
 bool    BossSprite::CanBeKilled (const InformationPanel &informationPanel) const
 {
@@ -220,8 +223,40 @@ bool    BossSprite::CanBeKilled (const InformationPanel &informationPanel) const
 } // Endproc.
 
 
+BOSS_SPRITE_ID  BossSprite::GetScreenBossSpriteId (UInt32   screenNumber, 
+                                                   UInt32   totalNumRooms)
+{
+    switch (screenNumber)
+    {
+    case 86: 
+        return (BOSS_SPRITE_HUNCHBACK);
+        break;
+
+    case 85: 
+        return (BOSS_SPRITE_FRANKENSTEIN);
+        break;
+
+    case 67: 
+        return (BOSS_SPRITE_DEVIL);
+        break;
+
+    default:
+        if (IsRedKeyLocation (screenNumber))
+        {
+            return (BOSS_SPRITE_MUMMY);
+        } // Endif.
+
+        else
+        {
+            return ((Folio::Core::Util::Random::GetRandomNumber (totalNumRooms) == 0) ? BOSS_SPRITE_DRACULA : BOSS_SPRITE_UNDEFINED);
+        } // Endelse.
+        break;
+    } // Endswitch.
+
+} // Endproc.
+
+
 FolioStatus BossSprite::SetInitialisingMode (FolioHandle                            dcHandle,
-                                             const SpriteGraphicsMap                &spriteGraphicsMap,
                                              Folio::Core::Game::ZxSpectrum::COLOUR  bossSpriteColour,
                                              UInt32                                 bossSpriteFlags)
 {
@@ -235,12 +270,12 @@ FolioStatus BossSprite::SetInitialisingMode (FolioHandle                        
     {
         // Yes. Query the boss sprite's initialising graphics.
 
-        SpriteGraphicAttributesList spriteGraphicAttributesList;
+        Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
-        status = NastySprite::QueryNastySpriteInitialisingGraphics (dcHandle,
-                                                                    spriteGraphicsMap,
-                                                                    bossSpriteColour, 
-                                                                    spriteGraphicAttributesList);
+        status = NastySprite::QueryInitialisingGraphics (dcHandle,
+                                                         OWNER_ID_BOSS_SPRITE,
+                                                         bossSpriteColour, 
+                                                         spriteGraphicAttributesList);
 
         if (status == ERR_SUCCESS)
         {
@@ -258,7 +293,6 @@ FolioStatus BossSprite::SetInitialisingMode (FolioHandle                        
 
 
 FolioStatus BossSprite::SetTerminatingMode (FolioHandle                             dcHandle,
-                                            const SpriteGraphicsMap                 &spriteGraphicsMap,
                                             Folio::Core::Game::ZxSpectrum::COLOUR   bossSpriteColour,
                                             UInt32                                  bossSpriteFlags)
 {
@@ -272,12 +306,12 @@ FolioStatus BossSprite::SetTerminatingMode (FolioHandle                         
     {
         // Yes. Query the boss sprite's terminating graphics.
 
-        SpriteGraphicAttributesList spriteGraphicAttributesList;
+        Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
-        status = NastySprite::QueryNastySpriteTerminatingGraphics (dcHandle,
-                                                                   spriteGraphicsMap,
-                                                                   bossSpriteColour, 
-                                                                   spriteGraphicAttributesList);
+        status = NastySprite::QueryTerminatingGraphics (dcHandle,
+                                                        OWNER_ID_BOSS_SPRITE,
+                                                        bossSpriteColour, 
+                                                        spriteGraphicAttributesList);
         
         if (status == ERR_SUCCESS)
         {
@@ -286,7 +320,7 @@ FolioStatus BossSprite::SetTerminatingMode (FolioHandle                         
             status = SetGraphicTerminatingMode (dcHandle,
                                                 spriteGraphicAttributesList,
                                                 MAX_SEQUENCE_COUNT,
-                                                GetBossSpriteTerminatingSoundSamples ());
+                                                &(GetBossSpriteTerminatingSoundSamples ()));
         } // Endif.
 
     } // Endif.
@@ -304,7 +338,7 @@ bool    BossSprite::IsUpdateDirectionRqd (const CollisionGrid &collisionGrid) co
     case BOSS_SPRITE_MUMMY:
         // Is the main player ready?
 
-        if (m_mainPlayer->IsReady ())
+        if (g_mainPlayer->IsReady ())
         {
             // Yes. The direction of the mummy is dependent on whether or not a static sprite 
             // it is attracted to is on the screen.
@@ -340,10 +374,10 @@ bool    BossSprite::IsUpdateDirectionRqd (const CollisionGrid &collisionGrid) co
 } // Endproc.
 
 
-BossSprite::Direction  BossSprite::GetDirection (const InformationPanel &informationPanel,
-                                                 const CollisionGrid    &collisionGrid) const
+Folio::Core::Game::Direction    BossSprite::GetDirection (const InformationPanel    &informationPanel,
+                                                          const CollisionGrid       &collisionGrid) const
 {
-    Direction  direction = NO_DIRECTION;    // Initialise!
+    Folio::Core::Game::Direction    direction = Folio::Core::Game::NO_DIRECTION;    // Initialise!
 
     switch (m_bossSpriteId)
     {
@@ -358,14 +392,15 @@ BossSprite::Direction  BossSprite::GetDirection (const InformationPanel &informa
 
             // Was a static sprite the mummy is attracted to found?
 
-            if (!staticSpriteFound && (direction == NO_DIRECTION))
+            if (!staticSpriteFound && 
+                (direction == Folio::Core::Game::NO_DIRECTION))
             {
-                // No. Move the munny to the main player if ready. Otherwise move to 
+                // No. Move the mummy to the main player if ready. Otherwise move to 
                 // the nearest corner of the screen.
                 
-                direction = m_mainPlayer->IsReady ()
-                            ? ASprite::GetDirectionToScreenRect (m_mainPlayer->GetScreenRect (), collisionGrid)
-                            : ASprite::GetDirectionToNearestCorner (collisionGrid);
+                direction = g_mainPlayer->IsReady ()
+                            ? Folio::Core::Game::ABossSprite::GetDirectionToScreenRect (g_mainPlayer->GetScreenRect (), collisionGrid)
+                            : Folio::Core::Game::ABossSprite::GetDirectionToNearestCorner (collisionGrid);
             } // Endif.
 
         } // Endscope.
@@ -382,13 +417,14 @@ BossSprite::Direction  BossSprite::GetDirection (const InformationPanel &informa
 
             // Was a static sprite the hunchback is attracted to found?
 
-            if (!staticSpriteFound && (direction == NO_DIRECTION))
+            if (!staticSpriteFound && 
+                (direction == Folio::Core::Game::NO_DIRECTION))
             {
                 // No. Move the hunchback to its initial position.
 
-                direction = ASprite::GetDirectionToScreenTopLeft (GetInitialScreenXLeft (m_bossSpriteId, m_mainPlayer, collisionGrid),
-                                                                  GetInitialScreenYTop (m_bossSpriteId, m_mainPlayer, collisionGrid),
-                                                                  collisionGrid);
+                direction = Folio::Core::Game::ABossSprite::GetDirectionToScreenTopLeft (GetInitialScreenXLeft (m_bossSpriteId, collisionGrid),
+                                                                                         GetInitialScreenYTop (m_bossSpriteId, collisionGrid),
+                                                                                         collisionGrid);
             } // Endif.
 
         } // Endscope.
@@ -399,10 +435,11 @@ BossSprite::Direction  BossSprite::GetDirection (const InformationPanel &informa
         // or not the crucifix is collected. Otherwise move to the nearest corner of 
         // the screen.
 
-        direction = m_mainPlayer->IsReady () 
-                    ? ASprite::GetDirectionToScreenRect (m_mainPlayer->GetScreenRect (), collisionGrid, 
-                                                         !informationPanel.IsCrucifixCollected ())
-                    : ASprite::GetDirectionToNearestCorner (collisionGrid);
+        direction = g_mainPlayer->IsReady () 
+                    ? Folio::Core::Game::ABossSprite::GetDirectionToScreenRect (g_mainPlayer->GetScreenRect (), 
+                                                                                collisionGrid, 
+                                                                                !informationPanel.IsCrucifixCollected ())
+                    : Folio::Core::Game::ABossSprite::GetDirectionToNearestCorner (collisionGrid);
         break;            
 
     case BOSS_SPRITE_FRANKENSTEIN:            
@@ -410,13 +447,14 @@ BossSprite::Direction  BossSprite::GetDirection (const InformationPanel &informa
         // Move the boss sprite to the main player if ready. Otherwise move to 
         // the nearest corner of the screen.
 
-        direction = m_mainPlayer->IsReady () 
-                    ? ASprite::GetDirectionToScreenRect (m_mainPlayer->GetScreenRect (), collisionGrid)
-                    : ASprite::GetDirectionToNearestCorner (collisionGrid);
+        direction = g_mainPlayer->IsReady () 
+                    ? Folio::Core::Game::ABossSprite::GetDirectionToScreenRect (g_mainPlayer->GetScreenRect (), 
+                                                                                collisionGrid)
+                    : Folio::Core::Game::ABossSprite::GetDirectionToNearestCorner (collisionGrid);
         break;            
 
     default:
-        direction = NO_DIRECTION;
+        direction = Folio::Core::Game::NO_DIRECTION;
         break;            
     } // Endswitch.
 
@@ -424,12 +462,12 @@ BossSprite::Direction  BossSprite::GetDirection (const InformationPanel &informa
 } // Endproc.
 
 
-BossSprite::Direction   BossSprite::GetDirectionToAttractedStaticSprite (const CollisionGrid    &collisionGrid,
-                                                                         bool                   &staticSpriteFound) const
+Folio::Core::Game::Direction    BossSprite::GetDirectionToAttractedStaticSprite (const CollisionGrid    &collisionGrid,
+                                                                                 bool                   &staticSpriteFound) const
 {
     staticSpriteFound = false;  // Initialise!
 
-    Direction   direction = NO_DIRECTION;   // Initialise!
+    Folio::Core::Game::Direction    direction = Folio::Core::Game::NO_DIRECTION;    // Initialise!
 
     // Find the static sprites in the collision grid.
 
@@ -455,9 +493,11 @@ BossSprite::Direction   BossSprite::GetDirectionToAttractedStaticSprite (const C
             {
                 // Yes. Move the boss sprite to the static sprite.
 
-                direction = ASprite::GetDirectionToScreenRect (staticSprite.GetScreenRect (), collisionGrid);
+                direction = Folio::Core::Game::ABossSprite::GetDirectionToScreenRect (staticSprite.GetScreenRect (), 
+                                                                                      collisionGrid);
 
-                if ((m_bossSpriteId == BOSS_SPRITE_MUMMY) && (staticSprite.GetStaticSpriteId () == STATIC_SPRITE_KEY))
+                if ((m_bossSpriteId == BOSS_SPRITE_MUMMY) && 
+                    (staticSprite.GetStaticSpriteId () == STATIC_SPRITE_KEY))
                 {
                     previousStaticSpriteFound = true;
                 } // Endif.
@@ -492,9 +532,12 @@ UInt32  BossSprite::GetSpeed (const InformationPanel    &informationPanel,
     case BOSS_SPRITE_MUMMY:
     case BOSS_SPRITE_FRANKENSTEIN:            
     case BOSS_SPRITE_DEVIL:
-        // The speed of the boss sprite is dependent on whether or not it is at the main player.
+        // The speed of the boss sprite is dependent on whether or not the main 
+        // player is ready and the boss sprite is at the main player.
         
-        speed = ASprite::IsAtScreenRect (m_mainPlayer->GetScreenRect ()) ? STATIC_SPEED : BOSS_SPRITE_SPEED;
+        speed = g_mainPlayer->IsReady () && Folio::Core::Game::ABossSprite::IsAtScreenRect (g_mainPlayer->GetScreenRect ()) 
+                ? STATIC_SPEED 
+                : BOSS_SPRITE_SPEED;
         break;
 
     case BOSS_SPRITE_HUNCHBACK:                
@@ -508,8 +551,10 @@ UInt32  BossSprite::GetSpeed (const InformationPanel    &informationPanel,
 
             if (!staticSpriteFound && (speed == STATIC_SPEED))
             {
-                speed = ASprite::IsAtScreenTopLeft (GetInitialScreenXLeft (m_bossSpriteId, m_mainPlayer, collisionGrid),
-                                                    GetInitialScreenYTop (m_bossSpriteId, m_mainPlayer, collisionGrid)) ? STATIC_SPEED : BOSS_SPRITE_SPEED;
+                speed = Folio::Core::Game::ABossSprite::IsAtScreenTopLeft (GetInitialScreenXLeft (m_bossSpriteId, collisionGrid),
+                                                                           GetInitialScreenYTop (m_bossSpriteId, collisionGrid)) 
+                        ? STATIC_SPEED 
+                        : BOSS_SPRITE_SPEED;
 
             } // Endif.
         
@@ -517,8 +562,9 @@ UInt32  BossSprite::GetSpeed (const InformationPanel    &informationPanel,
         break;     
 
     case BOSS_SPRITE_DRACULA:            
-        // The speed of dracula is dependent on whether or not it is at the main 
-        // player, and depending on whether or not the crucifix is collected.
+        // The speed of dracula is dependent on whether or not the crucifix is 
+        // collected, and on whether or not the main player is ready and 
+        // dracula is at the main player.
 
         if (informationPanel.IsCrucifixCollected ())
         {
@@ -527,7 +573,11 @@ UInt32  BossSprite::GetSpeed (const InformationPanel    &informationPanel,
 
         else
         {
-            speed = ASprite::IsAtScreenRect (m_mainPlayer->GetScreenRect ()) ? STATIC_SPEED : BOSS_SPRITE_SPEED;
+            // The speed of the boss sprite .
+        
+            speed = g_mainPlayer->IsReady () && Folio::Core::Game::ABossSprite::IsAtScreenRect (g_mainPlayer->GetScreenRect ()) 
+                    ? STATIC_SPEED 
+                    : BOSS_SPRITE_SPEED;
         } // Endelse.
         break;
 
@@ -571,9 +621,12 @@ UInt32  BossSprite::GetSpeedToAttractedStaticSprite (const CollisionGrid    &col
             {
                 // Yes. The speed of the boss sprite is dependent on whether or not it is at the static sprite.
 
-                speed = ASprite::IsAtScreenRect (staticSprite.GetScreenRect ()) ? STATIC_SPEED : BOSS_SPRITE_SPEED;
+                speed = Folio::Core::Game::ABossSprite::IsAtScreenRect (staticSprite.GetScreenRect ()) 
+                        ? STATIC_SPEED 
+                        : BOSS_SPRITE_SPEED;
 
-                if ((m_bossSpriteId == BOSS_SPRITE_MUMMY) && (staticSprite.GetStaticSpriteId () == STATIC_SPRITE_KEY))
+                if ((m_bossSpriteId == BOSS_SPRITE_MUMMY) && 
+                    (staticSprite.GetStaticSpriteId () == STATIC_SPRITE_KEY))
                 {
                     previousStaticSpriteFound = true;
                 } // Endif.
@@ -629,9 +682,8 @@ bool    BossSprite::IsAnyAttractedStaticSprite (const CollisionGrid &collisionGr
 } // Endproc.
 
 
-Int32   BossSprite::GetInitialScreenXLeft (BOSS_SPRITE_ID           bossSpriteId,
-                                           const PlayerSpritePtr    &mainPlayer,
-                                           const CollisionGrid      &collisionGrid)
+Int32   BossSprite::GetInitialScreenXLeft (BOSS_SPRITE_ID       bossSpriteId,
+                                           const CollisionGrid  &collisionGrid)
 {
     static  const   Int32   MAX_BOSS_SPRITE_WIDTH = 16;
 
@@ -652,7 +704,7 @@ Int32   BossSprite::GetInitialScreenXLeft (BOSS_SPRITE_ID           bossSpriteId
         {
             // Get the current screen entrance.
 
-            CollisionGrid::ScreenEntrance   screenEntrance(mainPlayer->GetScreenEntrance ());
+            CollisionGrid::ScreenEntrance   screenEntrance(g_mainPlayer->GetScreenEntrance ());
 
             // Calculate the initial screen X left position of the boss sprite.
 
@@ -681,9 +733,11 @@ Int32   BossSprite::GetInitialScreenXLeft (BOSS_SPRITE_ID           bossSpriteId
         break;
 
     case BOSS_SPRITE_DRACULA:            
-    default:
         initialScreenXLeft = Folio::Core::Util::Random::GetRandomNumber (collisionGrid.GetFloorLeftBound () + 8, 
                                                                          collisionGrid.GetFloorRightBound () - MAX_BOSS_SPRITE_WIDTH);
+        break;
+
+    default:
         break;
     } // Endswitch.
 
@@ -692,7 +746,6 @@ Int32   BossSprite::GetInitialScreenXLeft (BOSS_SPRITE_ID           bossSpriteId
 
 
 Int32   BossSprite::GetInitialScreenYTop (BOSS_SPRITE_ID        bossSpriteId,
-                                          const PlayerSpritePtr &mainPlayer,
                                           const CollisionGrid   &collisionGrid)
 {
     static  const   Int32   MAX_BOSS_SPRITE_HEIGHT = 24;
@@ -714,7 +767,7 @@ Int32   BossSprite::GetInitialScreenYTop (BOSS_SPRITE_ID        bossSpriteId,
         {
             // Get the current screen entrance.
 
-            CollisionGrid::ScreenEntrance   screenEntrance(mainPlayer->GetScreenEntrance ());
+            CollisionGrid::ScreenEntrance   screenEntrance(g_mainPlayer->GetScreenEntrance ());
 
             // Calculate the initial screen Y top position of the boss sprite.
 
@@ -743,57 +796,15 @@ Int32   BossSprite::GetInitialScreenYTop (BOSS_SPRITE_ID        bossSpriteId,
         break;
 
     case BOSS_SPRITE_DRACULA:            
-    default:
         initialScreenYTop = Folio::Core::Util::Random::GetRandomNumber (collisionGrid.GetFloorTopBound () + 8, 
                                                                         collisionGrid.GetFloorBottomBound () - MAX_BOSS_SPRITE_HEIGHT);
+        break;
+
+    default:
         break;
     } // Endswitch.
 
     return (initialScreenYTop);
-} // Endproc.
-
-
-Folio::Core::Game::ZxSpectrum::COLOUR   BossSprite::GetColour (BOSS_SPRITE_ID bossSpriteId)
-{
-    switch (bossSpriteId)
-    {
-    case BOSS_SPRITE_MUMMY:            
-        return (Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE);
-
-    case BOSS_SPRITE_DRACULA:            
-        return (Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::GREEN);
-
-    case BOSS_SPRITE_HUNCHBACK:                
-    case BOSS_SPRITE_FRANKENSTEIN:            
-        return (Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::RED);
-    
-    case BOSS_SPRITE_DEVIL:                
-        return (Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::MAGENTA);
-
-    default:
-        return (Folio::Core::Game::ZxSpectrum::UNDEFINED);
-    } // Endswitch.
-
-} // Endproc.
-
-
-UInt32  BossSprite::GetBossSpriteFlags (BOSS_SPRITE_ID bossSpriteId)
-{
-    switch (bossSpriteId)
-    {
-    case BOSS_SPRITE_FRANKENSTEIN:
-        // Frankenstein can be killed.
-
-        return (NastySprite::FLAGS_TERMINATED_BY_GRAPHIC);
-
-    case BOSS_SPRITE_MUMMY:            
-    case BOSS_SPRITE_HUNCHBACK:                
-    case BOSS_SPRITE_DRACULA:            
-    case BOSS_SPRITE_DEVIL:                
-    default:
-        return (NastySprite::FLAGS_NONE);
-    } // Endswitch.
-
 } // Endproc.
 
 
@@ -845,11 +856,13 @@ bool    BossSprite::IsAttractedToStaticSprite (BOSS_SPRITE_ID       bossSpriteId
 } // Endproc.
 
 
-BossSprite::SpriteTerminatingSoundSamplesList   BossSprite::GetBossSpriteTerminatingSoundSamples ()
+Folio::Core::Game::SpriteStationarySoundSamplesList BossSprite::GetBossSpriteTerminatingSoundSamples ()
 {
+    // Has the boss sprite's terminating sound samples been created?
+
     if (m_bossSpriteTerminatingSoundSamplesList.empty ())
     {
-        // Create each sound sample representing the required sound.
+        // No. Create each sound sample representing the required sound.
     
         for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x3f; frequency >= 0x21; frequency -= 2)
         {
@@ -862,32 +875,58 @@ BossSprite::SpriteTerminatingSoundSamplesList   BossSprite::GetBossSpriteTermina
 } // Endproc.
 
 
-BOSS_SPRITE_ID  GetScreenBossSpriteId (UInt32   screenNumber, 
-                                       UInt32   totalNumRooms)
+FolioStatus CreateBossSprites (FolioHandle      dcHandle,
+                               BossSpritesMap   &bossSpritesMap)
 {
-    switch (screenNumber)
-    {
-    case 86: 
-        return (BOSS_SPRITE_HUNCHBACK);
+    FolioStatus status = ERR_SUCCESS;
 
-    case 85: 
-        return (BOSS_SPRITE_FRANKENSTEIN);
+    bossSpritesMap.clear ();   // Initialise!
 
-    case 67: 
-        return (BOSS_SPRITE_DEVIL);
+    // Build the boss sprites map.
 
-    default:
-        if (IsRedKeyLocation (screenNumber))
+    for (UInt32 index = 0; 
+         (status == ERR_SUCCESS) && (index < (sizeof (g_bossSpriteAttributesTable) / sizeof (BossSpriteAttributes)));
+         ++index)
+    {              
+        // Create a boss sprite.
+
+        BossSpritePtr bossSprite(new BossSprite);
+
+        status = bossSprite->Create (dcHandle,
+                                       g_bossSpriteAttributesTable [index].m_bossSpriteId,
+                                       g_bossSpriteAttributesTable [index].m_bossSpriteColour);
+
+        if (status == ERR_SUCCESS)
         {
-            return (BOSS_SPRITE_MUMMY);
+            // Store the boss sprite in the boss sprites map.
+        
+            bossSpritesMap.insert (BossSpritesMap::value_type(g_bossSpriteAttributesTable [index].m_bossSpriteId, 
+                                                              bossSprite));
         } // Endif.
 
-        else
-        {
-            return ((Folio::Core::Util::Random::GetRandomNumber (totalNumRooms) == 0) ? BOSS_SPRITE_DRACULA : BOSS_SPRITE_UNDEFINED);
-        } // Endelse.
+    } // Endfor.
 
-    } // Endswitch.
+    if (status != ERR_SUCCESS)
+    {
+        bossSpritesMap.clear ();
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+void    SetBossSpritesAlive (BossSpritesMap &bossSpritesMap)
+{
+    // All the boss sprite's are alive.
+
+    for (BossSpritesMap::iterator itr = bossSpritesMap.begin ();
+         itr != bossSpritesMap.end ();
+         ++itr)
+    {
+        // The boss sprite is alive.
+
+        itr->second->SetAlive ();
+    } // Endfor.
 
 } // Endproc.
 

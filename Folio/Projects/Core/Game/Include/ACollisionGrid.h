@@ -18,7 +18,7 @@ namespace Game
 class ACollisionGrid
 {
 public:
-    ~ACollisionGrid ();
+    virtual ~ACollisionGrid ();
 
     FolioStatus Create (const Gdiplus::Rect &floorRect);
     FolioStatus Clear ();
@@ -287,6 +287,25 @@ private:
     Walls   m_walls;    // The walls.
 
     void    BuildWall (const CellElement& cellElement);
+}; // Endclass.
+
+
+// Wall bound.
+class WallBound
+{
+public:
+    WallBound ()
+    :   m_direction(0)
+    {} // Endproc.
+
+    WallBound (UInt32               direction,
+               const Gdiplus::Rect& screenRect)
+    :   m_direction(direction),
+        m_screenRect(screenRect)
+    {} // Endproc.
+
+    UInt32          m_direction;    // The direction of a sprite at the wall bound
+    Gdiplus::Rect   m_screenRect;   // The screen rect of a sprite at the wall bound.
 }; // Endclass.
 
 } // Endnamespace.

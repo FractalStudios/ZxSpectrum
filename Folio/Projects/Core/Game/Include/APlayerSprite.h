@@ -24,21 +24,6 @@ class APlayerSprite : public ASprite
 public:
     virtual ~APlayerSprite ();
 
-    // Colour list.
-    typedef std::vector<Gdiplus::ARGB>  ColourList;
-
-    FolioStatus SetBottomUpInitialisingMode (const ColourList&                          initialisingColourList, 
-                                             const SpriteInitialisingSoundSamplesList&  initialisingSoundSamplesList);
-    FolioStatus SetTopDownInitialisingMode (const ColourList&                           initialisingColourList,
-                                            const SpriteInitialisingSoundSamplesList&   initialisingSoundSamplesList);
-    UInt32      GetInitialisingPauseTime () const;
-
-    FolioStatus SetBottomUpTerminatingMode (const ColourList&                           terminatingColourList,
-                                            const SpriteTerminatingSoundSamplesList&    terminatingSoundSamplesList);
-    FolioStatus SetTopDownTerminatingMode (const ColourList&                            terminatingColourList,
-                                           const SpriteTerminatingSoundSamplesList&     terminatingSoundSamplesList);
-    UInt32      GetTerminatingPauseTime () const;
-
     virtual Direction   UpdateDirection (Direction  direction, 
                                          bool       keyDown);
 
@@ -49,31 +34,42 @@ public:
     bool    IsGameCompleted () const;
 
 protected:
+    APlayerSprite ();
+
+    FolioStatus Restart (Int32      screenXLeft,
+                         Int32      screenYTop,
+                         Direction  direction);
+
+    STATE   GetAutoMoveState (bool keyUp = true);
+    bool    IsInAutoMoveMode () const;
+
+    // Colour list.
+    typedef std::vector<Gdiplus::ARGB>  ColourList;
+
+    FolioStatus SetBottomUpInitialisingMode (const ColourList&                          initialisingColourList, 
+                                             const SpriteStationarySoundSamplesList&    initialisingSpriteSoundSamplesList);
+    FolioStatus SetTopDownInitialisingMode (const ColourList&                       initialisingColourList,
+                                            const SpriteStationarySoundSamplesList& initialisingSpriteSoundSamplesList);
+
+    FolioStatus SetBottomUpTerminatingMode (const ColourList&                       terminatingColourList,
+                                            const SpriteStationarySoundSamplesList& terminatingSpriteSoundSamplesList);
+    FolioStatus SetTopDownTerminatingMode (const ColourList&                        terminatingColourList,
+                                           const SpriteStationarySoundSamplesList&  terminatingSpriteSoundSamplesList);
+
+private:
     bool    m_inAutoMoveMode;   // Indicates if the player sprite is in auto-move mode.
     bool    m_isGameOver;       // Indicates if the player sprite's game is over.
     bool    m_isGameCompleted;  // Indicates if the player sprite has completed the game.
 
-    APlayerSprite ();
-
-    FolioStatus Recreate (Int32     screenXLeft,
-                          Int32     screenYTop,
-                          Direction direction = E);
-
-    STATE    GetAutoMoveState (bool keyUp = true);
-
-private:
-    static  const   UInt32  DEFAULT_INITIALISING_PAUSE_TIME = 50;   // The default initialising pause time.
-    static  const   UInt32  DEFAULT_TERMINATING_PAUSE_TIME  = 10;   // The default terminating pause time.
-
+    ColourList  m_initialisingColourList;   // The initialising colour list (used in DM_BOTTOM_UP and DM_TOP_DOWN). 
+    ColourList  m_terminatingColourList;    // The terminating colour list (used in DM_BOTTOM_UP and DM_TOP_DOWN). 
+    
     // Drawing mode enumeration.
     enum DRAWING_MODE
     {
         DM_BOTTOM_UP = -1,
         DM_TOP_DOWN = 1,
     }; // Endenum.
-    
-    ColourList  m_initialisingColourList;   // The initialising colour list (used in DM_BOTTOM_UP and DM_TOP_DOWN). 
-    ColourList  m_terminatingColourList;    // The terminating colour list (used in DM_BOTTOM_UP and DM_TOP_DOWN). 
     
     virtual FolioStatus HandleInitialiseSprite (Gdiplus::Graphics&  graphics,
                                                 RectList*           rects = 0);

@@ -40,7 +40,7 @@ public:
     /// Type definition for an interator to type T.
     typedef       T*    iterator;
 
-    ~AParticleSystem ();
+    virtual ~AParticleSystem ();
 
     FolioStatus Initialise (FolioHandle     dcHandle,
                             Gdiplus::Rect&  boundingRect,

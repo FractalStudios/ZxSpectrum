@@ -235,6 +235,8 @@ private:
     Folio::Core::Game::ZxSpectrum::COLOUR   GetScrollItemColour (INFORMATION_PANEL_ITEM_ID              itemId,
                                                                  Folio::Core::Game::ZxSpectrum::COLOUR  roomColour) const;
 
+    FolioStatus ReleaseResourceGraphics ();
+
     static  void    CreateInformationPanelSoundSamples ();
     static  void    CreateIncrementMainPlayerHealthSoundSamples ();
     static  void    CreateDecrementMainPlayerHealthSoundSamples ();

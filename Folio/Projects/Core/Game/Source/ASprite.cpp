@@ -14,119 +14,533 @@ ASprite::ASprite ()
 :   m_state(STATE_UNKNOWN),
     m_spriteInkColour(Folio::Core::Graphic::DEFAULT_FOREGROUND_COLOUR),
     m_direction(NO_DIRECTION),
-    m_previousHorizontalDirection(DEFAULT_DIRECTION),
-    m_previousVerticalDirection(NO_DIRECTION),
-    m_action(DEFAULT_ACTION),
+    m_action(NO_ACTION),
     m_speed(STATIC_SPEED),
+    m_currentSpriteDrawingList(0),
+    m_currentSpriteDrawingListIndex(FOLIO_INVALID_INDEX),
+    m_previousHorizontalDirection(NO_DIRECTION),
+    m_previousVerticalDirection(NO_DIRECTION),
     m_maxNumAutoMoves(0),
     m_remainingNumAutoMoves(0),
     m_initialisingDrawingMode(DM_NONE),
     m_terminatingDrawingMode(DM_NONE),
-    m_isAtWall(false),
-    m_drawingElementId(DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED),
-    m_collisionGridCellValue(ACollisionGrid::CELL_VALUE_EMPTY),
-    m_initialisingMaxSequenceCount(0),
-    m_initialisingCurrentSequenceCount(0),
-    m_terminatingMaxSequenceCount(0),
-    m_terminatingCurrentSequenceCount(0),
-    m_playSpriteInitialisingSound(false),
-    m_initialisingCurrentSoundSamplesListIndex(0),
-    m_playSpriteTerminatingSound(false),
-    m_terminatingCurrentSoundSamplesListIndex(0),
     m_isAtLockedScreenExit(false),
     m_isInScreenExit(false),
     m_isExitedScreen(false),
     m_isEnteringScreen(false),
-    m_currentSpriteDrawingAttributes(0),
+    m_playSpriteInitialisingSound(false),
+    m_currentInitialisingSpriteSoundSamplesListIndex(FOLIO_INVALID_INDEX),
+    m_playSpriteTerminatingSound(false),
+    m_currentTerminatingSpriteSoundSamplesListIndex(FOLIO_INVALID_INDEX),
+    m_isAtWall(false),
+    m_resourceGraphicsCache(0),
+    m_dcHandle(FOLIO_INVALID_HANDLE),
+    m_drawingElementId(DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED),
+    m_collisionGridCellValue(ACollisionGrid::CELL_VALUE_EMPTY),
+    m_initialisingMaxSequenceCount(0),
+    m_currentInitialisingSequenceCount(0),
+    m_terminatingMaxSequenceCount(0),
+    m_currentTerminatingSequenceCount(0),
     m_spriteMovementAudioCount(0),
-    m_currentSpriteMovementAudioAttributes(0)
+    m_currentMovementSoundSamplesListIndex(FOLIO_INVALID_INDEX),
+    m_playSpriteInitialisedSound(false),
+    m_playSpriteTerminatedSound(false), 
+    m_playSpriteReboundSound(false) 
 {
 } // Endproc.
 
 
 ASprite::~ASprite ()
 {
+    // Destroy the sprite.
+
+    Destroy ();
 } // Endproc.
 
 
-FolioStatus ASprite::Create (FolioHandle                        dcHandle,
-                             const SpriteGraphicAttributesList& spriteGraphicAttributesList,
-                             Int32                              initialScreenXLeft,
-                             Int32                              initialScreenYTop,
-                             UInt32                             screenScale,
-                             Gdiplus::ARGB                      spriteInkColour,
-                             Direction                          initialDirection,
-                             UInt32                             maxNumAutoMoves)
+FolioStatus ASprite::GainResourceGraphics (Folio::Core::Game::ResourceGraphicsCache::OwnerId ownerId)
 {
     FolioStatus status = ERR_SUCCESS;
 
-    // Have we created a sprite already?
+    // Have we created a sprite?
 
     if (IsCreated ())
     {
-        // Yes.
+        // Does the sprite support resource graphics caching?
 
-        status = ERR_INVALID_SEQUENCE;
+        if (m_resourceGraphicsCache)
+        {
+            // Yes. Gain the sprite's graphics from the resource cache.
+
+            for (SpriteDrawingList::const_iterator itr = m_spriteDrawingList.begin ();
+                 (status == ERR_SUCCESS) && (itr != m_spriteDrawingList.end ());
+                 ++itr)
+            {
+                status = itr->GainResourceGraphics (ownerId, *m_resourceGraphicsCache);
+            } // Endfor.
+
+            if ((status == ERR_SUCCESS) && !m_initialisingSpriteDrawingList.empty ())
+            {
+                // Gain the sprite's initialising graphics from the resource cache.
+
+                for (SpriteDrawingList::const_iterator itr = m_initialisingSpriteDrawingList.begin ();
+                     (status == ERR_SUCCESS) && (itr != m_initialisingSpriteDrawingList.end ());
+                     ++itr)
+                {
+                    status = itr->GainResourceGraphics (ownerId, *m_resourceGraphicsCache);
+                } // Endfor.
+        
+            } // Endif.
+
+            if ((status == ERR_SUCCESS) && !m_terminatingSpriteDrawingList.empty ())
+            {
+                // Gain the sprite's terminating graphics from the resource cache.
+
+                for (SpriteDrawingList::const_iterator itr = m_terminatingSpriteDrawingList.begin ();
+                     (status == ERR_SUCCESS) && (itr != m_terminatingSpriteDrawingList.end ());
+                     ++itr)
+                {
+                    status = itr->GainResourceGraphics (ownerId, *m_resourceGraphicsCache);
+                } // Endfor.
+        
+            } // Endif.
+
+        } // Endif.
+
     } // Endif.
 
     else
     {
-        // No. Create the sprite's drawing attributes list.
+        // No.
 
-        status = CreateSpriteDrawingAttributesList (dcHandle, 
-                                                    spriteGraphicAttributesList,
-                                                    screenScale,
-                                                    initialDirection,
-                                                    m_spriteDrawingAttributesList);
+        status = ERR_INVALID_SEQUENCE;
+    } // Endelse.
 
-        if (status == ERR_SUCCESS)
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::ReleaseResourceGraphics ()
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Have we created a sprite?
+
+    if (IsCreated ())
+    {
+        // Does the sprite support resource graphics caching?
+
+        if (m_resourceGraphicsCache)
         {
-            // Set the graphic element's width and height.
+            // Yes. Release the sprite's graphics from the resource cache.
 
-            Int32   screenWidth = m_currentSpriteDrawingAttributes->GetCurrentSpriteDrawingBitmap ()->GetScreenWidth ();
-            SetScreenWidth (screenWidth);
-            m_collisionRect.Width = screenWidth;
-
-            Int32   screenHeight = m_currentSpriteDrawingAttributes->GetCurrentSpriteDrawingBitmap ()->GetScreenHeight ();
-            SetScreenHeight (screenHeight);
-            m_collisionRect.Height = screenHeight;
-
-            // Set the sprite's top-left position.
-
-            status = SetScreenTopLeft (initialScreenXLeft, initialScreenYTop);
-            
-            if (status == ERR_SUCCESS)
+            for (SpriteDrawingList::const_iterator itr = m_spriteDrawingList.begin ();
+                 (status == ERR_SUCCESS) && (itr != m_spriteDrawingList.end ());
+                 ++itr)
             {
-                // Scale the sprite.
+                status = itr->ReleaseResourceGraphics (*m_resourceGraphicsCache);
+            } // Endfor.
 
-                SetScreenScale (screenScale);
-            
-                // Create the sprite's underlying background.
+            if ((status == ERR_SUCCESS) && !m_initialisingSpriteDrawingList.empty ())
+            {
+                // Release the sprite's initialising graphics from the resource cache.
 
-                status = m_underlyingBackground.Create (dcHandle, GetScaledRect (m_screenRect.X, m_screenRect.Y));
-
-                if (status == ERR_SUCCESS)
+                for (SpriteDrawingList::const_iterator itr = m_initialisingSpriteDrawingList.begin ();
+                     (status == ERR_SUCCESS) && (itr != m_initialisingSpriteDrawingList.end ());
+                     ++itr)
                 {
-                    // Note the sprite attributes.
+                    status = itr->ReleaseResourceGraphics (*m_resourceGraphicsCache);
+                } // Endfor.
 
-                    m_spriteInkColour       = spriteInkColour;
-                    m_direction             = initialDirection;
-                    m_maxNumAutoMoves       = maxNumAutoMoves;
-                    m_remainingNumAutoMoves = maxNumAutoMoves;
+            } // Endif.
 
-                    // Set the sprite's previous direction.
+            if ((status == ERR_SUCCESS) && !m_terminatingSpriteDrawingList.empty ())
+            {
+                // Release the sprite's terminating graphics from the resource cache.
 
-                    SetPreviousSpriteDirection (m_direction);
-
-                    // We're good to go.
-
-                    m_state = STATE_CREATED;
-                } // Endif.
+                for (SpriteDrawingList::const_iterator itr = m_terminatingSpriteDrawingList.begin ();
+                     (status == ERR_SUCCESS) && (itr != m_terminatingSpriteDrawingList.end ());
+                     ++itr)
+                {
+                    status = itr->ReleaseResourceGraphics (*m_resourceGraphicsCache);
+                } // Endfor.
 
             } // Endif.
 
         } // Endif.
 
+    } // Endif.
+
+    else
+    {
+        // No.
+
+        status = ERR_INVALID_SEQUENCE;
+    } // Endelse.
+    
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::ChangeSpriteInkColour (Gdiplus::ARGB   spriteInkColour,
+                                            bool            includeInitialisingGraphics,
+                                            bool            includeTerminatingGraphics,
+                                            bool            forceColourChange)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Have we created a sprite?
+
+    if (IsCreated ())
+    {
+        // Yes. Should the colour change be forced or has the sprite's colour 
+        // changed?
+
+        if (forceColourChange || (spriteInkColour != m_spriteInkColour))
+        {
+            // Yes. Change the colour of the sprite's graphics.
+
+            for (SpriteDrawingList::iterator itr = m_spriteDrawingList.begin ();
+                 (status == ERR_SUCCESS) && (itr != m_spriteDrawingList.end ());
+                 ++itr)
+            {
+                if (itr->m_action == m_action)
+                {
+                    // Change the colour of the sprite's graphic.
+
+                    status = itr->ChangeSpriteGraphicColour (spriteInkColour);
+
+                    if (status == ERR_SUCCESS)
+                    {
+                        // Create the sprite's bitmaps.
+
+                        status = itr->CreateSpriteBitmaps (m_dcHandle, m_screenScale);
+                    } // Endif.
+
+                } // Endif.
+
+            } // Endfor.
+
+            if (includeInitialisingGraphics && (status == ERR_SUCCESS) && !m_initialisingSpriteDrawingList.empty ())
+            {
+                // Change the colour of the sprite's initialising graphics.
+
+                for (SpriteDrawingList::iterator itr = m_initialisingSpriteDrawingList.begin ();
+                     (status == ERR_SUCCESS) && (itr != m_initialisingSpriteDrawingList.end ());
+                     ++itr)
+                {
+                    // Change the colour of the sprite's initialising graphic.
+
+                    status = itr->ChangeSpriteGraphicColour (spriteInkColour);
+
+                    if (status == ERR_SUCCESS)
+                    {
+                        // Create the sprite's initialising bitmaps.
+
+                        status = itr->CreateSpriteBitmaps (m_dcHandle, m_screenScale);
+                    } // Endif.
+
+                } // Endfor.
+
+            } // Endif.
+
+            if (includeTerminatingGraphics && (status == ERR_SUCCESS) && !m_terminatingSpriteDrawingList.empty ())
+            {
+                // Change the colour of the sprite's terminating graphics.
+
+                for (SpriteDrawingList::iterator itr = m_terminatingSpriteDrawingList.begin ();
+                     (status == ERR_SUCCESS) && (itr != m_terminatingSpriteDrawingList.end ());
+                     ++itr)
+                {
+                    // Change the colour of the sprite's terminating graphic.
+
+                    status = itr->ChangeSpriteGraphicColour (spriteInkColour);
+
+                    if (status == ERR_SUCCESS)
+                    {
+                        // Create the sprite's terminating bitmaps.
+
+                        status = itr->CreateSpriteBitmaps (m_dcHandle, m_screenScale);
+                    } // Endif.
+
+                } // Endfor.
+
+            } // Endif.
+
+            if (status == ERR_SUCCESS)
+            {
+                // Note the sprite's new colour. 
+        
+                m_spriteInkColour = spriteInkColour;
+            } // Endif.
+
+        } // Endif.
+
+    } // Endif.
+
+    else
+    {
+        // No.
+
+        status = ERR_INVALID_SEQUENCE;
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::StoreUnderlyingBackground (Gdiplus::Graphics&  graphics,
+                                                Gdiplus::Rect*      rect)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Have we created a sprite?
+
+    if (IsCreated ())
+    {
+        switch (m_state)
+        {
+        case STATE_UNKNOWN:
+            status = ERR_INVALID_SEQUENCE;
+            break;
+ 
+        case STATE_INITIALISE_RQD:
+            if (m_initialisingDrawingMode == DM_GRAPHIC)
+            {
+                // Set the sprite's screen size.
+
+                SetSpriteScreenSize (m_initialisingSpriteDrawingList.front ().GetCurrentSpriteBitmap ());
+            } // Endif.
+
+            // Buffer the underlying background.
+    
+            status = m_underlyingBackground.Buffer (graphics, GetScaledRect (m_screenRect.X, m_screenRect.Y));  
+            break;
+
+        case STATE_TERMINATE_RQD:
+            if (m_terminatingDrawingMode == DM_GRAPHIC)
+            {
+                // Set the sprite's screen size.
+
+                SetSpriteScreenSize (m_terminatingSpriteDrawingList.front ().GetCurrentSpriteBitmap ());
+            } // Endif.
+
+            // Buffer the underlying background.
+    
+            status = m_underlyingBackground.Buffer (graphics, GetScaledRect (m_screenRect.X, m_screenRect.Y));
+            break;
+
+        case STATE_INITIALISING:
+        case STATE_INITIALISED:
+        case STATE_TERMINATING:
+        case STATE_TERMINATED:
+        case STATE_STATIC:
+        case STATE_MOVING:
+            // Buffer the underlying background.
+    
+            status = m_underlyingBackground.Buffer (graphics, rect ? *rect : GetScaledRect (m_screenRect.X, m_screenRect.Y));
+            break;
+
+        default:
+            break;
+        } // Endswitch.
+
+    } // Endif.
+
+    else
+    {
+        // No.
+
+        status = ERR_INVALID_SEQUENCE;
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::RestoreUnderlyingBackground (Gdiplus::Graphics&    graphics,
+                                                  RectList*             rects)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Have we created a sprite?
+
+    if (IsCreated ())
+    {
+        switch (m_state)
+        {
+        case STATE_UNKNOWN:
+            status = ERR_INVALID_SEQUENCE;
+            break;
+
+        case STATE_INITIALISING:
+        case STATE_INITIALISED:
+        case STATE_TERMINATE_RQD:
+        case STATE_TERMINATING:
+        case STATE_TERMINATED:
+        case STATE_STATIC:
+        case STATE_MOVING:
+            // Draw the underlying background.
+
+            status = m_underlyingBackground.Draw (m_screenRect.X, m_screenRect.Y, graphics, rects);
+            break;
+
+        default:
+            break;
+        } // Endswitch.
+
+    } // Endif.
+
+    else
+    {
+        // No.
+
+        status = ERR_INVALID_SEQUENCE;
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::Move (Gdiplus::Graphics&       graphics,
+                           UInt32                   speed, 
+                           const ACollisionGrid&    collisionGrid)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Have we created a sprite?
+
+    if (IsCreated ())
+    {
+        // Yes. The sprite is moving.
+        
+        m_state = STATE_MOVING;
+        m_speed = speed;
+        
+        // Let our sub-class handle it.
+
+        status = HandleMoveSprite (graphics, speed, collisionGrid);
+
+        if (status == ERR_SUCCESS)
+        {
+            // Play the sprite's movement sound.
+
+            PlaySpriteMovementSound ();
+        } // Endif.
+
+    } // Endif.
+
+    else
+    {
+        // No.
+
+        status = ERR_INVALID_SEQUENCE;
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::Static (Gdiplus::Graphics&     graphics,
+                             const ACollisionGrid&  collisionGrid)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Have we created a sprite?
+
+    if (IsCreated ())
+    {
+        // Yes. The sprite is static.
+        
+        m_state = STATE_STATIC; 
+        m_speed = STATIC_SPEED;
+        
+        // Let our sub-class handle it.
+
+        status = HandleStaticSprite (graphics, collisionGrid);
+    } // Endif.
+
+    else
+    {
+        // No.
+
+        status = ERR_INVALID_SEQUENCE;
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::Draw (Gdiplus::Graphics&   graphics,
+                           RectList*            rects)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Have we created a sprite?
+
+    if (IsCreated ())
+    {
+        switch (m_state)
+        {
+        case STATE_UNKNOWN:
+            status = ERR_INVALID_SEQUENCE;
+            break;
+
+        case STATE_INITIALISE_RQD:
+            if (m_initialisingDrawingMode == DM_GRAPHIC)
+            {
+                // Set the initialising sprite bitmaps.
+
+                status = SetCurrentSpriteBitmaps (m_direction, m_initialisingSpriteDrawingList, false, true);
+            } // Endif.
+
+            if (status == ERR_SUCCESS)
+            {
+                status = InitialiseSprite (graphics, rects);
+            } // Endif.
+            break;
+
+        case STATE_INITIALISING:
+            status = InitialiseSprite (graphics, rects);
+            break;
+
+        case STATE_TERMINATE_RQD:
+            if (m_terminatingDrawingMode == DM_GRAPHIC)
+            {
+                // Set the terminating sprite bitmaps.
+
+                status = SetCurrentSpriteBitmaps (m_direction, m_terminatingSpriteDrawingList, false, true);
+            } // Endif.
+
+            if (status == ERR_SUCCESS)
+            {
+                status = TerminateSprite (graphics, rects);
+            } // Endif.
+            break;
+
+        case STATE_TERMINATING:
+            status = TerminateSprite (graphics, rects);
+            break;
+
+        case STATE_INITIALISED:
+        case STATE_TERMINATED:
+        case STATE_STATIC:
+        case STATE_MOVING:
+        case STATE_FALLING:
+            status = DrawSprite (graphics, rects);
+            break;
+
+        default:
+            break;
+        } // Endswitch.
+
+    } // Endif.
+
+    else
+    {
+        // No.
+
+        status = ERR_INVALID_SEQUENCE;
     } // Endelse.
 
     return (status);
@@ -136,15 +550,17 @@ FolioStatus ASprite::Create (FolioHandle                        dcHandle,
 FolioStatus ASprite::SetScreenTopLeft (Int32    screenXLeft,
                                        Int32    screenYTop)
 {
+    FolioStatus status = ERR_SUCCESS;
+
     m_screenRect = Gdiplus::Rect(screenXLeft, 
-                                 screenYTop,
-                                 m_screenWidth,
-                                 m_screenHeight);
+                                    screenYTop,
+                                    m_screenWidth,
+                                    m_screenHeight);
 
     m_collisionRect.X = CalculateCollisionXLeft ();
     m_collisionRect.Y = CalculateCollisionYTop ();
 
-    return (ERR_SUCCESS);
+    return (status);
 } // Endproc.
 
 
@@ -232,210 +648,81 @@ Int32   ASprite::GetCollisionHeight () const
 } // Endproc.
 
 
-FolioStatus ASprite::SetSpriteMovementSoundSamples (const SpriteMovementSoundAttributesList& spriteMovementSoundSamplesAttributesList)
-{
-    // Create the sprite's movement audio attributes.
-
-    return (CreateSpriteMovementAudioAttributes (spriteMovementSoundSamplesAttributesList, m_direction));
-} // Endproc.
-
-
-FolioStatus ASprite::SetSpriteReboundSoundSamples (const SpriteReboundSoundAttributesList& spriteReboundSoundSamplesAttributesList)
-{
-    m_spriteReboundAudioAttributesList = spriteReboundSoundSamplesAttributesList;
-
-    return (ERR_SUCCESS);
-} // Endproc.
-
-
-FolioStatus ASprite::ChangeSpriteInkColour (Gdiplus::ARGB   spriteInkColour,
-                                            bool            includeInitialisingGraphics,
-                                            bool            includeTerminatingGraphics)
-
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Have we created a sprite?
-
-    if (IsCreated ())
-    {
-        // Yes. Has the sprite's colour changed?
-
-        if (spriteInkColour != m_spriteInkColour)
-        {
-            // Yes. Change the colour of the sprite's drawing bitmaps.
-
-            for (SpriteDrawingAttributesList::iterator itr = m_spriteDrawingAttributesList.begin ();
-                 (status == ERR_SUCCESS) && (itr != m_spriteDrawingAttributesList.end ());
-                 ++itr)
-            {
-                if (itr->m_action == m_action)
-                {
-                    status = ChangeSpriteDrawingBitmapsColour (spriteInkColour, itr->m_spriteDrawingBitmaps);
-                } // Endif.
-
-            } // Endfor.
-
-            if (includeInitialisingGraphics && (status == ERR_SUCCESS) && !m_initialisingSpriteDrawingAttributesList.empty ())
-            {
-                // Change the colour of the sprite's initialising bitmaps.
-
-                for (SpriteDrawingAttributesList::iterator itr = m_initialisingSpriteDrawingAttributesList.begin ();
-                    (status == ERR_SUCCESS) && (itr != m_initialisingSpriteDrawingAttributesList.end ());
-                    ++itr)
-                {
-                    status = ChangeSpriteDrawingBitmapsColour (spriteInkColour, itr->m_spriteDrawingBitmaps);
-                } // Endfor.
-
-            } // Endif.
-
-            if (includeTerminatingGraphics && (status == ERR_SUCCESS) && !m_terminatingSpriteDrawingAttributesList.empty ())
-            {
-                // Change the colour of the sprite's terminating bitmaps.
-
-                for (SpriteDrawingAttributesList::iterator itr = m_terminatingSpriteDrawingAttributesList.begin ();
-                    (status == ERR_SUCCESS) && (itr != m_terminatingSpriteDrawingAttributesList.end ());
-                    ++itr)
-                {
-                    status = ChangeSpriteDrawingBitmapsColour (spriteInkColour, itr->m_spriteDrawingBitmaps);
-                } // Endfor.
-
-            } // Endif.
-
-            if (status == ERR_SUCCESS)
-            {
-                // Note the sprite's new colour. 
-        
-                m_spriteInkColour = spriteInkColour;
-            } // Endif.
-
-        } // Endif.
-
-    } // Endif.
-
-    else
-    {
-        // No.
-
-        status = ERR_INVALID_SEQUENCE;
-    } // Endelse.
-
-    return (status);
-} // Endproc.
-
-
-void    ASprite::SetState (STATE state)
-{ 
-    m_state = state;
-   
-    switch (m_state)
-    {
-    case STATE_FALLING:
-        // Always exit south.
-
-        SetCurrentSpriteBitmaps (S, m_spriteDrawingAttributesList, true);
-        break;
-
-    default:
-        break;
-    } // Endswitch.
-
-} // Endproc.
-
-
 ACollisionGrid::CellValue   ASprite::GetCollisionGridCellValue () const
 {
     return (m_collisionGridCellValue);
 } // Endproc.
 
 
-UInt32  ASprite::GetMaxNumAutoMoves () const
+SpriteGraphic   ASprite::GetCurrentSpriteGraphic () const
 {
-    return (m_maxNumAutoMoves);
-} // Endproc.
-    
+    SpriteGraphic   spriteGraphic;
 
-UInt32  ASprite::GetRemainingNumAutoMoves () const
+    if (m_currentSpriteDrawingList &&
+        (m_currentSpriteDrawingListIndex < m_currentSpriteDrawingList->size ()))
+    {
+        spriteGraphic = (*m_currentSpriteDrawingList) [m_currentSpriteDrawingListIndex].GetCurrentSpriteGraphic (); 
+    } // Endif.
+
+    return (spriteGraphic);
+} // Endproc.
+
+
+Int32   ASprite::GetCurrentSpriteGraphicWidth () const
 {
-    return (m_remainingNumAutoMoves);
+    SpriteGraphic   spriteGraphic(GetCurrentSpriteGraphic ());
+        
+    return (spriteGraphic ? spriteGraphic->GetGraphicWidth () : FOLIO_UNDEFINED);
+} // Endproc.
+
+
+Int32   ASprite::GetCurrentSpriteGraphicHeight () const
+{
+    SpriteGraphic   spriteGraphic(GetCurrentSpriteGraphic ());
+        
+    return (spriteGraphic ? spriteGraphic->GetGraphicHeight () : FOLIO_UNDEFINED);
+} // Endproc.
+
+
+void    ASprite::SetState (STATE    state, 
+                           bool     playSpriteStateSound)
+{ 
+    m_state = state;
+   
+    switch (m_state)
+    {
+    case STATE_INITIALISE_RQD:
+        m_playSpriteInitialisingSound = playSpriteStateSound;
+        break;
+
+    case STATE_INITIALISED:
+        m_playSpriteInitialisedSound = playSpriteStateSound;
+        break;
+
+    case STATE_TERMINATE_RQD:
+        m_playSpriteTerminatingSound = playSpriteStateSound;
+        break;
+
+    case STATE_TERMINATED:
+        m_playSpriteTerminatedSound = playSpriteStateSound;
+        break;
+
+    case STATE_FALLING:
+        // Always exit south.
+
+        SetCurrentSpriteBitmaps (S, m_spriteDrawingList);
+        break;
+
+    default:
+        break;
+    } // Endswitch.
+
 } // Endproc.
 
 
 ASprite::STATE  ASprite::GetState () const
 {
     return (m_state);
-} // Endproc.
-
-
-void    ASprite::SetAlive (bool playSpriteInitialisingSound)
-{
-    m_playSpriteInitialisingSound = playSpriteInitialisingSound;
-   
-    SetState (STATE_INITIALISE_RQD);
-} // Endproc.
-
-
-bool    ASprite::IsAlive () const
-{
-    switch (m_state)
-    {
-    case STATE_INITIALISE_RQD:
-    case STATE_INITIALISING:
-    case STATE_INITIALISED:
-    case STATE_STATIC:
-    case STATE_MOVING:
-    case STATE_FALLING:
-        return (true);
-
-    default:
-        return (false);
-    } // Endswitch.
-
-} // Endproc.
-
-
-void    ASprite::SetDead (bool playSpriteTerminatingSound)
-{
-    m_playSpriteTerminatingSound = playSpriteTerminatingSound;
-
-    SetState (STATE_TERMINATE_RQD);
-} // Endproc.
-
-
-bool    ASprite::IsDying () const
-{
-    switch (m_state)
-    {
-    case STATE_TERMINATE_RQD:
-    case STATE_TERMINATING:
-        return (true);
-
-    default:
-        return (false);
-    } // Endswitch.
-
-} // Endproc.
-
-
-bool    ASprite::IsDead () const
-{
-    return (m_state == STATE_TERMINATED);
-} // Endproc.
-
-
-bool    ASprite::IsReady () const
-{
-    switch (m_state)
-    {
-    case STATE_STATIC:
-    case STATE_MOVING:
-    case STATE_FALLING:
-        return (true);
-
-    default:
-        return (false);
-    } // Endswitch.
-
 } // Endproc.
 
 
@@ -511,181 +798,216 @@ bool    ASprite::IsFalling () const
 } // Endproc.
 
 
-FolioStatus ASprite::SetGraphicInitialisingMode (FolioHandle                                dcHandle,
-                                                 const SpriteGraphicAttributesList&         initialisingSpriteGraphicAttributesList,
-                                                 UInt32                                     initialisingMaxSequenceCount,
-                                                 const SpriteInitialisingSoundSamplesList&  initialisingSoundSamplesList)
+bool    ASprite::IsReady () const
 {
-    FolioStatus status = ERR_SUCCESS;
-
-    // Only set the initialising mode if the current state is created or initialise required.
-
     switch (m_state)
     {
-    case STATE_CREATED:
-    case STATE_INITIALISE_RQD:
-        // Create the sprite's initialising drawing attributes list.
-
-        status = CreateSpriteDrawingAttributesList (dcHandle, 
-                                                    initialisingSpriteGraphicAttributesList,
-                                                    m_screenScale,
-                                                    m_initialisingSpriteDrawingAttributesList);
-
-        if (status == ERR_SUCCESS)
-        {
-            // Note the sprite's initialising attributes.
-
-            m_initialisingDrawingMode                   = DM_GRAPHIC;
-            m_initialisingMaxSequenceCount              = initialisingMaxSequenceCount * m_initialisingSpriteDrawingAttributesList.front ().m_maxNumSpriteBitmaps;
-            m_initialisingCurrentSequenceCount          = 0;
-            m_initialisingSoundSamplesList              = initialisingSoundSamplesList;
-            m_initialisingCurrentSoundSamplesListIndex  = 0;
-            m_playSpriteInitialisingSound               = true;
-        } // Endif.
-        break;
-
-    default:
-        status = ERR_INVALID_SEQUENCE;
-        break;
-    } // Endswitch.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::SetGraphicTerminatingMode (FolioHandle                                 dcHandle,
-                                                const SpriteGraphicAttributesList&          terminatingSpriteGraphicAttributesList,
-                                                UInt32                                      terminatingMaxSequenceCount,
-                                                const SpriteTerminatingSoundSamplesList&    terminatingSoundSamplesList)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Only set the terminating mode if the current state is created, initialise 
-    // required, terminate required, static or moving.
-
-    switch (m_state)
-    {
-    case STATE_CREATED:
-    case STATE_INITIALISE_RQD:
-    case STATE_TERMINATE_RQD:
     case STATE_STATIC:
     case STATE_MOVING:
     case STATE_FALLING:
-        // Create the sprite's terminating drawing attributes list.
-
-        status = CreateSpriteDrawingAttributesList (dcHandle, 
-                                                    terminatingSpriteGraphicAttributesList, 
-                                                    m_screenScale,
-                                                    m_terminatingSpriteDrawingAttributesList);
-
-        if (status == ERR_SUCCESS)
-        {
-            // Note the sprite's terminating attributes.
-
-            m_terminatingDrawingMode                    = DM_GRAPHIC;
-            m_terminatingMaxSequenceCount               = terminatingMaxSequenceCount * m_terminatingSpriteDrawingAttributesList.front ().m_maxNumSpriteBitmaps;
-            m_terminatingCurrentSequenceCount           = 0;
-            m_terminatingSoundSamplesList               = terminatingSoundSamplesList;
-            m_terminatingCurrentSoundSamplesListIndex   = 0;
-            m_playSpriteTerminatingSound                = true;
-        } // Endif.
-        break;
+        return (true);
 
     default:
-        status = ERR_INVALID_SEQUENCE;
-        break;
+        return (false);
     } // Endswitch.
 
-    return (status);
 } // Endproc.
 
 
-void    ASprite::SetPlaySpriteInitialisingSound (bool playSpriteInitialisingSound)
+void    ASprite::SetAlive (bool playSpriteInitialisingSound)
 {
-    m_playSpriteInitialisingSound = playSpriteInitialisingSound;
+    SetState (STATE_INITIALISE_RQD, playSpriteInitialisingSound);
 } // Endproc.
 
 
-void    ASprite::SetPlaySpriteTerminatingSound (bool playSpriteTerminatingSound)
+bool    ASprite::IsAlive () const
 {
-    m_playSpriteTerminatingSound = playSpriteTerminatingSound;
-} // Endproc.
-
-
-ASprite::Direction  ASprite::UpdateDirection (Direction direction)
-{
-    Direction   orgDirection = m_direction; // Note original direction.
-
-    // New direction.
-
-    m_direction = direction;
-
-    // Has the character sprite's direction changed?
-
-    if (orgDirection != m_direction)
+    switch (m_state)
     {
-        // Yes. Set the sprite's previous direction.
+    case STATE_INITIALISE_RQD:
+    case STATE_INITIALISING:
+    case STATE_INITIALISED:
+    case STATE_STATIC:
+    case STATE_MOVING:
+    case STATE_FALLING:
+        return (true);
 
-        SetPreviousSpriteDirection (orgDirection);
+    default:
+        return (false);
+    } // Endswitch.
 
-        // Set the current sprite drawing bitmaps.
+} // Endproc.
 
-        SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingAttributesList);
-    } // Endif.
 
+void    ASprite::SetDead (bool playSpriteTerminatingSound)
+{
+    SetState (STATE_TERMINATE_RQD, playSpriteTerminatingSound);
+} // Endproc.
+
+
+bool    ASprite::IsDying () const
+{
+    switch (m_state)
+    {
+    case STATE_TERMINATE_RQD:
+    case STATE_TERMINATING:
+        return (true);
+
+    default:
+        return (false);
+    } // Endswitch.
+
+} // Endproc.
+
+
+bool    ASprite::IsDead () const
+{
+    return (m_state == STATE_TERMINATED);
+} // Endproc.
+
+
+Direction   ASprite::GetDirection () const
+{
     return (m_direction);
 } // Endproc.
 
 
-void    ASprite::SetDirection (Direction direction)
-{
-    if (direction != m_direction)
-    {
-        // Set the sprite's previous direction.
-
-        SetPreviousSpriteDirection (m_direction);
-
-        m_direction = direction;
-    } // Endif.
-
-} // Endproc.
-
-
-ASprite::Direction  ASprite::GetDirection () const
-{
-    return (m_direction);
-} // Endproc.
-
-
-bool    ASprite::IsDirection () const
-{
-    return (m_direction != NO_DIRECTION);
-} // Endproc.
-
-
-void    ASprite::SetAction (Action action)
-{
-    if (action != m_action)
-    {
-        m_action = action;
-    
-        // Set the current sprite bitmaps.
-
-        SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingAttributesList, true);
-    } // Endif.
-
-} // Endproc.
-
-
-ASprite::Action  ASprite::GetAction () const
+Action  ASprite::GetAction () const
 {
     return (m_action);
 } // Endproc.
 
 
-bool    ASprite::IsAction () const
+FolioStatus ASprite::SetScreenEntranceTopLeft (const Gdiplus::Rect&     screenScreenRect,
+                                               const ACollisionGrid&    collisionGrid)
 {
-    return (m_action != DEFAULT_ACTION);
+    FolioStatus status = ERR_SUCCESS;
+
+    switch (m_screenExit.m_orientation)
+    {
+    case ACollisionGrid::ScreenExit::TOP:
+        {
+            // Calculate the sprite's new collision rect.
+
+            m_collisionRect.Y = screenScreenRect.Y + screenScreenRect.Height - m_collisionRect.Height; 
+
+            // Check for a collision with a wall.
+
+            collisionGrid.IsWallCollision (ACollisionGrid::UP, m_collisionRect, true);
+
+            // Set the sprite's position.
+
+            status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::UP), 
+                                       CalculateScreenYTop (ACollisionGrid::UP));
+        } // Endscope.
+        break;
+
+    case ACollisionGrid::ScreenExit::BOTTOM:
+        {
+            // Calculate the sprite's new collision rect.
+ 
+            m_collisionRect.Y = screenScreenRect.Y;
+
+            // Check for a collision with a wall.
+
+            collisionGrid.IsWallCollision (ACollisionGrid::DOWN, m_collisionRect, true);
+
+            // Set the sprite's position.
+
+            status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::DOWN), 
+                                       CalculateScreenYTop (ACollisionGrid::DOWN));
+        } // Endscope.
+        break;
+
+    case ACollisionGrid::ScreenExit::LEFT:
+        {
+            // Calculate the sprite's new collision rect.
+
+            m_collisionRect.X = screenScreenRect.X + screenScreenRect.Width - m_collisionRect.Width; 
+
+            // Check for a collision with a wall.
+
+            collisionGrid.IsWallCollision (ACollisionGrid::LEFT, m_collisionRect, true);
+
+            // Set the sprite's position.
+
+            status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::LEFT), 
+                                       CalculateScreenYTop (ACollisionGrid::LEFT));
+        } // Endscope.
+        break;                                                                                             
+
+    case ACollisionGrid::ScreenExit::RIGHT:
+        {
+            // Calculate the sprite's new collision rect.
+
+            m_collisionRect.X = screenScreenRect.X;
+
+            // Check for a collision with a wall.
+
+            collisionGrid.IsWallCollision (ACollisionGrid::RIGHT, m_collisionRect, true);
+
+            // Set the sprite's position.
+
+            status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::RIGHT), 
+                                       CalculateScreenYTop (ACollisionGrid::RIGHT));
+        } // Endscope.
+        break;
+
+    default:
+        break;
+    } // Endswitch.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::SetScreenEntrance (ACollisionGrid::ScreenEntrance& screenEntrance) 
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Only set the screen entrance attributes if the sprite is entering the screen.
+
+    if (m_isEnteringScreen)
+    {
+        m_screenExit = screenEntrance;
+
+        // Set the sprite's direction.
+
+        switch (screenEntrance.m_orientation)
+        {
+        case ACollisionGrid::ScreenEntrance::TOP:
+        case ACollisionGrid::ScreenEntrance::FLOOR:
+            status = SetDirection (S);
+            break;
+
+        case ACollisionGrid::ScreenEntrance::BOTTOM:
+            status = SetDirection (N);
+            break;
+        
+        case ACollisionGrid::ScreenEntrance::LEFT:
+            status = SetDirection (E);
+            break;
+        
+        case ACollisionGrid::ScreenEntrance::RIGHT:
+            status = SetDirection (W);
+            break;
+        
+        default:
+            break;
+        } // Endswitch.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+void    ASprite::ResetScreenEntrance () 
+{
+    m_isAtLockedScreenExit  = false;
+    m_isInScreenExit        = false;
+    m_isExitedScreen        = false;
+    m_isEnteringScreen      = false;
 } // Endproc.
 
 
@@ -713,51 +1035,6 @@ bool    ASprite::IsExitedScreen () const
 } // Endproc.
 
 
-void    ASprite::SetScreenEntrance (ACollisionGrid::ScreenEntrance& screenEntrance) 
-{
-    // Only set the screen entrance attributes if the sprite is entering the screen.
-
-    if (m_isEnteringScreen)
-    {
-        m_screenExit = screenEntrance;
-
-        switch (screenEntrance.m_orientation)
-        {
-        case ACollisionGrid::ScreenEntrance::TOP:
-        case ACollisionGrid::ScreenEntrance::FLOOR:
-            m_direction = UpdateDirection (S);
-            break;
-
-        case ACollisionGrid::ScreenEntrance::BOTTOM:
-            m_direction = UpdateDirection (N);
-            break;
-        
-        case ACollisionGrid::ScreenEntrance::LEFT:
-            m_direction = UpdateDirection (E);
-            break;
-        
-        case ACollisionGrid::ScreenEntrance::RIGHT:
-            m_direction = UpdateDirection (W);
-            break;
-        
-        default:
-            break;
-        } // Endswitch.
-
-    } // Endif.
-
-} // Endproc.
-
-
-void    ASprite::ResetScreenEntrance () 
-{
-    m_isAtLockedScreenExit  = false;
-    m_isInScreenExit        = false;
-    m_isExitedScreen        = false;
-    m_isEnteringScreen      = false;
-} // Endproc.
-
-
 bool    ASprite::IsEnteringScreen () const
 {
     return (m_isEnteringScreen);
@@ -776,86 +1053,412 @@ ACollisionGrid::ScreenEntrance  ASprite::GetScreenEntrance () const
 } // Endproc.
 
 
-FolioStatus ASprite::SetScreenEntranceTopLeft (const Gdiplus::Rect&     screenScreenRect,
-                                               const ACollisionGrid&    collisionGrid)
+FolioStatus ASprite::Draw (Int32                                                screenXLeft, 
+                           Int32                                                screenYTop,
+                           Gdiplus::Graphics&                                   graphics,
+                           Folio::Core::Graphic::AGdiGraphicElement::RectList*  rects)
+{
+    // Set the sprite's top-left position.
+
+    FolioStatus status = SetScreenTopLeft (screenXLeft, screenYTop);
+
+    if (status == ERR_SUCCESS)
+    {
+        // Draw it.
+
+        status = Draw (graphics, rects);
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+bool    ASprite::IsCreated () const
+{
+    return (m_state != STATE_UNKNOWN);
+} // Endproc.
+
+
+FolioStatus ASprite::Create (FolioHandle                                dcHandle,
+                             const SpriteGraphicAttributesList&         spriteGraphicAttributesList,
+                             Int32                                      initialScreenXLeft,
+                             Int32                                      initialScreenYTop,
+                             UInt32                                     screenScale,
+                             Gdiplus::ARGB                              spriteInkColour,
+                             Direction                                  initialDirection,
+                             Folio::Core::Game::ResourceGraphicsCache   *resourceGraphicsCache,
+                             UInt32                                     maxNumAutoMoves)
 {
     FolioStatus status = ERR_SUCCESS;
 
-    switch (m_screenExit.m_orientation)
+    // Have we created a sprite already?
+
+    if (IsCreated ())
     {
-    case ACollisionGrid::ScreenExit::TOP:
+        // Yes.
+
+        status = ERR_INVALID_SEQUENCE;
+    } // Endif.
+
+    else
+    {
+        // No. Create the sprite's drawing list.
+
+        status = CreateSpriteDrawingList (dcHandle, 
+                                          spriteGraphicAttributesList,
+                                          screenScale,
+                                          initialDirection,
+                                          m_spriteDrawingList);
+
+        if (status == ERR_SUCCESS)
         {
-            // Calculate the sprite's new collision rect.
+            // Set the current sprite bitmaps.
 
-            m_collisionRect.Y = screenScreenRect.Y + screenScreenRect.Height - m_collisionRect.Height; 
+            status = SetCurrentSpriteBitmaps (initialDirection, m_spriteDrawingList);
 
-            // Check for a collision with a wall.
+            if (status == ERR_SUCCESS)
+            {
+                // Get the current sprite bitmap.
 
-            collisionGrid.IsWallCollision (ACollisionGrid::UP, m_collisionRect, true);
+                SpriteDrawing::SpriteBitmap currentSpriteBitmap(GetCurrentSpriteBitmap ());
 
-            // Set the player sprite's position.
+                // Set the sprite's width and height.
 
-            status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::UP), 
-                                       CalculateScreenYTop (ACollisionGrid::UP));
-        } // Endscope.
-        break;
+                Int32   bitmapScreenWidth = currentSpriteBitmap->GetScreenWidth ();
+                SetScreenWidth (bitmapScreenWidth);
+                m_collisionRect.Width = bitmapScreenWidth;
 
-    case ACollisionGrid::ScreenExit::BOTTOM:
+                Int32   bitmapScreenHeight = currentSpriteBitmap->GetScreenHeight ();
+                SetScreenHeight (bitmapScreenHeight);
+                m_collisionRect.Height = bitmapScreenHeight;
+
+                // Set the sprite's top-left position.
+
+                status = SetScreenTopLeft (initialScreenXLeft, initialScreenYTop);
+
+                if (status == ERR_SUCCESS)
+                {
+                    // Scale the sprite.
+
+                    SetScreenScale (screenScale);
+            
+                    // Create the sprite's underlying background.
+
+                    status = m_underlyingBackground.Create (dcHandle, GetScaledRect (m_screenRect.X, m_screenRect.Y));
+
+                    if (status == ERR_SUCCESS)
+                    {
+                        // Note the sprite attributes.
+
+                        m_spriteInkColour       = spriteInkColour;
+                        m_direction             = initialDirection;
+                        m_maxNumAutoMoves       = maxNumAutoMoves;
+                        m_remainingNumAutoMoves = maxNumAutoMoves;
+                        m_resourceGraphicsCache = resourceGraphicsCache;
+                        m_dcHandle              = dcHandle;
+
+                        // Set the sprite's previous direction.
+
+                        SetPreviousSpriteDirection (m_direction);
+
+                        // We're good to go.
+
+                        m_state = STATE_CREATED;
+                    } // Endif.
+
+                } // Endif.
+
+            } // Endif.
+
+        } // Endif.
+
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::Recreate (Int32        screenXLeft,
+                               Int32        screenYTop,
+                               Direction    direction)
+{
+    m_state     = STATE_CREATED;
+    m_action    = NO_ACTION;
+    m_speed     = STATIC_SPEED;
+
+    // Set the sprite's direction.
+
+    FolioStatus status = SetDirection (direction);
+
+    if (status == ERR_SUCCESS)
+    {
+        // Set the sprite's screen size.
+
+        SetSpriteScreenSize (ResetCurrentSpriteBitmap ());
+
+        // Set the sprite's top-left screen position.
+
+        status = SetScreenTopLeft (screenXLeft, screenYTop);
+
+        if (status == ERR_SUCCESS)
         {
-            // Calculate the player sprite's new collision rect.
- 
-            m_collisionRect.Y = screenScreenRect.Y;
+            m_remainingNumAutoMoves = m_maxNumAutoMoves;    // Initialise!
 
-            // Check for a collision with a wall.
+            m_isAtLockedScreenExit  = false;    // Initialise!
+            m_isInScreenExit        = false;
+            m_isExitedScreen        = false;
+            m_isEnteringScreen      = false;
+            
+            m_currentInitialisingSpriteSoundSamplesListIndex    = 0;    // Initialise!
+            m_currentTerminatingSpriteSoundSamplesListIndex     = 0;
 
-            collisionGrid.IsWallCollision (ACollisionGrid::DOWN, m_collisionRect, true);
+            m_isAtWall = false; // Initialise!
 
-            // Set the player sprite's position.
+            m_currentInitialisingSequenceCount = 0; // Initialise!
+            m_currentTerminatingSequenceCount  = 0;
 
-            status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::DOWN), 
-                                       CalculateScreenYTop (ACollisionGrid::DOWN));
-        } // Endscope.
-        break;
+            m_spriteMovementAudioCount              = 0; // Initialise!
+            m_currentMovementSoundSamplesListIndex  = 0;
+        } // Endif.
 
-    case ACollisionGrid::ScreenExit::LEFT:
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::Destroy ()
+{
+    return (ReleaseResourceGraphics ());
+} // Endproc.
+
+
+void    ASprite::SetSpriteMovementSoundSamples (const SpriteMovementSoundSamplesList& spriteMovementSoundSamplesList)
+{
+    m_spriteMovementSoundSamplesList = spriteMovementSoundSamplesList;
+   
+    m_currentSpriteMovementSoundSamplesList.clear ();   // Initialise!
+    m_currentMovementSoundSamplesListIndex = FOLIO_INVALID_INDEX;
+} // Endproc.
+
+
+void    ASprite::SetSpriteInitialisedSoundSample (const SpriteSoundSample& spriteInitialisedSoundSample)
+{
+    m_spriteInitialisedSoundSample = spriteInitialisedSoundSample;
+    
+    SetPlaySpriteInitialisedSound (true);
+} // Endproc.
+
+
+void    ASprite::SetSpriteTerminatedSoundSample (const SpriteSoundSample& spriteTerminatedSoundSample)
+{
+    m_spriteTerminatedSoundSample = spriteTerminatedSoundSample;
+    
+    SetPlaySpriteTerminatedSound (true);
+} // Endproc.
+
+
+void    ASprite::SetSpriteReboundSoundSample (const SpriteSoundSample& spriteReboundSoundSample)
+{
+    m_spriteReboundSoundSample = spriteReboundSoundSample;
+    
+    SetPlaySpriteReboundSound (true);
+} // Endproc.
+
+
+FolioStatus ASprite::SetGraphicInitialisingMode (FolioHandle                                dcHandle,
+                                                 const SpriteGraphicAttributesList&         initialisingSpriteGraphicAttributesList,
+                                                 UInt32                                     initialisingMaxSequenceCount,
+                                                 const SpriteStationarySoundSamplesList*    initialisingSpriteSoundSamplesList)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Only set the initialising mode if the current state is created or initialise required.
+
+    switch (m_state)
+    {
+    case STATE_CREATED:
+    case STATE_INITIALISE_RQD:
+        // Create the sprite's initialising drawing list.
+
+        status = CreateSpriteDrawingList (dcHandle, 
+                                          initialisingSpriteGraphicAttributesList,
+                                          m_screenScale,
+                                          m_initialisingSpriteDrawingList);
+
+        if (status == ERR_SUCCESS)
         {
-            // Calculate the player sprite's new collision rect.
+            // Note the sprite's initialising attributes.
 
-            m_collisionRect.X = screenScreenRect.X + screenScreenRect.Width - m_collisionRect.Width; 
+            m_initialisingDrawingMode           = DM_GRAPHIC;
+            m_initialisingMaxSequenceCount      = initialisingMaxSequenceCount * m_initialisingSpriteDrawingList.front ().m_spriteGraphicsList.size ();
+            m_currentInitialisingSequenceCount  = 0;
 
-            // Check for a collision with a wall.
+            if (initialisingSpriteSoundSamplesList)
+            {
+                m_initialisingSpriteSoundSamplesList                = *initialisingSpriteSoundSamplesList;
+                m_currentInitialisingSpriteSoundSamplesListIndex    = 0;
+                m_playSpriteInitialisingSound                       = true;
+            } // Endif.
 
-            collisionGrid.IsWallCollision (ACollisionGrid::LEFT, m_collisionRect, true);
-
-            // Set the player sprite's position.
-
-            status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::LEFT), 
-                                       CalculateScreenYTop (ACollisionGrid::LEFT));
-        } // Endscope.
-        break;                                                                                             
-
-    case ACollisionGrid::ScreenExit::RIGHT:
-        {
-            // Calculate the player sprite's new collision rect.
-
-            m_collisionRect.X = screenScreenRect.X;
-
-            // Check for a collision with a wall.
-
-            collisionGrid.IsWallCollision (ACollisionGrid::RIGHT, m_collisionRect, true);
-
-            // Set the player sprite's position.
-
-            status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::RIGHT), 
-                                       CalculateScreenYTop (ACollisionGrid::RIGHT));
-        } // Endscope.
+        } // Endif.
         break;
 
     default:
+        status = ERR_INVALID_SEQUENCE;
         break;
     } // Endswitch.
 
     return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::SetGraphicTerminatingMode (FolioHandle                             dcHandle,
+                                                const SpriteGraphicAttributesList&      terminatingSpriteGraphicAttributesList,
+                                                UInt32                                  terminatingMaxSequenceCount,
+                                                const SpriteStationarySoundSamplesList* terminatingSpriteSoundSamplesList)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Only set the terminating mode if the current state is created, initialise 
+    // required, terminate required, static or moving.
+
+    switch (m_state)
+    {
+    case STATE_CREATED:
+    case STATE_INITIALISE_RQD:
+    case STATE_TERMINATE_RQD:
+    case STATE_STATIC:
+    case STATE_MOVING:
+    case STATE_FALLING:
+        // Create the sprite's terminating drawing list.
+
+        status = CreateSpriteDrawingList (dcHandle, 
+                                          terminatingSpriteGraphicAttributesList, 
+                                          m_screenScale,
+                                          m_terminatingSpriteDrawingList);
+
+        if (status == ERR_SUCCESS)
+        {
+            // Note the sprite's terminating attributes.
+
+            m_terminatingDrawingMode            = DM_GRAPHIC;
+            m_terminatingMaxSequenceCount       = terminatingMaxSequenceCount * m_terminatingSpriteDrawingList.front ().m_spriteGraphicsList.size ();
+            m_currentTerminatingSequenceCount   = 0;
+
+            if (terminatingSpriteSoundSamplesList)
+            {
+                m_terminatingSpriteSoundSamplesList             = *terminatingSpriteSoundSamplesList;
+                m_currentTerminatingSpriteSoundSamplesListIndex = 0;
+                m_playSpriteTerminatingSound                    = true;
+            } // Endif.
+
+        } // Endif.
+        break;
+
+    default:
+        status = ERR_INVALID_SEQUENCE;
+        break;
+    } // Endswitch.
+
+    return (status);
+} // Endproc.
+
+
+void    ASprite::SetPlaySpriteInitialisingSound (bool playSpriteInitialisingSound)
+{
+    m_playSpriteInitialisingSound = playSpriteInitialisingSound;
+} // Endproc.
+
+
+void    ASprite::SetPlaySpriteTerminatingSound (bool playSpriteTerminatingSound)
+{
+    m_playSpriteTerminatingSound = playSpriteTerminatingSound;
+} // Endproc.
+
+
+void    ASprite::SetPlaySpriteInitialisedSound (bool playSpriteInitialisedSound)
+{
+    m_playSpriteInitialisedSound = playSpriteInitialisedSound;
+} // Endproc.
+
+
+void    ASprite::SetPlaySpriteTerminatedSound (bool playSpriteTerminatedSound)
+{
+    m_playSpriteTerminatedSound = playSpriteTerminatedSound;
+} // Endproc.
+
+
+void    ASprite::SetPlaySpriteReboundSound (bool playSpriteReboundSound)
+{
+    m_playSpriteReboundSound = playSpriteReboundSound;
+} // Endproc.
+
+
+FolioStatus ASprite::SetDirection (Direction direction)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Has the sprite's direction changed?
+
+    if (m_direction != direction)
+    {
+        // Set the sprite's previous direction.
+
+        SetPreviousSpriteDirection (m_direction);
+
+        // Note the sprite's new direction.
+        
+        m_direction = direction;
+
+        // Set the current sprite bitmaps based on the new direction.
+
+        status = SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingList);
+
+        if (status == ERR_SUCCESS)
+        {
+            // Set the sprite's current movement sound sample based on the new 
+            // direction. 
+
+            status = SetCurrentSpriteMovementSoundSample (m_direction);
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+bool    ASprite::IsDirection () const
+{
+    return (m_direction != NO_DIRECTION);
+} // Endproc.
+
+
+FolioStatus ASprite::SetAction (Action action)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Has the sprite's action changed?
+
+    if (action != m_action)
+    {
+        // Note the sprite's new action.
+
+        m_action = action;
+    
+        // Set the current sprite bitmaps.
+
+        status = SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingList);
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+bool    ASprite::IsAction () const
+{
+    return (m_action != NO_ACTION);
 } // Endproc.
 
 
@@ -895,23 +1498,23 @@ void    ASprite::SetPreviousSpriteDirection (Direction direction)
 
     default:
         m_previousVerticalDirection     = NO_DIRECTION;
-        m_previousHorizontalDirection   = DEFAULT_DIRECTION;
+        m_previousHorizontalDirection   = NO_DIRECTION;
         break;
     } // Endswitch.
 
 } // Endproc.
 
 
-ASprite::Direction   ASprite::GetPreviousSpriteDirection () const
+Direction   ASprite::GetPreviousSpriteDirection () const
 {
     return (m_previousHorizontalDirection | m_previousVerticalDirection);
 } // Endproc.
 
 
-ASprite::Direction  ASprite::GetDirectionToScreenTopLeft (Int32                 initialScreenXLeft,
-                                                          Int32                 initialScreenYTop,
-                                                          const ACollisionGrid& collisionGrid,
-                                                          bool                  toScreenTopLeft) const
+Direction   ASprite::GetDirectionToScreenTopLeft (Int32                 initialScreenXLeft,
+                                                  Int32                 initialScreenYTop,
+                                                  const ACollisionGrid& collisionGrid,
+                                                  bool                  toScreenTopLeft) const
 {
     Direction  direction = NO_DIRECTION;    // Initialise!
 
@@ -939,9 +1542,9 @@ bool    ASprite::IsAtScreenTopLeft (Int32   initialScreenXLeft,
 } // Endproc.
 
 
-ASprite::Direction  ASprite::GetDirectionToScreenRect (const Gdiplus::Rect&     screenRect,
-                                                       const ACollisionGrid&    collisionGrid,
-                                                       bool                     toScreenRect) const
+Direction   ASprite::GetDirectionToScreenRect (const Gdiplus::Rect&     screenRect,
+                                               const ACollisionGrid&    collisionGrid,
+                                               bool                     toScreenRect) const
 {
     Direction  direction = NO_DIRECTION;    // Initialise!
 
@@ -968,7 +1571,7 @@ bool    ASprite::IsAtScreenRect (const Gdiplus::Rect& screenRect) const
 } // Endproc.
 
 
-ASprite::Direction  ASprite::GetDirectionToNearestCorner (const ACollisionGrid &collisionGrid) const
+Direction  ASprite::GetDirectionToNearestCorner (const ACollisionGrid &collisionGrid) const
 {
     Direction   direction = ((m_collisionRect.X + m_collisionRect.Width / 2) <= (collisionGrid.GetFloorLeftBound () + collisionGrid.GetFloorWidth () / 2)) ? W : E;
     direction |= ((m_collisionRect.Y + m_collisionRect.Height / 2) <= (collisionGrid.GetFloorTopBound () + collisionGrid.GetFloorHeight () / 2)) ? N : S;
@@ -977,498 +1580,19 @@ ASprite::Direction  ASprite::GetDirectionToNearestCorner (const ACollisionGrid &
 } // Endproc.
 
 
-ASprite::Direction  ASprite::GetFloorBoundDirection (ACollisionGrid::DIRECTION collisionGridDirection) const
-{
-    Direction   direction = m_direction;    // Note the sprite's current direction.
-
-    switch (collisionGridDirection)
-    {
-    case ACollisionGrid::UP:
-        direction &= ~N;
-        direction |= S;
-        break;
-
-    case ACollisionGrid::DOWN:
-        direction &= ~S;
-        direction |= N;
-        break;
-
-    case ACollisionGrid::LEFT:
-        direction &= ~W;
-        direction |= E;
-        break;
-
-    case ACollisionGrid::RIGHT:
-        direction &= ~E;
-        direction |= W;
-        break;
-
-    default:
-        break;
-    } // Endswitch.
-
-    return (direction);
-} // Endproc.
-
-
-FolioStatus ASprite::StoreUnderlyingBackground (Gdiplus::Graphics&  graphics,
-                                                Gdiplus::Rect*      rect)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    switch (m_state)
-    {
-    case STATE_UNKNOWN:
-        status = ERR_INVALID_SEQUENCE;
-        break;
- 
-    case STATE_INITIALISE_RQD:
-        if (m_initialisingDrawingMode == DM_GRAPHIC)
-        {
-            // Set the sprite's screen attributes.
-
-            SetSpriteScreenAttributes (m_initialisingSpriteDrawingAttributesList.front ().GetCurrentSpriteDrawingBitmap ());
-        } // Endif.
-
-        // Buffer the underlying background.
-    
-        status = m_underlyingBackground.Buffer (graphics, GetScaledRect (m_screenRect.X, m_screenRect.Y));  
-        break;
-
-    case STATE_TERMINATE_RQD:
-        if (m_terminatingDrawingMode == DM_GRAPHIC)
-        {
-            // Set the sprite's screen attributes.
-
-            SetSpriteScreenAttributes (m_terminatingSpriteDrawingAttributesList.front ().GetCurrentSpriteDrawingBitmap ());
-        } // Endif.
-
-        // Buffer the underlying background.
-    
-        status = m_underlyingBackground.Buffer (graphics, GetScaledRect (m_screenRect.X, m_screenRect.Y));
-        break;
-
-    case STATE_INITIALISING:
-    case STATE_INITIALISED:
-    case STATE_TERMINATING:
-    case STATE_TERMINATED:
-    case STATE_STATIC:
-    case STATE_MOVING:
-        // Buffer the underlying background.
-    
-        status = m_underlyingBackground.Buffer (graphics, rect ? *rect : GetScaledRect (m_screenRect.X, m_screenRect.Y));
-        break;
-
-    default:
-        break;
-    } // Endswitch.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::RestoreUnderlyingBackground (Gdiplus::Graphics&    graphics,
-                                                  RectList*             rects)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    switch (m_state)
-    {
-    case STATE_UNKNOWN:
-        status = ERR_INVALID_SEQUENCE;
-        break;
-
-    case STATE_INITIALISING:
-    case STATE_INITIALISED:
-    case STATE_TERMINATE_RQD:
-    case STATE_TERMINATING:
-    case STATE_TERMINATED:
-    case STATE_STATIC:
-    case STATE_MOVING:
-        // Draw the underlying background.
-
-        status = m_underlyingBackground.Draw (m_screenRect.X, m_screenRect.Y, graphics, rects);
-        break;
-
-    default:
-        break;
-    } // Endswitch.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::Move (Gdiplus::Graphics&       graphics,
-                           UInt32                   speed, 
-                           const ACollisionGrid&    collisionGrid)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Have we created a sprite?
-
-    if (IsCreated ())
-    {
-        // Yes. The sprite is moving.
-        
-        m_state = STATE_MOVING;
-        m_speed = speed;
-        
-        // Let our sub-class handle it.
-
-        status = HandleMoveSprite (graphics, speed, collisionGrid);
-
-        if (status == ERR_SUCCESS)
-        {
-            // Play sprite movement sound.
-
-            PlaySpriteMovementSound ();
-        } // Endif.
-
-    } // Endif.
-
-    else
-    {
-        // No.
-
-        status = ERR_INVALID_SEQUENCE;
-    } // Endelse.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::Static (Gdiplus::Graphics&     graphics,
-                             const ACollisionGrid&  collisionGrid)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Have we created a sprite?
-
-    if (IsCreated ())
-    {
-        // Yes. The sprite is static.
-        
-        m_state = STATE_STATIC; 
-        m_speed = STATIC_SPEED;
-        
-        // Let our sub-class handle it.
-
-        status = HandleStaticSprite (graphics, collisionGrid);
-    } // Endif.
-
-    else
-    {
-        // No.
-
-        status = ERR_INVALID_SEQUENCE;
-    } // Endelse.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::Draw (Gdiplus::Graphics&   graphics,
-                           RectList*            rects)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    switch (m_state)
-    {
-    case STATE_UNKNOWN:
-        status = ERR_INVALID_SEQUENCE;
-        break;
-
-    case STATE_INITIALISE_RQD:
-        if (m_initialisingDrawingMode == DM_GRAPHIC)
-        {
-            // Set the initialising sprite bitmaps.
-
-            status = SetCurrentSpriteBitmaps (m_direction, m_initialisingSpriteDrawingAttributesList, false, true);
-        } // Endif.
-
-        if (status == ERR_SUCCESS)
-        {
-            status = InitialiseSprite (graphics, rects);
-        } // Endif.
-        break;
-
-    case STATE_INITIALISING:
-        status = InitialiseSprite (graphics, rects);
-        break;
-
-    case STATE_TERMINATE_RQD:
-        if (m_terminatingDrawingMode == DM_GRAPHIC)
-        {
-            // Set the terminating sprite bitmaps.
-
-            status = SetCurrentSpriteBitmaps (m_direction, m_terminatingSpriteDrawingAttributesList, false, true);
-        } // Endif.
-
-        if (status == ERR_SUCCESS)
-        {
-            status = TerminateSprite (graphics, rects);
-        } // Endif.
-        break;
-
-    case STATE_TERMINATING:
-        status = TerminateSprite (graphics, rects);
-        break;
-
-    case STATE_INITIALISED:
-    case STATE_TERMINATED:
-    case STATE_STATIC:
-    case STATE_MOVING:
-    case STATE_FALLING:
-        status = DrawSprite (graphics, rects);
-        break;
-
-    default:
-        break;
-    } // Endswitch.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::Draw (Int32                                                screenXLeft, 
-                           Int32                                                screenYTop,
-                           Gdiplus::Graphics&                                   graphics,
-                           Folio::Core::Graphic::AGdiGraphicElement::RectList*  rects)
-{
-    // Set the sprite's top-left position.
-
-    FolioStatus status = SetScreenTopLeft (screenXLeft, screenYTop);
-
-    if (status == ERR_SUCCESS)
-    {
-        // Draw it.
-
-        status = Draw (graphics, rects);
-    } // Endif.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::CreateSpriteDrawingAttributes (FolioHandle                 dcHandle,
-                                                    const SpriteGraphicsList&   spriteGraphics,
-                                                    UInt32                      screenScale,
-                                                    SpriteDrawingAttributes&    spriteDrawingAttributes)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Get the sprite's graphics.
-
-    for (SpriteGraphicsList::const_iterator spriteGraphicsItr = spriteGraphics.begin ();
-            (status == ERR_SUCCESS) && (spriteGraphicsItr != spriteGraphics.end ());
-            ++spriteGraphicsItr)
-    {
-        // Get the sprite graphic.
-
-        SpriteGraphic::element_type&    spriteGraphic(*spriteGraphicsItr->get ());
-
-        // Create a sprite drawing bitmap from the sprite graphic GDI device-independent bitmap.
-
-        SpriteDrawingBitmap spriteDrawingBitmap(new SpriteDrawingBitmap::element_type);
-
-        status = spriteDrawingBitmap->Create (dcHandle, *(spriteGraphic.GetGdiDiBitmap ()));
-
-        if (status == ERR_SUCCESS)
-        {
-            // Create a sprite masked drawing bitmap from the sprite drawing bitmap.
-
-            SpriteDrawingBitmap spriteMaskedDrawingBitmap;
-
-            status = ResourceGraphic::CreateMaskedGdiBitmap (dcHandle,
-                                                                spriteGraphic.GetMaskColour (),
-                                                                screenScale, 
-                                                                ResourceGraphic::NO_DRAWING_FLAGS,
-                                                                spriteDrawingBitmap,
-                                                                spriteMaskedDrawingBitmap);
-
-            if (status == ERR_SUCCESS)
-            {
-                // Scale the sprite's drawing bitmap.
-
-                spriteDrawingBitmap->SetScreenScale (screenScale);
-
-                // Add to the sprite's drawing attributes.
-
-                spriteDrawingAttributes.AddSpriteDrawingBitmaps (spriteDrawingBitmap,
-                                                                 spriteMaskedDrawingBitmap);
-            } // Endif.
-
-        } // Endif.
-
-    } // Endfor.
-
-    // Note the maximum number of sprite drawing bitmaps.
-
-    spriteDrawingAttributes.m_maxNumSpriteBitmaps = spriteDrawingAttributes.m_spriteDrawingBitmaps.size ();
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::CreateSpriteDrawingAttributesList (FolioHandle                         dcHandle,
-                                                        const SpriteGraphicAttributesList&  spriteGraphicAttributesList,
-                                                        UInt32                              screenScale,
-                                                        SpriteDrawingAttributesList&        spriteDrawingAttributesList)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Create the sprite's drawing attributes.
-
-    for (SpriteGraphicAttributesList::const_iterator spriteGraphicAttributesItr = spriteGraphicAttributesList.begin ();
-         (status == ERR_SUCCESS) && (spriteGraphicAttributesItr != spriteGraphicAttributesList.end ());
-         ++spriteGraphicAttributesItr)
-    {
-        // Get the sprite's graphics.
-
-        for (SpriteGraphicsList::const_iterator spriteGraphicsItr = spriteGraphicAttributesItr->m_spriteGraphics.begin ();
-             (status == ERR_SUCCESS) && (spriteGraphicsItr != spriteGraphicAttributesItr->m_spriteGraphics.end ());
-             ++spriteGraphicsItr)
-        {
-            // Get the sprite graphic.
-
-            SpriteGraphic::element_type&    spriteGraphic(*spriteGraphicsItr->get ());
-
-            // Create a sprite drawing bitmap from the sprite graphic GDI device-independent bitmap.
-
-            SpriteDrawingBitmap spriteDrawingBitmap(new SpriteDrawingBitmap::element_type);
-
-            status = spriteDrawingBitmap->Create (dcHandle, *(spriteGraphic.GetGdiDiBitmap ()));
-
-            if (status == ERR_SUCCESS)
-            {
-                // Create a sprite masked drawing bitmap from the sprite drawing bitmap.
-
-                SpriteDrawingBitmap spriteMaskedDrawingBitmap;
-
-                status = ResourceGraphic::CreateMaskedGdiBitmap (dcHandle,
-                                                                 spriteGraphic.GetMaskColour (),
-                                                                 screenScale, 
-                                                                 ResourceGraphic::NO_DRAWING_FLAGS,
-                                                                 spriteDrawingBitmap,
-                                                                 spriteMaskedDrawingBitmap);
-
-                if (status == ERR_SUCCESS)
-                {
-                    // Scale the sprite's drawing bitmap.
-
-                    spriteDrawingBitmap->SetScreenScale (screenScale);
-
-                    // Add to the sprite's drawing attributes.
-
-                    AddSpriteDrawingAttributes (spriteGraphicAttributesItr->m_direction, 
-                                                spriteGraphicAttributesItr->m_action,
-                                                spriteDrawingBitmap,
-                                                spriteMaskedDrawingBitmap,
-                                                spriteDrawingAttributesList);
-                } // Endif.
-
-            } // Endif.
-
-        } // Endfor.
-
-    } // Endfor.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::CreateSpriteDrawingAttributesList (FolioHandle                         dcHandle,
-                                                        const SpriteGraphicAttributesList&  spriteGraphicAttributesList,
-                                                        UInt32                              screenScale,
-                                                        Direction                           direction,
-                                                        SpriteDrawingAttributesList&        spriteDrawingAttributesList)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Create the sprite's drawing attributes.
-
-    for (SpriteGraphicAttributesList::const_iterator spriteGraphicAttributesItr = spriteGraphicAttributesList.begin ();
-         (status == ERR_SUCCESS) && (spriteGraphicAttributesItr != spriteGraphicAttributesList.end ());
-         ++spriteGraphicAttributesItr)
-    {
-        // Get the sprite's graphics.
-
-        for (SpriteGraphicsList::const_iterator spriteGraphicsItr = spriteGraphicAttributesItr->m_spriteGraphics.begin ();
-             (status == ERR_SUCCESS) && (spriteGraphicsItr != spriteGraphicAttributesItr->m_spriteGraphics.end ());
-             ++spriteGraphicsItr)
-        {
-            // Get the sprite graphic.
-
-            SpriteGraphic::element_type&    spriteGraphic(*spriteGraphicsItr->get ());
-
-            // Create a sprite drawing bitmap from the sprite graphic GDI device-independent bitmap.
-
-            SpriteDrawingBitmap spriteDrawingBitmap(new SpriteDrawingBitmap::element_type);
-
-            status = spriteDrawingBitmap->Create (dcHandle, *(spriteGraphic.GetGdiDiBitmap ()));
-
-            if (status == ERR_SUCCESS)
-            {
-                // Create a sprite masked drawing bitmap from the sprite drawing bitmap.
-
-                SpriteDrawingBitmap spriteMaskedDrawingBitmap;
-
-                status = ResourceGraphic::CreateMaskedGdiBitmap (dcHandle,
-                                                                 spriteGraphic.GetMaskColour (),
-                                                                 screenScale, 
-                                                                 ResourceGraphic::NO_DRAWING_FLAGS,
-                                                                 spriteDrawingBitmap,
-                                                                 spriteMaskedDrawingBitmap);
-
-                if (status == ERR_SUCCESS)
-                {
-                    // Scale the sprite's drawing bitmap.
-
-                    spriteDrawingBitmap->SetScreenScale (screenScale);
-
-                    // Add to the sprite's drawing attributes.
-
-                    AddSpriteDrawingAttributes (spriteGraphicAttributesItr->m_direction,
-                                                spriteGraphicAttributesItr->m_action,
-                                                spriteDrawingBitmap,
-                                                spriteMaskedDrawingBitmap,
-                                                spriteDrawingAttributesList);
-
-                    if (m_drawingElementId == DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED)
-                    {
-                        m_drawingElementId          = spriteGraphic.GetDrawingElementId ();
-                        m_collisionGridCellValue    = spriteGraphic.GetCollisionGridCellValue ();
-                    } // Endif.
-
-                } // Endif.
-
-            } // Endif.
-
-        } // Endfor.
-
-    } // Endfor.
-
-    if ((status == ERR_SUCCESS) && !spriteDrawingAttributesList.empty ())
-    {
-        // Set the initial sprite bitmaps.
-
-        status = SetCurrentSpriteBitmaps (direction, spriteDrawingAttributesList);
-    } // Endif.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::SetCurrentSpriteBitmaps (Direction                     direction,
-                                              SpriteDrawingAttributesList&  spriteDrawingAttributesList,
-                                              bool                          isSetSpriteScreenAttributes,
-                                              bool                          ignoreAction)
+FolioStatus ASprite::SetCurrentSpriteBitmaps (Direction             direction,
+                                              SpriteDrawingList&    spriteDrawingList,
+                                              bool                  setSpriteScreenSize,
+                                              bool                  ignoreAction)
 {
     FolioStatus status = ERR_NOT_FOUND;
 
-    if (spriteDrawingAttributesList.size () == 1)
+    if (spriteDrawingList.size () == 1)
     {
-        m_currentSpriteDrawingAttributes = &(spriteDrawingAttributesList [0]);
+        // Set the current sprite drawing list.
+
+        m_currentSpriteDrawingList      = &(spriteDrawingList);
+        m_currentSpriteDrawingListIndex = 0;
 
         status = ERR_SUCCESS;
     } // Endif.
@@ -1477,14 +1601,17 @@ FolioStatus ASprite::SetCurrentSpriteBitmaps (Direction                     dire
     {
         // Find the sprite bitmaps that relate to the sprite bitmap index and direction.
 
-        for (SpriteDrawingAttributesList::iterator itr = spriteDrawingAttributesList.begin ();
-             itr != spriteDrawingAttributesList.end ();
+        for (SpriteDrawingList::iterator itr = spriteDrawingList.begin ();
+             itr != spriteDrawingList.end ();
              ++itr)
         {
             if (((itr->m_direction & direction) == itr->m_direction) &&
                  (ignoreAction || (itr->m_action == m_action)))
             {
-                m_currentSpriteDrawingAttributes = &(*itr);
+                // Set the current sprite drawing list.
+                
+                m_currentSpriteDrawingList      = &(spriteDrawingList);
+                m_currentSpriteDrawingListIndex = std::distance (spriteDrawingList.begin (), itr);
 
                 status = ERR_SUCCESS;
 
@@ -1497,14 +1624,17 @@ FolioStatus ASprite::SetCurrentSpriteBitmaps (Direction                     dire
         {
             Direction   previousDirection = GetPreviousSpriteDirection ();
 
-            for (SpriteDrawingAttributesList::iterator itr = spriteDrawingAttributesList.begin ();
-                 itr != spriteDrawingAttributesList.end ();
+            for (SpriteDrawingList::iterator itr = spriteDrawingList.begin ();
+                 itr != spriteDrawingList.end ();
                  ++itr)
             {
                 if (((itr->m_direction & previousDirection) == itr->m_direction) &&
                      (ignoreAction || (itr->m_action == m_action)))
                 {
-                    m_currentSpriteDrawingAttributes = &(*itr);
+                    // Set the current sprite drawing list.
+                    
+                    m_currentSpriteDrawingList      = &(spriteDrawingList);
+                    m_currentSpriteDrawingListIndex = std::distance (spriteDrawingList.begin (), itr);
 
                     status = ERR_SUCCESS;
 
@@ -1517,132 +1647,231 @@ FolioStatus ASprite::SetCurrentSpriteBitmaps (Direction                     dire
     
     } // Endelse.
 
-    if (isSetSpriteScreenAttributes && (status == ERR_SUCCESS))
+    if (setSpriteScreenSize && (status == ERR_SUCCESS))
     {
-        // Set the sprite's screen attributes.
+        // Set the sprite's screen size.
 
-        SetSpriteScreenAttributes (m_currentSpriteDrawingAttributes->GetCurrentSpriteDrawingBitmap ());
+        SetSpriteScreenSize (GetCurrentSpriteBitmap ());
     } // Endif.
 
-    //iac
     if (status == ERR_NOT_FOUND)
+    {
         FOLIO_DEBUG_BREAK;
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::QueryCurrentSpriteBitmaps (SpriteDrawingBitmap&    spriteDrawingBitmap,
-                                                SpriteDrawingBitmap&    spriteMaskedDrawingBitmap,
-                                                bool                    incrementSpriteBitmapIndex)
-{
-    FolioStatus status = ERR_NOT_FOUND;
-
-    if (m_currentSpriteDrawingAttributes)
-    {
-        // Query the current sprite drawing attributes' current sprite drawing bitmaps.
-
-        m_currentSpriteDrawingAttributes->QueryCurrentSpriteDrawingBitmaps (m_state,
-                                                                            spriteDrawingBitmap,
-                                                                            spriteMaskedDrawingBitmap,
-                                                                            incrementSpriteBitmapIndex);
-
-        status = ERR_SUCCESS;
     } // Endif.
 
     return (status);
 } // Endproc.
 
 
-void    ASprite::SetSpriteScreenAttributes (const SpriteDrawingBitmap& spriteDrawingBitmap)
-{
-    // Get the sprite drawing bitmap's width.
-
-    Int32   bitmapScreenWidth = spriteDrawingBitmap->GetScreenWidth ();
-
-    if (bitmapScreenWidth != m_screenWidth)
-    {
-        m_screenRect.X      = CalculateScreenXLeft (bitmapScreenWidth);
-        m_screenRect.Width  = bitmapScreenWidth;
-
-        SetScreenWidth (bitmapScreenWidth);
-
-        m_collisionRect.X = CalculateCollisionXLeft ();
-    } // Endif.
-
-    // Get the sprite drawing bitmap's height.
-
-    Int32   bitmapScreenHeight = spriteDrawingBitmap->GetScreenHeight ();
-    
-    if (bitmapScreenHeight != m_screenHeight)
-    {
-        m_screenRect.Y      = CalculateScreenYTop (bitmapScreenHeight);
-        m_screenRect.Height = bitmapScreenHeight;
-
-        SetScreenHeight (bitmapScreenHeight);
-        
-        m_collisionRect.Y = CalculateCollisionYTop ();
-    } // Endif.
-
-} // Endproc.
-
-
-void    ASprite::PlaySpriteInitialisingSound (UInt32 initialisingSoundSamplesListIndex) const
-{
-    if (m_playSpriteInitialisingSound && 
-        (initialisingSoundSamplesListIndex < m_initialisingSoundSamplesList.size ())) 
-    {
-        // Play the sound samples.
-
-        for (UInt32 index = 0; 
-             index < m_initialisingSoundSamplesList [initialisingSoundSamplesListIndex].m_numSoundSamplesPerFrame;
-             ++index)
-        {
-            Folio::Core::Util::Sound::PlayAsyncSoundSample (m_initialisingSoundSamplesList [initialisingSoundSamplesListIndex].m_soundSample);
-        } // Endfor.
-
-    } // Endif.
-
-} // Endproc.
-
-
-void    ASprite::PlaySpriteTerminatingSound (UInt32 terminatingSoundSamplesListIndex) const
-{
-    if (m_playSpriteTerminatingSound && 
-        (terminatingSoundSamplesListIndex < m_terminatingSoundSamplesList.size ()))
-     {
-        // Play the sound samples.
-        
-         for (UInt32 index = 0; 
-             index < m_terminatingSoundSamplesList [terminatingSoundSamplesListIndex].m_numSoundSamplesPerFrame;
-             ++index)
-        {
-            Folio::Core::Util::Sound::PlayAsyncSoundSample (m_terminatingSoundSamplesList [terminatingSoundSamplesListIndex].m_soundSample);
-        } // Endfor.
-
-    } // Endif.
-
-} // Endproc.
-
-
-FolioStatus ASprite::PlaySpriteMovementSound ()
+FolioStatus ASprite::QueryCurrentSpriteBitmaps (SpriteDrawing::SpriteBitmap&    spriteBitmap,
+                                                SpriteDrawing::SpriteBitmap&    spriteMaskedBitmap,
+                                                bool                            incrementCurrentSpriteGraphicsListIndex)
 {
     FolioStatus status = ERR_SUCCESS;
-    
+
+    if (m_currentSpriteDrawingList &&
+        (m_currentSpriteDrawingListIndex < m_currentSpriteDrawingList->size ()))
+    {
+        // Query the sprite's current sprite bitmaps.
+
+        (*m_currentSpriteDrawingList) [m_currentSpriteDrawingListIndex].QueryCurrentSpriteBitmaps (m_state,
+                                                                                                   spriteBitmap,
+                                                                                                   spriteMaskedBitmap,
+                                                                                                   incrementCurrentSpriteGraphicsListIndex);
+    } // Endif.
+
+    else
+    {
+        status = ERR_NOT_FOUND;
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+void    ASprite::PlaySpriteInitialisingSound (UInt32    initialisingSpriteSoundSamplesListIndex,
+                                              bool      playAsynchronously) const
+{
+    if (m_playSpriteInitialisingSound && 
+        (initialisingSpriteSoundSamplesListIndex < m_initialisingSpriteSoundSamplesList.size ())) 
+    {
+        // Play the sprite's initialising sound samples for this frame.
+
+        for (UInt32 index = 0; 
+             index < m_initialisingSpriteSoundSamplesList [initialisingSpriteSoundSamplesListIndex].m_numSpriteSoundSamplesPerFrame;
+             ++index)
+        {
+            // Get the sprite's initialising sound sample.
+
+            SpriteSoundSample  spriteSoundSample(m_initialisingSpriteSoundSamplesList [initialisingSpriteSoundSamplesListIndex].m_spriteSoundSample);
+
+            if (spriteSoundSample)
+            {
+                // Play the sprite's initialising sound sample.
+
+                if (playAsynchronously)
+                {
+                    Folio::Core::Util::Sound::PlayAsyncSoundSample (*spriteSoundSample);
+                } // Endif.
+
+                else
+                {
+                    Folio::Core::Util::Sound::PlaySoundSample (*spriteSoundSample);
+                } // Endelse.
+
+            } // Endif.
+
+        } // Endfor.
+
+    } // Endif.
+
+} // Endproc.
+
+
+void    ASprite::PlaySpriteTerminatingSound (UInt32 terminatingSpriteSoundSamplesListIndex,
+                                             bool   playAsynchronously) const
+{
+    if (m_playSpriteTerminatingSound &&
+        (terminatingSpriteSoundSamplesListIndex < m_terminatingSpriteSoundSamplesList.size ())) 
+     {
+        // Play the sprite's terminating sound samples for this frame.
+        
+        for (UInt32 index = 0; 
+             index < m_terminatingSpriteSoundSamplesList [terminatingSpriteSoundSamplesListIndex].m_numSpriteSoundSamplesPerFrame;
+             ++index)
+        {
+            // Get the sprite's terminating sound sample.
+
+            SpriteSoundSample   spriteSoundSample(m_terminatingSpriteSoundSamplesList [terminatingSpriteSoundSamplesListIndex].m_spriteSoundSample);
+
+            if (spriteSoundSample)
+            {
+                // Play the sprite's terminating sound sample.
+
+                if (playAsynchronously)
+                {
+                    Folio::Core::Util::Sound::PlayAsyncSoundSample (*spriteSoundSample);
+                } // Endif.
+
+                else
+                {
+                    Folio::Core::Util::Sound::PlaySoundSample (*spriteSoundSample);
+                } // Endelse.
+
+            } // Endif.
+
+        } // Endfor.
+
+    } // Endif.
+
+} // Endproc.
+
+
+void    ASprite::PlaySpriteInitialisedSound (bool playAsynchronously) const
+{
+    // Does the sprite support initialised sound?
+
+    if (m_playSpriteInitialisedSound && 
+        m_spriteInitialisedSoundSample) 
+    {
+        // Yes. Play the sprite's initialised sound sample.
+
+        if (playAsynchronously)
+        {
+            Folio::Core::Util::Sound::PlayAsyncSoundSample (*m_spriteInitialisedSoundSample);
+        } // Endif.
+
+        else
+        {
+            Folio::Core::Util::Sound::PlaySoundSample (*m_spriteInitialisedSoundSample);
+        } // Endelse.
+
+    } // Endif.
+
+} // Endproc.
+
+
+void    ASprite::PlaySpriteTerminatedSound (bool playAsynchronously) const
+{
+    // Does the sprite support terminated sound?
+
+    if (m_playSpriteTerminatedSound && 
+        m_spriteTerminatedSoundSample) 
+    {
+        // Yes. Play the sprite's terminated sound sample.
+
+        if (playAsynchronously)
+        {
+            Folio::Core::Util::Sound::PlayAsyncSoundSample (*m_spriteTerminatedSoundSample);
+        } // Endif.
+
+        else
+        {
+            Folio::Core::Util::Sound::PlaySoundSample (*m_spriteTerminatedSoundSample);
+        } // Endelse.
+
+    } // Endif.
+
+} // Endproc.
+
+
+void    ASprite::PlaySpriteReboundSound (bool playAsynchronously) const
+{
+    // Does the sprite support rebound sound?
+
+    if (m_playSpriteReboundSound && 
+        m_spriteReboundSoundSample) 
+    {
+        // Yes. Play the sprite's rebound sound sample.
+
+        if (playAsynchronously)
+        {
+            Folio::Core::Util::Sound::PlayAsyncSoundSample (*m_spriteReboundSoundSample);
+        } // Endif.
+
+        else
+        {
+            Folio::Core::Util::Sound::PlaySoundSample (*m_spriteReboundSoundSample);
+        } // Endelse.
+
+    } // Endif.
+
+} // Endproc.
+
+
+void    ASprite::PlaySpriteMovementSound (bool playAsynchronously)
+{
     switch (m_state)
     {
     case STATE_MOVING:
         // Does the sprite support sound when moving?
 
-        if (IsSpriteMovementSoundSupported ())
+        if (m_speed && ((++m_spriteMovementAudioCount % m_speed) == 0) && 
+            (m_currentMovementSoundSamplesListIndex < m_currentSpriteMovementSoundSamplesList.size ())) 
         {
-            // Yes.
+            // Yes. Get the sprite's movement sound sample.
 
-            SpriteMovementSoundSample   spriteMovementSoundSample;
-            
-            if (QueryCurrentSpriteMovementSoundSample (spriteMovementSoundSample) == ERR_SUCCESS)
+            SpriteSoundSample  spriteSoundSample(m_currentSpriteMovementSoundSamplesList [m_currentMovementSoundSamplesListIndex]);
+
+            if (spriteSoundSample)
             {
-                status = Folio::Core::Util::Sound::PlayAsyncSoundSample (*spriteMovementSoundSample);
+                // Play the sprite's movement sound sample.
+                
+                if (playAsynchronously)
+                {
+                    Folio::Core::Util::Sound::PlayAsyncSoundSample (*spriteSoundSample);
+                } // Endif.
+
+                else
+                {
+                    Folio::Core::Util::Sound::PlaySoundSample (*spriteSoundSample);
+                } // Endelse.
+
+            } // Endif.
+
+            if (++m_currentMovementSoundSamplesListIndex >= m_currentSpriteMovementSoundSamplesList.size ())
+            {
+                m_currentMovementSoundSamplesListIndex = 0; // Reset.
             } // Endif.
 
         } // Endif.
@@ -1652,96 +1881,6 @@ FolioStatus ASprite::PlaySpriteMovementSound ()
         break;
     } // Endif.
 
-    return (status);
-} // Endproc.
-
-
-bool    ASprite::IsSpriteMovementSoundSupported ()
-{
-    return (m_speed && ((++m_spriteMovementAudioCount % m_speed) == 0) && !m_spriteMovementAudioAttributesList.empty ());
-} // Endproc.
-
-
-FolioStatus ASprite::SetCurrentSpriteMovementSoundSample (Direction direction)
-{
-    FolioStatus status = ERR_NOT_FOUND;
-
-    // Find the sprite movement audio samples that relate to the initial sprite sound sample index and direction.
-
-    for (SpriteMovementAudioAttributesList::iterator itr = m_spriteMovementAudioAttributesList.begin ();
-         itr != m_spriteMovementAudioAttributesList.end ();
-         ++itr)
-    {
-        if ((itr->m_direction & direction) == direction)
-        {
-            itr->m_currentSpriteSoundSampleIndex = 0;
-
-            m_currentSpriteMovementAudioAttributes = &(*itr);
-
-            status = ERR_SUCCESS;
-
-            break;  // Get-outta-here!
-        } // Endif.
-
-    } // Endfor.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::QueryCurrentSpriteMovementSoundSample (SpriteMovementSoundSample& spriteMovementSoundSample)
-{
-
-    FolioStatus status = ERR_NOT_FOUND;
-
-    if (m_currentSpriteMovementAudioAttributes)
-    {
-        if (m_currentSpriteMovementAudioAttributes->m_currentSpriteSoundSampleIndex >= m_currentSpriteMovementAudioAttributes->m_maxNumSpriteSoundSamples)
-        {
-            m_currentSpriteMovementAudioAttributes->m_currentSpriteSoundSampleIndex = 0;
-        } // Endif.
-
-        spriteMovementSoundSample = m_currentSpriteMovementAudioAttributes->m_spriteMovementSoundSamples [m_currentSpriteMovementAudioAttributes->m_currentSpriteSoundSampleIndex];
-
-        switch (m_state)
-        {
-        case STATE_MOVING:
-            m_currentSpriteMovementAudioAttributes->m_currentSpriteSoundSampleIndex++; // Next.
-            break;
-
-        default:
-            break;
-        } // Endswitch.
-
-        status = ERR_SUCCESS;
-    } // Endif.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::UpdateSpriteMovementAudioAttributes (Direction direction)
-{
-    FolioStatus status = ERR_NOT_FOUND;
-
-    // Find the sprite's movement audio attributes that relate to the direction.
-
-    for (SpriteMovementAudioAttributesList::iterator itr = m_spriteMovementAudioAttributesList.begin ();
-         itr != m_spriteMovementAudioAttributesList.end ();
-         ++itr)
-    {
-        if ((itr->m_direction & direction) == direction)
-        {
-            m_currentSpriteMovementAudioAttributes = &(*itr);
-
-            status = ERR_SUCCESS;
-
-            break;  // Get-outta-here!
-        } // Endif.
-
-    } // Endfor.
-
-    return (status);
 } // Endproc.
 
 
@@ -1819,7 +1958,11 @@ FolioStatus ASprite::HandleMoveSprite (Gdiplus::Graphics&       graphics,
 
         if (--m_remainingNumAutoMoves == 0)
         {
-            // No. Sprite is terminated.
+            // No. Reset the remaining number of auto-moves.
+
+            m_remainingNumAutoMoves = m_maxNumAutoMoves;
+            
+            // Sprite is terminated.
 
             m_state = STATE_TERMINATED;
         } // Endif.
@@ -1834,6 +1977,86 @@ FolioStatus ASprite::HandleStaticSprite (Gdiplus::Graphics&     graphics,
                                          const ACollisionGrid&  collisionGrid)
 {
     return (ERR_SUCCESS);
+} // Endproc.
+
+
+FolioStatus ASprite::CreateSpriteDrawingList (FolioHandle                           dcHandle,
+                                              const SpriteGraphicAttributesList&    spriteGraphicAttributesList,
+                                              UInt32                                screenScale,
+                                              SpriteDrawingList&                    spriteDrawingList)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Create the sprite's drawing list.
+
+    for (SpriteGraphicAttributesList::const_iterator itr = spriteGraphicAttributesList.begin ();
+         (status == ERR_SUCCESS) && (itr != spriteGraphicAttributesList.end ());
+         ++itr)
+    {
+        // Create the sprite drawing.
+
+        SpriteDrawing   spriteDrawing(*itr);
+
+        // Create the sprite bitmaps.
+
+        status = spriteDrawing.CreateSpriteBitmaps (dcHandle, screenScale);
+
+        if (status == ERR_SUCCESS)
+        {
+            // Add to the sprite drawing list.
+            
+            spriteDrawingList.push_back (spriteDrawing);
+        } // Endif.
+
+    } // Endfor.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::CreateSpriteDrawingList (FolioHandle                           dcHandle,
+                                              const SpriteGraphicAttributesList&    spriteGraphicAttributesList,
+                                              UInt32                                screenScale,
+                                              Direction                             direction,
+                                              SpriteDrawingList&                    spriteDrawingList)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Create the sprite's drawing list.
+
+    for (SpriteGraphicAttributesList::const_iterator itr = spriteGraphicAttributesList.begin ();
+         (status == ERR_SUCCESS) && (itr != spriteGraphicAttributesList.end ());
+         ++itr)
+    {
+        // Create the sprite drawing.
+
+        SpriteDrawing   spriteDrawing(*itr);
+
+        // Create the sprite bitmaps.
+
+        status = spriteDrawing.CreateSpriteBitmaps (dcHandle, screenScale);
+
+        if (status == ERR_SUCCESS)
+        {
+            // Add to the sprite drawing list.
+            
+            spriteDrawingList.push_back (spriteDrawing);
+
+            if (m_drawingElementId == DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED)
+            {
+                // Get the sprite graphic.
+
+                const SpriteGraphic&    spriteGraphic(itr->m_spriteGraphicsList.front ());
+
+                m_drawingElementId          = spriteGraphic->GetDrawingElementId ();
+                m_collisionGridCellValue    = spriteGraphic->GetCollisionGridCellValue ();
+            } // Endif.
+
+        } // Endif.
+
+    } // Endfor.
+
+    return (status);
 } // Endproc.
 
 
@@ -1890,235 +2113,79 @@ FolioStatus ASprite::DrawSprite (Gdiplus::Graphics& graphics,
 {
     // Obtain the sprite's current bitmaps.
 
-    SpriteDrawingBitmap spriteDrawingBitmap;
-    SpriteDrawingBitmap spriteMaskedDrawingBitmap;
+    SpriteDrawing::SpriteBitmap spriteBitmap;
+    SpriteDrawing::SpriteBitmap spriteMaskedBitmap;
 
-    FolioStatus status = QueryCurrentSpriteBitmaps (spriteDrawingBitmap,
-                                                    spriteMaskedDrawingBitmap);
+    FolioStatus status = QueryCurrentSpriteBitmaps (spriteBitmap,
+                                                    spriteMaskedBitmap);
 
     if (status == ERR_SUCCESS)
     {
-        // Draw the sprite's masked drawing bitmap.
+        // Draw the sprite's masked bitmap.
 
-        status = spriteMaskedDrawingBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics);
+        status = spriteMaskedBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics);
 
         if (status == ERR_SUCCESS)
         {
-            // Draw the sprite's drawing bitmap.
+            // Draw the sprite's bitmap.
 
-            status = spriteDrawingBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics, rects);
+            status = spriteBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics, rects);
         } // Endif.
 
     } // Endif.
 
     return (status);
-} // Endproc.
-
-
-void    ASprite::AddSpriteDrawingAttributes (Direction                      direction,
-                                             Action                         action,
-                                             const SpriteDrawingBitmap&     spriteDrawingBitmap,
-                                             const SpriteDrawingBitmap&     spriteMaskedDrawingBitmap,
-                                             SpriteDrawingAttributesList&   spriteDrawingAttributesList)
-{
-    bool    found = false;  // Initialise!
-
-    // Find the sprite's drawing attributes for the specified direction.
-
-    for (SpriteDrawingAttributesList::iterator itr = spriteDrawingAttributesList.begin ();
-         itr != spriteDrawingAttributesList.end ();
-         ++itr)
-    {
-        if (((itr->m_direction & direction) == itr->m_direction) &&
-             (itr->m_action                 == action))
-        {
-            // Add to the sprite's drawing attributes.
-            
-            itr->AddSpriteDrawingBitmaps (spriteDrawingBitmap,
-                                          spriteMaskedDrawingBitmap);
-
-            found = true;
-
-            break;  // Get-outta-here!
-        } // Endif.
-
-    } // Endfor.
-
-    // If we didn't find the sprite's drawing attributes for the specified 
-    // direction, then add a new one.
- 
-    if (!found)
-    {
-        spriteDrawingAttributesList.push_back (SpriteDrawingAttributes(direction, 
-                                                                       action,
-                                                                       spriteDrawingBitmap, 
-                                                                       spriteMaskedDrawingBitmap));
-    } // Endif.
-
-} // Endproc.
-
-
-FolioStatus     ASprite::ChangeSpriteDrawingBitmapsColour (Gdiplus::ARGB                spriteInkColour,
-                                                           SpriteDrawingBitmapsList&    spriteDrawingBitmaps)
-{
-    FolioStatus status = ERR_SUCCESS;
-    
-    // Change the colour of the sprite's drawing bitmaps.
-
-    for (SpriteDrawingBitmapsList::iterator itr = spriteDrawingBitmaps.begin ();
-         itr != spriteDrawingBitmaps.end ();
-         ++itr)
-    {
-        status = itr->get ()->ChangeColour (m_spriteInkColour, spriteInkColour);
-    } // Endfor.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::CreateSpriteMovementAudioAttributes (const SpriteMovementSoundSamplesList& spriteMovementSoundSamples,
-                                                          SpriteMovementAudioAttributes&        spriteMovementAudioAttributes)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Get the sprite's movement sound sample.
-
-    for (SpriteMovementSoundSamplesList::const_iterator spriteMovementSoundSamplesItr = spriteMovementSoundSamples.begin ();
-        (status == ERR_SUCCESS) && (spriteMovementSoundSamplesItr != spriteMovementSoundSamples.end ());
-        ++spriteMovementSoundSamplesItr)
-    {
-        // Add to the sprite's movement audio attributes.
-
-        spriteMovementAudioAttributes.m_spriteMovementSoundSamples.push_back (*spriteMovementSoundSamplesItr);
-    } // Endfor.
-
-    // Note the maximum number of sprite movement audio samples.
-
-    spriteMovementAudioAttributes.m_maxNumSpriteSoundSamples = spriteMovementAudioAttributes.m_spriteMovementSoundSamples.size ();
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::CreateSpriteMovementAudioAttributes (const SpriteMovementSoundAttributesList&  spriteMovementSoundSamplesAttributesList,
-                                                          Direction                                 direction)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Create the sprite's movement audio attributes.
-
-    for (SpriteMovementSoundAttributesList::const_iterator spriteMovementSoundSamplesAttributesItr = spriteMovementSoundSamplesAttributesList.begin ();
-         (status == ERR_SUCCESS) && (spriteMovementSoundSamplesAttributesItr != spriteMovementSoundSamplesAttributesList.end ());
-         ++spriteMovementSoundSamplesAttributesItr)
-    {
-        // Get the sprite's movement sound samples.
-
-        for (SpriteMovementSoundSamplesList::const_iterator spriteMovementSoundSamplesItr = spriteMovementSoundSamplesAttributesItr->m_spriteMovementSoundSamples.begin ();
-             (status == ERR_SUCCESS) && (spriteMovementSoundSamplesItr != spriteMovementSoundSamplesAttributesItr->m_spriteMovementSoundSamples.end ());
-             ++spriteMovementSoundSamplesItr)
-        {
-            // Add to the sprite's movement audio attributes.
-
-            AddSpriteMovementAudioAttributes (spriteMovementSoundSamplesAttributesItr->m_direction, *spriteMovementSoundSamplesItr);
-        } // Endfor.
-
-    } // Endfor.
-
-    if ((status == ERR_SUCCESS) && !m_spriteMovementAudioAttributesList.empty ())
-    {
-        // Set the initial sprite movement audio sound samples.
-
-        status = SetCurrentSpriteMovementSoundSample (direction);
-    } // Endif.
-
-    return (status);
-} // Endproc.
-
-
-void    ASprite::AddSpriteMovementAudioAttributes (Direction                        direction,
-                                                   const SpriteMovementSoundSample& spriteMovementSoundSample)
-{
-    bool    found = false;  // Initialise!
-
-    // Find the sprite's movement audio attributes for the specified direction.
-
-    for (SpriteMovementAudioAttributesList::iterator itr = m_spriteMovementAudioAttributesList.begin ();
-         itr != m_spriteMovementAudioAttributesList.end ();
-         ++itr)
-    {
-        if ((itr->m_direction & direction) == direction)
-        {
-            // Store the sprite movement audio sound samples.
-
-            itr->m_spriteMovementSoundSamples.push_back (spriteMovementSoundSample);
-            
-            itr->m_maxNumSpriteSoundSamples++;
-
-            found = true;
-
-            break;  // Get-outta-here!
-        } // Endif.
-
-    } // Endfor.
-
-    // If we didn't find the sprite's movement audio attributes for the specified 
-    // direction, then add a new one.
- 
-    if (!found)
-    {
-        m_spriteMovementAudioAttributesList.push_back (SpriteMovementAudioAttributes(direction, spriteMovementSoundSample));
-    } // Endif.
-
 } // Endproc.
 
 
 FolioStatus ASprite::PerformGraphicInitialising (Gdiplus::Graphics& graphics,
                                                  RectList*          rects)
 {
-    // Get the sprite's initialising drawing bitmaps.
+    // Get the sprite's initialising bitmaps.
 
-    SpriteDrawingBitmap spriteDrawingBitmap;
-    SpriteDrawingBitmap spriteMaskedDrawingBitmap;
+    SpriteDrawing::SpriteBitmap spriteBitmap;
+    SpriteDrawing::SpriteBitmap spriteMaskedBitmap;
 
-    FolioStatus status = QueryCurrentSpriteBitmaps (spriteDrawingBitmap,
-                                                    spriteMaskedDrawingBitmap);
+    FolioStatus status = QueryCurrentSpriteBitmaps (spriteBitmap,
+                                                    spriteMaskedBitmap);
 
     if (status == ERR_SUCCESS)
     {
-        // Draw the sprite's masked drawing bitmap.
+        // Draw the sprite's masked bitmap.
 
-        status = spriteMaskedDrawingBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics);
+        status = spriteMaskedBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics);
 
         if (status == ERR_SUCCESS)
         {
-            // Draw the sprite's drawing bitmap.
+            // Draw the sprite's bitmap.
 
-            status = spriteDrawingBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics, rects);
+            status = spriteBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics, rects);
                             
             if (status == ERR_SUCCESS)
             {
                 // Play the sprite's initialising sound.
 
-                PlaySpriteInitialisingSound (m_initialisingCurrentSoundSamplesListIndex);
+                PlaySpriteInitialisingSound (m_currentInitialisingSpriteSoundSamplesListIndex);
 
-                if (++m_initialisingCurrentSoundSamplesListIndex >= m_initialisingSoundSamplesList.size ())
+                if (++m_currentInitialisingSpriteSoundSamplesListIndex >= m_initialisingSpriteSoundSamplesList.size ())
                 {
-                    m_initialisingCurrentSoundSamplesListIndex = 0;
+                    m_currentInitialisingSpriteSoundSamplesListIndex = 0;   // Reset.
                 } // Endif.
 
                 // We are initialising until the maximum sequence count is reached.
 
-                m_state = (++m_initialisingCurrentSequenceCount < m_initialisingMaxSequenceCount)
+                m_state = (++m_currentInitialisingSequenceCount < m_initialisingMaxSequenceCount)
                           ? STATE_INITIALISING 
                           : STATE_INITIALISED;
 
                 if (m_state == STATE_INITIALISED)
                 {
-                    m_initialisingCurrentSequenceCount = 0; // Reset.
+                    m_currentInitialisingSequenceCount                  = 0;    // Reset.
+                    m_currentInitialisingSpriteSoundSamplesListIndex    = 0;
 
                     // Set the current sprite bitmaps.
 
-                    SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingAttributesList, true);
+                    SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingList, true);
                 } // Endif.
 
             } // Endif.
@@ -2134,50 +2201,51 @@ FolioStatus ASprite::PerformGraphicInitialising (Gdiplus::Graphics& graphics,
 FolioStatus ASprite::PerformGraphicTerminating (Gdiplus::Graphics&  graphics,
                                                 RectList*           rects)
 {
-    // Get the sprite's terminating drawing bitmaps.
+    // Get the sprite's terminating bitmaps.
 
-    SpriteDrawingBitmap spriteDrawingBitmap;
-    SpriteDrawingBitmap spriteMaskedDrawingBitmap;
+    SpriteDrawing::SpriteBitmap spriteBitmap;
+    SpriteDrawing::SpriteBitmap spriteMaskedBitmap;
 
-    FolioStatus status = QueryCurrentSpriteBitmaps (spriteDrawingBitmap,
-                                                    spriteMaskedDrawingBitmap);
+    FolioStatus status = QueryCurrentSpriteBitmaps (spriteBitmap,
+                                                    spriteMaskedBitmap);
 
     if (status == ERR_SUCCESS)
     {
-        // Draw the sprite's masked drawing bitmap.
+        // Draw the sprite's masked bitmap.
 
-        status = spriteMaskedDrawingBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics);
+        status = spriteMaskedBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics);
 
         if (status == ERR_SUCCESS)
         {
-            // Draw the sprite's drawing bitmap.
+            // Draw the sprite's bitmap.
 
-            status = spriteDrawingBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics, rects);
+            status = spriteBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics, rects);
                             
             if (status == ERR_SUCCESS)
             {
                 // Play the sprite's terminating sound.
 
-                PlaySpriteTerminatingSound (m_terminatingCurrentSoundSamplesListIndex);
-
-                if (++m_terminatingCurrentSoundSamplesListIndex >= m_terminatingSoundSamplesList.size ())
-                {
-                    m_terminatingCurrentSoundSamplesListIndex = 0;
-                } // Endif.
+                PlaySpriteTerminatingSound (m_currentTerminatingSpriteSoundSamplesListIndex);
                     
+                if (++m_currentTerminatingSpriteSoundSamplesListIndex >= m_terminatingSpriteSoundSamplesList.size ())
+                {
+                    m_currentTerminatingSpriteSoundSamplesListIndex = 0;    // Reset.
+                } // Endif.
+
                 // We are terminating until the maximum sequence count is reached.
 
-                m_state = (++m_terminatingCurrentSequenceCount < m_terminatingMaxSequenceCount)
+                m_state = (++m_currentTerminatingSequenceCount < m_terminatingMaxSequenceCount)
                           ? STATE_TERMINATING 
                           : STATE_TERMINATED;
 
                 if (m_state == STATE_TERMINATED)
                 {
-                    m_terminatingCurrentSequenceCount = 0;  // Reset.
+                    m_currentTerminatingSequenceCount               = 0;    // Reset.
+                    m_currentTerminatingSpriteSoundSamplesListIndex = 0;
 
                     // Set the current sprite bitmaps.
 
-                    SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingAttributesList, true);
+                    SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingList, true);
                 } // Endif.
 
             } // Endif.
@@ -2187,6 +2255,103 @@ FolioStatus ASprite::PerformGraphicTerminating (Gdiplus::Graphics&  graphics,
     } // Endif.
     
     return (status);
+} // Endproc.
+
+
+ASprite::SpriteDrawing::SpriteBitmap    ASprite::ResetCurrentSpriteBitmap ()
+{
+    SpriteDrawing::SpriteBitmap spriteBitmap;
+
+    if (m_currentSpriteDrawingList &&
+        (m_currentSpriteDrawingListIndex < m_currentSpriteDrawingList->size ()))
+    {
+        // Reset the sprite's current bitmap.
+
+        (*m_currentSpriteDrawingList) [m_currentSpriteDrawingListIndex].Reset ();
+
+        // Get the sprite's current bitmap.
+
+        spriteBitmap = (*m_currentSpriteDrawingList) [m_currentSpriteDrawingListIndex].GetCurrentSpriteBitmap (); 
+    } // Endif.
+
+    return (spriteBitmap);
+} // Endproc.
+
+
+ASprite::SpriteDrawing::SpriteBitmap    ASprite::GetCurrentSpriteBitmap () const
+{
+    SpriteDrawing::SpriteBitmap spriteBitmap;
+
+    if (m_currentSpriteDrawingList &&
+        (m_currentSpriteDrawingListIndex < m_currentSpriteDrawingList->size ()))
+    {
+        // Get the sprite's current bitmap.
+        
+        spriteBitmap = (*m_currentSpriteDrawingList) [m_currentSpriteDrawingListIndex].GetCurrentSpriteBitmap (); 
+    } // Endif.
+
+    return (spriteBitmap);
+} // Endproc.
+
+
+ASprite::SpriteDrawing::SpriteBitmap    ASprite::GetCurrentSpriteMaskedBitmap () const
+{
+    SpriteDrawing::SpriteBitmap spriteMaskedBitmap;
+
+    if (m_currentSpriteDrawingList &&
+        (m_currentSpriteDrawingListIndex < m_currentSpriteDrawingList->size ()))
+    {
+        // Get the sprite's current masked bitmap.
+
+        spriteMaskedBitmap = (*m_currentSpriteDrawingList) [m_currentSpriteDrawingListIndex].GetCurrentSpriteMaskedBitmap (); 
+    } // Endif.
+
+    return (spriteMaskedBitmap);
+} // Endproc.
+
+
+void    ASprite::SetSpriteScreenSize (const SpriteDrawing::SpriteBitmap& spriteBitmap)
+{
+    if (spriteBitmap)
+    {
+        // Get the sprite's bitmap screen width.
+
+        Int32   bitmapScreenWidth = spriteBitmap->GetScreenWidth ();
+
+        // Has the sprite's screen width changed?
+
+        if (bitmapScreenWidth != m_screenWidth)
+        {
+            // Yes. Set the sprite's screen width.
+
+            m_screenRect.X      = CalculateScreenXLeft (bitmapScreenWidth);
+            m_screenRect.Width  = bitmapScreenWidth;
+
+            SetScreenWidth (bitmapScreenWidth);
+
+            m_collisionRect.X = CalculateCollisionXLeft ();
+        } // Endif.
+
+        // Get the sprite's bitmap screen height.
+
+        Int32   bitmapScreenHeight = spriteBitmap->GetScreenHeight ();
+    
+        // Has the sprite's screen height changed?
+
+        if (bitmapScreenHeight != m_screenHeight)
+        {
+            // Yes. Set the sprite's screen height.
+
+            m_screenRect.Y      = CalculateScreenYTop (bitmapScreenHeight);
+            m_screenRect.Height = bitmapScreenHeight;
+
+            SetScreenHeight (bitmapScreenHeight);
+        
+            m_collisionRect.Y = CalculateCollisionYTop ();
+        } // Endif.
+    
+    } // Endif.
+
 } // Endproc.
 
 
@@ -2292,9 +2457,11 @@ void    ASprite::MoveRight (UInt32                  speed,
 } // Endproc.
 
 
-void    ASprite::CheckSpritePosition (const ACollisionGrid&     collisionGrid,
-                                      ACollisionGrid::DIRECTION collisionGridDirection)
+FolioStatus ASprite::CheckSpritePosition (const ACollisionGrid&     collisionGrid,
+                                          ACollisionGrid::DIRECTION collisionGridDirection)
 {
+    FolioStatus status = ERR_SUCCESS;
+
     // Check for wall collision.
 
     collisionGrid.IsWallCollision (collisionGridDirection, m_collisionRect);
@@ -2303,45 +2470,97 @@ void    ASprite::CheckSpritePosition (const ACollisionGrid&     collisionGrid,
 
     if (collisionGrid.IsOutwithFloorBound (collisionGridDirection, m_collisionRect))
     {
-        // Yes. Play the rebound sound
+        // Yes. Play the sprite's rebound sound
 
-        PlayReboundSound (m_direction);
+        PlaySpriteReboundSound ();
 
-        // Update the sprite's m_direction.
+        // Set the sprite's direction.
 
-        m_direction = UpdateDirection (GetFloorBoundDirection (collisionGridDirection));
+        status = SetDirection (GetFloorBoundDirection (collisionGridDirection));
     } // Endif.
 
+    return (status);
 } // Endproc.
 
 
-void    ASprite::PlayReboundSound (Direction& direction) const
+Direction  ASprite::GetFloorBoundDirection (ACollisionGrid::DIRECTION collisionGridDirection) const
 {
-    if (!m_spriteReboundAudioAttributesList.empty ())
-    {
-        // Find the sprite's rebound audio attributes that relate to the direction.
+    Direction   direction = m_direction;    // Note the sprite's current direction.
 
-        for (SpriteReboundAudioAttributesList::const_iterator itr = m_spriteReboundAudioAttributesList.begin ();
-             itr != m_spriteReboundAudioAttributesList.end ();
+    switch (collisionGridDirection)
+    {
+    case ACollisionGrid::UP:
+        direction &= ~N;
+        direction |= S;
+        break;
+
+    case ACollisionGrid::DOWN:
+        direction &= ~S;
+        direction |= N;
+        break;
+
+    case ACollisionGrid::LEFT:
+        direction &= ~W;
+        direction |= E;
+        break;
+
+    case ACollisionGrid::RIGHT:
+        direction &= ~E;
+        direction |= W;
+        break;
+
+    default:
+        break;
+    } // Endswitch.
+
+    return (direction);
+} // Endproc.
+
+
+FolioStatus ASprite::SetCurrentSpriteMovementSoundSample (Direction direction)
+{
+    FolioStatus status = ERR_NOT_FOUND;
+
+    m_currentSpriteMovementSoundSamplesList.clear ();   // Initialise!
+    m_currentMovementSoundSamplesListIndex = FOLIO_INVALID_INDEX;
+
+    // Are there any sprite movement sound samples set?
+
+    if (m_spriteMovementSoundSamplesList.empty ())
+    {
+        // No.
+
+        status = ERR_SUCCESS;
+    } // Endif.
+
+    else
+    {
+        // Yes. Find the current sprite movement sound sample that relates to the direction.
+
+        for (SpriteMovementSoundSamplesList::const_iterator itr = m_spriteMovementSoundSamplesList.begin ();
+             itr != m_spriteMovementSoundSamplesList.end ();
              ++itr)
         {
-            if ((itr->m_direction & direction) == direction)
+            if ((itr->m_direction & direction) == direction) 
             {
-                Folio::Core::Util::Sound::PlayAsyncSoundSample (*(itr->m_spriteReboundSoundSample));
+                if (!itr->m_spriteSoundSamplesList.empty ())
+                {
+                    // Note the current sprite movement sound samples list.
+    
+                    m_currentSpriteMovementSoundSamplesList = itr->m_spriteSoundSamplesList;
+                    m_currentMovementSoundSamplesListIndex  = 0;
+
+                    status = ERR_SUCCESS;
+                } // Endif.
 
                 break;  // Get-outta-here!
             } // Endif.
 
         } // Endfor.
     
-    } // Endif.
+    } // Endelse.
 
-} // Endproc.
-
-
-bool    ASprite::IsCreated () const
-{
-    return (m_state != STATE_UNKNOWN);
+    return (status);
 } // Endproc.
 
 } // Endnamespace.

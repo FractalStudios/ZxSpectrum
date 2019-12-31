@@ -19,7 +19,9 @@ using   namespace   Folio::Core::Util::Gdi;
  * The default class constructor.
  */
 GdiBitmap::GdiBitmap ()
-:   m_isMonochrome(false),
+:   m_id(FOLIO_UNDEFINED),
+    m_isMonochrome(false),
+    m_dcHandle(FOLIO_INVALID_HANDLE),
     m_memoryDcHandle(FOLIO_INVALID_HANDLE),
     m_bitmapHandle(FOLIO_INVALID_HANDLE),
     m_oldBitmapHandle(FOLIO_INVALID_HANDLE),
@@ -109,6 +111,12 @@ FolioStatus GdiBitmap::Create (FolioHandle          dcHandle,
 
         if (status == ERR_SUCCESS)
         {
+            // Add to the handle monitor.
+
+            Folio::Core::Util::g_handleMonitor.AddHandle (m_bitmapHandle,
+                                                          FOLIO_UNDEFINED,
+                                                          TXT("GdiBitmap::Create::CreateCompatibleBitmap"));
+
             // Initialise the bitmap.
 
             status = InitialiseBitmap (dcHandle);
@@ -165,7 +173,7 @@ FolioStatus GdiBitmap::Create (FolioHandle  dcHandle,
         {
             // Initialise the bitmap.
 
-            status = InitialiseBitmap (dcHandle);
+            status = InitialiseBitmap (dcHandle, resourceId);
         } // Endif.
 
     } // Endelse.
@@ -266,9 +274,17 @@ FolioStatus GdiBitmap::Create (FolioHandle      dcHandle,
 
         if (status == ERR_SUCCESS)
         {
+            // Add to the handle monitor.
+
+            Folio::Core::Util::g_handleMonitor.AddHandle (m_bitmapHandle,
+                                                          gdiBitmap.GetId (),
+                                                          TXT("GdiBitmap::Create::CreateCompatibleBitmap"));
+
             // Initialise the bitmap.
 
-            status = InitialiseBitmap (dcHandle, gdiBitmap.IsMonochrome ());
+            status = InitialiseBitmap (dcHandle, 
+                                       gdiBitmap.GetId (), 
+                                       gdiBitmap.IsMonochrome ());
 
             if (status == ERR_SUCCESS)
             {
@@ -355,9 +371,17 @@ FolioStatus GdiBitmap::Create (FolioHandle              dcHandle,
 
         if (status == ERR_SUCCESS)
         {
+            // Add to the handle monitor.
+
+            Folio::Core::Util::g_handleMonitor.AddHandle (m_bitmapHandle,
+                                                          gdiBitmap.GetId (),
+                                                          TXT("GdiBitmap::Create::CreateMonochromeBitmap"));
+
             // Initialise the bitmap.
 
-            status = InitialiseBitmap (dcHandle, true); // Monochrome.
+            status = InitialiseBitmap (dcHandle, 
+                                       gdiBitmap.GetId (), 
+                                       true); // Monochrome.
         } // Endif.
 
     } // Endelse.
@@ -407,9 +431,15 @@ FolioStatus GdiBitmap::Create (FolioHandle          dcHandle,
 
         if (status == ERR_SUCCESS)
         {
+            // Add to the handle monitor.
+
+            Folio::Core::Util::g_handleMonitor.AddHandle (m_bitmapHandle,
+                                                          gdiDiBitmap.GetResourceId (),
+                                                          TXT("GdiBitmap::Create::CreateCompatibleBitmap"));
+
             // Initialise the bitmap.
 
-            status = InitialiseBitmap (dcHandle);
+            status = InitialiseBitmap (dcHandle, gdiDiBitmap.GetResourceId ());
         } // Endif.
 
     } // Endelse.
@@ -465,6 +495,18 @@ FolioStatus GdiBitmap::ChangeColour (const Gdiplus::Color&  colour,
 
     return (status);
 } // Endproc. 
+
+
+/**
+ * Method that is used to get the identifer of the bitmap.
+ *
+ * @return
+ * The identifer of the bitmap.
+ */
+UInt32  GdiBitmap::GetId () const
+{
+    return (m_id);
+} // Endproc.
 
 
 /**
@@ -988,15 +1030,27 @@ FolioHandle GdiBitmap::GetBitmapHandle () const
 
 
 /**
- * Method that is used to get the device context handle of the bitmap.
+ * Method that is used to get the display compatible device context handle of 
+ * the bitmap.
  *
  * @return
- * The device context handle of the bitmap.
+ * The display compatible device context handle of the bitmap.
+ */
+FolioHandle GdiBitmap::GetDcHandle () const
+{
+    return (m_dcHandle);
+} // Endproc.
+
+
+/**
+ * Method that is used to get the display compatible memory device context 
+ * handle of the bitmap.
+ *
+ * @return
+ * The display compatible memory device context handle of the bitmap.
  */
 FolioHandle GdiBitmap::GetBitmapDcHandle () const
 {
-    // The memory device context is the device context handle of the bitmap.
-
     return (m_memoryDcHandle);
 } // Endproc.
 
@@ -1288,6 +1342,9 @@ FolioStatus GdiBitmap::Draw (Int32              screenXLeft,
  * @param [in] dcHandle
  * The device context handle.
  *
+ * @param [in] id
+ * The identifier of the bitmap.
+ *
  * @param [in] isMonochrome
  * Indicates if the bitmap is monochrome.
  *
@@ -1298,9 +1355,12 @@ FolioStatus GdiBitmap::Draw (Int32              screenXLeft,
  * </ul>
  */
 FolioStatus GdiBitmap::InitialiseBitmap (FolioHandle    dcHandle,
+                                         UInt32         id,
                                          bool           isMonochrome)
 {
-    m_isMonochrome = isMonochrome;
+    m_dcHandle      = dcHandle;
+    m_id            = id;
+    m_isMonochrome  = isMonochrome;
 
     // Query the bitmap's dimensions.
 
@@ -1636,6 +1696,8 @@ void    GdiBitmap::Destroy ()
         // Yes.
 
         DestroyBitmap (m_bitmapHandle);
+
+        Folio::Core::Util::g_handleMonitor.RemoveHandle (m_bitmapHandle);
     } // Endif.
 
 } // Endproc.

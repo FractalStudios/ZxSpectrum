@@ -1,5 +1,5 @@
 // "Home-made" includes.
-#include    "SpriteMovementSoundAttributes.h"
+#include    "SpriteSound.h"
 
 FOLIO_NO_EMPTY_FILE;
 

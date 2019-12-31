@@ -30,8 +30,7 @@ public:
     static  const   UInt32    FLAGS_OPEN_DOOR       = FLAGS_DOOR | 0x00010000;  // Background item is an open door.
     static  const   UInt32    FLAGS_CLOSED_DOOR     = FLAGS_DOOR | 0x00020000;  // Background item is a closed door.
     static  const   UInt32    FLAGS_LOCKED_DOOR     = FLAGS_DOOR | 0x00040000;  // Background item is a locked door.
-    static  const   UInt32    FLAGS_UNLOCKED_DOOR   = FLAGS_DOOR | 0x00080000;  // Background item is an unlocked door.
-    static  const   UInt32    FLAGS_EXIT_DOOR       = FLAGS_DOOR | 0x00100000;  // Background item is an exit door.
+    static  const   UInt32    FLAGS_EXIT_DOOR       = FLAGS_DOOR | 0x00080000;  // Background item is an exit door.
     static  const   UInt32    FLAGS_KNIGHT_DOOR     = FLAGS_DOOR | 0x01000000;  // Background item is a knight door.
     static  const   UInt32    FLAGS_WIZARD_DOOR     = FLAGS_DOOR | 0x02000000;  // Background item is a wizard door.
     static  const   UInt32    FLAGS_SERF_DOOR       = FLAGS_DOOR | 0x04000000;  // Background item is a serf door.
@@ -46,7 +45,7 @@ public:
                     UInt32              drawingFlags = Folio::Core::Game::ResourceGraphic::NO_DRAWING_FLAGS);
     ~BackgroundItem ();
 
-    void                    SetBackgroundItemGraphic (const BackgroundItemGraphicsMap &backgroundItemGraphicsMap);
+    FolioStatus             SetBackgroundItemGraphic ();
     BackgroundItemGraphic   GetBackgroundItemGraphic () const;
 
     BACKGROUND_ITEM_ID  GetBackgroundItemId () const;
@@ -54,8 +53,8 @@ public:
     UInt32              GetBackgroundItemFlags () const;
     UInt32              GetDrawingFlags () const;
 
-    void    SetScreenTopLeft (Int32 screenXLeft,
-                              Int32 screenYTop);
+    FolioStatus SetScreenTopLeft (Int32 screenXLeft,
+                                  Int32 screenYTop);
 
     Gdiplus::Rect   GetScreenRect () const;
     Int32           GetScreenXLeft () const;
@@ -76,9 +75,9 @@ public:
     UInt32  GetDoorTransitionTickCount () const;
     bool    IsDoorTransition (UInt32 currentTickCount) const;
 
-    void    SetDoorOpen ();
-    void    SetDoorClosed ();
-    void    SetDoorUnlocked ();
+    FolioStatus SetDoorOpen (bool setBackgroundItemGraphic = false);
+    FolioStatus SetDoorClosed (bool setBackgroundItemGraphic = false);
+    FolioStatus SetDoorUnlocked (bool setBackgroundItemGraphic = false);
 
     bool    operator == (const BackgroundItem &rhs) const;
 
@@ -86,7 +85,6 @@ public:
     static  bool    IsOpenDoor (UInt32 backgroundItemflags);
     static  bool    IsClosedDoor (UInt32 backgroundItemflags);
     static  bool    IsLockedDoor (UInt32 backgroundItemflags);
-    static  bool    IsUnlockedDoor (UInt32 backgroundItemflags);
     static  bool    IsExitDoor (UInt32 backgroundItemflags);
     static  bool    IsKnightDoor (UInt32 backgroundItemflags);
     static  bool    IsWizardDoor (UInt32 backgroundItemflags);
@@ -112,11 +110,9 @@ private:
     UInt32              m_drawingFlags;             // The drawing flags of the background item.
     UInt32              m_doorTransitionTickCount;  // The door timing (in milliseconds) of the background item (if it's a door).
 
-    BackgroundItemGraphicsMap*  m_backgroundItemGraphicsMap;    // The background item graphics map.
-    BackgroundItemGraphic       m_backgroundItemGraphic;        // The background item's graphic.
+    BackgroundItemGraphic   m_backgroundItemGraphic;    // The background item's graphic.
 
-    BACKGROUND_ITEM_ID  GetNewBackgroundItemId ();      
-    void    SetBackgroundItemGraphic (BACKGROUND_ITEM_ID backgroundItemId);
+    BACKGROUND_ITEM_ID  GetNewBackgroundItemId () const;
 }; // Endclass.
 
 // Background item pointer.
@@ -128,13 +124,15 @@ typedef std::vector<BackgroundItemPtr>  BackgroundItemsList;
 
 // Routines.
 
-extern  FolioStatus BuildBackgroundItems (const BackgroundItemGraphicsMap   &backgroundItemGraphicsMap,
-                                          BackgroundItemsList               &backgroundItemsList);
+extern  UInt32  GetMaxBackgroundItemsOnScreen (BACKGROUND_ITEM_ID backgroundItemId);
+extern  FolioStatus CreateBackgroundItems (BackgroundItemsList &backgroundItemsList);
 extern  BackgroundItemsList GetScreenBackgroundItemsList (UInt32                    screenNumber,
                                                           const BackgroundItemsList &backgroundItemsList);
-extern  UInt32  GetNewScreenNumber (const BackgroundItem        *currentBackgroundItem,
-                                    const BackgroundItemsList   &backgroundItemsList,
-                                    BackgroundItemPtr           &newScreenEntranceBackgroundItem);
+extern  BackgroundItemPtr   GetOppositeDoor (const BackgroundItem       *currentDoorBackgroundItem,
+                                             const BackgroundItemsList  &backgroundItemsList,
+                                             bool                       setBackgroundItemGraphic = false);
+extern  UInt32  GetNewScreenNumber (const BackgroundItem        *currentDoorBackgroundItem,
+                                    const BackgroundItemsList   &backgroundItemsList);
 
 } // Endnamespace.
 

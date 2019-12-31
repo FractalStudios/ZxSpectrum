@@ -266,9 +266,21 @@ FolioStatus WaveOut::Play (UInt32                           duration,
 
             if (mmResult == MMSYSERR_NOERROR)
             {
-                // Let it play.
+                if (duration >= 100)
+                {
+                    Thread::Sleep (duration);
+                } // Endif.
 
-                Thread::Sleep (duration);
+                // Try to unprepare the header; this will fail until the block has
+                // played.
+
+                while (::waveOutUnprepareHeader (m_waveOutHandle, 
+                                                 &(waveHeader), 
+                                                 sizeof (waveHeader)) == WAVERR_STILLPLAYING)
+                {
+                    Thread::Sleep ((duration >= 100) ? 0 : duration);
+                } // Endwhile.
+
             } // Endif.
 
             else
@@ -279,16 +291,6 @@ FolioStatus WaveOut::Play (UInt32                           duration,
 
                 FOLIO_LOG_CALL_ERROR (TXT("waveOutWrite"), status);
             } // Endelse.
-
-            // Try to unprepare the header; this will fail until the block has
-            // played.
-
-            while (::waveOutUnprepareHeader (m_waveOutHandle, 
-                                             &(waveHeader), 
-                                             sizeof (waveHeader)) == WAVERR_STILLPLAYING)
-            {
-                Thread::Sleep (1);
-            } // Endwhile.
 
         } // Endif.
        

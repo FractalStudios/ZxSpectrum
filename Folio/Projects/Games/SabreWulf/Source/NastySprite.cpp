@@ -13,56 +13,56 @@ namespace Games
 namespace SabreWulf
 {
 
-// Nasty sprite graphic attributes.
-static  const   Folio::Core::Game::SpriteGraphicsAttributesList<NASTY_SPRITE_ID, SPRITE_ID> g_nastySpriteGraphicAttributes =
+// Nasty sprite graphic characteristics.
+static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<NASTY_SPRITE_ID, SPRITE_ID> g_nastySpriteGraphicCharacteristics =
 {
-//      m_spriteId                  m_direction                             m_spriteGraphicIdsList
-    {   NASTY_SPRITE_SPIDER,        Folio::Core::Game::ANastySprite::E,     {   SPRITE_SPIDER_RIGHT_1, SPRITE_SPIDER_RIGHT_2,       },  },
-    {   NASTY_SPRITE_SPIDER,        Folio::Core::Game::ANastySprite::W,     {   SPRITE_SPIDER_LEFT_1, SPRITE_SPIDER_LEFT_2,         },  },
+//      m_spriteId                  m_direction             m_spriteGraphicIdsList
+    {   NASTY_SPRITE_SPIDER,        Folio::Core::Game::E,   {   SPRITE_SPIDER_RIGHT_1, SPRITE_SPIDER_RIGHT_2,       },  },
+    {   NASTY_SPRITE_SPIDER,        Folio::Core::Game::W,   {   SPRITE_SPIDER_LEFT_1, SPRITE_SPIDER_LEFT_2,         },  },
 
-    {   NASTY_SPRITE_SCORPION,      Folio::Core::Game::ANastySprite::E,     {   SPRITE_SCORPION_RIGHT_1, SPRITE_SCORPION_RIGHT_2,   },  },
-    {   NASTY_SPRITE_SCORPION,      Folio::Core::Game::ANastySprite::W,     {   SPRITE_SCORPION_LEFT_1, SPRITE_SCORPION_LEFT_2,     },  },
+    {   NASTY_SPRITE_SCORPION,      Folio::Core::Game::E,   {   SPRITE_SCORPION_RIGHT_1, SPRITE_SCORPION_RIGHT_2,   },  },
+    {   NASTY_SPRITE_SCORPION,      Folio::Core::Game::W,   {   SPRITE_SCORPION_LEFT_1, SPRITE_SCORPION_LEFT_2,     },  },
 
-    {   NASTY_SPRITE_BAT,           Folio::Core::Game::ANastySprite::E,     {   SPRITE_BAT_RIGHT_1, SPRITE_BAT_RIGHT_2,             },  },
-    {   NASTY_SPRITE_BAT,           Folio::Core::Game::ANastySprite::W,     {   SPRITE_BAT_LEFT_1, SPRITE_BAT_LEFT_2,               },  },
+    {   NASTY_SPRITE_BAT,           Folio::Core::Game::E,   {   SPRITE_BAT_RIGHT_1, SPRITE_BAT_RIGHT_2,             },  },
+    {   NASTY_SPRITE_BAT,           Folio::Core::Game::W,   {   SPRITE_BAT_LEFT_1, SPRITE_BAT_LEFT_2,               },  },
 
-    {   NASTY_SPRITE_PARROT,        Folio::Core::Game::ANastySprite::E,     {   SPRITE_PARROT_RIGHT_1, SPRITE_PARROT_RIGHT_2,       },  },
-    {   NASTY_SPRITE_PARROT,        Folio::Core::Game::ANastySprite::W,     {   SPRITE_PARROT_LEFT_1, SPRITE_PARROT_LEFT_2,         },  },
+    {   NASTY_SPRITE_PARROT,        Folio::Core::Game::E,   {   SPRITE_PARROT_RIGHT_1, SPRITE_PARROT_RIGHT_2,       },  },
+    {   NASTY_SPRITE_PARROT,        Folio::Core::Game::W,   {   SPRITE_PARROT_LEFT_1, SPRITE_PARROT_LEFT_2,         },  },
 
-    {   NASTY_SPRITE_MONKEY,        Folio::Core::Game::ANastySprite::E,     {   SPRITE_MONKEY_RIGHT_1, SPRITE_MONKEY_RIGHT_2,       },  },
-    {   NASTY_SPRITE_MONKEY,        Folio::Core::Game::ANastySprite::W,     {   SPRITE_MONKEY_LEFT_1, SPRITE_MONKEY_LEFT_2,         },  },
+    {   NASTY_SPRITE_MONKEY,        Folio::Core::Game::E,   {   SPRITE_MONKEY_RIGHT_1, SPRITE_MONKEY_RIGHT_2,       },  },
+    {   NASTY_SPRITE_MONKEY,        Folio::Core::Game::W,   {   SPRITE_MONKEY_LEFT_1, SPRITE_MONKEY_LEFT_2,         },  },
 
-    {   NASTY_SPRITE_LIZARD,        Folio::Core::Game::ANastySprite::E,     {   SPRITE_LIZARD_RIGHT_1, SPRITE_LIZARD_RIGHT_2,       },  },
-    {   NASTY_SPRITE_LIZARD,        Folio::Core::Game::ANastySprite::W,     {   SPRITE_LIZARD_LEFT_1, SPRITE_LIZARD_LEFT_2,         },  },
+    {   NASTY_SPRITE_LIZARD,        Folio::Core::Game::E,   {   SPRITE_LIZARD_RIGHT_1, SPRITE_LIZARD_RIGHT_2,       },  },
+    {   NASTY_SPRITE_LIZARD,        Folio::Core::Game::W,   {   SPRITE_LIZARD_LEFT_1, SPRITE_LIZARD_LEFT_2,         },  },
 
-    {   NASTY_SPRITE_SNAKE,         Folio::Core::Game::ANastySprite::E,     {   SPRITE_SNAKE_RIGHT_1, SPRITE_SNAKE_RIGHT_2,         },  },
-    {   NASTY_SPRITE_SNAKE,         Folio::Core::Game::ANastySprite::W,     {   SPRITE_SNAKE_LEFT_1, SPRITE_SNAKE_LEFT_2,           },  },
+    {   NASTY_SPRITE_SNAKE,         Folio::Core::Game::E,   {   SPRITE_SNAKE_RIGHT_1, SPRITE_SNAKE_RIGHT_2,         },  },
+    {   NASTY_SPRITE_SNAKE,         Folio::Core::Game::W,   {   SPRITE_SNAKE_LEFT_1, SPRITE_SNAKE_LEFT_2,           },  },
 
-    {   NASTY_SPRITE_RAT,           Folio::Core::Game::ANastySprite::E,     {   SPRITE_RAT_RIGHT_1, SPRITE_RAT_RIGHT_2,             },  },
-    {   NASTY_SPRITE_RAT,           Folio::Core::Game::ANastySprite::W,     {   SPRITE_RAT_LEFT_1, SPRITE_RAT_LEFT_2,               },  },
+    {   NASTY_SPRITE_RAT,           Folio::Core::Game::E,   {   SPRITE_RAT_RIGHT_1, SPRITE_RAT_RIGHT_2,             },  },
+    {   NASTY_SPRITE_RAT,           Folio::Core::Game::W,   {   SPRITE_RAT_LEFT_1, SPRITE_RAT_LEFT_2,               },  },
 
-    {   NASTY_SPRITE_BIRD,          Folio::Core::Game::ANastySprite::E,     {   SPRITE_BIRD_RIGHT_1, SPRITE_BIRD_RIGHT_2,           },  },
-    {   NASTY_SPRITE_BIRD,          Folio::Core::Game::ANastySprite::W,     {   SPRITE_BIRD_LEFT_1, SPRITE_BIRD_LEFT_2,             },  },
+    {   NASTY_SPRITE_BIRD,          Folio::Core::Game::E,   {   SPRITE_BIRD_RIGHT_1, SPRITE_BIRD_RIGHT_2,           },  },
+    {   NASTY_SPRITE_BIRD,          Folio::Core::Game::W,   {   SPRITE_BIRD_LEFT_1, SPRITE_BIRD_LEFT_2,             },  },
 
-    {   NASTY_SPRITE_FLY,           Folio::Core::Game::ANastySprite::E,     {   SPRITE_FLY_RIGHT_1, SPRITE_FLY_RIGHT_2,             },  },
-    {   NASTY_SPRITE_FLY,           Folio::Core::Game::ANastySprite::W,     {   SPRITE_FLY_LEFT_1, SPRITE_FLY_LEFT_2,               },  },
+    {   NASTY_SPRITE_FLY,           Folio::Core::Game::E,   {   SPRITE_FLY_RIGHT_1, SPRITE_FLY_RIGHT_2,             },  },
+    {   NASTY_SPRITE_FLY,           Folio::Core::Game::W,   {   SPRITE_FLY_LEFT_1, SPRITE_FLY_LEFT_2,               },  },
 
-    {   NASTY_SPRITE_FROG,          Folio::Core::Game::ANastySprite::E,     {   SPRITE_FROG_RIGHT_1, SPRITE_FROG_RIGHT_2,           },  },
-    {   NASTY_SPRITE_FROG,          Folio::Core::Game::ANastySprite::W,     {   SPRITE_FROG_LEFT_1, SPRITE_FROG_LEFT_2,             },  },
+    {   NASTY_SPRITE_FROG,          Folio::Core::Game::E,   {   SPRITE_FROG_RIGHT_1, SPRITE_FROG_RIGHT_2,           },  },
+    {   NASTY_SPRITE_FROG,          Folio::Core::Game::W,   {   SPRITE_FROG_LEFT_1, SPRITE_FROG_LEFT_2,             },  },
 
-    {   NASTY_SPRITE_BUG,           Folio::Core::Game::ANastySprite::E,     {   SPRITE_BUG_RIGHT_1, SPRITE_BUG_RIGHT_2,             },  },
-    {   NASTY_SPRITE_BUG,           Folio::Core::Game::ANastySprite::W,     {   SPRITE_BUG_LEFT_1, SPRITE_BUG_LEFT_2,               },  },
+    {   NASTY_SPRITE_BUG,           Folio::Core::Game::E,   {   SPRITE_BUG_RIGHT_1, SPRITE_BUG_RIGHT_2,             },  },
+    {   NASTY_SPRITE_BUG,           Folio::Core::Game::W,   {   SPRITE_BUG_LEFT_1, SPRITE_BUG_LEFT_2,               },  },
 
-    {   NASTY_SPRITE_SKUNK,         Folio::Core::Game::ANastySprite::E,     {   SPRITE_SKUNK_RIGHT_1, SPRITE_SKUNK_RIGHT_2,         },  },
-    {   NASTY_SPRITE_SKUNK,         Folio::Core::Game::ANastySprite::W,     {   SPRITE_SKUNK_LEFT_1, SPRITE_SKUNK_LEFT_2,           },  },
+    {   NASTY_SPRITE_SKUNK,         Folio::Core::Game::E,   {   SPRITE_SKUNK_RIGHT_1, SPRITE_SKUNK_RIGHT_2,         },  },
+    {   NASTY_SPRITE_SKUNK,         Folio::Core::Game::W,   {   SPRITE_SKUNK_LEFT_1, SPRITE_SKUNK_LEFT_2,           },  },
 
-    {   NASTY_SPRITE_EARWIG,        Folio::Core::Game::ANastySprite::E,     {   SPRITE_EARWIG_RIGHT_1, SPRITE_EARWIG_RIGHT_2,       },  },
-    {   NASTY_SPRITE_EARWIG,        Folio::Core::Game::ANastySprite::W,     {   SPRITE_EARWIG_LEFT_1, SPRITE_EARWIG_LEFT_2,         },  },
+    {   NASTY_SPRITE_EARWIG,        Folio::Core::Game::E,   {   SPRITE_EARWIG_RIGHT_1, SPRITE_EARWIG_RIGHT_2,       },  },
+    {   NASTY_SPRITE_EARWIG,        Folio::Core::Game::W,   {   SPRITE_EARWIG_LEFT_1, SPRITE_EARWIG_LEFT_2,         },  },
 };
 
 
 // Nasty sprite static members.
-//IAC NastySprite::SpriteTerminatingSoundSamplesList  NastySprite::m_nastySpriteTerminatingSoundSamplesList;  // The nasty sprite's terminating sound samples.
+Folio::Core::Game::SpriteStationarySoundSamplesList NastySprite::m_nastySpriteTerminatingSoundSamplesList;  // The nasty sprite's terminating sound samples.
 
 NastySprite::NastySprite (const PlayerSpritePtr &playerSprite)
 :   m_playerSprite(playerSprite),
@@ -88,16 +88,16 @@ FolioStatus NastySprite::Create (FolioHandle                dcHandle,
 
     // Query the nasty sprite's graphics.
 
-    SpriteGraphicAttributesList spriteGraphicAttributesList;
+    Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<NASTY_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                       nastySpriteId,
                                                                                                       *spriteGraphicsMap,
                                                                                                       nastySpriteColour,
-                                                                                                      g_nastySpriteGraphicAttributes,
+                                                                                                      g_nastySpriteGraphicCharacteristics,
                                                                                                       spriteGraphicAttributesList);
 
-    if (status == ERROR_SUCCESS)
+    if (status == ERR_SUCCESS)
     {
         // Get the nasty sprite's initial screen position.
 
@@ -116,7 +116,7 @@ FolioStatus NastySprite::Create (FolioHandle                dcHandle,
                                                           Folio::Core::Game::ZxSpectrum::MapInkColour (nastySpriteColour),
                                                           GetNastySpriteDirection (collisionGrid));
 
-        if (status == ERROR_SUCCESS)
+        if (status == ERR_SUCCESS)
         {
             // Set the nasty sprite's initialising mode.
             
@@ -124,7 +124,7 @@ FolioStatus NastySprite::Create (FolioHandle                dcHandle,
                                           spriteGraphicsMap, 
                                           nastySpriteColour);
 
-            if (status == ERROR_SUCCESS)
+            if (status == ERR_SUCCESS)
             {
                 // Set the nasty sprite's terminating mode.
                 
@@ -132,7 +132,7 @@ FolioStatus NastySprite::Create (FolioHandle                dcHandle,
                                              spriteGraphicsMap, 
                                              nastySpriteColour); 
 
-                if (status == ERROR_SUCCESS)
+                if (status == ERR_SUCCESS)
                 {
                     // The nasty sprite is alive.
 
@@ -182,11 +182,15 @@ FolioStatus NastySprite::CheckNasty (Folio::Core::Game::DrawingElementPtr   &dra
         {
             // Set the nasty sprite's drawing element's top-left screen position.
 
-            drawingElement->SetScreenTopLeft (m_collisionRect.X, m_collisionRect.Y);
+            status = drawingElement->SetScreenTopLeft (m_collisionRect.X, m_collisionRect.Y);
 
-            // Update the nasty sprite in the screen's collision grid.
+            if (status == ERR_SUCCESS)
+            {
+                // Update the nasty sprite in the screen's collision grid.
 
-            status = collisionGrid.UpdateCellElement (*(drawingElement));
+                status = collisionGrid.UpdateCellElement (*(drawingElement));
+            } // Endif.
+
         } // Endif.
         break;
 
@@ -243,21 +247,21 @@ FolioStatus NastySprite::SetInitialisingMode (FolioHandle                       
 {
     static  const   UInt32  MAX_SEQUENCE_COUNT = 1;
 
-    // Nasty sprite initialising sprite attributes.
-    static  const   Folio::Core::Game::SpriteGraphicsAttributesList<NASTY_SPRITE_ID, SPRITE_ID> s_initialisingSpriteGraphicAttributes = 
+    // Nasty sprite initialising sprite characteristics.
+    static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<NASTY_SPRITE_ID, SPRITE_ID> s_initialisingSpriteGraphicCharacteristics = 
     {
-    //      m_spriteId                  m_direction                                         m_spriteGraphicIdsList
-        {   NASTY_SPRITE_UNDEFINED,     Folio::Core::Game::APlayerSprite::ALL_DIRECTIONS,   {   SPRITE_NASTY_ALIVE_1, SPRITE_NASTY_ALIVE_2, SPRITE_NASTY_ALIVE_3, SPRITE_NASTY_ALIVE_4, SPRITE_NASTY_ALIVE_5, SPRITE_NASTY_ALIVE_6, },  },
+    //      m_spriteId                  m_direction                         m_spriteGraphicIdsList
+        {   NASTY_SPRITE_UNDEFINED,     Folio::Core::Game::ALL_DIRECTIONS,  {   SPRITE_NASTY_ALIVE_1, SPRITE_NASTY_ALIVE_2, SPRITE_NASTY_ALIVE_3, SPRITE_NASTY_ALIVE_4, SPRITE_NASTY_ALIVE_5, SPRITE_NASTY_ALIVE_6, },  },
     };
 
     // Query the nasty sprite's initialising graphics.
 
-    SpriteGraphicAttributesList    spriteGraphicAttributesList;
+    Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<NASTY_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                       *spriteGraphicsMap,
                                                                                                       nastySpriteColour,
-                                                                                                      s_initialisingSpriteGraphicAttributes,
+                                                                                                      s_initialisingSpriteGraphicCharacteristics,
                                                                                                       spriteGraphicAttributesList);
 
     if (status == ERR_SUCCESS)
@@ -279,21 +283,21 @@ FolioStatus NastySprite::SetTerminatingMode (FolioHandle                        
 {
     static  const   UInt32  MAX_SEQUENCE_COUNT = 1;
 
-    // Nasty sprite terminating sprite attributes.
-    static  const   Folio::Core::Game::SpriteGraphicsAttributesList<NASTY_SPRITE_ID, SPRITE_ID> s_terminatingSpriteGraphicAttributes = 
+    // Nasty sprite terminating sprite characteristics.
+    static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<NASTY_SPRITE_ID, SPRITE_ID> s_terminatingSpriteGraphicCharacteristics = 
     {
-    //      m_spriteId                  m_direction                                         m_spriteGraphicIdsList
-        {   NASTY_SPRITE_UNDEFINED,     Folio::Core::Game::APlayerSprite::ALL_DIRECTIONS,   {   SPRITE_NASTY_DEAD_1, SPRITE_NASTY_DEAD_2, SPRITE_NASTY_DEAD_3, SPRITE_NASTY_DEAD_2, SPRITE_NASTY_DEAD_1, SPRITE_NASTY_DEAD_4,   },  },
+    //      m_spriteId                  m_direction                         m_spriteGraphicIdsList
+        {   NASTY_SPRITE_UNDEFINED,     Folio::Core::Game::ALL_DIRECTIONS,  {   SPRITE_NASTY_DEAD_1, SPRITE_NASTY_DEAD_2, SPRITE_NASTY_DEAD_3, SPRITE_NASTY_DEAD_2, SPRITE_NASTY_DEAD_1, SPRITE_NASTY_DEAD_4,   },  },
     };
 
     // Query the nasty sprite's terminating graphics.
 
-    SpriteGraphicAttributesList    spriteGraphicAttributesList;
+    Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<NASTY_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                       *spriteGraphicsMap,
                                                                                                       nastySpriteColour,
-                                                                                                      s_terminatingSpriteGraphicAttributes,
+                                                                                                      s_terminatingSpriteGraphicCharacteristics,
                                                                                                       spriteGraphicAttributesList);
 
     if (status == ERR_SUCCESS)
@@ -312,18 +316,25 @@ FolioStatus NastySprite::SetTerminatingMode (FolioHandle                        
 FolioStatus NastySprite::Move (Gdiplus::Graphics    &graphics,
                                CollisionGrid        &collisionGrid)
 {
+    FolioStatus status = ERR_SUCCESS;
+
     // Should the nasty sprite's direction be updated?
 
     if (IsUpdateNastySpriteDirectionRqd (collisionGrid))
     {
-        // Yes. Update the nasty sprite's direction.
+        // Yes. Set the nasty sprite's direction.
 
-        UpdateDirection (GetNastySpriteDirection (collisionGrid));
+        status = SetDirection (GetNastySpriteDirection (collisionGrid));
     } // Endif.
 
-    // Move the nasty sprite.
+    if (status == ERR_SUCCESS)
+    {
+        // Move the nasty sprite.
 
-    return (Folio::Core::Game::ANastySprite::Move (graphics, m_nastySpriteSpeed, collisionGrid));
+        status = Folio::Core::Game::ANastySprite::Move (graphics, m_nastySpriteSpeed, collisionGrid);
+    } // Endif.
+
+    return (status);
 } // Endproc.
 
 
@@ -363,9 +374,9 @@ bool    NastySprite::IsUpdateNastySpriteDirectionRqd (const CollisionGrid &colli
 } // Endproc.
 
 
-NastySprite::Direction  NastySprite::GetNastySpriteDirection (const CollisionGrid &collisionGrid)
+Folio::Core::Game::Direction    NastySprite::GetNastySpriteDirection (const CollisionGrid &collisionGrid)
 {  
-    Direction  direction = NO_DIRECTION;    // Initialise!
+    Folio::Core::Game::Direction    direction = Folio::Core::Game::NO_DIRECTION;    // Initialise!
 
     switch (m_nastySpriteId)
     {
@@ -396,31 +407,31 @@ NastySprite::Direction  NastySprite::GetNastySpriteDirection (const CollisionGri
         switch (Folio::Core::Util::Random::GetRandomNumber (5))
         {
         case 0:
-            direction = E;
+            direction = Folio::Core::Game::E;
             break;
     
         case 1:
-            direction = W;
+            direction = Folio::Core::Game::W;
             break;
     
         case 2:
-            direction = NE;
+            direction = Folio::Core::Game::NE;
             break;
     
         case 3:
-            direction = NW;
+            direction = Folio::Core::Game::NW;
             break;
     
         case 4:
-            direction = SE;
+            direction = Folio::Core::Game::SE;
             break;
     
         case 5:
-            direction = SW;
+            direction = Folio::Core::Game::SW;
             break;
     
         default:
-            direction = NO_DIRECTION;
+            direction = Folio::Core::Game::NO_DIRECTION;
             break;
         } // Endswitch.
         break;
@@ -590,22 +601,21 @@ UInt32  NastySprite::GetNastySpriteSpeed (NASTY_SPRITE_ID nastySpriteId)
 } // Endproc.
 
 
-//IAC
-//NastySprite::SpriteTerminatingSoundSamplesList  NastySprite::GetNastySpriteTerminatingSoundSamples ()
-//{
-//    if (m_nastySpriteTerminatingSoundSamplesList.empty ())
-//    {
-//        // Create each sound sample representing the required sound.
-//    
-//        for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x3f; frequency >= 0x21; frequency -= 2)
-//        {
-//            m_nastySpriteTerminatingSoundSamplesList.push_back (Ultimate::MapMakeSound (frequency, 0x01));
-//        } // Endfor.
-//
-//    } // Endif.
-//    
-//    return (m_nastySpriteTerminatingSoundSamplesList);
-//} // Endproc.
+Folio::Core::Game::SpriteStationarySoundSamplesList NastySprite::GetNastySpriteTerminatingSoundSamples ()
+{
+    if (m_nastySpriteTerminatingSoundSamplesList.empty ())
+    {
+        // Create each sound sample representing the required sound.
+    
+        for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x3f; frequency >= 0x21; frequency -= 2)
+        {
+            m_nastySpriteTerminatingSoundSamplesList.push_back (Ultimate::MapMakeSound (frequency, 0x01));
+        } // Endfor.
+
+    } // Endif.
+    
+    return (m_nastySpriteTerminatingSoundSamplesList);
+} // Endproc.
 
 } // Endnamespace.
 
