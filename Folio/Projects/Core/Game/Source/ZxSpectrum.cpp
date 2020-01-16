@@ -151,7 +151,7 @@ UInt32  BeepDurationToMilliseconds (const float &beepDuration)
 {
     // Beep duration is in seconds, convert to milliseconds.
 
-    return (max (1, static_cast<UInt32> (beepDuration * 1000.0f + 0.5f)));
+    return (max (1, static_cast<UInt32> (std::round (beepDuration * 1000.0f))));
 } // Endproc.
 
 
@@ -166,6 +166,24 @@ Folio::Core::Util::Sound::SoundSample   MapBeep (const float    &beepDuration,
 {
     return (Folio::Core::Util::Sound::SoundSample(BeepDurationToMilliseconds (beepDuration),
                                                   BeepPitchToFrequency (beepPitch)));
+} // Endproc.
+
+
+UInt32  CalculateDuration (UInt32 numTStates)
+{
+    // Calculate the duration (in milliseconds).
+
+    float   soundDuration = (static_cast<float> (numTStates * 1000.0f)) / static_cast<float> (CLOCK_FREQUENCY);
+
+    return (max(static_cast<UInt32> (1), static_cast<UInt32> (std::round (soundDuration))));
+} // Endproc.
+
+
+float   CalculateFrequency (UInt32 numTStates)
+{
+    // Calculate the frequency.
+
+    return (static_cast<float> (CLOCK_FREQUENCY) / static_cast<float> (numTStates));
 } // Endproc.
 
 } // Endnamespace.

@@ -322,6 +322,12 @@ protected:
     bool    m_isExitedScreen;       // Indicates if the sprite has exited the screen.
     bool    m_isEnteringScreen;     // Indicates if the sprite is entering the screen.
 
+    UInt32  m_initialisingMaxSequenceCount;     // Initialising sprite maximum sequence count.
+    UInt32  m_currentInitialisingSequenceCount; // The current initialising sprite sequence count.
+    
+    UInt32  m_terminatingMaxSequenceCount;      // Terminating sprite maximum sequence count.
+    UInt32  m_currentTerminatingSequenceCount;  // The current terminating sprite sequence count.
+
     bool    m_playSpriteInitialisingSound;  // Indicates if the sprite's initialising sound should be played.
     SpriteStationarySoundSamplesList    m_initialisingSpriteSoundSamplesList;   // The sprite's initialising sound samples list.
     UInt32  m_currentInitialisingSpriteSoundSamplesListIndex;                   // Index to the sprite's current initialising sound sample in the sprite's initialising sound samples list.
@@ -444,12 +450,6 @@ private:
         DM_GRAPHIC = 10,
     }; // Endenum.
 
-    UInt32  m_initialisingMaxSequenceCount;     // Initialising sprite maximum sequence count.
-    UInt32  m_currentInitialisingSequenceCount; // The current initialising sprite sequence count.
-    
-    UInt32  m_terminatingMaxSequenceCount;      // Terminating sprite maximum sequence count.
-    UInt32  m_currentTerminatingSequenceCount;  // The current terminating sprite sequence count.
-
     Folio::Core::Graphic::GdiBufferedBitmap   m_underlyingBackground;   // The underlying background of the sprite.
 
     UInt32  m_spriteMovementAudioCount; // The sprite's movement audio count;
@@ -509,6 +509,12 @@ private:
                                      ACollisionGrid::DIRECTION  collisionGridDirection);
 
     Direction   GetFloorBoundDirection (ACollisionGrid::DIRECTION collisionGridDirection) const;
+
+    void    PlaySpriteSoundSample (const SpriteSoundSample& spriteSoundSample,
+                                   bool                     playAsynchronously) const;
+    void    PlaySpriteStationarySoundSamples (const SpriteStationarySoundSamplesList&   stationarySpriteSoundSamplesList,
+                                              UInt32                                    stationarySpriteSoundSamplesListIndex,
+                                              bool                                      playAsynchronously) const;
 
     FolioStatus SetCurrentSpriteMovementSoundSample (Direction direction);
 }; // Endclass.

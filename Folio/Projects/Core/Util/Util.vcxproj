@@ -52,8 +52,9 @@
     <ClInclude Include="Include\VirtualMemory.h" />
     <ClInclude Include="Include\WaitableTimer.h" />
     <ClInclude Include="Include\WaitAny.h" />
-    <ClInclude Include="Include\WaveOut.h" />
+    <ClInclude Include="Include\AsyncWaveOut.h" />
     <ClInclude Include="Include\AsyncSound.h" />
+    <ClInclude Include="Include\WaveOut.h" />
     <ClInclude Include="Include\Win32Exception.h" />
     <ClInclude Include="Include\Window.h" />
   </ItemGroup>
@@ -99,8 +100,9 @@
     <ClCompile Include="Source\VirtualMemory.cpp" />
     <ClCompile Include="Source\WaitableTimer.cpp" />
     <ClCompile Include="Source\WaitAny.cpp" />
-    <ClCompile Include="Source\WaveOut.cpp" />
+    <ClCompile Include="Source\AsyncWaveOut.cpp" />
     <ClCompile Include="Source\AsyncSound.cpp" />
+    <ClCompile Include="Source\WaveOut.cpp" />
     <ClCompile Include="Source\Win32Exception.cpp" />
     <ClCompile Include="Source\Window.cpp" />
   </ItemGroup>

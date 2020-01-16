@@ -71,6 +71,14 @@ typedef std::shared_ptr<Folio::Core::Game::AItem>   ItemPtr;
 // Items list.
 typedef std::vector<ItemPtr>    ItemsList;
 
+
+// Routines.
+
+extern  ItemsList::const_iterator FindItem (AItem::Id       itemId, 
+                                            const ItemsList &itemsList);
+extern  ItemsList::iterator FindItem (AItem::Id itemId, 
+                                      ItemsList &itemsList);
+
 } // Endnamespace.
 
 } // Endnamespace.

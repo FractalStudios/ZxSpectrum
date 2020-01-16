@@ -1,7 +1,6 @@
 // "Home-made" includes.
 #include    <Trace.h>
 #include    "SoundSample.h"
-#include    "WaveOut.h"
 
 namespace Folio
 {
@@ -17,16 +16,18 @@ namespace Sound
 
 static  const   double PI = 3.14159265358979323846; // PI.
 
+static  const   float   DUTY_CYCLE  = 0.5f; // Required duty cycle.
+
 
 /**
  * The default class constructor.
  */
 SoundSample::SoundSample ()
-:   m_duration(0),
-    m_frequency(0.0f),
-    m_numSoundChannels(DEFAULT_SOUND_CHANNELS),
+:   m_soundDuration(0),
+    m_soundFrequency(0.0f),
+    m_soundChannels(DEFAULT_SOUND_CHANNELS),
     m_samplesPerSecond(DEFAULT_SAMPLES_PER_SECOND),
-    m_signalProc(PureToneWave)
+    m_soundSampleWave(DEFAULT_SOUND_SAMPLE_WAVE)
 {
 } // Endproc.
 
@@ -34,31 +35,31 @@ SoundSample::SoundSample ()
 /**
  * The class constructor.
  *
- * @param [in] duration
+ * @param [in] soundDuration
  * The sound's duration (in milliseconds).
  *
- * @param [in] frequency
+ * @param [in] soundFrequency
  * The sound's frequency.
  *
- * @param [in] numSoundChannels
- * The number of channels to use when generating the sound sample.
+ * @param [in] soundChannels
+ * The sound channels to use when generating the sound sample.
  *
  * @param [in] samplesPerSecond
  * The sample frequency to use when generating the sound sample.
  *
- * @param [in] signalProc
- * The signal procedure to use when generating the sound sample.
+ * @param [in] soundSampleWave
+ * The wave type algorithm to use when generating the sound sample.
  */
-SoundSample::SoundSample (UInt32            duration,
-                          const float&      frequency, 
-                          SOUND_CHANNELS    numSoundChannels,
+SoundSample::SoundSample (UInt32            soundDuration,
+                          const float&      soundFrequency, 
+                          SOUND_CHANNELS    soundChannels,
                           UInt32            samplesPerSecond,
-                          SIGNAL_PROC       signalProc)
-:   m_duration(duration),
-    m_frequency(frequency),
-    m_numSoundChannels(numSoundChannels),
+                          SOUND_SAMPLE_WAVE soundSampleWave)
+:   m_soundDuration(soundDuration),
+    m_soundFrequency(soundFrequency),
+    m_soundChannels(soundChannels),
     m_samplesPerSecond(samplesPerSecond),
-    m_signalProc(signalProc)
+    m_soundSampleWave(soundSampleWave)
 {
     // Generate the sound sample.
 
@@ -77,20 +78,20 @@ SoundSample::~SoundSample ()
 /**
  * Method that will create the sound sample.
  *
- * @param [in] duration
+ * @param [in] soundDuration
  * The sound's duration (in milliseconds).
  *
- * @param [in] frequency
+ * @param [in] soundFrequency
  * The sound's frequency.
  *
- * @param [in] numSoundChannels
- * The number of channels to use when generating the sound sample.
+ * @param [in] soundChannels
+ * The sound channels to use when generating the sound sample.
  *
  * @param [in] samplesPerSecond
  * The sample frequency to use when generating the sound sample.
  *
- * @param [in] signalProc
- * The signal procedure to use when generating the sound sample.
+ * @param [in] soundSampleWave
+ * The wave type algorithm to use when generating the sound sample.
  *
  * @return
  * The possible return values are:<ul>
@@ -98,11 +99,11 @@ SoundSample::~SoundSample ()
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus SoundSample::Create (UInt32         duration,
-                                 const float&   frequency, 
-                                 SOUND_CHANNELS numSoundChannels,
-                                 UInt32         samplesPerSecond,
-                                 SIGNAL_PROC    signalProc)
+FolioStatus SoundSample::Create (UInt32             soundDuration,
+                                 const float&       soundFrequency, 
+                                 SOUND_CHANNELS     soundChannels,
+                                 UInt32             samplesPerSecond,
+                                 SOUND_SAMPLE_WAVE  soundSampleWave)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -119,11 +120,11 @@ FolioStatus SoundSample::Create (UInt32         duration,
     {
         // No. Note the sound sample attributes.
 
-        m_duration          = duration;
-        m_frequency         = frequency;
-        m_numSoundChannels  = numSoundChannels;
+        m_soundDuration     = soundDuration;
+        m_soundFrequency    = soundFrequency;
+        m_soundChannels     = soundChannels;
         m_samplesPerSecond  = samplesPerSecond;
-        m_signalProc        = signalProc;
+        m_soundSampleWave   = soundSampleWave;
 
         // Generate the sound sample.
 
@@ -156,12 +157,12 @@ FolioStatus SoundSample::AddSoundSample (const SoundSample& soundSample)
     {
         // No. Verify the sound sample attributes.
 
-        if ((m_numSoundChannels == soundSample.m_numSoundChannels) &&
+        if ((m_soundChannels == soundSample.m_soundChannels) &&
             (m_samplesPerSecond == soundSample.m_samplesPerSecond))
         {
             // Increment the sound sample's duration.
 
-            m_duration += soundSample.m_duration;
+            m_soundDuration += soundSample.m_soundDuration;
 
             // Add the sound sample buffer.
 
@@ -181,11 +182,11 @@ FolioStatus SoundSample::AddSoundSample (const SoundSample& soundSample)
     {
         // No. Note the sound sample attributes.
 
-        m_duration          = soundSample.m_duration;
-        m_frequency         = soundSample.m_frequency;        
-        m_numSoundChannels  = soundSample.m_numSoundChannels; 
+        m_soundDuration     = soundSample.m_soundDuration;
+        m_soundFrequency    = soundSample.m_soundFrequency;        
+        m_soundChannels     = soundSample.m_soundChannels; 
         m_samplesPerSecond  = soundSample.m_samplesPerSecond; 
-        m_signalProc        = soundSample.m_signalProc;
+        m_soundSampleWave   = soundSample.m_soundSampleWave;
         m_sampleBuffer      = soundSample.m_sampleBuffer;
     } // Endelse.
 
@@ -199,9 +200,9 @@ FolioStatus SoundSample::AddSoundSample (const SoundSample& soundSample)
  * @return
  * The sound's duration (in milliseconds).
  */
-UInt32  SoundSample::GetDuration () const
+UInt32  SoundSample::GetSoundDuration () const
 {
-    return (m_duration);
+    return (m_soundDuration);
 } // Endproc.
 
 
@@ -211,22 +212,22 @@ UInt32  SoundSample::GetDuration () const
  * @return
  * The sound's frequency.
  */
-float   SoundSample::GetFrequency () const
+float   SoundSample::GetSoundFrequency () const
 {
-    return (m_frequency);
+    return (m_soundFrequency);
 } // Endproc.
 
 
 /**
- * Method that will return the number of sound channels used when generating 
- * the sound sample.
+ * Method that will return the sound channels used when generating the sound 
+ * sample.
  *
  * @return
- * The number of sound channels used when generating the sound sample.
+ * The sound channels used when generating the sound sample.
  */
-SOUND_CHANNELS  SoundSample::GetNumSoundChannels () const
+SOUND_CHANNELS  SoundSample::GetSoundChannels () const
 {
-    return (m_numSoundChannels);
+    return (m_soundChannels);
 } // Endproc.
 
 
@@ -244,15 +245,14 @@ UInt32  SoundSample::GetSamplesPerSecond () const
 
 
 /**
- * Method that will return the signal procedure used when generating 
- * the sound sample.
+ * Method that will return the wave type algorithm used to generate the sound sample.
  *
  * @return
- * The signal procedure used when generating the sound sample.
+ * The wave type algorithm used to generate the sound sample.
  */
-SoundSample::SIGNAL_PROC    SoundSample::GetSignalProc () const
+SoundSample::SOUND_SAMPLE_WAVE  SoundSample::GetSoundSampleWave () const
 {
-    return (m_signalProc);
+    return (m_soundSampleWave);
 } // Endproc.
 
 
@@ -281,97 +281,283 @@ bool    SoundSample::IsSoundSampleGenerated () const
 
 
 /**
- * Function that determines an amplitude using triangle wave generation.
- *
- * @param [in] timeInSeconds
- * The time in seconds.
- *
- * @param [in] frequency
- * The sound's frequency.
- *
- * @param [in] channel
- * The sound channel.
- *
- * @return
- * The amplitude.
- */
-float   SoundSample::TriangleWave (const float& timeInSeconds, 
-                                   const float& frequency,
-                                   UInt32       channel) 
-{
-    // amplitude = asin (sin (2 * pi * frequency * time + phaseOffset)) * 2 / pi
-
-    float   angle = static_cast<float> (2 * PI * frequency * timeInSeconds);
-
-    return (static_cast<float> ((::asin (::sin (angle + channel * PI / 2))) * 2 / PI));
-} // Endproc.
-
-
-/**
- * Function that determines an amplitude using pure tone wave generation.
- *
- * @param [in] timeInSeconds
- * The time in seconds.
- *
- * @param [in] frequency
- * The sound's frequency.
- *
- * @param [in] channel
- * The sound channel.
- *
- * @return
- * The amplitude.
- */
-float   SoundSample::PureToneWave (const float& timeInSeconds, 
-                                   const float& frequency,
-                                   UInt32       channel) 
-{
-    // amplitude = sin (2 * pi * frequency * time + phaseOffset)
-
-    float   angle = static_cast<float> (2 * PI * frequency * timeInSeconds);
-    
-    return (static_cast<float> (::sin (angle + channel * PI / 2)));
-} // Endproc.
-
-
-/**
  * Method that generates the sound sample.
  */
 void    SoundSample::GenerateSoundSample ()
 {
     m_sampleBuffer.clear ();    // Initialise!
     
-    if (m_duration)
+    if (m_soundDuration)
     {
-        // Convert duration to seconds.
+        // Convert sound duration to seconds.
 
-        float   seconds = static_cast<float> (m_duration / 1000.0f);
+        float   seconds = static_cast<float > (m_soundDuration / 1000.0f);
 
-        // Calculate the sample size.
+        // Calculate the number of samples.
 
-        UInt32    sampleSize = static_cast<UInt32> (seconds * m_numSoundChannels * m_samplesPerSecond + 0.5f);
-        m_sampleBuffer.reserve (sampleSize);
+        UInt32    numSamples = static_cast<UInt32> (std::round (seconds * m_soundChannels * m_samplesPerSecond));
+        m_sampleBuffer.reserve (numSamples);
 
-        // Build sample buffer.
+        // Generate the sound sample.
 
-        for (UInt32 sample = 0; sample < sampleSize; sample += m_numSoundChannels)
+        switch (m_soundSampleWave)
         {
-            for (UInt32 channel = 0; channel < static_cast<UInt32> (m_numSoundChannels); ++channel)
-            {
-                float   amplitude = m_signalProc ((sample + channel) * seconds / sampleSize, m_frequency, channel);
+        case TRIANGLE_WAVE:
+            GenerateTriangleWave (seconds, numSamples);
+            break;
 
-                m_sampleBuffer.push_back (static_cast<SampleBuffer::value_type> (amplitude * 127.0f));
-            } // Endfor.
+        case PURE_TONE_WAVE:
+            GeneratePureToneWave (seconds, numSamples);
+            break;
 
-        } // Endfor.
+        case SQUARE_WAVE:
+            GenerateSquareWave (seconds, numSamples);
+            break;
+
+        case BAND_LIMITED_SQUARE_WAVE:
+            GenerateBandLimitedSquareWave (seconds, numSamples);
+            break;
+
+        default:
+            break;
+        } // Endswitch.
 
     } // Endif.
 
-    else
-    {
-        FOLIO_DEBUG_BREAK;
-    } // Endelse.
+} // Endproc.
 
+
+/**
+ * Function that generates a triangle wave.
+ *
+ * @param [in] seconds
+ * The sound's duration (in seconds).
+ *
+ * @param [in] numSamples
+ * The number of samples to use when generating the sound sample.
+ */
+void    SoundSample::GenerateTriangleWave (const float& seconds,
+                                           UInt32       numSamples)
+{
+    // Build sample buffer.
+
+    m_sampleBuffer.clear ();  // Initialise!
+
+    for (UInt32 sample = 0; sample < numSamples; sample += m_soundChannels)
+    {
+        for (UInt32 channel = 0; channel < static_cast<UInt32> (m_soundChannels); ++channel)
+        {
+            float   amplitude = TriangleWave ((sample + channel) * seconds / numSamples, channel);
+
+            m_sampleBuffer.push_back (static_cast<SampleBuffer::value_type> (std::round (amplitude * DEFAULT_VOLUME)));
+        } // Endfor.
+
+    } // Endfor.
+
+} // Endproc.
+
+
+/**
+ * Function that generates a pure tone wave.
+ *
+ * @param [in] seconds
+ * The sound's duration (in seconds).
+ *
+ * @param [in] numSamples
+ * The number of samples to use when generating the sound sample.
+ */
+void    SoundSample::GeneratePureToneWave (const float&     seconds,
+                                           UInt32           numSamples)
+{
+    // Build sample buffer.
+
+    m_sampleBuffer.clear ();  // Initialise!
+
+    for (UInt32 sample = 0; sample < numSamples; sample += m_soundChannels)
+    {
+        for (UInt32 channel = 0; channel < static_cast<UInt32> (m_soundChannels); ++channel)
+        {
+            float   amplitude = PureToneWave ((sample + channel) * seconds / numSamples, channel);
+
+            m_sampleBuffer.push_back (static_cast<SampleBuffer::value_type> (std::round (amplitude * DEFAULT_VOLUME)));
+        } // Endfor.
+
+    } // Endfor.
+
+} // Endproc.
+
+
+/**
+ * Function that generates a square wave.
+ *
+ * @param [in] seconds
+ * The sound's duration (in seconds).
+ *
+ * @param [in] numSamples
+ * The number of samples to use when generating the sound sample.
+ */
+void    SoundSample::GenerateSquareWave (const float&   seconds,
+                                         UInt32         numSamples)
+{
+    float   scaler = m_soundFrequency / m_samplesPerSecond;
+
+    // Build sample buffer.
+
+    m_sampleBuffer.clear ();  // Initialise!
+
+    for (UInt32 sample = 0; sample < numSamples / m_soundChannels; ++sample)
+    {
+        float   amplitude = std::round (SquareWave (sample, scaler) * DEFAULT_VOLUME);
+
+        for (UInt32 channel = 0; channel < static_cast<UInt32> (m_soundChannels); ++channel)
+        {
+            m_sampleBuffer.push_back (static_cast<SampleBuffer::value_type> (amplitude));
+        } // Endfor.
+
+    } // Endfor.
+
+} // Endproc.
+
+
+/**
+ * Function that generates a band limited square wave.
+ *
+ * @param [in] seconds
+ * The sound's duration (in seconds).
+ *
+ * @param [in] numSamples
+ * The number of samples to use when generating the sound sample.
+ */
+void    SoundSample::GenerateBandLimitedSquareWave (const float&    seconds,
+                                                    UInt32          numSamples)
+{
+    // Calculate harmonic amplitudes.
+
+    UInt32  numHarmonics = static_cast<UInt32> (std::round (m_samplesPerSecond / (m_soundFrequency * 2.0f)));
+
+    // Build harmonic amplitudes.
+
+    Coefficients    coefficients;
+    coefficients.reserve (numHarmonics + 1);
+
+    coefficients.push_back (DUTY_CYCLE - 0.5f);    // Start with DC coefficient.
+
+    for (UInt32 i = 1; i < numHarmonics; ++i)
+    {
+        coefficients.push_back (static_cast<float> (2.0 * std::sin (i * DUTY_CYCLE * PI) / (i * PI)));
+    } // Endfor.
+
+    float   scaler = static_cast<float> (m_soundFrequency * PI * 2.0 / m_samplesPerSecond);
+
+    // Build sample buffer.
+
+    m_sampleBuffer.clear ();  // Initialise!
+
+    for (UInt32 sample = 0; sample < numSamples / m_soundChannels; ++sample)
+    {
+        float    amplitude = std::round (BandLimitedSquareWave (sample, scaler, coefficients) * DEFAULT_VOLUME);
+
+        for (UInt32 channel = 0; channel < static_cast<UInt32> (m_soundChannels); ++channel)
+        {
+            m_sampleBuffer.push_back (static_cast<SampleBuffer::value_type> (amplitude));
+        } // Endfor.
+
+    } // Endfor.
+
+} // Endproc.
+
+
+/**
+ * Function that determines an amplitude using triangle wave generation.
+ *
+ * @param [in] time
+ * The time.
+ *
+ * @param [in] channel
+ * The sound channel.
+ *
+ * @return
+ * The amplitude.
+ */
+float   SoundSample::TriangleWave (const float& time,
+                                   UInt32       channel) 
+{
+    // amplitude = asin (sin (2 * pi * frequency * time + phaseOffset)) * 2 / pi
+
+    float   angle = static_cast<float> (2.0 * PI * m_soundFrequency * time);
+
+    return (static_cast<float> ((std::asin (std::sin (angle + channel * PI / 2.0))) * 2.0 / PI));
+} // Endproc.
+
+
+/**
+ * Function that determines an amplitude using pure tone wave generation.
+ *
+ * @param [in] time
+ * The time.
+ *
+ * @param [in] channel
+ * The sound channel.
+ *
+ * @return
+ * The amplitude.
+ */
+float   SoundSample::PureToneWave (const float& time, 
+                                   UInt32       channel) 
+{
+    // amplitude = sin (2 * pi * frequency * time + phaseOffset)
+
+    float    angle = static_cast<float> (2.0 * PI * m_soundFrequency * time);
+    
+    return (static_cast<float> (std::sin (angle + channel * PI / 2.0)));
+} // Endproc.
+
+
+/**
+ * Function that determines an amplitude using square wave generation.
+ *
+ * @param [in] sample
+ * The current sample.
+ *
+ * @param [in] scaler
+ * The sound's scaler.
+ *
+ * @return
+ * The amplitude.
+ */
+float   SoundSample::SquareWave (UInt32         sample,
+                                 const float&   scaler)
+{
+    return (std::fmod (sample * scaler + DUTY_CYCLE / 2.0f, 1.0f) < DUTY_CYCLE ? 0.5f : -0.5f);
+} // Endproc.
+
+
+/**
+ * Function that determines an amplitude using band limited square wave generation.
+ *
+ * @param [in] seconds
+ * The time in seconds.
+ *
+ * @param [in] scaler
+ * The sound's scaler.
+ *
+ * @return
+ * The amplitude.
+ */
+float   SoundSample::BandLimitedSquareWave (UInt32              sample,
+                                            const float&        scaler,
+                                            const Coefficients& coefficients)
+{
+    float    scale = sample * scaler;
+
+    float    angle = coefficients [0];
+
+    for (UInt32 i = 1; i < coefficients.size (); ++i)
+    {
+        angle += std::cos (i * scale) * coefficients [i];
+    } // Endfor.
+
+    return (angle);
 } // Endproc.
 
 } // Endnamespace.

@@ -95,8 +95,8 @@ private:
     virtual FolioStatus StartDisplayingScreen ();
     virtual FolioStatus ProcessScreenInput ();    
     virtual FolioStatus ProcessScreenFrame (UInt32 *frameRateIncrement);
-    virtual FolioStatus UpdateScreen ();
 
+    FolioStatus UpdateScreen ();
     FolioStatus ResetScreen ();
     FolioStatus UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type    &item,
                                 bool                                            invertColours,

@@ -55,8 +55,8 @@ private:
                                                     Folio::Core::Game::DrawingElementsList  &drawingElementsList) const;
     virtual FolioStatus StartDisplayingScreen ();
     virtual FolioStatus ProcessScreenFrame (UInt32 *frameRateIncrement);
-    virtual FolioStatus UpdateScreen ();
 
+    FolioStatus UpdateScreen ();
     void    CreateScreenSequence ();
    
     static  void    CreateSoundSamples ();

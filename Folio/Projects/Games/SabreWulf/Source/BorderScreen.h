@@ -2,7 +2,6 @@
 
 // "Home-made" includes.
 #include    <Applet.h>
-#include    <Game.h>
 #include    "DrawingElement.h"
 
 #pragma pack(push, 1)
@@ -27,7 +26,7 @@ enum BORDER_SCREEN_ITEM_ID
 class BorderScreen : public Folio::Core::Applet::AScreen
 {
 public:
-    ~BorderScreen ();
+    virtual ~BorderScreen ();
 
 protected:
     BorderScreen ();

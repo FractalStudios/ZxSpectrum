@@ -272,7 +272,7 @@ void    FallingSimulationScreen::CreateSoundSamples ()
 
         for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x80; frequency <= 0xff; ++frequency)
         {
-            m_soundSamplesList.push_back (Ultimate::MapMakeSound (frequency, 0x08));
+            m_soundSamplesList.push_back (Ultimate::CreateSoundSample (frequency, 0x08));
         } // Endfor.
         
     } // Endif.

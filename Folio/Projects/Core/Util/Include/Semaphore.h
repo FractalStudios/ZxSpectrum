@@ -63,6 +63,7 @@ public:
                       bool      logOnInfiniteTimeout = true);
     FolioStatus Unlock (UInt32  unlockCount,
                         UInt32* previousCount = 0);
+    FolioStatus Set ();
     FolioStatus Reset ();
 
 private:

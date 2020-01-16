@@ -320,8 +320,8 @@ void    PlayerSprite::SetMovementSoundSamples ()
     // Player sprite sound sample list.
     static  const   Folio::Core::Game::SpriteSoundSamplesList   s_playerSpriteMovementSoundSampleList =
     {
-        {   Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(Ultimate::MapMakeSound (0x30, 0x08))),  },
-        {   Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(Ultimate::MapMakeSound (0x40, 0x08))),  },
+        {   Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(Ultimate::CreateSoundSample (0x40, 0x04))),  },
+        {   Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(Ultimate::CreateSoundSample (0x60, 0x04))),  },
     };
 
     // Set the player sprite's movement sound samples.
@@ -343,7 +343,7 @@ Folio::Core::Game::SpriteStationarySoundSamplesList PlayerSprite::GetPlayerSprit
         {
             for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x7f; frequency >= 0x5d; frequency -= 0x02)
             {
-                m_playerSpriteInitialisingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::MapMakeSound (frequency, 0x10), 4));
+                m_playerSpriteInitialisingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::CreateSoundSample (frequency, 0x10), 4));
             } // Endfor.
     
         } // Endif.
@@ -352,7 +352,7 @@ Folio::Core::Game::SpriteStationarySoundSamplesList PlayerSprite::GetPlayerSprit
         {
             for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x5d; frequency <= 0x7f; frequency += 0x02)
             {
-                m_playerSpriteInitialisingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::MapMakeSound (frequency, 0x10), 4));
+                m_playerSpriteInitialisingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::CreateSoundSample (frequency, 0x10), 4));
             } // Endfor.
     
         } // Endelse.
@@ -371,11 +371,15 @@ Folio::Core::Game::SpriteStationarySoundSamplesList PlayerSprite::GetPlayerSprit
     {
         // No. Create each sound sample representing the required sound.
 
+        UInt32  count = 0;  // Initialise!
+
         if (isBottomUpMode)
         {
             for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x7f; frequency >= 0x5d; frequency -= 0x02)
             {
-                m_playerSpriteTerminatingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::MapMakeSound (frequency, 0x10), 2));
+                UInt32  numFrames = ((++count % 3) == 0) ? 2 : 1;
+
+                m_playerSpriteTerminatingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::CreateSoundSample (frequency, 0x10), numFrames));
             } // Endfor.
     
         } // Endif.
@@ -384,7 +388,9 @@ Folio::Core::Game::SpriteStationarySoundSamplesList PlayerSprite::GetPlayerSprit
         {
             for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x5d; frequency <= 0x7f; frequency += 0x02)
             {
-                m_playerSpriteTerminatingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::MapMakeSound (frequency, 0x10), 2));
+                UInt32  numFrames = ((++count % 3) == 0) ? 2 : 1;
+
+                m_playerSpriteTerminatingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::CreateSoundSample (frequency, 0x10), numFrames));
             } // Endfor.
     
         } // Endelse.

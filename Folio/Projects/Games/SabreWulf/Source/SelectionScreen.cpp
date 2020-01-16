@@ -1,5 +1,6 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
+#include    "Globals.h"
 #include    "SelectionScreen.h"
 
 namespace Folio
@@ -28,9 +29,12 @@ static  const   Folio::Core::Game::ItemAttributesList<SELECTION_SCREEN_ITEM_ID> 
 };
 
 
-SelectionScreen::SelectionScreen (const InformationPanelPtr &informationPanel)
-:   m_informationPanel(informationPanel),
+SelectionScreen::SelectionScreen ()
+:   m_finishedPlayingMainGameMusic(false),
+    m_finishedPlayingStartingGameMusic(false),
+    m_isStartingGame(false),
     m_isStartGame(false),
+    m_invertCurrentSelectionText(false),
     m_numPlayers(1),
     m_gameControl(GAME_CONTROL_DEFAULT)
 {
@@ -52,23 +56,19 @@ FolioStatus SelectionScreen::SetNumPlayers (UInt32 numPlayers)
 {
     FolioStatus status = ERR_SUCCESS;
 
+    // Stop the main game music.
+
+    StopMainGameMusic ();
+
     if (numPlayers != m_numPlayers)
     {
         // Set the number of players.
 
         m_numPlayers = numPlayers;
 
-        // Reset the selection screen.
+        // Update the selection screen.
 
-        status = ResetScreen ();
-
-        if (status == ERR_SUCCESS)
-        {
-            // Update the selection screen.
-
-            status = UpdateScreen ();
-        } // Endif.
-
+        status = UpdateScreen (UPDATE_PLAYER_SELECTION);
     } // Endif.
 
     return (status);
@@ -85,23 +85,19 @@ FolioStatus SelectionScreen::SetGameControl (GAME_CONTROL gameControl)
 {
     FolioStatus status = ERR_SUCCESS;
 
+    // Stop the main game music.
+
+    StopMainGameMusic ();
+
     if (gameControl != m_gameControl)
     {
         // Set the game control.
 
         m_gameControl = gameControl;
 
-        // Reset the selection screen.
+        // Update the selection screen.
 
-        status = ResetScreen ();
-
-        if (status == ERR_SUCCESS)
-        {
-            // Update the selection screen.
-
-            status = UpdateScreen ();
-        } // Endif.
-
+        status = UpdateScreen (UPDATE_GAME_CONTROL_SELECTION);
     } // Endif.
 
     return (status);
@@ -219,7 +215,6 @@ bool    SelectionScreen::IsPlayerDirectionKeyDown (Folio::Core::Game::Direction 
 
     case GAME_CONTROL_KEYBOARD:
     case GAME_CONTROL_INTERFACE_II:
-    default:
         if (Folio::Core::Util::KeyInput::IsKeyDown ('R'))
         {
             direction = Folio::Core::Game::N;
@@ -241,6 +236,9 @@ bool    SelectionScreen::IsPlayerDirectionKeyDown (Folio::Core::Game::Direction 
         {
             direction |= Folio::Core::Game::W;
         } // Endelseif.
+        break;
+
+    default:
         break;
     } // Endswitch.
 
@@ -266,11 +264,11 @@ FolioStatus SelectionScreen::BuildScreenItems (FolioHandle  dcHandle,
         case SELECTION_SCREEN_ITEM_INFORMATION_PANEL:
             // No players.
 
-            m_informationPanel->SetNumPlayers (0);
+            g_informationPanel->SetNumPlayers (0);
 
             // Query the information panel's items.
 
-            status = m_informationPanel->QueryItems (m_itemsList);
+            status = g_informationPanel->QueryItems (m_itemsList);
             break;
 
         case SELECTION_SCREEN_ITEM_BORDER:
@@ -287,32 +285,40 @@ FolioStatus SelectionScreen::BuildScreenItems (FolioHandle  dcHandle,
         case SELECTION_SCREEN_ITEM_INTERFACE_II_TEXT:
         case SELECTION_SCREEN_ITEM_START_GAME_TEXT:
         case SELECTION_SCREEN_ITEM_COPYRIGHT_TEXT:
-            { 
-                // Create a selection screen text item.
+            // Add selection screen text item.
 
-                Folio::Core::Game::TextItemPtr  item(new Folio::Core::Game::TextItemPtr::element_type);
+            status = AddTextItem (dcHandle, 
+                                  DRAWING_ELEMENT_SELECTION_SCREEN_ITEM,
+                                  *Folio::Core::Game::ZxSpectrum::GetFont (),
+                                  *itr,
+                                  SetItemText,
+                                  ((itr->m_itemId != SELECTION_SCREEN_ITEM_START_GAME_TEXT) &&
+                                   (itr->m_itemId != SELECTION_SCREEN_ITEM_COPYRIGHT_TEXT)));
+
+            // For performance, create the current selection screen's text items.
+
+            if ((status == ERR_SUCCESS) &&
+                ((itr->m_itemId == SELECTION_SCREEN_ITEM_1_PLAYER_TEXT) ||
+                 (itr->m_itemId == SELECTION_SCREEN_ITEM_KEYBOARD_TEXT)))
+            {
+                // Get the selection screen's text item.
+    
+                Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (m_itemsList.back ()));
+
+                // Create the GDI bitmap cache for the selection screen's text 
+                // item.
+
+                status = item->GetGdiRasterText ()->CreateGdiBitmapCache ();
                 
-                status = item->Create (dcHandle,
-                                       DRAWING_ELEMENT_SELECTION_SCREEN_ITEM,
-                                       *Folio::Core::Game::ZxSpectrum::GetFont (),
-                                       itr->m_itemId,
-                                       itr->m_screenXLeft, 
-                                       itr->m_screenYTop,
-                                       Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE, 
-                                       Folio::Core::Game::ZxSpectrum::MapInkColour (itr->m_colour));
-
                 if (status == ERR_SUCCESS)
                 {
-                    // Set the selection screen item's text.
+                    // Create the inverted GDI bitmap cache for the selection 
+                    // screen's text item.
 
-                    SetItemText (*item.get ());
-            
-                    // Store the selection screen item in the selection screen items list.
-
-                    m_itemsList.push_back (item);
+                    status = item->GetGdiRasterText ()->CreateInvertedGdiBitmapCache ();
                 } // Endif.
-            
-            } // Endscope.
+
+            } // Endif.
             break;
 
         default:
@@ -328,6 +334,9 @@ FolioStatus SelectionScreen::BuildScreenItems (FolioHandle  dcHandle,
 
 FolioStatus SelectionScreen::StartDisplayingScreen ()
 {
+    m_isStartingGame    = false;    // Initialise!
+    m_isStartGame       = false;
+
     // Reset the selection screen.
 
     return (ResetScreen ());
@@ -340,42 +349,56 @@ FolioStatus SelectionScreen::ProcessScreenInput ()
 
     if (Folio::Core::Util::KeyInput::IsKeyDown ('0'))
     {
-        status = StartGame ();
+        // Start game selected.
+
+        status = StartingGame ();
     } // Endif.
 
     else
     if (Folio::Core::Util::KeyInput::IsKeyDown ('1'))
     {
+        // 1 player selected.
+
         status = SetNumPlayers (1);
     } // Endelseif.
 
     else
     if (Folio::Core::Util::KeyInput::IsKeyDown ('2'))
     {
+        // 2 players selected.
+
         status = SetNumPlayers (2);
     } // Endelseif.
 
     else
     if (Folio::Core::Util::KeyInput::IsKeyDown ('3'))
     {
+        // Keyboard selected.
+
         status = SetGameControl (GAME_CONTROL_KEYBOARD);
     } // Endelseif.
 
     else
     if (Folio::Core::Util::KeyInput::IsKeyDown ('4'))
     {
+        // Kempston joystick selected.
+        
         status = SetGameControl (GAME_CONTROL_KEMPSTON_JOYSTICK);
     } // Endelseif.
 
     else
     if (Folio::Core::Util::KeyInput::IsKeyDown ('5'))
     {
+        // Cursor joystick selected.
+
         status = SetGameControl (GAME_CONTROL_CURSOR_JOYSTICK);
     } // Endelseif.
 
     else
     if (Folio::Core::Util::KeyInput::IsKeyDown ('6'))
     {
+        // Interface II selected.
+
         status = SetGameControl (GAME_CONTROL_INTERFACE_II);
     } // Endelseif.
 
@@ -398,36 +421,52 @@ FolioStatus SelectionScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
 
     UInt32  currentTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
 
-    if (currentTickCount >= (m_initialFrameTickCount + MAX_DISPLAY_SCREEN_TIME))
+    // Are we starting the game?
+
+    if (m_isStartingGame)
     {
-        m_isStartGame = false;   // Timeout.
+        // Yes. Process the frame when starting the game.
 
-        // Stop displaying the selection screen.
-
-        StopDisplaying ();
+        status = ProcessScreenFrameStartingGame (currentTickCount,
+                                                 frameRateIncrement);
     } // Endif.
 
     else
-    if (currentTickCount >= (m_previousFrameTickCount + Folio::Core::Game::ZxSpectrum::FLASH_MILLISECONDS))
     {
-        // Update the selection screen.
+        // No. Process the frame when waiting for selection.
 
-        status = UpdateScreen ();
+        status = ProcessScreenFrameWaitingForSelection (currentTickCount,
+                                                        frameRateIncrement);
+    } // Endelse.
+    
+    if (status == ERR_SUCCESS)
+    {
+        // Should we update any current selection text on the selecion screen, 
+        // i.e. has the current tick count exceeded the flash rate since the 
+        // last update?
 
-        if (status == ERR_SUCCESS)
+        // Get the current tick count.
+        
+        currentTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
+
+        if (currentTickCount >= (m_previousFrameTickCount + Folio::Core::Game::ZxSpectrum::FLASH_MILLISECONDS))
         {
-            // Note the previous frame tick count.
+            // Yes. Note the previous frame tick count.
 
             m_previousFrameTickCount = currentTickCount;
-        } // Endif.
 
-    } // Endelseif.
+            // Update the selection screen.
+
+            status = UpdateScreen (UPDATE_FLASH_CURRENT_SELECTIONS);
+        } // Endif.
+    
+    } // Endif.
 
     return (status);
 } // Endproc.
 
 
-FolioStatus SelectionScreen::UpdateScreen ()
+FolioStatus SelectionScreen::UpdateScreen (UPDATE update)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -435,84 +474,95 @@ FolioStatus SelectionScreen::UpdateScreen ()
 
     Gdiplus::Graphics   *graphics = m_canvas->GetCanvasGraphics ();
 
-    // Update the selection screen items.
+    // Update the selection screen items (depending on the type of update required).
 
-    bool    finished        = false;   // Initialise!
-    bool    redrawCanvas    = false;
+    bool    redrawCanvas = false;   // Initialise!
 
-    for (Folio::Core::Game::ItemsList::iterator itr = m_itemsList.begin ();
-         !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
-         ++itr)
+    switch (update)
+    {
+    case UPDATE_PLAYER_SELECTION:
+        status = UpdatePlayerSelection (*graphics, redrawCanvas);
+        break;
+
+    case UPDATE_GAME_CONTROL_SELECTION:
+        status = UpdateGameControlSelection (*graphics, redrawCanvas);
+        break;
+
+    case UPDATE_FLASH_CURRENT_SELECTIONS:
+        status = UpdateFlashCurrentSelections (*graphics, redrawCanvas);
+        break;
+
+    default:
+        status = ERR_INVALID;
+        break;
+    } // Endswitch.
+
+    // Should the canvas be redrawn?
+
+    if (redrawCanvas && (status == ERR_SUCCESS))
+    {
+        // Yes. The canvas should be redrawn on the next draw.
+
+        m_canvas->SetRedrawRqd ();
+    } // Endif.
+    
+    return (status);
+} // Endproc.
+
+
+FolioStatus SelectionScreen::UpdatePlayerSelection (Gdiplus::Graphics   &graphics,
+                                                    bool                &redrawCanvas)
+{
+    redrawCanvas = false;   // Initialise!
+
+    FolioStatus status = ERR_SUCCESS;
+
+    bool    finished = false;   // Initialise!
+
+    // Reverse order for performance.
+
+    for (Folio::Core::Game::ItemsList::reverse_iterator ritr = m_itemsList.rbegin ();
+         !finished && (status == ERR_SUCCESS) && (ritr != m_itemsList.rend ());
+         ++ritr)
     {
         // Get the selection screen item's identifier.
 
-        SELECTION_SCREEN_ITEM_ID    itemId = static_cast<SELECTION_SCREEN_ITEM_ID> (itr->get ()->GetItemId ());
+        SELECTION_SCREEN_ITEM_ID    itemId = static_cast<SELECTION_SCREEN_ITEM_ID> (ritr->get ()->GetItemId ());
          
         switch (itemId)
         {
         case SELECTION_SCREEN_ITEM_1_PLAYER_TEXT:
         case SELECTION_SCREEN_ITEM_2_PLAYER_TEXT:
             {
-                bool    invertColours = false;  // Initialise!
+                // Invert the selection screen's current player text item's text.
 
+                bool    invertText = false;  // Initialise!
+    
                 switch (m_numPlayers)
                 {
-                case 2:
-                    invertColours = (itemId == SELECTION_SCREEN_ITEM_2_PLAYER_TEXT);
-                    break;
                 case 1:
+                    invertText = m_invertCurrentSelectionText && (itemId == SELECTION_SCREEN_ITEM_1_PLAYER_TEXT);
+                    break;
+                    
+                case 2:
+                    invertText = m_invertCurrentSelectionText && (itemId == SELECTION_SCREEN_ITEM_2_PLAYER_TEXT);
+                    break;
+                    
                 default:
-                    invertColours = (itemId == SELECTION_SCREEN_ITEM_1_PLAYER_TEXT);
                     break;
                 } // Endswitch.
-
+    
                 // Get the selection screen text item.
+    
+                Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*ritr));
+    
+                // Invert the selection screen text item.
 
-                Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*itr));
+                status = item->SetInvert (invertText, graphics, redrawCanvas);
 
-                // Update the selection screen text item.
-
-                status = UpdateTextItem (*item,
-                                         invertColours,
-                                         *graphics,
-                                         redrawCanvas);
-            } // Endscope.
-            break;
-
-        case SELECTION_SCREEN_ITEM_KEYBOARD_TEXT:
-        case SELECTION_SCREEN_ITEM_KEMPSTON_JOYSTICK_TEXT:
-        case SELECTION_SCREEN_ITEM_CURSOR_JOYSTICK_TEXT:
-        case SELECTION_SCREEN_ITEM_INTERFACE_II_TEXT:
-            {
-                bool    invertColours = false;  // Initialise!
-
-                switch (m_gameControl)
-                {
-                case GAME_CONTROL_KEMPSTON_JOYSTICK:
-                    invertColours = (itemId == SELECTION_SCREEN_ITEM_KEMPSTON_JOYSTICK_TEXT);
-                    break;
-                case GAME_CONTROL_CURSOR_JOYSTICK:
-                    invertColours = (itemId == SELECTION_SCREEN_ITEM_CURSOR_JOYSTICK_TEXT);
-                    break;
-                case GAME_CONTROL_INTERFACE_II:
-                    invertColours = (itemId == SELECTION_SCREEN_ITEM_INTERFACE_II_TEXT);
-                    break;
-                case GAME_CONTROL_KEYBOARD:
-                default:
-                    invertColours = (itemId == SELECTION_SCREEN_ITEM_KEYBOARD_TEXT);
-                    break;
-                } // Endswitch.
-
-                // Get the selection screen text item.
-
-                Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*itr));
-
-                // Update the selection screen text item.
-
-                status = UpdateTextItem (*item,
-                                         invertColours,
-                                         *graphics,
-                                         redrawCanvas);
+                // Finished?
+            
+                finished = (itemId == SELECTION_SCREEN_ITEM_1_PLAYER_TEXT);
             } // Endscope.
             break;
 
@@ -522,13 +572,220 @@ FolioStatus SelectionScreen::UpdateScreen ()
 
     } // Endfor.
 
-    if (redrawCanvas && (status == ERR_SUCCESS))
-    {
-        // The canvas should be redrawn on the next draw.
+    return (status);
+} // Endproc.
 
-        m_canvas->SetRedrawRqd ();
+
+FolioStatus SelectionScreen::UpdateGameControlSelection (Gdiplus::Graphics  &graphics,
+                                                         bool               &redrawCanvas)
+{
+    redrawCanvas = false;   // Initialise!
+
+    FolioStatus status = ERR_SUCCESS;
+
+    bool    finished = false;   // Initialise!
+
+    // Reverse order for performance.
+
+    for (Folio::Core::Game::ItemsList::reverse_iterator ritr = m_itemsList.rbegin ();
+         !finished && (status == ERR_SUCCESS) && (ritr != m_itemsList.rend ());
+         ++ritr)
+    {
+        // Get the selection screen item's identifier.
+
+        SELECTION_SCREEN_ITEM_ID    itemId = static_cast<SELECTION_SCREEN_ITEM_ID> (ritr->get ()->GetItemId ());
+         
+        switch (itemId)
+        {
+        case SELECTION_SCREEN_ITEM_KEYBOARD_TEXT:
+        case SELECTION_SCREEN_ITEM_KEMPSTON_JOYSTICK_TEXT:
+        case SELECTION_SCREEN_ITEM_CURSOR_JOYSTICK_TEXT:
+        case SELECTION_SCREEN_ITEM_INTERFACE_II_TEXT:
+            {
+                // Invert the selection screen's current game control text item's text.
+
+                bool    invertText = false;  // Initialise!
+    
+                switch (m_gameControl)
+                {
+                case GAME_CONTROL_KEYBOARD:
+                    invertText = m_invertCurrentSelectionText && (itemId == SELECTION_SCREEN_ITEM_KEYBOARD_TEXT);
+                    break;
+                
+                case GAME_CONTROL_KEMPSTON_JOYSTICK:
+                    invertText = m_invertCurrentSelectionText && (itemId == SELECTION_SCREEN_ITEM_KEMPSTON_JOYSTICK_TEXT);
+                    break;
+                
+                case GAME_CONTROL_CURSOR_JOYSTICK:
+                    invertText = m_invertCurrentSelectionText && (itemId == SELECTION_SCREEN_ITEM_CURSOR_JOYSTICK_TEXT);
+                    break;
+                
+                case GAME_CONTROL_INTERFACE_II:
+                    invertText = m_invertCurrentSelectionText && (itemId == SELECTION_SCREEN_ITEM_INTERFACE_II_TEXT);
+                    break;
+                
+                default:
+                    break;
+                } // Endswitch.
+
+                // Get the selection screen text item.
+    
+                Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*ritr));
+    
+                // Invert the selection screen text item.
+
+                status = item->SetInvert (invertText, graphics, redrawCanvas);
+
+                // Finished?
+            
+                finished = (itemId == SELECTION_SCREEN_ITEM_KEYBOARD_TEXT);
+            } // Endscope.
+            break;
+
+        default:
+            break;
+        } // Endswitch.
+
+    } // Endfor.
+    
+    return (status);
+} // Endproc.
+
+
+FolioStatus SelectionScreen::UpdateFlashCurrentSelections (Gdiplus::Graphics    &graphics,
+                                                           bool                 &redrawCanvas)
+{
+    redrawCanvas = false;   // Initialise!
+
+    FolioStatus status = ERR_SUCCESS;
+
+    // Invert the selection screen's current selection text.
+
+    m_invertCurrentSelectionText = !m_invertCurrentSelectionText;
+
+    // The current number of players.
+
+    Folio::Core::Game::ItemsList::iterator  itr(Folio::Core::Game::FindItem ((m_numPlayers == 1) ? SELECTION_SCREEN_ITEM_1_PLAYER_TEXT : SELECTION_SCREEN_ITEM_2_PLAYER_TEXT, 
+                                                                             m_itemsList));
+
+    if (itr != m_itemsList.end ())
+    {
+        // Get the selection screen's number of players text item.
+    
+        Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*itr));
+
+        // Invert the selection screen's number of players text item.
+
+        status = item->SetInvert (m_invertCurrentSelectionText, graphics, redrawCanvas);
+    } // Endif.
+
+    if (status == ERR_SUCCESS)
+    {
+        // The current game control.
+
+        switch (m_gameControl)
+        {
+        case GAME_CONTROL_KEYBOARD:
+            itr = Folio::Core::Game::FindItem (SELECTION_SCREEN_ITEM_KEYBOARD_TEXT, m_itemsList);
+            break;
+                
+        case GAME_CONTROL_KEMPSTON_JOYSTICK:
+            itr = Folio::Core::Game::FindItem (SELECTION_SCREEN_ITEM_KEMPSTON_JOYSTICK_TEXT, m_itemsList);
+            break;
+                
+        case GAME_CONTROL_CURSOR_JOYSTICK:
+            itr = Folio::Core::Game::FindItem (SELECTION_SCREEN_ITEM_CURSOR_JOYSTICK_TEXT, m_itemsList);
+            break;
+                
+        case GAME_CONTROL_INTERFACE_II:
+            itr = Folio::Core::Game::FindItem (SELECTION_SCREEN_ITEM_INTERFACE_II_TEXT, m_itemsList);
+            break;
+                
+        default:
+            break;
+        } // Endswitch.
+
+        if (itr != m_itemsList.end ())
+        {
+            // Get the selection screen's game control text item.
+    
+            Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*itr));
+
+            // Invert the selection screen's game control text item.
+
+            status = item->SetInvert (m_invertCurrentSelectionText, graphics, redrawCanvas);
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus SelectionScreen::ProcessScreenFrameWaitingForSelection (UInt32  currentTickCount,
+                                                                    UInt32  *frameRateIncrement)
+{
+    // Play the main game music.
+
+    FolioStatus status = PlayMainGameMusic ();
+    
+    // Have we finished playing the main game music?
+    
+    if (m_finishedPlayingMainGameMusic &&
+        (status == ERR_SUCCESS))
+    {
+        // Yes. Have we set the initial frame tick count?
+
+        if (!m_initialFrameTickCount)
+        {
+            // No. Note the initial frame tick count.
+
+            m_initialFrameTickCount = currentTickCount;
+        } // Endif.
+
+        // Have we displayed the selecion screen for long enough?
+
+        else
+        if (currentTickCount >= (m_initialFrameTickCount + MAX_DISPLAY_SCREEN_TIME))
+        {
+            // Yes. 
+            
+            m_initialFrameTickCount = 0;    // Reset.
+            
+            // Stop displaying the selection screen.
+
+            StopDisplaying ();
+        } // Endelseif.
+            
     } // Endif.
     
+    else
+    if (m_initialFrameTickCount)
+    {
+        m_initialFrameTickCount = 0;    // Reset.
+    } // Endelseif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus SelectionScreen::ProcessScreenFrameStartingGame (UInt32 currentTickCount,
+                                                             UInt32 *frameRateIncrement)
+{
+    // Play the starting game music.
+
+    FolioStatus status = PlayStartingGameMusic ();
+
+    // Have we finished playing the starting game music?
+
+    if (m_finishedPlayingStartingGameMusic && 
+        (status == ERR_SUCCESS))
+    {
+        // Yes. Start the game.
+
+        status = StartGame ();
+    } // Endif.
+
     return (status);
 } // Endproc.
 
@@ -541,18 +798,18 @@ FolioStatus SelectionScreen::ResetScreen ()
 
     Gdiplus::Graphics   *graphics = m_canvas->GetCanvasGraphics ();
 
-    // Reset the selection screen items.
+    // Reset the selection screen items (reverse order for performance).
 
     bool    finished        = false;   // Initialise!
     bool    redrawCanvas    = false;
 
-    for (Folio::Core::Game::ItemsList::iterator itr = m_itemsList.begin ();
-         !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
-         ++itr)
+    for (Folio::Core::Game::ItemsList::reverse_iterator ritr = m_itemsList.rbegin ();
+         !finished && (status == ERR_SUCCESS) && (ritr != m_itemsList.rend ());
+         ++ritr)
     {
         // Get the selection screen item's identifier.
 
-        SELECTION_SCREEN_ITEM_ID   itemId = static_cast<SELECTION_SCREEN_ITEM_ID> (itr->get ()->GetItemId ());
+        SELECTION_SCREEN_ITEM_ID   itemId = static_cast<SELECTION_SCREEN_ITEM_ID> (ritr->get ()->GetItemId ());
          
         switch (itemId)
         {
@@ -563,20 +820,19 @@ FolioStatus SelectionScreen::ResetScreen ()
         case SELECTION_SCREEN_ITEM_CURSOR_JOYSTICK_TEXT:
         case SELECTION_SCREEN_ITEM_INTERFACE_II_TEXT:
             {
+                m_invertCurrentSelectionText = false;   // Reset.
+
                 // Get the selection screen text item.
 
-                Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*itr));
+                Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*ritr));
 
-                // Update the selection screen text item.
-            
-                status = UpdateTextItem (*item,
-                                         false, // Don't invert colours.
-                                         *graphics,
-                                         redrawCanvas);
+                // Don't invert the selection screen text item's text.
+
+                status = item->SetInvert (m_invertCurrentSelectionText, *graphics, redrawCanvas);
 
                 // Finished?
             
-                finished = (itemId == SELECTION_SCREEN_ITEM_INTERFACE_II_TEXT);
+                finished = (itemId == SELECTION_SCREEN_ITEM_1_PLAYER_TEXT);
             } // Endscope.
             break;
 
@@ -586,9 +842,11 @@ FolioStatus SelectionScreen::ResetScreen ()
 
     } // Endfor.
 
+    // Should the canvas be redrawn?
+
     if (redrawCanvas && (status == ERR_SUCCESS))
     {
-        // The canvas should be redrawn on the next draw.
+        // Yes. The canvas should be redrawn on the next draw.
 
         m_canvas->SetRedrawRqd ();
     } // Endif.
@@ -597,112 +855,35 @@ FolioStatus SelectionScreen::ResetScreen ()
 } // Endproc.
 
 
-FolioStatus SelectionScreen::UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type   &item,
-                                             bool                                           invertColours,
-                                             Gdiplus::Graphics                              &graphics, 
-                                             bool                                           &redrawCanvas)
-{                   
-    FolioStatus status = ERR_SUCCESS;
-
-    // Get the text item's GDI raster text.
-
-    Folio::Core::Graphic::GdiRasterTextPtr  gdiRasterText(item.GetGdiRasterText ());
-
-    // Invert the text item's colours?
-
-    if (invertColours)
-    {
-        // Yes. Invert the text item's colours
-
-        gdiRasterText->InvertColours ();
-
-        // Draw it.
-
-        status = gdiRasterText->Draw (item.GetScreenXLeft (), 
-                                      item.GetScreenYTop (), 
-                                      graphics);
-
-        if (status == ERR_SUCCESS)
-        {
-            redrawCanvas = true;
-        } // Endif.
-
-    } // Endif.
-
-    else
-    if (!invertColours && gdiRasterText->IsInvertedColours ())
-    {
-        // No. Reset the text item's colours
-
-        gdiRasterText->ResetColours ();
-
-        // Draw it.
-
-        status = gdiRasterText->Draw (item.GetScreenXLeft (), 
-                                      item.GetScreenYTop (), 
-                                      graphics);
-
-        if (status == ERR_SUCCESS)
-        {
-            redrawCanvas = true;
-        } // Endif.
-
-    } // Endelseif.
-
-    return (status);
-} // Endproc.
-
-
-void    SelectionScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type &item)
+FolioStatus SelectionScreen::StartingGame ()
 {
-    switch (item.GetItemId ())
-    {
-    case SELECTION_SCREEN_ITEM_1_PLAYER_TEXT:
-        item.GetGdiRasterText ()->SetTextString ("1  1 PLAYER GAME");
-        break;
+    // Stop the main game music.
 
-    case SELECTION_SCREEN_ITEM_2_PLAYER_TEXT:
-        item.GetGdiRasterText ()->SetTextString ("2  2 PLAYER GAME");
-        break;
+    StopMainGameMusic ();
 
-    case SELECTION_SCREEN_ITEM_KEYBOARD_TEXT:
-        item.GetGdiRasterText ()->SetTextString ("3  KEYBOARD");
-        break;
+    // The game is starting.
 
-    case SELECTION_SCREEN_ITEM_KEMPSTON_JOYSTICK_TEXT:
-        item.GetGdiRasterText ()->SetTextString ("4  KEMPSTON JOYSTICK");
-        break;
+    m_isStartingGame    = true;
+    m_isStartGame       = false;
 
-    case SELECTION_SCREEN_ITEM_CURSOR_JOYSTICK_TEXT:
-        item.GetGdiRasterText ()->SetTextString ("5  CURSOR   JOYSTICK");
-        break;
-
-    case SELECTION_SCREEN_ITEM_INTERFACE_II_TEXT:
-        item.GetGdiRasterText ()->SetTextString ("6  INTERFACE II");
-        break;
-
-    case SELECTION_SCREEN_ITEM_START_GAME_TEXT:
-        item.GetGdiRasterText ()->SetTextString ("0  START GAME");
-        break;
-
-    case SELECTION_SCREEN_ITEM_COPYRIGHT_TEXT:
-        item.GetGdiRasterText ()->SetTextString ("\x7f 1984  A.C.G.");
-        break;
-
-    default:
-        break;
-    } // Endswitch.
-
+    return (ERR_SUCCESS);
 } // Endproc.
 
 
 FolioStatus SelectionScreen::StartGame ()
 {
+    // Stop the starting game music.
+
+    StopStartingGameMusic ();
+
     // Let the information panel know the number of players.
 
-    m_informationPanel->SetNumPlayers (m_numPlayers);
+    g_informationPanel->SetNumPlayers (m_numPlayers);
 
-    m_isStartGame = true;   // Good to go.
+    // The game should start.
+
+    m_isStartingGame    = false;
+    m_isStartGame       = true;
 
     // Stop displaying the selection screen.
 
@@ -722,9 +903,9 @@ FolioStatus SelectionScreen::ProcessGamepad ()
 
     if (gamepad.IsStartButtonDown (m_controllerId))
     {
-        // Start the game.
+        // Starting the game.
 
-        status = StartGame ();
+        status = StartingGame ();
     } // Endif.
 
     else
@@ -781,7 +962,7 @@ FolioStatus SelectionScreen::ProcessGamepad ()
     else
     if (gamepad.IsDPadRightButtonDown (m_controllerId))
     {
-        // Increment the number of player.
+        // Increment the number of players.
         
         UInt32  numPlayers = m_numPlayers;
 
@@ -796,6 +977,95 @@ FolioStatus SelectionScreen::ProcessGamepad ()
     } // Endelseif.
 
     return (status);
+} // Endproc.
+
+
+FolioStatus SelectionScreen::PlayMainGameMusic ()
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Have we finished playing the main game music?
+
+    if (!m_finishedPlayingMainGameMusic)
+    {
+        // No. Play the main game music.
+
+        status = g_musicJukebox.PlayMainGameMusic (m_finishedPlayingMainGameMusic);
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+void    SelectionScreen::StopMainGameMusic ()
+{
+    m_finishedPlayingMainGameMusic = true;
+} // Endproc.
+
+
+FolioStatus SelectionScreen::PlayStartingGameMusic ()
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Have we finished playing the starting game music?
+
+    if (!m_finishedPlayingStartingGameMusic)
+    {
+        // No. Play the starting game music.
+
+        status = g_musicJukebox.PlayStartingGameMusic (m_finishedPlayingStartingGameMusic);
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+void    SelectionScreen::StopStartingGameMusic ()
+{
+    m_finishedPlayingStartingGameMusic = true;
+} // Endproc.
+
+
+void    SelectionScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type &item)
+{
+    switch (item.GetItemId ())
+    {
+    case SELECTION_SCREEN_ITEM_1_PLAYER_TEXT:
+        item.GetGdiRasterText ()->SetTextString ("1  1 PLAYER GAME");
+        break;
+
+    case SELECTION_SCREEN_ITEM_2_PLAYER_TEXT:
+        item.GetGdiRasterText ()->SetTextString ("2  2 PLAYER GAME");
+        break;
+
+    case SELECTION_SCREEN_ITEM_KEYBOARD_TEXT:
+        item.GetGdiRasterText ()->SetTextString ("3  KEYBOARD");
+        break;
+
+    case SELECTION_SCREEN_ITEM_KEMPSTON_JOYSTICK_TEXT:
+        item.GetGdiRasterText ()->SetTextString ("4  KEMPSTON JOYSTICK");
+        break;
+
+    case SELECTION_SCREEN_ITEM_CURSOR_JOYSTICK_TEXT:
+        item.GetGdiRasterText ()->SetTextString ("5  CURSOR   JOYSTICK");
+        break;
+
+    case SELECTION_SCREEN_ITEM_INTERFACE_II_TEXT:
+        item.GetGdiRasterText ()->SetTextString ("6  INTERFACE II");
+        break;
+
+    case SELECTION_SCREEN_ITEM_START_GAME_TEXT:
+        item.GetGdiRasterText ()->SetTextString ("0  START GAME");
+        break;
+
+    case SELECTION_SCREEN_ITEM_COPYRIGHT_TEXT:
+        item.GetGdiRasterText ()->SetTextString ("\x7f 1984  A.C.G.");
+        break;
+
+    default:
+        break;
+    } // Endswitch.
+
 } // Endproc.
 
 } // Endnamespace.

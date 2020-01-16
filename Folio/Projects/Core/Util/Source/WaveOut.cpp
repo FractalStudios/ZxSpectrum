@@ -1,7 +1,7 @@
 // Windows includes. 
 #include    <Windows.h>
-#include    <mmreg.h>
-#pragma     comment(lib, "Winmm.lib")
+#include    <mmsystem.h>
+#pragma     comment(lib, "winmm.lib")
 
 // "Home-made" includes.
 #include    <Trace.h>
@@ -24,7 +24,7 @@ namespace Sound
  * The default class constructor.
  */
 WaveOut::WaveOut ()
-:   m_waveOutHandle(0),
+:   m_waveOutHandle(FOLIO_INVALID_HANDLE),
     m_playing(false)
 {
 } // Endproc.
@@ -35,29 +35,17 @@ WaveOut::WaveOut ()
  */
 WaveOut::~WaveOut ()
 {
-    // Is the waveform-audio output device open?
+    // Close the waveform-audio output device.
 
-    if (IsOpen ())
-    {
-        // Yes.
-        
-        // Reset the waveform-audio output device.
-
-        Reset ();
-
-        // Close the waveform-audio output device.
-
-        Close ();
-    } // Endif.
-
+    Close ();
 } // Endproc.
 
 
 /**
  * Method that will open the waveform-audio output device.
  *
- * @param [in] numSoundChannels
- * The number of channels.
+ * @param [in] soundChannels
+ * The sound channels.
  *
  * @param [in] samplesPerSecond
  * The sample frequency.
@@ -68,7 +56,7 @@ WaveOut::~WaveOut ()
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus WaveOut::Open (SOUND_CHANNELS   numSoundChannels,
+FolioStatus WaveOut::Open (SOUND_CHANNELS   soundChannels,
                            UInt32           samplesPerSecond)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -77,9 +65,9 @@ FolioStatus WaveOut::Open (SOUND_CHANNELS   numSoundChannels,
 
     if (IsOpen ())
     { 
-        // Yes. Reset the waveform-audio output device.
+        // Yes. 
 
-        status = Reset ();
+        status = ERR_INVALID_SEQUENCE;
     } // Endif.
 
     else
@@ -87,28 +75,22 @@ FolioStatus WaveOut::Open (SOUND_CHANNELS   numSoundChannels,
         // No. Build wave format.
 
         WAVEFORMATEX    waveFormat = {0};   // Initialise!
-        waveFormat.cbSize           = 0;
         waveFormat.wFormatTag       = WAVE_FORMAT_PCM;
-        waveFormat.nChannels        = numSoundChannels;
+        waveFormat.nChannels        = soundChannels;
         waveFormat.nSamplesPerSec   = samplesPerSecond;
         waveFormat.wBitsPerSample   = CHAR_BIT * sizeof (SoundSample::SampleBuffer::value_type);
         waveFormat.nBlockAlign      = waveFormat.nChannels * waveFormat.wBitsPerSample / CHAR_BIT;
         waveFormat.nAvgBytesPerSec  = waveFormat.nSamplesPerSec * waveFormat.nBlockAlign;
+        waveFormat.cbSize           = 0;
 
         // Open the waveform-audio output device for playback.
     
-        MMRESULT    mmResult = ::waveOutOpen (&(m_waveOutHandle), 
+        MMRESULT    mmResult = ::waveOutOpen (reinterpret_cast<HWAVEOUT *> (&(m_waveOutHandle)), 
                                               WAVE_MAPPER,
                                               &(waveFormat), 
-                                              #ifdef _USE_CALLBACK_
-                                              reinterpret_cast<DWORD_PTR> (WaveOut::Callback), 
-                                              reinterpret_cast<DWORD_PTR> (this), 
-                                              CALLBACK_FUNCTION);
-                                              #else
                                               0,
                                               0,
                                               CALLBACK_NULL);
-                                              #endif
 
         if (mmResult == MMSYSERR_NOERROR)
         {
@@ -149,64 +131,36 @@ FolioStatus WaveOut::Close ()
 
     if (IsOpen ())
     {
-        // Yes. Clear periodic timer resolution.
-
-        Thread::ResetTimeThreshold (TIME_THRESHOLD_RQD);
-
-        // Close the waveform-audio output device.
-
-        MMRESULT    mmResult = ::waveOutClose (m_waveOutHandle);
-        
-        if (mmResult == MMSYSERR_NOERROR)
-        {
-            // The waveform-audio output device is closed.
-
-            m_waveOutHandle = 0;
-        } // Endif.
-        
-        else
-        {
-            // Build and log an error.
-
-            status = FOLIO_MAKE_OS_ERROR(mmResult);
-
-            FOLIO_LOG_CALL_ERROR (TXT("waveOutClose"), status);
-        } // Endelse.
-
-    } // Endif.
-
-    return (status);
-} // Endproc.
-
-
-/**
- * Method that will reset the waveform-audio output device.
- *
- * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
- */
-FolioStatus WaveOut::Reset ()
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Is the waveform-audio output device open?
-
-    if (IsOpen ())
-    {
         // Yes. Reset the waveform-audio output device.
 
-        MMRESULT    mmResult = ::waveOutReset (m_waveOutHandle);
-        
-        if (mmResult != MMSYSERR_NOERROR)
+        status = Reset ();
+
+        if (status == ERR_SUCCESS)
         {
-            // Build and log an error.
+            // Clear periodic timer resolution.
 
-            status = FOLIO_MAKE_OS_ERROR(mmResult);
+            Thread::ResetTimeThreshold (TIME_THRESHOLD_RQD);
 
-            FOLIO_LOG_CALL_ERROR (TXT("waveOutReset"), status);
+            // Close the waveform-audio output device.
+
+            MMRESULT    mmResult = ::waveOutClose (reinterpret_cast<HWAVEOUT> (m_waveOutHandle));
+        
+            if (mmResult == MMSYSERR_NOERROR)
+            {
+                // The waveform-audio output device is closed.
+
+                m_waveOutHandle = FOLIO_INVALID_HANDLE;
+            } // Endif.
+        
+            else
+            {
+                // Build and log an error.
+
+                status = FOLIO_MAKE_OS_ERROR(mmResult);
+
+                FOLIO_LOG_CALL_ERROR (TXT("waveOutClose"), status);
+            } // Endelse.
+
         } // Endif.
 
     } // Endif.
@@ -219,11 +173,11 @@ FolioStatus WaveOut::Reset ()
  * Method that will play a sampled sound buffer on the waveform-audio output 
  * device for a specified duration.
  *
- * @param [in] duration
+ * @param [in] soundDuration
  * The sound's duration (in milliseconds).
  *
  * @param [in] sampleBuffer
- * The sampled sound buffer.
+ * The sampled sound buffer to play.
  *
  * @return
  * The possible return values are:<ul>
@@ -231,13 +185,19 @@ FolioStatus WaveOut::Reset ()
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus WaveOut::Play (UInt32                           duration,
+FolioStatus WaveOut::Play (UInt32                           soundDuration,
                            const SoundSample::SampleBuffer& sampleBuffer)
 {
     FolioStatus status = ERR_SUCCESS;
+
+    if (sampleBuffer.empty ())
+    {
+        status = ERR_INVALID_PARAM2;
+    } // Endif.
        
     // Is the waveform-audio output device open?
 
+    else
     if (!m_playing && IsOpen ())
     {
         // Yes. We're playing.
@@ -252,7 +212,7 @@ FolioStatus WaveOut::Play (UInt32                           duration,
                     
         // Prepare the waveform-audio data block for playback.
 
-        MMRESULT    mmResult = ::waveOutPrepareHeader (m_waveOutHandle,
+        MMRESULT    mmResult = ::waveOutPrepareHeader (reinterpret_cast<HWAVEOUT> (m_waveOutHandle),
                                                        &(waveHeader), 
                                                        sizeof (waveHeader));
 
@@ -260,25 +220,25 @@ FolioStatus WaveOut::Play (UInt32                           duration,
         {
             // Send the waveform-audio data block to the waveform-audio output device.
 
-            mmResult = ::waveOutWrite (m_waveOutHandle, 
+            mmResult = ::waveOutWrite (reinterpret_cast<HWAVEOUT> (m_waveOutHandle), 
                                        &(waveHeader), 
                                        sizeof (waveHeader));
 
             if (mmResult == MMSYSERR_NOERROR)
             {
-                if (duration >= 100)
+                if (soundDuration >= 100)
                 {
-                    Thread::Sleep (duration);
+                    Thread::Sleep (soundDuration);
                 } // Endif.
 
                 // Try to unprepare the header; this will fail until the block has
                 // played.
 
-                while (::waveOutUnprepareHeader (m_waveOutHandle, 
+                while (::waveOutUnprepareHeader (reinterpret_cast<HWAVEOUT> (m_waveOutHandle), 
                                                  &(waveHeader), 
                                                  sizeof (waveHeader)) == WAVERR_STILLPLAYING)
                 {
-                    Thread::Sleep ((duration >= 100) ? 0 : duration);
+                    Thread::Sleep ((soundDuration >= 100) ? 0 : soundDuration);
                 } // Endwhile.
 
             } // Endif.
@@ -306,7 +266,7 @@ FolioStatus WaveOut::Play (UInt32                           duration,
         // Yes. We're no longer playing.
         
         m_playing = false;
-    } // Endif.
+    } // Endelseif.
 
     return (status);
 } // Endproc.
@@ -320,36 +280,43 @@ FolioStatus WaveOut::Play (UInt32                           duration,
  */
 bool    WaveOut::IsOpen () const
 {
-    return (m_waveOutHandle != 0);
+    return (m_waveOutHandle != FOLIO_INVALID_HANDLE);
 } // Endproc.
 
 
-void    CALLBACK    WaveOut::Callback (HWAVEOUT     waveOutHandle,
-                                       UINT         message,
-                                       DWORD_PTR    instance,
-                                       DWORD_PTR    parameter1,
-                                       DWORD_PTR    parameter2)
+/**
+ * Method that will reset the waveform-audio output device.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if successful.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus WaveOut::Reset ()
 {
-    WaveOut*    waveOut = reinterpret_cast<WaveOut*> (instance);
+    FolioStatus status = ERR_SUCCESS;
 
-    switch (message)
+    // Is the waveform-audio output device open?
+
+    if (IsOpen ())
     {
-    case WOM_OPEN:
-        // Wave device is opened.
-        break;
+        // Yes. Reset the waveform-audio output device.
 
-    case WOM_CLOSE: 
-        // Wave device is closed.
-        break;
+        MMRESULT    mmResult = ::waveOutReset (reinterpret_cast<HWAVEOUT> (m_waveOutHandle));
+        
+        if (mmResult != MMSYSERR_NOERROR)
+        {
+            // Build and log an error.
 
-    case WOM_DONE: 
-        // A wave buffer is finished playing.
-        break;
+            status = FOLIO_MAKE_OS_ERROR(mmResult);
 
-    default:
-        break;
-    } // Endswitch.
+            FOLIO_LOG_CALL_ERROR (TXT("waveOutReset"), status);
+        } // Endif.
 
+    } // Endif.
+
+    return (status);
 } // Endproc.
 
 } // Endnamespace.

@@ -6,8 +6,6 @@
 // "Home-made" includes.
 #include    "BorderScreen.h"
 #include    "DrawingElement.h"
-#include    "HighScoreTable.h"
-#include    "InformationPanel.h"
 
 #pragma pack(push, 1)
 
@@ -52,15 +50,11 @@ enum HIGH_SCORE_SCREEN_ITEM_ID
 class HighScoreScreen : public BorderScreen
 {
 public:
-    HighScoreScreen (const InformationPanelPtr  &informationPanel,
-                     const HighScoreTable       &highScoreTable);
+    HighScoreScreen ();
     ~HighScoreScreen ();
 
 private:
     static  const   UInt32  MAX_DISPLAY_SCREEN_TIME = 30 * 1000;    // 30 seconds.
-
-    const InformationPanelPtr  &m_informationPanel; // The information panel.
-    const HighScoreTable       &m_highScoreTable;   // The high score table.
 
     // AScreen method(s).
     virtual FolioStatus BuildScreenItems (FolioHandle dcHandle, 
@@ -68,7 +62,7 @@ private:
     virtual FolioStatus ProcessScreenInput ();    
     virtual FolioStatus ProcessScreenFrame (UInt32 *frameRateIncrement);
 
-    void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
+    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
 
     // Private copy constructor to prevent copying.
     HighScoreScreen (const HighScoreScreen& rhs);

@@ -1,11 +1,8 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
-#include    <Trace.h>
 #include    <Util.h>
+#include    "Globals.h"
 #include    "MainCanvasMsgHandler.h"
-
-//#define _AUTO_TEST_
-#define AUTO_TEST_SCREEN_TIME 5 * 1000
 
 namespace Folio
 {
@@ -79,7 +76,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessFrame (FolioHandle   wndHandle,
                                                       UInt32        &frameRateIncrement)
 {
 #ifdef _DEBUG
-    //DisplayFrameRate ();
+    DisplayFrameRate ();
 #endif
 
     FolioStatus status = ERR_SUCCESS;
@@ -198,46 +195,6 @@ FolioStatus MainCanvasMsgHandler::HandleProcessStartingStateFrame (FolioHandle  
     return (status);
 } // Endproc.
 
-#ifdef _AUTO_TEST_
-FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   wndHandle,
-                                                                  UInt32        *frameRateIncrement)
-{
-    static  UInt32  s_screenTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
-
-    // Let the current screen process the frame.
-
-    bool    isStarting = false; // Initialise!
-
-    FolioStatus status = m_currentScreen->HandleProcessFrame (isStarting, frameRateIncrement);
-        
-    if (status == ERR_SUCCESS)
-    {
-        //if (m_selectionScreen.IsMainPlayerFireWeaponKeyDown ())
-        if (Folio::Core::Util::DateTime::GetCurrentTickCount () > (s_screenTickCount + AUTO_TEST_SCREEN_TIME))
-        {
-            m_currentScreen->ExitScreen ();
-
-            s_screenTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
-
-            m_currentScreenNumber++;
-
-            if (m_currentScreenNumber > MAX_SCREEN_NUMBER)
-            {
-                //Folio::Core::Util::g_handleMonitor.Dump ();
-                //g_resourceGraphicsCache.Dump (false);
-                g_resourceGraphicsCache.DumpNumUsedBitmaps (false);
-
-                m_currentScreenNumber = INITIAL_SCREEN_NUMBER;
-            } // Endif.
-            
-            status = DisplayScreen (m_currentScreenNumber);
-        } // Endif.
-
-    } // Endif.
-
-    return (status);
-} // Endproc.
-#else
 FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   wndHandle,
                                                                   UInt32        *frameRateIncrement)
 {
@@ -302,30 +259,30 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   
             else
             if (g_mainPlayer->IsDead ())
             {
-                // Yes. Add a gravestone to the current screen.
+                // Yes. Decrement a main player life in the information panel.
 
-                status = m_currentScreen->AddGravestone ();
+                bool    isGameOver = false;     // Initialise!
+
+                status = m_informationPanel.DecrementMainPlayerLife (isGameOver);
 
                 if (status == ERR_SUCCESS)
                 {
-                    // Decrement a main player life in the information panel.
+                    // Is the games over?
 
-                    bool    isGameOver = false;     // Initialise!
-
-                    status = m_informationPanel.DecrementMainPlayerLife (isGameOver);
-
-                    if (status == ERR_SUCCESS)
+                    if (isGameOver)
                     {
-                        // Is the games over?
+                        // Yes. Display the game over screen.
 
-                        if (isGameOver)
-                        {
-                            // Yes. Display the game over screen.
+                        status = DisplayGameOverScreen (false);
+                    } // Endif.
 
-                            status = DisplayGameOverScreen (false);
-                        } // Endif.
+                    else
+                    {
+                        // No. Add a gravestone to the current screen.
 
-                        else
+                        status = m_currentScreen->AddGravestone ();
+
+                        if (status == ERR_SUCCESS)
                         {
                             // No. Restart the main player.
 
@@ -338,10 +295,10 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   
                                 m_state = STATE_STARTING;
                             } // Endif.
 
-                        } // Endelse.
-
-                    } // Endif.
+                        } // Endif.
             
+                    } // Endelse.
+                
                 } // Endif.
 
             } // Endelseif.
@@ -359,7 +316,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   
 
     return (status);
 } // Endproc.
-#endif
+
 
 FolioStatus MainCanvasMsgHandler::HandleProcessMainPlayerFallingStateFrame (FolioHandle wndHandle,
                                                                             UInt32      *frameRateIncrement)
@@ -503,7 +460,7 @@ FolioStatus MainCanvasMsgHandler::CheckPlayingStateInput ()
             {
                 // Yes. Update the main player's direction.
 
-                g_mainPlayer->UpdateDirection (direction, true);
+                status = g_mainPlayer->UpdateDirection (direction, true);
             } // Endif.
 
             // Is the main player moving?
@@ -513,7 +470,7 @@ FolioStatus MainCanvasMsgHandler::CheckPlayingStateInput ()
             {
                 // Yes. Update the main player's direction.
 
-                g_mainPlayer->UpdateDirection (direction, false);
+                status = g_mainPlayer->UpdateDirection (direction, false);
             } // Endelseif.
 
         } // Endelse.
@@ -578,7 +535,7 @@ FolioStatus MainCanvasMsgHandler::StartPlaying ()
                 {        
                     m_currentScreenNumber = INITIAL_SCREEN_NUMBER;  // The initial screen. 
 
-                    // Display the intial screen.
+                    // Display the initial screen.
                     
                     status = DisplayInitialScreen (m_currentScreenNumber);
                 

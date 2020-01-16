@@ -666,9 +666,9 @@ FolioStatus SelectionScreen::UpdateTextItem (Folio::Core::Game::TextItemPtr::ele
 
     if (invertColours)
     {
-        // Yes. Invert the text item's colours
+        // Yes. Toggle text item's inverted state.
 
-        gdiRasterText->InvertColours ();
+        gdiRasterText->ToggleInverted ();
 
         // Draw it.
 
@@ -683,12 +683,14 @@ FolioStatus SelectionScreen::UpdateTextItem (Folio::Core::Game::TextItemPtr::ele
 
     } // Endif.
 
-    else
-    if (!invertColours && gdiRasterText->IsInvertedColours ())
-    {
-        // No. Reset the text item's colours
+    // No. Is the text item inverted?
 
-        gdiRasterText->ResetColours ();
+    else
+    if (gdiRasterText->IsInverted ())
+    {
+        // Yes.
+
+        gdiRasterText->SetNonInverted ();
 
         // Draw it.
 

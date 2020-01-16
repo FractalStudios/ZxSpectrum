@@ -20,7 +20,9 @@ class ACollisionGrid
 public:
     virtual ~ACollisionGrid ();
 
-    FolioStatus Create (const Gdiplus::Rect &floorRect);
+    FolioStatus Create (const Gdiplus::Rect& floorRect);
+    FolioStatus Create (const Gdiplus::Rect&                            floorRect,
+                        const Folio::Core::Game::DrawingElementsList&   drawingElementsList);
     FolioStatus Clear ();
 
     Gdiplus::Rect   GetFloorRect () const;

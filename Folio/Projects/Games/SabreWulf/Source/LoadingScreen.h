@@ -35,18 +35,18 @@ public:
     ~LoadingScreen ();
 
 private:
-    static  UInt32  m_currentSoundSampleIndex;  // The current sound sample index.
-    static  Folio::Core::Util::Sound::SoundSamplesList  m_soundSamplesList; // The sound samples list.
+    UInt32  m_currentSoundSampleIndex;  // The current sound sample index.
+    Folio::Core::Util::Sound::SoundSamplesList  m_soundSamplesList; // The sound samples list.
 
     // AScreen method(s).
     virtual FolioStatus BuildScreenItems (FolioHandle dcHandle, 
                                           FolioHandle instanceHandle);
-    virtual FolioStatus StartDisplayingScreen ();
     virtual FolioStatus ProcessScreenInput (); 
     virtual FolioStatus ProcessScreenFrame (UInt32 *frameRateIncrement);
 
-    static  void    CreateSoundSamples ();
-    static  void    PlaySoundSample ();
+    void    CreateSoundSampleSequence ();
+    void    PlaySoundSample ();
+    bool    IsSoundSampleSequenceFinished () const;
 
     // Private copy constructor to prevent copying.
     LoadingScreen (const LoadingScreen& rhs);

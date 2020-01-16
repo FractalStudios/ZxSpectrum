@@ -131,6 +131,24 @@ FolioStatus AItem::Draw (Int32                                                  
     return (status);
 } // Endproc.
 
+
+ItemsList::const_iterator   FindItem (AItem::Id         itemId, 
+                                      const ItemsList   &itemsList)
+{
+    return (std::find_if (itemsList.begin (), itemsList.end (), 
+                          [itemId](const ItemsList::value_type& arg) 
+                          {return (arg->GetItemId () == itemId);}));
+} // Endproc.
+
+
+ItemsList::iterator FindItem (AItem::Id itemId, 
+                              ItemsList &itemsList)
+{
+    return (std::find_if (itemsList.begin (), itemsList.end (), 
+                          [itemId](const ItemsList::value_type& arg) 
+                          {return (arg->GetItemId () == itemId);}));
+} // Endproc.
+
 } // Endnamespace.
 
 } // Endnamespace.

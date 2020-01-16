@@ -96,6 +96,8 @@ extern  Int32   CalculateScreenYBottom (Int32   screenYTop,
 
 extern  UInt32  BeepDurationToMilliseconds (const float &beepDuration);
 extern  float   BeepPitchToFrequency (Int32 beepPitch);
+extern  UInt32  CalculateDuration (UInt32 numTStates);
+extern  float   CalculateFrequency (UInt32 numTStates);
 
 } // Endnamespace.
 

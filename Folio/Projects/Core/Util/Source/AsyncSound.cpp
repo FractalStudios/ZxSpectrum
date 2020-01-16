@@ -21,7 +21,7 @@ namespace Sound
  */
 AsyncSound::AsyncSound ()
 :   m_waveOut(0),
-    m_numSoundChannels(DEFAULT_SOUND_CHANNELS),
+    m_soundChannels(DEFAULT_SOUND_CHANNELS),
     m_samplesPerSecond(SoundSample::DEFAULT_SAMPLES_PER_SECOND)
 {
 } // Endproc.
@@ -283,13 +283,31 @@ FolioStatus FOLIO_CALL  AsyncSound::ThreadEntry (void* args)
  */
 FolioStatus AsyncSound::ThreadInitialize ()
 {
+    FolioStatus status = ERR_SUCCESS;
+
     // Get the waveform-audio output device instance.
         
     m_waveOut = WaveOut::GetInstance ();
 
-    // Open the waveform-audio output device.
+    if (m_waveOut)
+    {
+        // Is the waveform-audio output device open?
+
+        if (!m_waveOut->IsOpen ())
+        {
+            // No. Open the waveform-audio output device.
         
-    return (m_waveOut->Open (m_numSoundChannels, m_samplesPerSecond));
+            status = m_waveOut->Open (m_soundChannels, m_samplesPerSecond);
+        } // Endif.
+   
+    } // Endif.
+
+    else
+    {
+        status = ERR_INTERNAL_ERROR;
+    } // Endelse.
+
+    return (status);
 } // Endproc.
 
 
@@ -413,18 +431,19 @@ FolioStatus AsyncSound::PlayFirstSoundSample (const SoundSample& soundSample) co
 
     if (soundSample.IsSoundSampleGenerated ())
     {
-        // Reset the waveform-audio output device.
-        
-        status = m_waveOut->Reset ();
-
-        if (status == ERR_SUCCESS)
+        if (m_waveOut)
         {
             // Use the waveform-audio output device to play the sound.
             
-            status = m_waveOut->Play (soundSample.GetDuration (), 
+            status = m_waveOut->Play (soundSample.GetSoundDuration (), 
                                       soundSample.GetSampleBuffer ());
         } // Endif.
-    
+
+        else
+        {
+            status = ERR_INTERNAL_ERROR;
+        } // Endelse.
+
     } // Endif.
 
     return (status);

@@ -508,7 +508,7 @@ Folio::Core::Game::SpriteStationarySoundSamplesList NastySprite::GetNastySpriteT
     
         for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x3f; frequency >= 0x21; frequency -= 2)
         {
-            m_nastySpriteTerminatingSoundSamplesList.push_back (Ultimate::MapMakeSound (frequency, 0x01));
+            m_nastySpriteTerminatingSoundSamplesList.push_back (Ultimate::CreateSoundSample (frequency, 0x01));
         } // Endfor.
 
     } // Endif.

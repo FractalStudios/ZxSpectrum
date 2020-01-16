@@ -27,6 +27,8 @@ public:
     // High score.
     struct HighScore
     {
+        static  const   UInt32  MAX_INITIALS = 3;   // The maximum number of initials.
+
         HighScore ()
         :   m_score(0)
         {} // Endproc.

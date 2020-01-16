@@ -44,7 +44,7 @@ protected:
 private:
     mutable WaveOut*    m_waveOut;  ///< The wave out.
 
-    SOUND_CHANNELS  m_numSoundChannels; ///< The number of sound channels to use.
+    SOUND_CHANNELS  m_soundChannels;    ///< The sound channels to use.
     UInt32          m_samplesPerSecond; ///< The sample frequency to use.
 
     /// Scope lock for single thread access.

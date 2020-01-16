@@ -13,9 +13,6 @@
     <ClCompile Include="Source\DrawingElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Ultimate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\BackgroundItemGraphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -76,6 +73,21 @@
     <ClCompile Include="Source\NastySprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Globals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PlayerStatistics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ResourceOwnerId.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ultimate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MusicJukebox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\LoadingScreen.h">
@@ -91,9 +103,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\MainCanvasMsgHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Ultimate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\BackgroundItemGraphics.h">
@@ -154,6 +163,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\NastySprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ResourceOwnerId.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Globals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PlayerStatistics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ultimate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MusicJukebox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

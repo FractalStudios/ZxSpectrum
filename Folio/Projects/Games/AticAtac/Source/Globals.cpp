@@ -13,14 +13,14 @@ namespace AticAtac
 
 // Globals.
 
+// The resource graphics cache.
+Folio::Core::Game::ResourceGraphicsCache    g_resourceGraphicsCache;
+
 // The background items list.
 BackgroundItemsList g_backgroundItemsList;      
 
 // The static sprites list.
 StaticSpritesList   g_staticSpritesList;        
-
-// The resource graphics cache.
-Folio::Core::Game::ResourceGraphicsCache    g_resourceGraphicsCache;
 
 // The main player.
 PlayerSpritePtr g_mainPlayer;

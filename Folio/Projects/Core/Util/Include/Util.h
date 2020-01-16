@@ -2,6 +2,7 @@
 
 // "Home-made" includes.
 #include    "AsyncSound.h"
+#include    "AsyncWaveOut.h"
 #include    "CriticalSection.h"
 #include    "DateTime.h"
 #include    "Descriptions.h"

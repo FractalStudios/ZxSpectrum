@@ -1,5 +1,6 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
+#include    "Globals.h"
 #include    "HighScoreScreen.h"
 
 namespace Folio
@@ -40,10 +41,7 @@ static  const   Folio::Core::Game::ItemAttributesList<HIGH_SCORE_SCREEN_ITEM_ID>
 };
 
 
-HighScoreScreen::HighScoreScreen (const InformationPanelPtr &informationPanel,
-                                  const HighScoreTable      &highScoreTable)
-:   m_informationPanel(informationPanel),
-    m_highScoreTable(highScoreTable)
+HighScoreScreen::HighScoreScreen ()
 {
 } // Endproc.
 
@@ -71,11 +69,11 @@ FolioStatus HighScoreScreen::BuildScreenItems (FolioHandle  dcHandle,
         case HIGH_SCORE_SCREEN_ITEM_INFORMATION_PANEL:
             // No players.
 
-            m_informationPanel->SetNumPlayers (0);
+            g_informationPanel->SetNumPlayers (0);
 
             // Query the information panel's items.
 
-            status = m_informationPanel->QueryItems (m_itemsList);
+            status = g_informationPanel->QueryItems (m_itemsList);
             break;
 
         case HIGH_SCORE_SCREEN_ITEM_BORDER:
@@ -104,32 +102,13 @@ FolioStatus HighScoreScreen::BuildScreenItems (FolioHandle  dcHandle,
         case HIGH_SCORE_SCREEN_ITEM_6_SCORE:
         case HIGH_SCORE_SCREEN_ITEM_6_INITIALS:
         case HIGH_SCORE_SCREEN_ITEM_COPYRIGHT_TEXT:
-            { 
-                // Create a high score screen text item.
+            // Add high score screen text item.
 
-                Folio::Core::Game::TextItemPtr  item(new Folio::Core::Game::TextItemPtr::element_type);
-                
-                status = item->Create (dcHandle,
-                                       DRAWING_ELEMENT_HIGH_SCORE_SCREEN_ITEM,
-                                       *Folio::Core::Game::ZxSpectrum::GetFont (),
-                                       itr->m_itemId,
-                                       itr->m_screenXLeft, 
-                                       itr->m_screenYTop,
-                                       Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE, 
-                                       Folio::Core::Game::ZxSpectrum::MapInkColour (itr->m_colour));
-
-                if (status == ERR_SUCCESS)
-                {
-                    // Set the high score screen item's text.
-
-                    SetItemText (*item.get ());
-            
-                    // Store the high score screen item in the high score screen items list.
-
-                    m_itemsList.push_back (item);
-                } // Endif.
-            
-            } // Endscope.
+            status = AddTextItem (dcHandle, 
+                                  DRAWING_ELEMENT_HIGH_SCORE_SCREEN_ITEM,
+                                  *Folio::Core::Game::ZxSpectrum::GetFont (),
+                                  *itr,
+                                  SetItemText);
             break;
 
         default:
@@ -160,9 +139,11 @@ FolioStatus HighScoreScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
 {
     FolioStatus status = ERR_SUCCESS;
 
+    // Have we displayed the high score screen for long enough?
+
     if (Folio::Core::Util::DateTime::GetCurrentTickCount () >= (m_initialFrameTickCount + MAX_DISPLAY_SCREEN_TIME))
     {
-        // Stop displaying the selection screen.
+        // Yes. Stop displaying the high score screen.
 
         StopDisplaying ();
     } // Endif.
@@ -184,11 +165,11 @@ void    HighScoreScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_ty
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_1_SCORE:
-        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribeScore (m_highScoreTable.GetHighScore (0).m_score));
+        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribeScore (g_highScoreTable.GetHighScore (0).m_score));
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_1_INITIALS:
-        item.GetGdiRasterText ()->SetTextString (m_highScoreTable.GetHighScore (0).m_initials);
+        item.GetGdiRasterText ()->SetTextString (g_highScoreTable.GetHighScore (0).m_initials);
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_2_POSITION_TEXT:
@@ -196,11 +177,11 @@ void    HighScoreScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_ty
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_2_SCORE:
-        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribeScore (m_highScoreTable.GetHighScore (1).m_score));
+        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribeScore (g_highScoreTable.GetHighScore (1).m_score));
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_2_INITIALS:
-        item.GetGdiRasterText ()->SetTextString (m_highScoreTable.GetHighScore (1).m_initials);
+        item.GetGdiRasterText ()->SetTextString (g_highScoreTable.GetHighScore (1).m_initials);
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_3_POSITION_TEXT:
@@ -208,11 +189,11 @@ void    HighScoreScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_ty
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_3_SCORE:
-        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribeScore (m_highScoreTable.GetHighScore (2).m_score));
+        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribeScore (g_highScoreTable.GetHighScore (2).m_score));
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_3_INITIALS:
-        item.GetGdiRasterText ()->SetTextString (m_highScoreTable.GetHighScore (2).m_initials);
+        item.GetGdiRasterText ()->SetTextString (g_highScoreTable.GetHighScore (2).m_initials);
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_4_POSITION_TEXT:
@@ -220,11 +201,11 @@ void    HighScoreScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_ty
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_4_SCORE:
-        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribeScore (m_highScoreTable.GetHighScore (3).m_score));
+        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribeScore (g_highScoreTable.GetHighScore (3).m_score));
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_4_INITIALS:
-        item.GetGdiRasterText ()->SetTextString (m_highScoreTable.GetHighScore (3).m_initials);
+        item.GetGdiRasterText ()->SetTextString (g_highScoreTable.GetHighScore (3).m_initials);
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_5_POSITION_TEXT:
@@ -232,11 +213,11 @@ void    HighScoreScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_ty
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_5_SCORE:
-        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribeScore (m_highScoreTable.GetHighScore (4).m_score));
+        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribeScore (g_highScoreTable.GetHighScore (4).m_score));
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_5_INITIALS:
-        item.GetGdiRasterText ()->SetTextString (m_highScoreTable.GetHighScore (4).m_initials);
+        item.GetGdiRasterText ()->SetTextString (g_highScoreTable.GetHighScore (4).m_initials);
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_6_POSITION_TEXT:
@@ -244,11 +225,11 @@ void    HighScoreScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_ty
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_6_SCORE:
-        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribeScore (m_highScoreTable.GetHighScore (5).m_score));
+        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribeScore (g_highScoreTable.GetHighScore (5).m_score));
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_6_INITIALS:
-        item.GetGdiRasterText ()->SetTextString (m_highScoreTable.GetHighScore (5).m_initials);
+        item.GetGdiRasterText ()->SetTextString (g_highScoreTable.GetHighScore (5).m_initials);
         break;
 
     case HIGH_SCORE_SCREEN_ITEM_COPYRIGHT_TEXT:

@@ -5,11 +5,9 @@
 #include    <vector>
 
 // "Home-made" includes.
-#include    <Applet.h>
 #include    <Game.h>
+#include    "CollisionGrid.h"
 #include    "DrawingElement.h"
-#include    "PlayerSprite.h"
-#include    "SpriteGraphics.h"
 
 #pragma pack(push, 1)
 
@@ -21,10 +19,6 @@ namespace Games
 
 namespace SabreWulf
 {
-
-class   InformationPanel;    // Pre-declare class
-using   InformationPanelPtr = std::shared_ptr<InformationPanel>;
-
 
 // Object sprite identifier enumeration.
 enum OBJECT_SPRITE_ID
@@ -53,22 +47,23 @@ public:
     ObjectSprite ();
     ~ObjectSprite ();
 
-    FolioStatus Create (FolioHandle                             dcHandle,
-                        const SpriteGraphicsMapPtr              &spriteGraphicsMap,
-                        OBJECT_SPRITE_ID                        objectSpriteId,
-                        Int32                                   screenXLeft,
-                        Int32                                   screenYBottom);
-
+    FolioStatus Create (FolioHandle         dcHandle,
+                        OBJECT_SPRITE_ID    objectSpriteId,
+                        UInt32              currentScreenMapIndex,
+                        Int32               screenXLeft,
+                        Int32               screenYBottom);
     FolioStatus ChangeObjectSpriteColour ();
-    FolioStatus HandlePlayerCollision (PlayerSpritePtr      &playerSprite, 
-                                       InformationPanelPtr  &informationPanel);
+    FolioStatus HandlePlayerCollision (bool &foundAmuletPiece);
+
+    OBJECT_SPRITE_ID    GetObjectSpriteId () const;
 
 private:
-    OBJECT_SPRITE_ID                        m_objectSpriteId;       // The identifier of the object sprite.
-    Folio::Core::Game::ZxSpectrum::COLOUR   m_objectSpriteColour;   // The colour of the object sprite.
+    OBJECT_SPRITE_ID    m_objectSpriteId;   // The identifier of the object sprite.
 
-    UInt32  m_colourChangeCount;    // The colour change count.
-    UInt32  m_colourChangeIndex;    // The colour change index.
+    UInt32  m_colourChangeCounter;  // The colour change counter of the object sprite (if the object sprite supports colour change).
+    UInt32  m_colourChangeIndex;    // The colour change index of the object sprite (if the object sprite supports colour change).
+
+    static  Folio::Core::Util::Sound::SoundSample   m_objectCollectedSoundSample;   // The object collected sound sample.
 
     FolioStatus ChangeAmuletPieceColour ();
 
@@ -92,6 +87,21 @@ typedef Folio::Core::Game::SpriteDrawingElement<ObjectSpritePtr>    ObjectSprite
 
 // Object sprite drawing elements list.
 typedef std::vector<ObjectSpriteDrawingElement> ObjectSpriteDrawingElementsList;
+
+
+// Routines.
+
+extern  FolioStatus InitialiseScreenObjectSprites (FolioHandle                      dcHandle,
+                                                   ObjectSpriteDrawingElementsList  &objectSpriteDrawingElementsList,
+                                                   CollisionGrid                    &collisionGrid);
+extern  FolioStatus CheckScreenObjectSprites (Gdiplus::Graphics                 &graphics, 
+                                              ObjectSpriteDrawingElementsList   &objectSpriteDrawingElementsList);
+extern  FolioStatus StoreScreenObjectSpriteBackgrounds (Gdiplus::Graphics               &graphics,
+                                                        ObjectSpriteDrawingElementsList &objectSpriteDrawingElementsList);
+extern  FolioStatus RestoreScreenObjectSpriteBackgrounds (Gdiplus::Graphics                 &graphics,
+                                                          ObjectSpriteDrawingElementsList   &objectSpriteDrawingElementsList);
+extern  FolioStatus DrawScreenObjectSprites (Gdiplus::Graphics                  &graphics,
+                                             ObjectSpriteDrawingElementsList    &objectSpriteDrawingElementsList);
 
 } // Endnamespace.
 

@@ -1,5 +1,6 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
+#include    "Globals.h"
 #include    "ScreenMap.h"
 
 namespace Folio
@@ -11,31 +12,30 @@ namespace Games
 namespace SabreWulf
 {
 
-// There are 48 screen types in total.
-
-// The screen map layout (256 screens 0x00-0x2f).
-const   ScreenMap::ScreenNumber ScreenMap::m_screenMapLayout [] =
+// The screen map layout (256 screens).
+// There are 48 (0x00-0x2f) screen types in total.
+const   ScreenMap::ScreenNumbersList    ScreenMap::m_screenMap
 {
-       0x00, 0x14, 0x14, 0x1a, 0x16, 0x14, 0x14, 0x16, 0x14, 0x1a, 0x1b, 0x14, 0x1a, 0x14, 0x16, 0x02,
-       0x26, 0x21, 0x1d, 0x1c, 0x11, 0x0c, 0x0d, 0x17, 0x1d, 0x17, 0x1d, 0x21, 0x11, 0x1f, 0x0b, 0x03,
-       0x25, 0x15, 0x15, 0x0d, 0x0b, 0x0c, 0x12, 0x18, 0x15, 0x11, 0x17, 0x18, 0x18, 0x12, 0x11, 0x1e,
-       0x25, 0x18, 0x11, 0x0c, 0x05, 0x12, 0x15, 0x20, 0x1c, 0x19, 0x11, 0x0b, 0x0b, 0x2d, 0x11, 0x03,
-       0x27, 0x1c, 0x15, 0x12, 0x08, 0x18, 0x15, 0x0d, 0x1f, 0x1f, 0x1c, 0x18, 0x15, 0x08, 0x11, 0x1e,
-       0x27, 0x21, 0x05, 0x11, 0x1f, 0x1c, 0x11, 0x0c, 0x12, 0x12, 0x0d, 0x17, 0x18, 0x0d, 0x0b, 0x03,
-       0x27, 0x17, 0x11, 0x0b, 0x1f, 0x0c, 0x11, 0x2e, 0x0b, 0x11, 0x0c, 0x15, 0x11, 0x1f, 0x17, 0x1e,
-       0x25, 0x11, 0x17, 0x08, 0x12, 0x0d, 0x0b, 0x0a, 0x0f, 0x0a, 0x0c, 0x11, 0x17, 0x0d, 0x17, 0x22,
-       0x28, 0x0b, 0x0b, 0x1f, 0x2d, 0x12, 0x15, 0x10, 0x07, 0x10, 0x12, 0x15, 0x20, 0x1f, 0x1c, 0x23,
-       0x25, 0x05, 0x18, 0x1d, 0x0b, 0x17, 0x11, 0x0e, 0x06, 0x0e, 0x2f, 0x11, 0x0c, 0x12, 0x1d, 0x03,
-       0x25, 0x20, 0x1c, 0x19, 0x15, 0x18, 0x15, 0x12, 0x08, 0x12, 0x11, 0x17, 0x12, 0x15, 0x20, 0x1e,
-       0x28, 0x21, 0x1d, 0x1f, 0x1c, 0x08, 0x20, 0x17, 0x1d, 0x1c, 0x15, 0x0b, 0x17, 0x0b, 0x1f, 0x22,
-       0x27, 0x0b, 0x2d, 0x12, 0x1d, 0x1f, 0x21, 0x11, 0x1c, 0x0d, 0x17, 0x08, 0x18, 0x18, 0x1d, 0x22,
-       0x25, 0x18, 0x05, 0x05, 0x20, 0x21, 0x20, 0x0b, 0x1f, 0x0c, 0x11, 0x1f, 0x1c, 0x15, 0x18, 0x23,
-       0x29, 0x08, 0x19, 0x15, 0x12, 0x20, 0x21, 0x19, 0x1d, 0x21, 0x15, 0x1d, 0x1f, 0x1c, 0x15, 0x23,
-       0x04, 0x2a, 0x2c, 0x2b, 0x2b, 0x2a, 0x2b, 0x2a, 0x2b, 0x2b, 0x2b, 0x2b, 0x2a, 0x2a, 0x2b, 0x09,
+    0x00, 0x14, 0x14, 0x1a, 0x16, 0x14, 0x14, 0x16, 0x14, 0x1a, 0x1b, 0x14, 0x1a, 0x14, 0x16, 0x02,
+    0x26, 0x21, 0x1d, 0x1c, 0x11, 0x0c, 0x0d, 0x17, 0x1d, 0x17, 0x1d, 0x21, 0x11, 0x1f, 0x0b, 0x03,
+    0x25, 0x15, 0x15, 0x0d, 0x0b, 0x0c, 0x12, 0x18, 0x15, 0x11, 0x17, 0x18, 0x18, 0x12, 0x11, 0x1e,
+    0x25, 0x18, 0x11, 0x0c, 0x05, 0x12, 0x15, 0x20, 0x1c, 0x19, 0x11, 0x0b, 0x0b, 0x2d, 0x11, 0x03,
+    0x27, 0x1c, 0x15, 0x12, 0x08, 0x18, 0x15, 0x0d, 0x1f, 0x1f, 0x1c, 0x18, 0x15, 0x08, 0x11, 0x1e,
+    0x27, 0x21, 0x05, 0x11, 0x1f, 0x1c, 0x11, 0x0c, 0x12, 0x12, 0x0d, 0x17, 0x18, 0x0d, 0x0b, 0x03,
+    0x27, 0x17, 0x11, 0x0b, 0x1f, 0x0c, 0x11, 0x2e, 0x0b, 0x11, 0x0c, 0x15, 0x11, 0x1f, 0x17, 0x1e,
+    0x25, 0x11, 0x17, 0x08, 0x12, 0x0d, 0x0b, 0x0a, 0x0f, 0x0a, 0x0c, 0x11, 0x17, 0x0d, 0x17, 0x22,
+    0x28, 0x0b, 0x0b, 0x1f, 0x2d, 0x12, 0x15, 0x10, 0x07, 0x10, 0x12, 0x15, 0x20, 0x1f, 0x1c, 0x23,
+    0x25, 0x05, 0x18, 0x1d, 0x0b, 0x17, 0x11, 0x0e, 0x06, 0x0e, 0x2f, 0x11, 0x0c, 0x12, 0x1d, 0x03,
+    0x25, 0x20, 0x1c, 0x19, 0x15, 0x18, 0x15, 0x12, 0x08, 0x12, 0x11, 0x17, 0x12, 0x15, 0x20, 0x1e,
+    0x28, 0x21, 0x1d, 0x1f, 0x1c, 0x08, 0x20, 0x17, 0x1d, 0x1c, 0x15, 0x0b, 0x17, 0x0b, 0x1f, 0x22,
+    0x27, 0x0b, 0x2d, 0x12, 0x1d, 0x1f, 0x21, 0x11, 0x1c, 0x0d, 0x17, 0x08, 0x18, 0x18, 0x1d, 0x22,
+    0x25, 0x18, 0x05, 0x05, 0x20, 0x21, 0x20, 0x0b, 0x1f, 0x0c, 0x11, 0x1f, 0x1c, 0x15, 0x18, 0x23,
+    0x29, 0x08, 0x19, 0x15, 0x12, 0x20, 0x21, 0x19, 0x1d, 0x21, 0x15, 0x1d, 0x1f, 0x1c, 0x15, 0x23,
+    0x04, 0x2a, 0x2c, 0x2b, 0x2b, 0x2a, 0x2b, 0x2a, 0x2b, 0x2b, 0x2b, 0x2b, 0x2a, 0x2a, 0x2b, 0x09,
 };
 
 
-// Orchid screen positions (1 per screen type { 0x00, 0x00, } - means no orchid).
+// Orchid screen positions (1 per screen type. { 0x00, 0x00, } - means no orchid).
 const   ScreenMap::ScreenPositionsList  ScreenMap::m_orchidScreenPositions =
 {
     { 0x38, 0x3f, }, { 0x00, 0x00, }, { 0x50, 0x77, }, { 0x30, 0x7f, }, { 0x50, 0x7f, }, { 0xa8, 0x7f, }, { 0xd8, 0x7f, }, { 0x30, 0x47, },
@@ -47,17 +47,17 @@ const   ScreenMap::ScreenPositionsList  ScreenMap::m_orchidScreenPositions =
 };
 
 
-// Object screen positions (4 per screen type).
-const   ScreenMap::ScreenPositionsList  ScreenMap::m_objectScreenPositions= 
+// Object screen positions (4 per screen type { 0x00, 0x00, } - means no object).
+const   ScreenMap::ScreenPositionsList  ScreenMap::m_objectScreenPositions = 
 {
     { 0x50, 0x3f, }, { 0x40, 0x7f, }, { 0x88, 0x7f, }, { 0xd0, 0x7f, }, 
     { 0x00, 0x00, }, { 0x00, 0x00, }, { 0x00, 0x00, }, { 0x00, 0x00, },
     { 0xb8, 0x3f, }, { 0xb8, 0x7f, }, { 0x20, 0x7f, }, { 0x70, 0x87, },
     { 0x20, 0x3f, }, { 0x50, 0x7f, }, { 0x70, 0x3f, }, { 0xb0, 0x7f, },
-    { 0x50, 0x27, }, { 0x78, 0x7f, }, { 0xb8, 0x7f, }, { 0xd8, 0x3f, },
+    { 0x50, 0x3f, }, { 0x78, 0x7f, }, { 0xb8, 0x7f, }, { 0xd8, 0x3f, },
     { 0x20, 0x5f, }, { 0x58, 0x57, }, { 0x78, 0x77, }, { 0xd0, 0x67, },
     { 0x08, 0x7f, }, { 0x58, 0x3f, }, { 0x78, 0x7f, }, { 0xb0, 0x3f, },
-    { 0x30, 0x7f, }, { 0x48, 0x67, }, { 0xa0, 0x3f, }, { 0xc8, 0x5f, },
+    { 0x30, 0x7f, }, { 0x48, 0x3f, }, { 0xa0, 0x3f, }, { 0xc8, 0x5f, },
     { 0x20, 0x67, }, { 0x68, 0x3f, }, { 0x88, 0x7f, }, { 0xc8, 0x57, },
     { 0x28, 0x7f, }, { 0x70, 0x7f, }, { 0x98, 0x3f, }, { 0xb0, 0x7f, },
     { 0x10, 0x7f, }, { 0x48, 0x3f, }, { 0xa8, 0x77, }, { 0xc8, 0x77, },
@@ -101,27 +101,25 @@ const   ScreenMap::ScreenPositionsList  ScreenMap::m_objectScreenPositions=
 };
 
 
-// The amulet piece screen locations (4 pieces, 8 separate combinations).
-const   ScreenMap::AmuletPieceScreenLocationsList   ScreenMap::m_amuletPieceScreenLocations =
+// The amulet piece screen index list (4 pieces, 8 separate combinations).
+const   ScreenMap::ScreenIndexList  ScreenMap::m_amuletPieceScreenIndexList =
 {
-//  Piece1  Piece2  Piece3  Piece4
-    0x43,   0x91,   0x4d,   0xcb,    
-    0x9d,   0xac,   0x2d,   0x26,
-    0xe1,   0x73,   0x44,   0x2d,
-    0x35,   0xc3,   0x4d,   0xa9,
-    0x8a,   0x4d,   0xe1,   0x52,
-    0x43,   0x58,   0x39,   0xe7,
-    0x59,   0xa7,   0xe2,   0x91,
-    0x26,   0x35,   0xcb,   0xa3,
+//  Top-left piece      Top-right Piece     Bottom-left piece   Bottom-right Piece
+    0x43,               0x91,               0x4d,               0xcb,    
+    0x9d,               0xac,               0x2d,               0x26,
+    0xe1,               0x73,               0x44,               0x2d,
+    0x35,               0xc3,               0x4d,               0xa9,
+    0x8a,               0x4d,               0xe1,               0x52,
+    0x43,               0x58,               0x39,               0xe7,
+    0x59,               0xa7,               0xe2,               0x91,
+    0x26,               0x35,               0xcb,               0xa3,
 };
 
-UInt32  ScreenMap::m_amuletPieceScreenLocationsIndex = 0;   // The amulet piece screen locations index.
+UInt32  ScreenMap::m_amuletPieceScreenIndexListIndex = 0;   // The current index into the amulet piece screen index list.
 
 
-ScreenMap::ScreenMap (const SpriteGraphicsMapPtr &spriteGraphicsMap)
-:   m_spriteGraphicsMap(spriteGraphicsMap),
-    m_map(m_screenMapLayout, (m_screenMapLayout + (sizeof (m_screenMapLayout) / sizeof (ScreenNumber)))),
-    m_currentScreenIndex(INITIAL_SCREEN_INDEX)
+ScreenMap::ScreenMap ()
+:   m_currentScreenMapIndex(INITIAL_SCREEN_INDEX)
 {
 } // Endproc.
 
@@ -133,74 +131,68 @@ ScreenMap::~ScreenMap ()
 
 void    ScreenMap::ScatterObjects ()
 {
-    // Get the amulet piece screen locations index.
+    // Get the random index into the amulet piece screen index list.
 
-    m_amuletPieceScreenLocationsIndex = 
-        Folio::Core::Util::Random::GetRandomNumber (m_amuletPieceScreenLocations.size () / MAX_AMULET_PIECES - 1) * MAX_AMULET_PIECES;
+    m_amuletPieceScreenIndexListIndex = 
+        Folio::Core::Util::Random::GetRandomNumber (m_amuletPieceScreenIndexList.size () / MAX_AMULET_PIECES - 1) * MAX_AMULET_PIECES;
 } // Endproc.
 
 
-UInt32  ScreenMap::GetTotalNumScreens () const
+UInt32  ScreenMap::GetCurrentScreenMapIndex () const
 {
-    return (m_map.size ());
+    return (m_currentScreenMapIndex);
 } // Endproc.
 
 
-UInt32  ScreenMap::GetCurrentScreenIndex () const
-{
-    return (m_currentScreenIndex);
-} // Endproc.
-
-
-UInt32  ScreenMap::GetNewScreenIndex (CollisionGrid::ScreenExit::ORIENTATION orientation)
+UInt32  ScreenMap::MoveToNewScreen (CollisionGrid::ScreenExit::ORIENTATION orientation)
 {
     switch (orientation)
     {
     case CollisionGrid::ScreenExit::TOP:
-        if (m_currentScreenIndex >= MAX_SCREEN_MAP_COLUMNS)
+        if (m_currentScreenMapIndex >= MAX_SCREEN_MAP_COLUMNS)
         {
-            m_currentScreenIndex -= MAX_SCREEN_MAP_COLUMNS;
+            m_currentScreenMapIndex -= MAX_SCREEN_MAP_COLUMNS;
         } // Endif.
 
         else
         {
-            m_currentScreenIndex += (MAX_SCREEN_MAP_COLUMNS * (MAX_SCREEN_MAP_ROWS - 1));
+            m_currentScreenMapIndex += (MAX_SCREEN_MAP_COLUMNS * (MAX_SCREEN_MAP_ROWS - 1));
         } // Endelse.
         break;
 
     case CollisionGrid::ScreenExit::BOTTOM:
-        if (m_currentScreenIndex <= (MAX_SCREEN_MAP_COLUMNS * (MAX_SCREEN_MAP_ROWS - 1)))
+        if (m_currentScreenMapIndex <= (MAX_SCREEN_MAP_COLUMNS * (MAX_SCREEN_MAP_ROWS - 1)))
         {
-            m_currentScreenIndex += MAX_SCREEN_MAP_COLUMNS;
+            m_currentScreenMapIndex += MAX_SCREEN_MAP_COLUMNS;
         } // Endif.
 
         else
         {
-            m_currentScreenIndex -= (MAX_SCREEN_MAP_COLUMNS * (MAX_SCREEN_MAP_ROWS - 1));
+            m_currentScreenMapIndex -= (MAX_SCREEN_MAP_COLUMNS * (MAX_SCREEN_MAP_ROWS - 1));
         } // Endelse.
         break;
 
     case CollisionGrid::ScreenExit::LEFT:
-        if ((m_currentScreenIndex % MAX_SCREEN_MAP_COLUMNS) == 0)
+        if ((m_currentScreenMapIndex % MAX_SCREEN_MAP_COLUMNS) == 0)
         {
-            m_currentScreenIndex += MAX_SCREEN_MAP_COLUMNS;
+            m_currentScreenMapIndex += MAX_SCREEN_MAP_COLUMNS;
         } // Endif.
 
         else
         {
-            m_currentScreenIndex--;
+            m_currentScreenMapIndex--;
         } // Endelse.
         break;
 
     case CollisionGrid::ScreenExit::RIGHT:
-        if ((m_currentScreenIndex + 1) % MAX_SCREEN_MAP_COLUMNS)
+        if ((m_currentScreenMapIndex + 1) % MAX_SCREEN_MAP_COLUMNS)
         {
-            m_currentScreenIndex++;
+            m_currentScreenMapIndex++;
         } // Endif.
 
         else
         {
-            m_currentScreenIndex -= MAX_SCREEN_MAP_COLUMNS;
+            m_currentScreenMapIndex -= MAX_SCREEN_MAP_COLUMNS;
         } // Endelse.
         break;
 
@@ -208,42 +200,44 @@ UInt32  ScreenMap::GetNewScreenIndex (CollisionGrid::ScreenExit::ORIENTATION ori
         break;
     } // Endswitch.
 
-    return (m_currentScreenIndex);
+    return (m_currentScreenMapIndex);
 } // Endproc.
 
 
 ScreenMap::ScreenNumber ScreenMap::GetCurrentScreenNumber () const
 {
-    return (m_map [m_currentScreenIndex]);
+    return (m_screenMap [m_currentScreenMapIndex]);
 } // Endproc.
 
 
-ScreenMap::ScreenNumber ScreenMap::GetScreenNumber (UInt32 screenIndex) const
+ScreenMap::ScreenNumber ScreenMap::GetScreenNumber (UInt32 screenMapIndex) const
 {
-    return (m_map [screenIndex]);
+    return (m_screenMap [screenMapIndex]);
 } // Endproc.
 
 
-bool    ScreenMap::IsScreenOrchidSprite (OrchidSpritePtr &orchidSprite) const
+bool    ScreenMap::IsScreenOrchidSprite () const
 {
     // Get the current screen number.
     
-    ScreenNumber    screenNumber = GetCurrentScreenNumber ();
+    ScreenNumber    currentScreenNumber = GetCurrentScreenNumber ();
 
     // Is there an orchid on the screen?
 
-    bool    isOrchidOnScreen = ((m_orchidScreenPositions [screenNumber].X != 0) && 
-                                (m_orchidScreenPositions [screenNumber].Y != 0));
+    return ((m_orchidScreenPositions [currentScreenNumber].X != 0) && 
+            (m_orchidScreenPositions [currentScreenNumber].Y != 0));
+} // Endproc.
 
-    if (isOrchidOnScreen)
-    {
-        // Yes. Note the orchid's screen position.
 
-        orchidSprite->SetScreenBottomLeft (m_orchidScreenPositions [screenNumber].X,
-                                           m_orchidScreenPositions [screenNumber].Y);
-    } // Endif.
+Int32   ScreenMap::GetScreenOrchidSpriteScreenXLeft () const
+{
+    return (m_orchidScreenPositions [GetCurrentScreenNumber ()].X);
+} // Endproc.
 
-    return (isOrchidOnScreen);
+
+Int32   ScreenMap::GetScreenOrchidSpriteScreenYBottom () const
+{
+    return (m_orchidScreenPositions [GetCurrentScreenNumber ()].Y);
 } // Endproc.
 
 
@@ -256,67 +250,42 @@ FolioStatus ScreenMap::QueryScreenObjectSprites (FolioHandle        dcHandle,
 
     // Get the current screen number.
 
-    ScreenNumber    screenNumber = GetCurrentScreenNumber ();
+    ScreenNumber    currentScreenNumber = GetCurrentScreenNumber ();
 
-    // Is there an amulet piece on the screen?
+    // Get the random number of the screen's object sprites.
 
-    OBJECT_SPRITE_ID    amuletPieceId = OBJECT_SPRITE_UNDEFINED;    // Initialise!
-    bool    isAmuletPieceOnScreen = IsAmuletPieceOnScreen (m_currentScreenIndex, amuletPieceId);
-
-    // Get the random  number of the screen's object sprites.
-
-    UInt32  numScreenObjectSprites = isAmuletPieceOnScreen 
-                                     ? Folio::Core::Util::Random::GetRandomNumber (MAX_SCREEN_OBJECT_SPRITES - 1) + 1 
-                                     : Folio::Core::Util::Random::GetRandomNumber (MAX_SCREEN_OBJECT_SPRITES);
-
-    bool    screenPositionFilled [MAX_OBJECT_POSITIONS_PER_SCREEN] = {false,};  // Initialise!
+    UInt32  numScreenObjectSprites = 4;
 
     for (UInt32 screenObjectSpriteCount = 0; 
          (status == ERR_SUCCESS) && (screenObjectSpriteCount < numScreenObjectSprites); 
          ++screenObjectSpriteCount)
     {
-        // Get an empty screen position index.
+        // Calculate the object sprite's screen position index.
 
-        UInt32  objectSpriteScreenPositionIndex = Folio::Core::Util::Random::GetRandomNumber (MAX_OBJECT_POSITIONS_PER_SCREEN - 1);
-          
-        while (screenPositionFilled [objectSpriteScreenPositionIndex])
+        UInt32  objectSpriteScreenPositionIndex = screenObjectSpriteCount + (currentScreenNumber * MAX_OBJECT_POSITIONS_PER_SCREEN);
+
+        // Is the object sprite's screen position valid.
+
+        if ((m_objectScreenPositions [objectSpriteScreenPositionIndex].X != 0) &&
+            (m_objectScreenPositions [objectSpriteScreenPositionIndex].Y != 0))
         {
-            objectSpriteScreenPositionIndex = Folio::Core::Util::Random::GetRandomNumber (MAX_OBJECT_POSITIONS_PER_SCREEN - 1);
-        } // Endwhile.
+            // Yes. Create the screen's object sprite.
 
-        screenPositionFilled [objectSpriteScreenPositionIndex] = true;
+            ObjectSpritePtr objectSprite(new ObjectSpritePtr::element_type);
 
-        objectSpriteScreenPositionIndex += (screenNumber * MAX_OBJECT_POSITIONS_PER_SCREEN);
-
-        // Create the screen's object sprite.
-
-        ObjectSpritePtr objectSprite(new ObjectSpritePtr::element_type);
-
-        if (isAmuletPieceOnScreen)
-        {
             status = objectSprite->Create (dcHandle, 
-                                           m_spriteGraphicsMap,
-                                           amuletPieceId,
-                                           m_objectScreenPositions [objectSpriteScreenPositionIndex].X,
-                                           m_objectScreenPositions [objectSpriteScreenPositionIndex].Y);
-        
-            isAmuletPieceOnScreen = false;
-        } // Endif.
-
-        else
-        {
-            status = objectSprite->Create (dcHandle, 
-                                           m_spriteGraphicsMap,
                                            static_cast<OBJECT_SPRITE_ID> (Folio::Core::Util::Random::GetRandomNumber (OBJECT_SPRITE_BOX, OBJECT_SPRITE_CHALICE)),
+                                           m_currentScreenMapIndex,
                                            m_objectScreenPositions [objectSpriteScreenPositionIndex].X,
                                            m_objectScreenPositions [objectSpriteScreenPositionIndex].Y);
-        } // Endelse.
 
-        if (status == ERR_SUCCESS)
-        {
-            // Add the screen's object sprite.
+            if (status == ERR_SUCCESS)
+            {
+                // Add the screen's object sprite to the object sprites list.
 
-            objectSpritesList.push_back (objectSprite);
+                objectSpritesList.push_back (objectSprite);
+            } // Endif.
+
         } // Endif.
 
     } // Endfor.
@@ -330,23 +299,131 @@ FolioStatus ScreenMap::QueryScreenObjectSprites (FolioHandle        dcHandle,
 } // Endproc.
 
 
-bool    ScreenMap::IsAmuletPieceOnScreen (UInt32            screenIndex,
+//FolioStatus ScreenMap::QueryScreenObjectSprites (FolioHandle        dcHandle,
+//                                                 ObjectSpritesList  &objectSpritesList) const
+//{
+//    FolioStatus status = ERR_SUCCESS;
+//
+//    objectSpritesList.clear (); // Initialise!
+//
+//    // Get the current screen number.
+//
+//    ScreenNumber    currentScreenNumber = GetCurrentScreenNumber ();
+//
+//    // Is there an amulet piece on the screen?
+//
+//    OBJECT_SPRITE_ID    amuletPieceId = OBJECT_SPRITE_UNDEFINED;    // Initialise!
+//    bool    isAmuletPieceOnScreen = IsAmuletPieceOnScreen (m_currentScreenMapIndex, amuletPieceId);
+//
+//    // Get the random number of the screen's object sprites.
+//
+//    UInt32  numScreenObjectSprites = isAmuletPieceOnScreen 
+//                                     ? Folio::Core::Util::Random::GetRandomNumber (MAX_SCREEN_OBJECT_SPRITES - 1) + 1 
+//                                     : Folio::Core::Util::Random::GetRandomNumber (MAX_SCREEN_OBJECT_SPRITES);
+//
+//    bool    screenPositionFilled [MAX_OBJECT_POSITIONS_PER_SCREEN] = {false,};  // Initialise!
+//
+//    for (UInt32 screenObjectSpriteCount = 0; 
+//         (status == ERR_SUCCESS) && (screenObjectSpriteCount < numScreenObjectSprites); 
+//         ++screenObjectSpriteCount)
+//    {
+//        // Get the object sprite's random empty screen position index.
+//
+//        UInt32  objectSpriteScreenPositionIndex = Folio::Core::Util::Random::GetRandomNumber (MAX_OBJECT_POSITIONS_PER_SCREEN - 1);
+//          
+//        while (screenPositionFilled [objectSpriteScreenPositionIndex])
+//        {
+//            objectSpriteScreenPositionIndex = Folio::Core::Util::Random::GetRandomNumber (MAX_OBJECT_POSITIONS_PER_SCREEN - 1);
+//        } // Endwhile.
+//
+//        screenPositionFilled [objectSpriteScreenPositionIndex] = true;
+//
+//        // Calculate the object sprite's screen position index.
+//
+//        objectSpriteScreenPositionIndex += (currentScreenNumber * MAX_OBJECT_POSITIONS_PER_SCREEN);
+//
+//        // Is the object sprite's screen position valid.
+//
+//        if ((m_objectScreenPositions [objectSpriteScreenPositionIndex].X != 0) &&
+//            (m_objectScreenPositions [objectSpriteScreenPositionIndex].Y != 0))
+//        {
+//              // Yes. Create the screen's object sprite.
+//      
+//              ObjectSpritePtr objectSprite(new ObjectSpritePtr::element_type);
+//      
+//              // Is there an amulet piece on the screen?
+//      
+//              if (isAmuletPieceOnScreen)
+//              {
+//                  // Yes. Add it.
+//      
+//                  status = objectSprite->Create (dcHandle, 
+//                                                 amuletPieceId,
+//                                                 m_currentScreenMapIndex,
+//                                                 m_objectScreenPositions [objectSpriteScreenPositionIndex].X,
+//                                                 m_objectScreenPositions [objectSpriteScreenPositionIndex].Y);
+//              
+//                  isAmuletPieceOnScreen = false;
+//              } // Endif.
+//
+//              else
+//              {
+//                  // No. Add a random object sprite.
+//
+//                  status = objectSprite->Create (dcHandle, 
+//                                                 static_cast<OBJECT_SPRITE_ID> (Folio::Core::Util::Random::GetRandomNumber (OBJECT_SPRITE_BOX, OBJECT_SPRITE_CHALICE)),
+//                                                 m_currentScreenMapIndex,
+//                                                 m_objectScreenPositions [objectSpriteScreenPositionIndex].X,
+//                                                 m_objectScreenPositions [objectSpriteScreenPositionIndex].Y);
+//              } // Endelse.
+//
+//              if (status == ERR_SUCCESS)
+//              {
+//                  // Add the screen's object sprite to the object sprites list.
+//
+//                  objectSpritesList.push_back (objectSprite);
+//              } // Endif.
+//
+//          } // Endif.
+//
+//    } // Endfor.
+//
+//    if (status != ERR_SUCCESS)
+//    {
+//        objectSpritesList.clear ();
+//    } // Endif.
+//
+//    return (status);
+//} // Endproc.
+//
+
+UInt32  ScreenMap::GetTotalNumScreens ()
+{
+    return (m_screenMap.size ());
+} // Endproc.
+
+
+bool    ScreenMap::IsAmuletPieceOnScreen (UInt32            screenMapIndex,
                                           OBJECT_SPRITE_ID  &amuletPieceId)
 {
-    bool    isAmuletPieceOnScreen = false;   // Initialise!
+    bool    isAmuletPieceOnScreen = false;  // Initialise!
 
     amuletPieceId = OBJECT_SPRITE_UNDEFINED;    // Initialise!
 
-    for (UInt32 index = m_amuletPieceScreenLocationsIndex; 
-         !isAmuletPieceOnScreen && (index < (m_amuletPieceScreenLocationsIndex + MAX_AMULET_PIECES)); 
+    for (UInt32 index = m_amuletPieceScreenIndexListIndex; 
+         !isAmuletPieceOnScreen && (index < (m_amuletPieceScreenIndexListIndex + MAX_AMULET_PIECES)); 
          ++index)
     {
-        isAmuletPieceOnScreen = (m_amuletPieceScreenLocations [index] == screenIndex);
+        // Is there an amulet piece on the screen?
+
+        isAmuletPieceOnScreen = (m_amuletPieceScreenIndexList [index] == screenMapIndex);
 
         if (isAmuletPieceOnScreen)
         {
+            // Yes. Get the amulet piece identifier.
+
             amuletPieceId = 
-                static_cast<OBJECT_SPRITE_ID> (OBJECT_SPRITE_AMULET_PIECE_TOP_LEFT + (index - m_amuletPieceScreenLocationsIndex));
+                static_cast<OBJECT_SPRITE_ID> (OBJECT_SPRITE_AMULET_PIECE_TOP_LEFT + (index - m_amuletPieceScreenIndexListIndex));
         } // Endif.
 
     } // Endfor.

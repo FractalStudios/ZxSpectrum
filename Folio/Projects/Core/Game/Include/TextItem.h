@@ -32,7 +32,11 @@ public:
                         Int32                                   screenYTop,
                         UInt32                                  screenScale,
                         Gdiplus::ARGB                           textColour = Folio::Core::Graphic::DEFAULT_TEXT_COLOUR,
-                        Gdiplus::ARGB                           backgroundColour = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR);
+                        Gdiplus::ARGB                           backgroundColour = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR,
+                        bool                                    gdiBitmapCacheRqd = false);
+   FolioStatus SetInvert (bool              invert,
+                          Gdiplus::Graphics &graphics, 
+                          bool              &redrawCanvas);
 
     Folio::Core::Graphic::GdiRasterTextPtr  GetGdiRasterText () const;
 

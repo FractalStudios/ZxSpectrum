@@ -1,8 +1,5 @@
 #pragma once
 
-// Windows includes.
-#include    <Windows.h>
-
 // "Home-made" includes.
 #include    <Base.h>
 #include    "ProcessSingleton.h"
@@ -26,13 +23,12 @@ namespace Sound
 class WaveOut : public ProcessSingleton<WaveOut>
 {
 public:
-    ~WaveOut  ();
+    ~WaveOut ();
 
-    FolioStatus Open (SOUND_CHANNELS    numSoundChannels,
+    FolioStatus Open (SOUND_CHANNELS    soundChannels,
                       UInt32            samplesPerSecond);
     FolioStatus Close ();
-    FolioStatus Reset ();
-    FolioStatus Play (UInt32                            duration,
+    FolioStatus Play (UInt32                            soundDuration,
                       const SoundSample::SampleBuffer&  sampleBuffer);
 
     bool    IsOpen () const;
@@ -45,15 +41,11 @@ protected:
 private:
     static  const   UInt32    TIME_THRESHOLD_RQD = 1;   // Time threshold.
 
-    HWAVEOUT    m_waveOutHandle; // The wave out handle.
+    FolioHandle m_waveOutHandle; ///< The wave out handle.
 
-    bool    m_playing;  // Indicates if the waveform-audio output device is playing.
+    bool    m_playing;  ///< Indicates if the waveform-audio output device is playing.
 
-    static  void    CALLBACK    Callback (HWAVEOUT  waveOutHandle,
-                                          UINT      message,
-                                          DWORD_PTR instance,
-                                          DWORD_PTR parameter1,
-                                          DWORD_PTR parameter2);
+    FolioStatus Reset ();
 
     /// Private copy constructor to prevent copying.
     WaveOut (const WaveOut& rhs);

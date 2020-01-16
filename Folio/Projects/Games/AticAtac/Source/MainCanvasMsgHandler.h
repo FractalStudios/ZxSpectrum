@@ -6,7 +6,6 @@
 #include    <Graphic.h>
 #include    "FallingSimulationScreen.h"
 #include    "GameOverScreen.h"
-#include    "Globals.h"
 #include    "InformationPanel.h"
 #include    "LoadingScreen.h"
 #include    "Screen.h"
@@ -31,6 +30,7 @@ public:
                           UInt32    screenScale);
     ~MainCanvasMsgHandler ();
 
+    // ACanvasMsgHandler method(s).
     virtual FolioStatus HandleCreateCanvasMsg (FolioHandle  wndHandle,
                                                UInt32       wParam,
                                                UInt32       lParam);

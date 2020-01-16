@@ -4,8 +4,8 @@
 #include    <memory>
 
 // "Home-made" includes.
+#include    <Applet.h>
 #include    "DrawingElement.h"
-#include    "InformationPanel.h"
 
 #pragma pack(push, 1)
 
@@ -36,18 +36,21 @@ enum GAME_COMPLETED_SCREEN_ITEM_ID
 class GameCompletedScreen : public Folio::Core::Applet::AScreen
 {
 public:
-    GameCompletedScreen (const InformationPanelPtr &informationPanel);
+    GameCompletedScreen ();
     ~GameCompletedScreen ();
 
 private:
-    const InformationPanelPtr  &m_informationPanel; // The information panel.
-
+    bool    m_finishedPlayingMainGameMusic; // Indicates if we've finished playing the main game music.
+    
     // AScreen method(s).
     virtual FolioStatus BuildScreenItems (FolioHandle dcHandle, 
                                           FolioHandle instanceHandle);
     virtual FolioStatus ProcessScreenInput ();    
+    virtual FolioStatus ProcessScreenFrame (UInt32 *frameRateIncrement);
 
-    void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
+    FolioStatus PlayMainGameMusic ();
+
+    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
 
     // Private copy constructor to prevent copying.
     GameCompletedScreen (const GameCompletedScreen& rhs);

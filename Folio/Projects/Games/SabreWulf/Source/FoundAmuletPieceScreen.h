@@ -4,8 +4,8 @@
 #include    <memory>
 
 // "Home-made" includes.
+#include    <Applet.h>
 #include    "DrawingElement.h"
-#include    "InformationPanel.h"
 
 #pragma pack(push, 1)
 
@@ -37,18 +37,21 @@ enum FOUND_AMULET_PIECE_SCREEN_ITEM_ID
 class FoundAmuletPieceScreen : public Folio::Core::Applet::AScreen
 {
 public:
-    FoundAmuletPieceScreen (const InformationPanelPtr &informationPanel);
+    FoundAmuletPieceScreen ();
     ~FoundAmuletPieceScreen ();
 
 private:
-    const InformationPanelPtr  &m_informationPanel; // The information panel.
+    bool    m_finishedPlayingFoundAmuletPieceMusic; // Indicates if we've finished playing the found amulet piece music.
 
     // AScreen method(s).
     virtual FolioStatus BuildScreenItems (FolioHandle dcHandle, 
                                           FolioHandle instanceHandle);
     virtual FolioStatus ProcessScreenInput ();    
+    virtual FolioStatus ProcessScreenFrame (UInt32 *frameRateIncrement);
 
-    void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
+    FolioStatus PlayFoundAmuletPieceMusic ();
+
+    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
 
     // Private copy constructor to prevent copying.
     FoundAmuletPieceScreen (const FoundAmuletPieceScreen& rhs);

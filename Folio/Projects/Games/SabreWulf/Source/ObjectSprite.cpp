@@ -1,7 +1,10 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
-#include    "InformationPanel.h"
+#include    "Globals.h"
 #include    "ObjectSprite.h"
+#include    "ResourceOwnerId.h"
+#include    "SpriteGraphics.h"
+#include    "Ultimate.h"
 
 namespace Folio
 {
@@ -32,11 +35,13 @@ static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<OBJECT_SPRIT
 };
 
 
+// Object sprite static members.
+Folio::Core::Util::Sound::SoundSample   ObjectSprite::m_objectCollectedSoundSample(Ultimate::CreateSoundSample (0x40, 0x30));   // The object collected sound sample.
+
 ObjectSprite::ObjectSprite ()
 :   m_objectSpriteId(OBJECT_SPRITE_UNDEFINED),
-    m_objectSpriteColour(Folio::Core::Game::ZxSpectrum::UNDEFINED),
-    m_colourChangeCount(0),
-    m_colourChangeIndex(0)
+    m_colourChangeCounter(0),
+    m_colourChangeIndex(FOLIO_INVALID_INDEX)
 {
 } // Endproc.
 
@@ -46,11 +51,11 @@ ObjectSprite::~ObjectSprite ()
 } // Endproc.
 
 
-FolioStatus ObjectSprite::Create (FolioHandle                   dcHandle, 
-                                  const SpriteGraphicsMapPtr    &spriteGraphicsMap,
-                                  OBJECT_SPRITE_ID              objectSpriteId,
-                                  Int32                         screenXLeft,
-                                  Int32                         screenYBottom)
+FolioStatus ObjectSprite::Create (FolioHandle       dcHandle, 
+                                  OBJECT_SPRITE_ID  objectSpriteId,
+                                  UInt32            currentScreenMapIndex,
+                                  Int32             screenXLeft,
+                                  Int32             screenYBottom)
 {
     // Get the object sprite's colour.
 
@@ -61,8 +66,10 @@ FolioStatus ObjectSprite::Create (FolioHandle                   dcHandle,
     Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<OBJECT_SPRITE_ID, SPRITE_ID> (dcHandle,
+                                                                                                       g_resourceGraphicsCache,
+                                                                                                       currentScreenMapIndex,
+                                                                                                       DRAWING_ELEMENT_OBJECT_SPRITE,
                                                                                                        objectSpriteId,
-                                                                                                       *spriteGraphicsMap,
                                                                                                        objectSpriteColour,
                                                                                                        g_objectSpriteGraphicCharacteristics,
                                                                                                        spriteGraphicAttributesList);
@@ -73,7 +80,7 @@ FolioStatus ObjectSprite::Create (FolioHandle                   dcHandle,
 
         const   Folio::Core::Game::SpriteGraphic    &spriteGraphic(spriteGraphicAttributesList.front ().m_spriteGraphicsList.front ());
 
-        // Calculate the initial screen Y top.
+        // Calculate the object sprite's screen Y top.
 
         Int32   screenYTop = Folio::Core::Game::ZxSpectrum::CalculateScreenYTop (screenYBottom, 
                                                                                  spriteGraphic->GetGraphicWidth (),
@@ -87,7 +94,8 @@ FolioStatus ObjectSprite::Create (FolioHandle                   dcHandle,
                                                            screenYTop,
                                                            Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE,
                                                            Folio::Core::Game::ZxSpectrum::MapInkColour (objectSpriteColour),
-                                                           Folio::Core::Game::NO_DIRECTION);
+                                                           Folio::Core::Game::NO_DIRECTION,
+                                                           &(g_resourceGraphicsCache));
 
         if (status == ERR_SUCCESS)
         {
@@ -97,8 +105,7 @@ FolioStatus ObjectSprite::Create (FolioHandle                   dcHandle,
 
             // Note the object sprite's attributes.
 
-            m_objectSpriteId        = objectSpriteId;
-            m_objectSpriteColour    = objectSpriteColour;
+            m_objectSpriteId = objectSpriteId;
         } // Endif.
 
     } // Endif.
@@ -117,6 +124,8 @@ FolioStatus ObjectSprite::ChangeObjectSpriteColour ()
     case OBJECT_SPRITE_AMULET_PIECE_TOP_RIGHT:
     case OBJECT_SPRITE_AMULET_PIECE_BOTTOM_LEFT:
     case OBJECT_SPRITE_AMULET_PIECE_BOTTOM_RIGHT:
+        // Change the amulet piece's colour.
+
         status = ChangeAmuletPieceColour ();
         break;
 
@@ -128,14 +137,21 @@ FolioStatus ObjectSprite::ChangeObjectSpriteColour ()
 } // Endproc.
 
 
-FolioStatus ObjectSprite::HandlePlayerCollision (PlayerSpritePtr        &playerSprite,
-                                                 InformationPanelPtr    &informationPanel)
+FolioStatus ObjectSprite::HandlePlayerCollision (bool &foundAmuletPiece)
 {
+    foundAmuletPiece = false;   // Initialise!
+
     FolioStatus status = ERR_SUCCESS;
 
-    // Increment the score.
+    // The player has collided with an object sprite.
 
-    informationPanel->IncrementScore (InformationPanel::SCORE_OBJECT_COLLECTED);
+    // Play the object collected sound (asynchronously).
+
+    Folio::Core::Util::Sound::PlayAsyncSoundSample (m_objectCollectedSoundSample);
+
+    // Add to the player's score.
+
+    g_informationPanel->AddPlayerScore (InformationPanel::SCORE_OBJECT_COLLECTED);
 
     switch (m_objectSpriteId)
     {
@@ -143,17 +159,19 @@ FolioStatus ObjectSprite::HandlePlayerCollision (PlayerSpritePtr        &playerS
     case OBJECT_SPRITE_AMULET_PIECE_TOP_RIGHT:
     case OBJECT_SPRITE_AMULET_PIECE_BOTTOM_LEFT:
     case OBJECT_SPRITE_AMULET_PIECE_BOTTOM_RIGHT:
-        // Found an amulet piece.
+        // The player has just found an amulet piece.
 
-        playerSprite->SetFoundAmuletPiece (true);
+        foundAmuletPiece = true;
 
-        informationPanel->SetFoundAmuletPiece (m_objectSpriteId);
+        g_informationPanel->SetFoundAmuletPiece (m_objectSpriteId);
         break;
     
     case OBJECT_SPRITE_EXTRA_LIFE:
-        // Increment player's life.
+        // The player has just found an extra life.
 
-        status = informationPanel->IncrementPlayerLife ();
+        // Increment the player's life.
+
+        status = g_informationPanel->IncrementPlayerLife ();
         break;
 
     default:
@@ -164,31 +182,41 @@ FolioStatus ObjectSprite::HandlePlayerCollision (PlayerSpritePtr        &playerS
 } // Endproc.
 
 
+OBJECT_SPRITE_ID    ObjectSprite::GetObjectSpriteId () const
+{
+    return (m_objectSpriteId);
+} // Endproc.
+
+
 FolioStatus ObjectSprite::ChangeAmuletPieceColour ()
 {
-    // The colour list.
-    static  const   std::vector<Gdiplus::ARGB>  s_colourList =
+    // The amulet piece colour list.
+    static  const   std::vector<Gdiplus::ARGB>  s_amuletPieceColourList =
     {
-        {   Folio::Core::Game::ZxSpectrum::MapInkColour (Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::YELLOW),    },
-        {   Folio::Core::Game::ZxSpectrum::MapInkColour (Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::WHITE),     },
-        {   Folio::Core::Game::ZxSpectrum::MapInkColour (Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::GREEN),     },
-        {   Folio::Core::Game::ZxSpectrum::MapInkColour (Folio::Core::Game::ZxSpectrum::BRIGHT | Folio::Core::Game::ZxSpectrum::CYAN),      },
+        {   Folio::Core::Game::ZxSpectrum::MapInkColour (Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::YELLOW)),    },
+        {   Folio::Core::Game::ZxSpectrum::MapInkColour (Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::WHITE)),     },
+        {   Folio::Core::Game::ZxSpectrum::MapInkColour (Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::GREEN)),     },
+        {   Folio::Core::Game::ZxSpectrum::MapInkColour (Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::CYAN)),      },
     };
 
     FolioStatus status = ERR_SUCCESS;
 
-    if (++m_colourChangeCount >= 4)
-    {
-        m_colourChangeCount = 0;    // Reset.
+    // Should the amulet piece's colour be changed?
 
-        if (++m_colourChangeIndex >= s_colourList.size ()) 
+    if (++m_colourChangeCounter >= 4)
+    {
+        // Yes.
+
+        m_colourChangeCounter = 0;  // Reset.
+
+        if (++m_colourChangeIndex >= s_amuletPieceColourList.size ()) 
         {
             m_colourChangeIndex = 0;
         } // Endif.
 
         // Change the object sprite's colour.
 
-        status = ChangeSpriteInkColour (s_colourList [m_colourChangeIndex]);
+        status = ChangeSpriteInkColour (s_amuletPieceColourList [m_colourChangeIndex]);
     } // Endif.
 
     return (status);
@@ -203,67 +231,180 @@ Folio::Core::Game::ZxSpectrum::COLOUR   ObjectSprite::GetObjectSpriteColour (OBJ
     {
     case OBJECT_SPRITE_BOX:
         objectSpriteColour = Folio::Core::Util::Random::GetRandomNumber (1)
-                             ? SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::RED)
-                             : SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::CYAN);
+                             ? Folio::Core::Game::ZxSpectrum::RED
+                             : Folio::Core::Game::ZxSpectrum::CYAN;
         break;
 
     case OBJECT_SPRITE_RING:
         objectSpriteColour = Folio::Core::Util::Random::GetRandomNumber (1)
-                             ? SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::MAGENTA)
-                             : SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::YELLOW);
+                             ? Folio::Core::Game::ZxSpectrum::MAGENTA
+                             : Folio::Core::Game::ZxSpectrum::YELLOW;
         break;
 
     case OBJECT_SPRITE_APPLE:
         objectSpriteColour = Folio::Core::Util::Random::GetRandomNumber (1)
-                             ? SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::RED)
-                             : SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::GREEN);
+                             ? Folio::Core::Game::ZxSpectrum::RED
+                             : Folio::Core::Game::ZxSpectrum::GREEN;
         break;
 
     case OBJECT_SPRITE_CHARM:
         objectSpriteColour = Folio::Core::Util::Random::GetRandomNumber (1)
-                             ? SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::MAGENTA)
-                             : SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::CYAN);
+                             ? Folio::Core::Game::ZxSpectrum::MAGENTA
+                             : Folio::Core::Game::ZxSpectrum::CYAN;
         break;
 
     case OBJECT_SPRITE_AMULET:
-        objectSpriteColour = SET_INK_COLOUR(Folio::Core::Util::Random::GetRandomNumber (Folio::Core::Game::ZxSpectrum::MAGENTA, 
-                                                                                        Folio::Core::Game::ZxSpectrum::YELLOW));
+        objectSpriteColour = Folio::Core::Util::Random::GetRandomNumber (Folio::Core::Game::ZxSpectrum::MAGENTA, 
+                                                                         Folio::Core::Game::ZxSpectrum::YELLOW);
         break;
 
     case OBJECT_SPRITE_EXTRA_LIFE:
-        objectSpriteColour = SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::RED);
+        objectSpriteColour = Folio::Core::Game::ZxSpectrum::RED;
         break;
 
     case OBJECT_SPRITE_MONEY_BAG:
         objectSpriteColour = Folio::Core::Util::Random::GetRandomNumber (1)
-                             ? SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::MAGENTA)
-                             : SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::YELLOW);
+                             ? Folio::Core::Game::ZxSpectrum::MAGENTA
+                             : Folio::Core::Game::ZxSpectrum::YELLOW;
         break;
 
     case OBJECT_SPRITE_SPEAR:   
         objectSpriteColour = Folio::Core::Util::Random::GetRandomNumber (1)
-                             ? SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::RED)
-                             : SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::GREEN);
+                             ? Folio::Core::Game::ZxSpectrum::RED
+                             : Folio::Core::Game::ZxSpectrum::GREEN;
         break;
 
     case OBJECT_SPRITE_CHALICE:
         objectSpriteColour = Folio::Core::Util::Random::GetRandomNumber (1)
-                             ? SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::CYAN)
-                             : SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::YELLOW);
+                             ? Folio::Core::Game::ZxSpectrum::CYAN
+                             : Folio::Core::Game::ZxSpectrum::YELLOW;
         break;
 
     case OBJECT_SPRITE_AMULET_PIECE_TOP_LEFT:
     case OBJECT_SPRITE_AMULET_PIECE_TOP_RIGHT:
     case OBJECT_SPRITE_AMULET_PIECE_BOTTOM_LEFT:
     case OBJECT_SPRITE_AMULET_PIECE_BOTTOM_RIGHT:
-        objectSpriteColour = SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::YELLOW); 
+        objectSpriteColour = Folio::Core::Game::ZxSpectrum::YELLOW; 
         break;
 
     default:
         break;
     } // Endswitch.
 
-    return (Folio::Core::Game::ZxSpectrum::BRIGHT | objectSpriteColour);
+    return (Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(objectSpriteColour));
+} // Endproc.
+
+
+static  FolioStatus AddScreenObjectSprite (const ObjectSpritePtr            &objectSprite,
+                                           ObjectSpriteDrawingElementsList  &objectSpriteDrawingElementsList, 
+                                           CollisionGrid                    &collisionGrid)
+{
+    // Create an object sprite drawing element.
+
+    ObjectSpriteDrawingElement  objectSpriteDrawingElement(DRAWING_ELEMENT_OBJECT_SPRITE, 
+                                                           objectSprite, 
+                                                           objectSprite->GetCollisionGridCellValue ());
+
+    // Add the object sprite to the current screen's collision grid.
+
+    FolioStatus status = collisionGrid.AddCellElement (*(objectSpriteDrawingElement.m_drawingElement));
+
+    if (status == ERR_SUCCESS)
+    {
+        // Add the object sprite to the current screen's object sprite drawing 
+        // elements list.
+
+        objectSpriteDrawingElementsList.push_back (objectSpriteDrawingElement);
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus InitialiseScreenObjectSprites (FolioHandle                      dcHandle,
+                                           ObjectSpriteDrawingElementsList  &objectSpriteDrawingElementsList,
+                                           CollisionGrid                    &collisionGrid)
+{
+    objectSpriteDrawingElementsList.clear ();   // Initialise!
+    
+    // Query the current screen's object sprites.
+
+    ObjectSpritesList   objectSpritesList;
+
+    FolioStatus status = g_screenMap.QueryScreenObjectSprites (dcHandle, objectSpritesList);
+
+    if ((status == ERR_SUCCESS) && !objectSpritesList.empty ())
+    {
+        // Add each object sprite to the current screen.
+
+        for (ObjectSpritesList::const_iterator itr = objectSpritesList.begin ();
+             (status == ERR_SUCCESS) && (itr != objectSpritesList.end ());
+             ++itr)
+        {
+            // Add the object sprite to the current screen.
+
+            status = AddScreenObjectSprite (*itr,
+                                            objectSpriteDrawingElementsList, 
+                                            collisionGrid);
+        } // Endfor.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus CheckScreenObjectSprites (Gdiplus::Graphics                 &graphics,
+                                      ObjectSpriteDrawingElementsList   &objectSpriteDrawingElementsList)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Any current screen object sprites?
+
+    if (!objectSpriteDrawingElementsList.empty ())
+    {
+        // Yes. Change the current screen's object sprite colours.
+
+        for (ObjectSpriteDrawingElementsList::iterator itr = objectSpriteDrawingElementsList.begin ();
+             (status == ERR_SUCCESS) && (itr != objectSpriteDrawingElementsList.end ());
+             ++itr)
+        {
+            // Get the object sprite.
+
+            ObjectSpritePtr &objectSprite(itr->m_sprite);
+
+            // Change the colour of the object sprite.
+
+            status = objectSprite->ChangeObjectSpriteColour ();
+        } // Endfor.
+    
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus StoreScreenObjectSpriteBackgrounds (Gdiplus::Graphics               &graphics,
+                                                ObjectSpriteDrawingElementsList &objectSpriteDrawingElementsList)
+{
+    return (Folio::Core::Game::StoreSpriteBackgrounds<ObjectSpriteDrawingElementsList> (graphics, 
+                                                                                        objectSpriteDrawingElementsList));
+} // Endproc.
+
+
+FolioStatus RestoreScreenObjectSpriteBackgrounds (Gdiplus::Graphics                 &graphics,
+                                                  ObjectSpriteDrawingElementsList   &objectSpriteDrawingElementsList)
+{
+    return (Folio::Core::Game::RestoreSpriteBackgrounds<ObjectSpriteDrawingElementsList> (graphics, 
+                                                                                          objectSpriteDrawingElementsList));
+} // Endproc.
+
+
+FolioStatus DrawScreenObjectSprites (Gdiplus::Graphics                  &graphics,
+                                     ObjectSpriteDrawingElementsList    &objectSpriteDrawingElementsList)
+{
+    return (Folio::Core::Game::DrawSprites<ObjectSpriteDrawingElementsList> (graphics, 
+                                                                             objectSpriteDrawingElementsList));
 } // Endproc.
 
 } // Endnamespace.

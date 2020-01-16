@@ -1,7 +1,6 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
 #include    "LoadingScreen.h"
-#include    "ZxSpectrum.h"
 
 namespace Folio
 {
@@ -20,15 +19,12 @@ static  const   Folio::Core::Game::ItemAttributesList<LOADING_SCREEN_ITEM_ID> g_
 };
 
 
-// Loading screen static members.
-UInt32  LoadingScreen::m_currentSoundSampleIndex = 0;   // The current sound sample index.
-Folio::Core::Util::Sound::SoundSamplesList  LoadingScreen::m_soundSamplesList;  // The sound samples list.
-
 LoadingScreen::LoadingScreen ()
+:   m_currentSoundSampleIndex(0)
 {
-    // Create the sound samples.
+    // Create the sound sample sequence.
 
-    CreateSoundSamples ();
+    CreateSoundSampleSequence ();
 } // Endproc.
 
 
@@ -53,28 +49,12 @@ FolioStatus LoadingScreen::BuildScreenItems (FolioHandle    dcHandle,
         switch (itr->m_itemId)
         {
         case LOADING_SCREEN_ITEM_GRAPHIC:
-            {
-                // Create a loading screen graphic item.
-            
-                Folio::Core::Game::GraphicItemPtr   item(new Folio::Core::Game::GraphicItemPtr::element_type);
-            
-                status = item->Create (dcHandle,
-                                       instanceHandle,
-                                       DRAWING_ELEMENT_LOADING_SCREEN_ITEM,
-                                       itr->m_bitmapResourceId,
-                                       itr->m_itemId,
-                                       itr->m_screenXLeft, 
-                                       itr->m_screenYTop,
-                                       Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE);
+            // Add loading screen graphic item.
 
-                if (status == ERR_SUCCESS)
-                {
-                    // Store the loading screen item in the loading screen items list.
-
-                    m_itemsList.push_back (item);
-                } // Endif.
-            
-            } // Endscope.
+            status = AddGraphicItem (dcHandle, 
+                                     instanceHandle ,
+                                     DRAWING_ELEMENT_LOADING_SCREEN_ITEM,
+                                     *itr);
             break;
 
         default:
@@ -88,19 +68,13 @@ FolioStatus LoadingScreen::BuildScreenItems (FolioHandle    dcHandle,
 } // Endproc.
 
 
-FolioStatus LoadingScreen::StartDisplayingScreen ()
-{
-    // Start from the beginning of the sound sample sequence.
-            
-    m_currentSoundSampleIndex = 0;
-
-    return (ERR_SUCCESS);
-} // Endproc.
-
-
 FolioStatus LoadingScreen::ProcessScreenInput ()
 {
-    if (Folio::Core::Util::KeyInput::IsAnyKeyDown ())
+    // Only process screen input once the loading screen's sound sample sequence 
+    // has finished.
+
+    if (IsSoundSampleSequenceFinished () &&
+        Folio::Core::Util::KeyInput::IsAnyKeyDown ())
     {
         // Stop displaying the loading screen.
 
@@ -121,7 +95,7 @@ FolioStatus LoadingScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
 } // Endproc.
 
 
-void    LoadingScreen::CreateSoundSamples ()
+void    LoadingScreen::CreateSoundSampleSequence ()
 {
     // Create each sound sample representing the required sound.
 
@@ -139,15 +113,21 @@ void    LoadingScreen::CreateSoundSamples ()
   
 void    LoadingScreen::PlaySoundSample ()
 {
-    // Have we completed the sound sample sequence?
+    // Have we finished the sound sample sequence?
 
-    if (m_currentSoundSampleIndex < m_soundSamplesList.size ())
+    if (!IsSoundSampleSequenceFinished ())
     {
         // No. Play the current sound sample.
 
         Folio::Core::Util::Sound::PlaySoundSample (m_soundSamplesList [m_currentSoundSampleIndex++]);
     } // Endif.
 
+} // Endproc.
+
+
+bool    LoadingScreen::IsSoundSampleSequenceFinished () const
+{
+    return (m_currentSoundSampleIndex >= m_soundSamplesList.size ());
 } // Endproc.
 
 } // Endnamespace.

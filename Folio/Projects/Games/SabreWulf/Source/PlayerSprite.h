@@ -4,12 +4,10 @@
 #include    <memory>
 
 // "Home-made" includes.
-#include    <Applet.h>
 #include    <Game.h>
-#include    <Util.h>
 #include    "CollisionGrid.h"
 #include    "DrawingElement.h"
-#include    "SpriteGraphics.h"
+#include    "ObjectSprite.h"
 
 #pragma pack(push, 1)
 
@@ -42,37 +40,30 @@ public:
     PlayerSprite ();
     ~PlayerSprite ();
 
-    FolioStatus Create (FolioHandle                 dcHandle,
-                        const SpriteGraphicsMapPtr  &spriteGraphicsMap);
+    FolioStatus Create (FolioHandle dcHandle);
     FolioStatus Start ();
-    Folio::Core::Game::Direction    UpdateDirection (Folio::Core::Game::Direction   direction, 
-                                                     bool                           keyDown);
-    FolioStatus CheckPlayer (Gdiplus::Graphics      &graphics,
-                             const CollisionGrid    &collisionGrid);
+    FolioStatus UpdateDirection (Folio::Core::Game::Direction   direction, 
+                                 bool                           keyDown);
+    FolioStatus CheckPlayerSprite (Gdiplus::Graphics                &graphics,
+                                   CollisionGrid                    &collisionGrid,
+                                   ObjectSpriteDrawingElementsList  &screenObjectSpriteDrawingElementsList);
 
-    FolioStatus SetTemporaryImmunity (Folio::Core::Game::ZxSpectrum::COLOUR playerSpriteColour);
-    FolioStatus SetTemporaryConfusion (Folio::Core::Game::ZxSpectrum::COLOUR playerSpriteColour);
-    FolioStatus SetTemporarySpeed (Folio::Core::Game::ZxSpectrum::COLOUR playerSpriteColour);
-    FolioStatus SetTemporarySickness (Folio::Core::Game::ZxSpectrum::COLOUR playerSpriteColour);
-    FolioStatus ResetTemporaryState ();
-
-    void    SetFireKeyDown (bool fireKeyDown);
-    void    SetGameOver ();
+    FolioStatus SetFireKeyDown (bool fireKeyDown);
+    FolioStatus SetGameOver ();
 
     bool    IsImmune () const;
     bool    IsSick () const;
-    bool    IsDead (const CollisionGrid::CellElement& cellElement);
 
-    void    SetFoundAmuletPiece (bool foundAmuletPiece);
-    bool    FoundAmuletPiece () const;
+    void    ResetJustFoundAmuletPiece ();
+    bool    IsJustFoundAmuletPiece () const;
 
 private:
-    static  const   UInt32  DEFAULT_SPEED       = 4;  // The default speed of the player sprite.
-    static  const   UInt32  SWIPE_SWORD_SPEED   = 1;  // The speed of the player sprite (when swipping the sword).
-    static  const   UInt32  FAST_SPEED          = 8;  // The fast speed of the player sprite (when its temporary state is SPEED).
-
     static  const   Int32   INITIAL_SCREEN_X_LEFT   = 120;  // The initial screen X left (in pixels) of the player sprite.
     static  const   Int32   INITIAL_SCREEN_Y_TOP    =  96;  // The initial screen Y top (in pixels) of the player sprite.
+
+    static  const   UInt32  DEFAULT_SPEED       = 4;  // The default speed of the player sprite.
+    static  const   UInt32  SWIPE_SWORD_SPEED   = 1;  // The speed of the player sprite when swipping the sword.
+    static  const   UInt32  FAST_SPEED          = 8;  // The speed of the player sprite when its infection is SPEED.
 
     static  const   Folio::Core::Game::ZxSpectrum::COLOUR   INITIAL_COLOUR = Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::WHITE); // The initial colour of the player sprite.
     
@@ -80,32 +71,48 @@ private:
 
     UInt32  m_playerSpriteSpeed;    // The speed of the player sprite.
 
-    // Temporary state enumeration.
-    enum TEMPORARY_STATE
+    // Infection enumeration.
+    enum INFECTION
     {
-        NO_TEMPORARY_STATE = 0,
+        NO_INFECTION = 0,
         IMMUNITY,
         CONFUSION,
         SPEED,
         SICKNESS,
     }; // Endenum.
 
-    TEMPORARY_STATE m_temporaryState;   // The player sprite's temporary state.
-    UInt32  m_temporaryStateTickCount;  // The temporary state timing (in milliseconds) of the player sprite.
+    INFECTION   m_infection;            // The player sprite's infection.
+    UInt32      m_infectionTickCount;   // The infection tick count of the player sprite.
 
-    bool    m_foundAmuletPiece; // Indicates if the player sprite has found an amulet piece.
+    bool    m_justFoundAmuletPiece; // Indicates if the player sprite has just found an amulet piece.
 
-    FolioStatus SetTerminatingMode (FolioHandle                 dcHandle,
-                                    const SpriteGraphicsMapPtr  &spriteGraphicsMap);
+    FolioStatus SetTerminatingMode (FolioHandle dcHandle);
 
-    FolioStatus SetTemporaryState (TEMPORARY_STATE                          temporaryState,
-                                   Folio::Core::Game::ZxSpectrum::COLOUR    playerSpriteColour);
-    void    StartTemporaryStateTickCount ();
-    bool    IsTemporaryState () const;
-    bool    IsTemporaryStateFinished () const;
-    bool    IsTemporaryImmunity () const;
-    bool    IsTemporaryConfusion () const;
-    bool    IsTemporarySickness () const;
+    FolioStatus HandleCollision (const CollisionGrid::CellElements  &cellElements,
+                                 CollisionGrid                      &collisionGrid,
+                                 ObjectSpriteDrawingElementsList    &screenObjectSpriteDrawingElementsList);
+    FolioStatus HandleItemCollision (const CollisionGrid::CellElement   &cellElement,
+                                     CollisionGrid                      &collisionGrid);
+    FolioStatus HandleSolidItemCollision (const CollisionGrid::CellElement  &cellElement, 
+                                          CollisionGrid                     &collisionGrid);
+    FolioStatus HandleCollectableItemCollision (const CollisionGrid::CellElement    &cellElement,
+                                                CollisionGrid                       &collisionGrid,
+                                                ObjectSpriteDrawingElementsList     &screenObjectSpriteDrawingElementsList);
+    FolioStatus HandleNastySpriteCollision (const CollisionGrid::CellElement    &cellElement,
+                                            CollisionGrid                       &collisionGrid);
+
+    bool    IsDead (const CollisionGrid::CellElement& cellElement);
+
+    FolioStatus SetInfection (INFECTION                             infection,
+                              Folio::Core::Game::ZxSpectrum::COLOUR playerSpriteColour);
+    FolioStatus ClearInfection ();
+
+    void    StartInfectionTickCount ();
+    bool    IsInfection () const;
+    bool    IsInfectionFinished () const;
+    bool    IsInfectionImmunity () const;
+    bool    IsInfectionConfusion () const;
+    bool    IsInfectionSickness () const;
 
     void    SetMovementSoundSamples ();
 
@@ -123,6 +130,15 @@ private:
 
 // Player sprite pointer.
 typedef std::shared_ptr<PlayerSprite>   PlayerSpritePtr;
+
+
+// Routines.
+
+extern  FolioStatus CreatePlayerSprite (FolioHandle     dcHandle, 
+                                        PlayerSpritePtr &playerSprite);
+extern  FolioStatus StorePlayerSpriteBackground (Gdiplus::Graphics &graphics);
+extern  FolioStatus RestorePlayerSpriteBackground (Gdiplus::Graphics &graphics);
+extern  FolioStatus DrawPlayerSprite (Gdiplus::Graphics &graphics);
 
 } // Endnamespace.
 

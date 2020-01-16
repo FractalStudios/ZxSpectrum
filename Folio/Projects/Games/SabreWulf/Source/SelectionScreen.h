@@ -6,7 +6,6 @@
 // "Home-made" includes.
 #include    "BorderScreen.h"
 #include    "DrawingElement.h"
-#include    "InformationPanel.h"
 
 #pragma pack(push, 1)
 
@@ -39,7 +38,7 @@ enum SELECTION_SCREEN_ITEM_ID
 class SelectionScreen : public BorderScreen
 {
 public:
-    SelectionScreen (const InformationPanelPtr &informationPanel);
+    SelectionScreen ();
     ~SelectionScreen ();
 
     bool    IsStartGame () const;
@@ -71,11 +70,13 @@ public:
 private:
     static  const   UInt32  MAX_DISPLAY_SCREEN_TIME = 30 * 1000;    // 30 seconds.
 
-    const InformationPanelPtr  &m_informationPanel; // The information panel.
-
-    bool            m_isStartGame;  // Indicates if the game should be started.
-    UInt32          m_numPlayers;   // The number of players.
-    GAME_CONTROL    m_gameControl;  // The game control.
+    bool            m_finishedPlayingMainGameMusic;     // Indicates if we've finished playing the main game music.
+    bool            m_finishedPlayingStartingGameMusic; // Indicates if we've finished playing the starting game music.
+    bool            m_isStartingGame;                   // Indicates if the game is starting.
+    bool            m_isStartGame;                      // Indicates if the game should be started.
+    bool            m_invertCurrentSelectionText;       // Indicates if the current selection text should be inverted. 
+    UInt32          m_numPlayers;                       // The number of players.
+    GAME_CONTROL    m_gameControl;                      // The game control.
 
     // AScreen method(s).
     virtual FolioStatus BuildScreenItems (FolioHandle dcHandle, 
@@ -83,19 +84,40 @@ private:
     virtual FolioStatus StartDisplayingScreen ();
     virtual FolioStatus ProcessScreenInput ();    
     virtual FolioStatus ProcessScreenFrame (UInt32 *frameRateIncrement);
-    virtual FolioStatus UpdateScreen ();
+
+    // The update enumeration.
+    enum UPDATE
+    {
+        UPDATE_PLAYER_SELECTION = 0,
+        UPDATE_GAME_CONTROL_SELECTION,
+        UPDATE_FLASH_CURRENT_SELECTIONS,
+    }; // Endenum.
+
+    FolioStatus UpdateScreen (UPDATE update);
+    FolioStatus UpdatePlayerSelection (Gdiplus::Graphics    &graphics,
+                                       bool                 &redrawCanvas);
+    FolioStatus UpdateGameControlSelection (Gdiplus::Graphics   &graphics,
+                                            bool                &redrawCanvas);
+    FolioStatus UpdateFlashCurrentSelections (Gdiplus::Graphics &graphics,
+                                              bool              &redrawCanvas);
+
+    FolioStatus ProcessScreenFrameWaitingForSelection (UInt32   currentTickCount,
+                                                       UInt32   *frameRateIncrement);
+    FolioStatus ProcessScreenFrameStartingGame (UInt32  currentTickCount,
+                                                UInt32  *frameRateIncrement);
 
     FolioStatus ResetScreen ();
-    FolioStatus UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type    &item,
-                                bool                                            invertColours,
-                                Gdiplus::Graphics                               &graphics, 
-                                bool                                            &redrawCanvas);
-
-    void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
-
+    FolioStatus StartingGame ();
     FolioStatus StartGame ();
-
     FolioStatus ProcessGamepad ();
+
+    FolioStatus PlayMainGameMusic ();
+    void    StopMainGameMusic ();
+
+    FolioStatus PlayStartingGameMusic ();
+    void    StopStartingGameMusic ();
+
+    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
 
     // Private copy constructor to prevent copying.
     SelectionScreen (const SelectionScreen& rhs);

@@ -23,9 +23,11 @@ APlayerSprite::~APlayerSprite ()
 } // Endproc.
 
 
-Direction   APlayerSprite::UpdateDirection (Direction   direction, 
+FolioStatus APlayerSprite::UpdateDirection (Direction   direction, 
                                             bool        keyDown)
 {
+    FolioStatus status = ERR_SUCCESS;
+
     // Is a key down?
 
     if (keyDown)
@@ -36,15 +38,19 @@ Direction   APlayerSprite::UpdateDirection (Direction   direction,
         {
             // Yes. Set the player sprite's direction.
     
-            SetDirection (direction);
+            status = SetDirection (direction);
         } // Endif.
 
-        // The player sprite is moving in the direction.
+        if (status == ERR_SUCCESS)
+        {
+            // The player sprite is moving in the direction.
         
-        m_state = STATE_MOVING; 
+            m_state = STATE_MOVING; 
+        } // Endif.
+
     } // Endif.
 
-    // All keys are up. Is the player sprte in auto-move mode?
+    // All keys are up. Is the player sprite in auto-move mode?
 
     else
     if (!m_inAutoMoveMode)
@@ -54,7 +60,7 @@ Direction   APlayerSprite::UpdateDirection (Direction   direction,
         m_state = GetAutoMoveState ();
     } // Endelseif.
 
-    return (m_direction);
+    return (status);
 } // Endproc.
 
 
@@ -145,6 +151,8 @@ FolioStatus APlayerSprite::SetBottomUpInitialisingMode (const ColourList&       
         // Note the player sprite's initialising attributes.
 
         m_initialisingDrawingMode                           = DM_BOTTOM_UP;
+        m_initialisingMaxSequenceCount                      = 1;
+        m_currentInitialisingSequenceCount                  = 0;
         m_initialisingColourList                            = initialisingColourList;
         m_initialisingSpriteSoundSamplesList                = initialisingSpriteSoundSamplesList;
         m_currentInitialisingSpriteSoundSamplesListIndex    = 0;
@@ -172,6 +180,8 @@ FolioStatus APlayerSprite::SetTopDownInitialisingMode (const ColourList&        
         // Note the player sprite's initialising attributes.
         
         m_initialisingDrawingMode                           = DM_TOP_DOWN;
+        m_initialisingMaxSequenceCount                      = 1;
+        m_currentInitialisingSequenceCount                  = 0;
         m_initialisingColourList                            = initialisingColourList;
         m_initialisingSpriteSoundSamplesList                = initialisingSpriteSoundSamplesList;
         m_currentInitialisingSpriteSoundSamplesListIndex    = 0;
@@ -203,6 +213,8 @@ FolioStatus APlayerSprite::SetBottomUpTerminatingMode (const ColourList&        
         // Note the player sprite's terminating attributes.
         
         m_terminatingDrawingMode                        = DM_BOTTOM_UP;
+        m_terminatingMaxSequenceCount                   = 1;
+        m_currentTerminatingSequenceCount               = 0;
         m_terminatingColourList                         = terminatingColourList;
         m_terminatingSpriteSoundSamplesList             = terminatingSpriteSoundSamplesList;
         m_currentTerminatingSpriteSoundSamplesListIndex = 0;
@@ -234,6 +246,8 @@ FolioStatus APlayerSprite::SetTopDownTerminatingMode (const ColourList&         
         // Note the player sprite's terminating attributes.
 
         m_terminatingDrawingMode                        = DM_TOP_DOWN;
+        m_terminatingMaxSequenceCount                   = 1;
+        m_currentTerminatingSequenceCount               = 0;
         m_terminatingColourList                         = terminatingColourList;
         m_terminatingSpriteSoundSamplesList             = terminatingSpriteSoundSamplesList;
         m_currentTerminatingSpriteSoundSamplesListIndex = 0;

@@ -28,7 +28,8 @@ FolioStatus TextItem::Create (FolioHandle                           dcHandle,
                               Int32                                 screenYTop,
                               UInt32                                screenScale,
                               Gdiplus::ARGB                         textColour,
-                              Gdiplus::ARGB                         backgroundColour)
+                              Gdiplus::ARGB                         backgroundColour,
+                              bool                                  gdiBitmapCacheRqd)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -56,7 +57,8 @@ FolioStatus TextItem::Create (FolioHandle                           dcHandle,
 
         m_gdiRasterText.reset (new Folio::Core::Graphic::GdiRasterTextPtr::element_type(gdiRasterFont, 
                                                                                         textColour,
-                                                                                        backgroundColour));
+                                                                                        backgroundColour,
+                                                                                        gdiBitmapCacheRqd ? dcHandle : FOLIO_INVALID_HANDLE));
 
         if (status == ERR_SUCCESS)
         {
@@ -74,6 +76,59 @@ FolioStatus TextItem::Create (FolioHandle                           dcHandle,
         } // Endif.
     
     } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus TextItem::SetInvert (bool                 invert,
+                                 Gdiplus::Graphics    &graphics, 
+                                 bool                 &redrawCanvas)
+{                   
+    FolioStatus status = ERR_SUCCESS;
+
+    // Invert the raster text?
+
+    if (invert)
+    {
+        // Yes. Toggle the raster text's inverted state.
+
+        m_gdiRasterText->ToggleInverted ();
+
+        // Draw it.
+
+        status = m_gdiRasterText->Draw (m_screenXLeft,
+                                        m_screenYTop, 
+                                        graphics);
+
+        if (status == ERR_SUCCESS)
+        {
+            redrawCanvas = true;
+        } // Endif.
+
+    } // Endif.
+
+    // No. Is the raster text inverted?
+
+    else
+    if (m_gdiRasterText->IsInverted ())
+    {
+        // Yes.
+
+        m_gdiRasterText->SetNonInverted ();
+
+        // Draw it.
+
+        status = m_gdiRasterText->Draw (m_screenXLeft, 
+                                        m_screenYTop, 
+                                        graphics);
+
+        if (status == ERR_SUCCESS)
+        {
+            redrawCanvas = true;
+        } // Endif.
+
+    } // Endelseif.
 
     return (status);
 } // Endproc.

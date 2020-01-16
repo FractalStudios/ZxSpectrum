@@ -40,26 +40,12 @@ FolioStatus BorderScreen::AddBorderScreenItems (FolioHandle dcHandle,
          (status == ERR_SUCCESS) && (itr != g_border.end ());
          ++itr)
     {
-        // Create a border screen graphic item.
-            
-        Folio::Core::Game::GraphicItemPtr   item(new Folio::Core::Game::GraphicItemPtr::element_type);
-            
-        status = item->Create (dcHandle,
-                               instanceHandle,
-                               DRAWING_ELEMENT_BORDER_SCREEN_ITEM,
-                               itr->GetBitmapResourceId (),
-                               itr->GetBackgroundItemId (),
-                               itr->GetScreenXLeft (), 
-                               itr->GetScreenYTop (),
-                               Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE);
+        // Add border screen graphic item.
 
-        if (status == ERR_SUCCESS)
-        {
-            // Store the border screen item in the screen's items list.
-
-            m_itemsList.push_back (item);
-        } // Endif.
-
+        status = AddGraphicItem (dcHandle, 
+                                 instanceHandle ,
+                                 DRAWING_ELEMENT_BORDER_SCREEN_ITEM,
+                                 Folio::Core::Game::ItemAttributes<BACKGROUND_ITEM_ID> (*itr));
     } // Endfor.
 
     return (status);

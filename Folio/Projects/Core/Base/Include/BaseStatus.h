@@ -123,6 +123,7 @@ enum
 // Define the major facility codes in Folio.
 #define FOLIO_FACILITY_OS       0x01    // Operating System error.
 #define FOLIO_FACILITY_GDI      0x02    // GDI+ error.
+#define FOLIO_FACILITY_HRESULT  0x03    // HRESULT error.
 
 // Macros to set/get an Operating System error.
 #define FOLIO_OS_ERROR              (0x20000000 | FOLIO_MAKE_MAJOR_FACILITY(FOLIO_FACILITY_OS))
@@ -134,6 +135,10 @@ enum
 #define FOLIO_MAKE_GDI_ERROR(x)     (x | FOLIO_GDI_ERROR); FOLIO_DEBUG_BREAK;
 #define FOLIO_IS_GDI_ERROR(x)       (x & FOLIO_GDI_ERROR)
 
+// Macros to set/get an HRESULT error.
+#define FOLIO_HRESULT_ERROR         (0x20000000 | FOLIO_MAKE_MAJOR_FACILITY(FOLIO_FACILITY_HRESULT))
+#define FOLIO_MAKE_HRESULT_ERROR(x) (FOLIO_GET_STATUS_CODE(x) | FOLIO_HRESULT_ERROR); FOLIO_DEBUG_BREAK;
+#define FOLIO_IS_HRESULT_ERROR(x)   (x & FOLIO_HRESULT_ERROR)
 
 // Routines.
 FolioString GetFolioStatusDescription (FolioStatus status);

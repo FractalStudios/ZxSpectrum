@@ -1,6 +1,9 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
+#include    "Globals.h"
 #include    "OrchidSprite.h"
+#include    "ResourceOwnerId.h"
+#include    "SpriteGraphics.h"
 
 namespace Folio
 {
@@ -23,7 +26,7 @@ static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<ORCHID_SPRIT
 OrchidSprite::OrchidSprite ()
 :   m_orchidSpriteColour(Folio::Core::Game::ZxSpectrum::UNDEFINED),
     m_transitionTickCount(0),
-    m_colourChangeIndex(0),
+    m_colourChangeIndex(FOLIO_INVALID_INDEX),
     m_infectedPlayer(false)
 {
 } // Endproc.
@@ -34,8 +37,7 @@ OrchidSprite::~OrchidSprite ()
 } // Endproc.
 
 
-FolioStatus OrchidSprite::Create (FolioHandle                   dcHandle,
-                                  const SpriteGraphicsMapPtr    &spriteGraphicsMap)
+FolioStatus OrchidSprite::Create (FolioHandle dcHandle)
 {
     // Get the orchid sprite's colour.
 
@@ -46,8 +48,10 @@ FolioStatus OrchidSprite::Create (FolioHandle                   dcHandle,
     Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<ORCHID_SPRITE_ID, SPRITE_ID> (dcHandle,
+                                                                                                       g_resourceGraphicsCache,
+                                                                                                       OWNER_ID_ORCHID_SPRITE,
+                                                                                                       DRAWING_ELEMENT_ORCHID_SPRITE,
                                                                                                        ORCHID_SPRITE,
-                                                                                                       *spriteGraphicsMap,
                                                                                                        orchidSpriteColour,
                                                                                                        g_orchidSpriteGraphicCharacteristics,
                                                                                                        spriteGraphicAttributesList);
@@ -62,27 +66,24 @@ FolioStatus OrchidSprite::Create (FolioHandle                   dcHandle,
                                                            INITIAL_SCREEN_Y_TOP,
                                                            Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE,
                                                            Folio::Core::Game::ZxSpectrum::MapInkColour (orchidSpriteColour),
-                                                           Folio::Core::Game::S);
+                                                           Folio::Core::Game::S,    // The orchid sprite is shrunk.
+                                                           &(g_resourceGraphicsCache));
 
         if (status == ERR_SUCCESS)
         {
             // Set the orchid sprite's initialising mode.
             
-            status = SetInitialisingMode (dcHandle, 
-                                          spriteGraphicsMap, 
-                                          orchidSpriteColour);
+            status = SetInitialisingMode (dcHandle, orchidSpriteColour);
 
             if (status == ERR_SUCCESS)
             {
                 // Set the orchid sprite's terminating mode.
                 
-                status = SetTerminatingMode (dcHandle, 
-                                             spriteGraphicsMap, 
-                                             orchidSpriteColour); 
+                status = SetTerminatingMode (dcHandle, orchidSpriteColour); 
 
                 if (status == ERR_SUCCESS)
                 {
-                    // Orchid sprite is static.
+                    // The orchid sprite is static.
 
                     SetState (STATE_STATIC);
 
@@ -104,7 +105,7 @@ FolioStatus OrchidSprite::Create (FolioHandle                   dcHandle,
 FolioStatus OrchidSprite::SetScreenBottomLeft (Int32    screenXLeft,
                                                Int32    screenYBottom)
 {
-    // Calculate the screen Y top.
+    // Calculate the orchid sprite's screen Y top.
 
     Int32   screenYTop = Folio::Core::Game::ZxSpectrum::CalculateScreenYTop (screenYBottom, 
                                                                              m_screenWidth,
@@ -118,41 +119,54 @@ FolioStatus OrchidSprite::SetScreenBottomLeft (Int32    screenXLeft,
 
 void    OrchidSprite::StartTransitionTickCount (bool newScreen)
 {
-    if (newScreen &&
-       ((m_state != STATE_STATIC) ||
-        (m_direction != Folio::Core::Game::S)))
-    {
-        if ((m_state == STATE_STATIC)               && 
-            (m_direction == Folio::Core::Game::N)   && 
-            (Folio::Core::Util::Random::GetRandomNumber (4) == 0))
-        {
-            // Change the orchid sprite colour.
+    // Is the orchid sprite sprite grown?
 
-            ChangeOrchidSpriteColour ();
+    if (IsOrchidSpriteGrown ())
+    {
+        // Yes. Is this a new screen?
+
+        if (newScreen)
+        {
+            // Yes. Should the orchid sprite's colour be changed?
+
+            if (Folio::Core::Util::Random::GetRandomNumber (4) == 0)
+            {
+                // Yes. Leave the orchid sprite grown but change its colour.
+
+                ChangeOrchidSpriteColour ();
+            } // Endif.
+
+            else
+            {
+                // The orchid sprite should shrink.
+
+                SetOrchidSpriteShrinking ();
+            } // Endelse.
+
         } // Endif.
 
         else
         {
-            // Terminate the orchid sprite.
+            // No. Set the transition tick count at which time orchid sprite 
+            // should start to shrink.
 
-            SetState (STATE_TERMINATE_RQD);
+            m_transitionTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount () + 
+                                    1000 * Folio::Core::Util::Random::GetRandomNumber (1, 4);
         } // Endelse.
 
     } // Endif.
 
-    else
-    if ((m_state == STATE_STATIC) && 
-        (m_direction == Folio::Core::Game::N))
-    {
-        m_transitionTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount () + 
-                                1000 * Folio::Core::Util::Random::GetRandomNumber (1, 4);
-    } // Endelseif.
+    // Is the orchid sprite sprite shrunk?
 
     else
+    if (IsOrchidSpriteShrunk ())
     {
+        // Yes. Set the transition tick count at which time the orchid sprite 
+        // should start to grow.
+
         m_transitionTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount () + 
                                 1000 * Folio::Core::Util::Random::GetRandomNumber (5, 10);
-    } // Endelse.
+    } // Endelseif.
 
 } // Endproc.
 
@@ -162,53 +176,51 @@ void    OrchidSprite::CheckTransition ()
     switch (m_state)
     {
     case STATE_INITIALISED:
-        // The orchid sprite is initialised.
+        // The orchid sprite is initialised. This means that the orchid sprite 
+        // has now grown.
 
-        // The orchid sprite is now static.
+        SetOrchidSpriteGrown ();
 
-        SetState (STATE_STATIC);
-
-        // Set the orchid sprite's direction.
-
-        SetDirection (Folio::Core::Game::N);
-
-        // Start the transition tick count.
+        // Start the transition tick count; to transition from grown to shrinking.
 
         StartTransitionTickCount (false);   // Not a new screen.
         break;
 
     case STATE_TERMINATED:
-        // The orchid sprite is terminated.
+        // The orchid sprite is terminated. This means that the orchid sprite 
+        // has now shrunk.
 
-        // The orchid sprite is now static.
+        SetOrchidSpriteShrunk ();
 
-        SetState (STATE_STATIC);
-
-        // Set the orchid sprite's direction.
-
-        SetDirection (Folio::Core::Game::S);
-
-        // Change the orchid sprite colour.
-
-        ChangeOrchidSpriteColour ();
-
-        // The orchid sprite has no longer infected the player.
-
-        m_infectedPlayer = false;
-
-        // Start the transition tick count.
+        // Start the transition tick count; to transition from shrunk to growing.
 
         StartTransitionTickCount (false);   // Not a new screen.
         break;
 
     case STATE_STATIC:
+        // The orchid sprite is static. This means that the orchid sprite 
+        // has either grown or shrunk.
+
         // Should the orchid sprite transition?
 
         if (Folio::Core::Util::DateTime::GetCurrentTickCount () >= m_transitionTickCount)
         {
-            // Yes. Depending on direction, initialise or terminate the orchid sprite.
+            // Yes. Is the orchid sprite grown?
 
-            SetState ((m_direction == Folio::Core::Game::S) ? STATE_INITIALISE_RQD : STATE_TERMINATE_RQD);
+            if (IsOrchidSpriteGrown ())
+            {
+                // Yes. The orchid sprite should shrink.
+
+                SetOrchidSpriteShrinking ();
+            } // Endif.
+
+            else
+            {
+                // No. The orchid sprite should grow.
+
+                SetOrchidSpriteGrowing ();
+            } // Endelse.
+            
         } // Endif.
         break;
 
@@ -219,44 +231,35 @@ void    OrchidSprite::CheckTransition ()
 } // Endproc.
 
 
-FolioStatus OrchidSprite::HandlePlayerCollision (PlayerSpritePtr &playerSprite)
+FolioStatus OrchidSprite::HandlePlayerCollision (ORCHID_SPRITE_TYPE                     &orchidSpriteType,
+                                                 Folio::Core::Game::ZxSpectrum::COLOUR  &orchidSpriteColour)
 {
+    orchidSpriteType    = UNDEFINED_ORCHID_TYPE; // Initialise!
+    orchidSpriteColour  = Folio::Core::Game::ZxSpectrum::UNDEFINED;
+
     FolioStatus status = ERR_SUCCESS;
+
+    // The player has collided with an orchide sprite.
 
     // Is the orchid sprite infectious?
 
     if (IsOrchidSpriteInfectious ())
     {
-        switch (GetOrchidType (m_orchidSpriteColour))
-        {
-        case IMMUNITY:
-            playerSprite->SetTemporaryImmunity (m_orchidSpriteColour);
-            break;
+        // Yes. Get the orchid sprite type.
 
-        case CONFUSION:
-            playerSprite->SetTemporaryConfusion (m_orchidSpriteColour);
-            break;
-    
-        case SPEED: 
-            playerSprite->SetTemporarySpeed (m_orchidSpriteColour);
-            break;
-    
-        case SICKNESS:
-            playerSprite->SetTemporarySickness (m_orchidSpriteColour);
-            break;
-    
-        case CURE:
-            playerSprite->ResetTemporaryState ();
-            break;
-        } // Endswitch.
+        orchidSpriteType = GetOrchidSpriteType (m_orchidSpriteColour);
+            
+        // Note the orchid sprite's colour.
+
+        orchidSpriteColour = m_orchidSpriteColour;
             
         // The orchid sprite has infected the player.
 
         m_infectedPlayer = true;
 
-        // Terminate the orchid sprite.
+        // The orchid sprite should shrink.
 
-        SetState (STATE_TERMINATE_RQD);
+        SetOrchidSpriteShrinking ();
     } // Endif.
 
     return (status);
@@ -264,13 +267,12 @@ FolioStatus OrchidSprite::HandlePlayerCollision (PlayerSpritePtr &playerSprite)
 
 
 FolioStatus OrchidSprite::SetInitialisingMode (FolioHandle                           dcHandle,
-                                               const SpriteGraphicsMapPtr            &spriteGraphicsMap,
                                                Folio::Core::Game::ZxSpectrum::COLOUR orchidSpriteColour)
 {
     static  const   UInt32  MAX_SEQUENCE_COUNT = 1;
 
     // Orchid sprite initialising sprite characteristics.
-    static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<ORCHID_SPRITE_ID, SPRITE_ID> s_initialisingSpriteGraphicCharacteristics = 
+    static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<ORCHID_SPRITE_ID, SPRITE_ID>    s_initialisingSpriteGraphicCharacteristics = 
     {
     //      m_spriteId                  m_direction                         m_spriteGraphicIdsList
         {   ORCHID_SPRITE_UNDEFINED,    Folio::Core::Game::ALL_DIRECTIONS,  {   SPRITE_ORCHID_2, SPRITE_ORCHID_3, SPRITE_ORCHID_4, SPRITE_ORCHID_5, SPRITE_ORCHID_6, SPRITE_ORCHID_7,   },  },
@@ -281,10 +283,12 @@ FolioStatus OrchidSprite::SetInitialisingMode (FolioHandle                      
     Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<ORCHID_SPRITE_ID, SPRITE_ID> (dcHandle,
-                                                                                                      *spriteGraphicsMap,
-                                                                                                      orchidSpriteColour,
-                                                                                                      s_initialisingSpriteGraphicCharacteristics,
-                                                                                                      spriteGraphicAttributesList);
+                                                                                                       g_resourceGraphicsCache,
+                                                                                                       OWNER_ID_ORCHID_SPRITE,
+                                                                                                       DRAWING_ELEMENT_ORCHID_SPRITE,
+                                                                                                       orchidSpriteColour,
+                                                                                                       s_initialisingSpriteGraphicCharacteristics,
+                                                                                                       spriteGraphicAttributesList);
 
     if (status == ERR_SUCCESS)
     {
@@ -300,13 +304,12 @@ FolioStatus OrchidSprite::SetInitialisingMode (FolioHandle                      
 
 
 FolioStatus OrchidSprite::SetTerminatingMode (FolioHandle                           dcHandle,
-                                              const SpriteGraphicsMapPtr            &spriteGraphicsMap,
                                               Folio::Core::Game::ZxSpectrum::COLOUR orchidSpriteColour)
 {
     static  const   UInt32  MAX_SEQUENCE_COUNT = 1;
 
     // Orchid sprite terminating sprite characteristics.
-    static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<ORCHID_SPRITE_ID, SPRITE_ID> s_terminatingSpriteGraphicCharacteristics = 
+    static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<ORCHID_SPRITE_ID, SPRITE_ID>    s_terminatingSpriteGraphicCharacteristics = 
     {
     //      m_spriteId                  m_direction                         m_spriteGraphicIdsList
         {   ORCHID_SPRITE_UNDEFINED,    Folio::Core::Game::ALL_DIRECTIONS,  {   SPRITE_ORCHID_7, SPRITE_ORCHID_6, SPRITE_ORCHID_5, SPRITE_ORCHID_4, SPRITE_ORCHID_3, SPRITE_ORCHID_2,   },  },
@@ -317,10 +320,12 @@ FolioStatus OrchidSprite::SetTerminatingMode (FolioHandle                       
     Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<ORCHID_SPRITE_ID, SPRITE_ID> (dcHandle,
-                                                                                                      *spriteGraphicsMap,
-                                                                                                      orchidSpriteColour,
-                                                                                                      s_terminatingSpriteGraphicCharacteristics,
-                                                                                                      spriteGraphicAttributesList);
+                                                                                                       g_resourceGraphicsCache,
+                                                                                                       OWNER_ID_ORCHID_SPRITE,
+                                                                                                       DRAWING_ELEMENT_ORCHID_SPRITE,
+                                                                                                       orchidSpriteColour,
+                                                                                                       s_terminatingSpriteGraphicCharacteristics,
+                                                                                                       spriteGraphicAttributesList);
 
     if (status == ERR_SUCCESS)
     {
@@ -335,11 +340,112 @@ FolioStatus OrchidSprite::SetTerminatingMode (FolioHandle                       
 } // Endproc.
 
 
-OrchidSprite::ORCHID_TYPE   OrchidSprite::GetOrchidType (Folio::Core::Game::ZxSpectrum::COLOUR orchidSpriteColour)
+FolioStatus OrchidSprite::ChangeOrchidSpriteColour ()
 {
-    // The orchid's type is based on it's colour.
+    // Get the orchid sprite's colour.
 
-    switch (GET_INK_COLOUR (orchidSpriteColour))
+    m_orchidSpriteColour = GetOrchidSpriteColour ();
+
+    // Change the orchid sprite's colour.
+
+    return (ChangeSpriteInkColour (Folio::Core::Game::ZxSpectrum::MapInkColour (m_orchidSpriteColour)));
+} // Endproc.
+
+
+void    OrchidSprite::SetOrchidSpriteGrowing ()
+{
+    // Set the orchid sprite's direction.
+
+    SetDirection (Folio::Core::Game::N);
+
+    // The orchid sprite is initialising.
+
+    SetState (STATE_INITIALISE_RQD);
+} // Endproc.
+
+
+bool    OrchidSprite::IsOrchidSpriteGrowing () const
+{
+    return ((m_direction == Folio::Core::Game::N) && (m_state != STATE_STATIC));
+} // Endproc.
+
+
+void    OrchidSprite::SetOrchidSpriteGrown ()
+{
+    // Set the orchid sprite's direction.
+
+    SetDirection (Folio::Core::Game::N);
+
+    // The orchid sprite is static.
+
+    SetState (STATE_STATIC);
+} // Endproc.
+
+
+bool    OrchidSprite::IsOrchidSpriteGrown () const
+{
+    return ((m_direction == Folio::Core::Game::N) && (m_state == STATE_STATIC));
+} // Endproc.
+
+
+void    OrchidSprite::SetOrchidSpriteShrinking ()
+{
+    // Set the orchid sprite's direction.
+
+    SetDirection (Folio::Core::Game::S);
+
+    // The orchid sprite is terminating.
+
+    SetState (STATE_TERMINATE_RQD);
+} // Endproc.
+
+
+bool    OrchidSprite::IsOrchidSpriteShrinking () const
+{
+    return ((m_direction == Folio::Core::Game::S) && (m_state != STATE_STATIC));
+} // Endproc.
+
+
+void    OrchidSprite::SetOrchidSpriteShrunk ()
+{
+    // Set the orchid sprite's direction.
+
+    SetDirection (Folio::Core::Game::S);
+
+    // The orchid sprite is static.
+
+    SetState (STATE_STATIC);
+
+    // Change the orchid sprite colour.
+
+    ChangeOrchidSpriteColour ();
+
+    // The orchid sprite has no longer infected the player.
+
+    m_infectedPlayer = false;
+} // Endproc.
+
+
+bool    OrchidSprite::IsOrchidSpriteShrunk () const
+{
+    return ((m_direction == Folio::Core::Game::S) && (m_state == STATE_STATIC));
+} // Endproc.
+
+
+bool    OrchidSprite::IsOrchidSpriteInfectious () const
+{
+    // The orchid sprite is infectious if it is has not already infected the 
+    // player, and it is grown.
+
+    return (!m_infectedPlayer && IsOrchidSpriteGrown ());
+} // Endproc.
+
+
+OrchidSprite::ORCHID_SPRITE_TYPE    OrchidSprite::GetOrchidSpriteType (Folio::Core::Game::ZxSpectrum::COLOUR orchidSpriteColour)
+{
+    // The orchid sprite's type is based on it's colour.
+
+    switch (GET_INK_COLOUR(orchidSpriteColour))
     {
     case Folio::Core::Game::ZxSpectrum::RED:
         return (IMMUNITY);
@@ -361,36 +467,6 @@ OrchidSprite::ORCHID_TYPE   OrchidSprite::GetOrchidType (Folio::Core::Game::ZxSp
 } // Endproc.
 
 
-FolioStatus OrchidSprite::ChangeOrchidSpriteColour ()
-{
-    // Get the orchid sprite's colour.
-
-    m_orchidSpriteColour = GetOrchidSpriteColour ();
-
-    // Change the orchid sprite's colour.
-
-    return (ChangeSpriteInkColour (Folio::Core::Game::ZxSpectrum::MapInkColour (m_orchidSpriteColour)));
-} // Endproc.
-
-
-bool    OrchidSprite::IsOrchidSpriteInfectious () const
-{
-    switch (m_state)
-    {
-    case STATE_STATIC:
-        // Orchid is infectious if it is has not already infected the 
-        // player, and it is fully grown.
-
-        return (!m_infectedPlayer && (m_direction == Folio::Core::Game::N));
-        break;
-
-    default:
-        return (false);
-    } // Endswitch.
-
-} // Endproc.
-
-
 Folio::Core::Game::ZxSpectrum::COLOUR   OrchidSprite::GetOrchidSpriteColour ()
 {
     // Orchid sprite colours.
@@ -404,6 +480,137 @@ Folio::Core::Game::ZxSpectrum::COLOUR   OrchidSprite::GetOrchidSpriteColour ()
     };
 
     return (Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(s_orchidSpriteColours [Folio::Core::Util::Random::GetRandomNumber (s_orchidSpriteColours.size () - 1)]));
+} // Endproc.
+
+
+FolioStatus CreateOrchidSpriteDrawingElement (FolioHandle                   dcHandle,
+                                              OrchidSpriteDrawingElement    &orchidSpriteDrawingElement)
+{
+    // Before creating an orchid sprite drawing element, make sure that the 
+    // current orchid sprite drawing element is destroyed.
+
+    orchidSpriteDrawingElement.Destroy ();
+
+    // Create an orchid sprite.
+
+    OrchidSpritePtr orchidSprite(new OrchidSpritePtr::element_type);
+
+    FolioStatus status = orchidSprite->Create (dcHandle);
+
+    if (status == ERR_SUCCESS)
+    {
+        // Create an orchid sprite drawing element.
+    
+        status = orchidSpriteDrawingElement.Create (DRAWING_ELEMENT_ORCHID_SPRITE, 
+                                                    orchidSprite,
+                                                    orchidSprite->GetCollisionGridCellValue ());
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus InitialiseScreenOrchidSprite (CollisionGrid &collisionGrid)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Is the orchid sprite drawing element created and does the current screen
+    // support an orchid sprite?
+
+    if (g_orchidSpriteDrawingElement.IsCreated () && 
+        g_screenMap.IsScreenOrchidSprite ())
+    {
+        // Yes. Get the orchid sprite.
+
+        OrchidSpritePtr &orchidSprite(g_orchidSpriteDrawingElement.m_sprite);
+
+        // Set the orchid sprite's screen position.
+
+        status = orchidSprite->SetScreenBottomLeft (g_screenMap.GetScreenOrchidSpriteScreenXLeft (), 
+                                                    g_screenMap.GetScreenOrchidSpriteScreenYBottom ());
+
+        if (status == ERR_SUCCESS)
+        {
+            // Add the orchid sprite to the current screen's collision grid.
+
+            status = collisionGrid.AddCellElement (*(g_orchidSpriteDrawingElement.m_drawingElement));
+            
+            if (status == ERR_SUCCESS)
+            {
+                // Start the orchid sprite's transition tick count.
+
+                orchidSprite->StartTransitionTickCount ();
+            } // Endif.
+
+        } // Endif.
+    
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus UpdateScreenOrchidSprite ()
+{
+    FolioStatus status = ERR_SUCCESS;
+    
+    // Is the orchid sprite drawing element created and does the current screen
+    // support an orchid sprite?
+
+    if (g_orchidSpriteDrawingElement.IsCreated () && 
+        g_screenMap.IsScreenOrchidSprite ())
+    {
+        // Yes. Get the orchid sprite.
+
+        OrchidSpritePtr &orchidSprite(g_orchidSpriteDrawingElement.m_sprite);
+
+        // Start the orchid sprite's transition tick count.
+
+        orchidSprite->StartTransitionTickCount ();
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus CheckScreenOrchidSprite (Gdiplus::Graphics &graphics)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Is the orchid sprite drawing element created and does the current screen
+    // support an orchid sprite?
+
+    if (g_orchidSpriteDrawingElement.IsCreated () && 
+        g_screenMap.IsScreenOrchidSprite ())
+    {
+        // Yes. Get the orchid sprite.
+
+        OrchidSpritePtr &orchidSprite(g_orchidSpriteDrawingElement.m_sprite);
+
+        // Check the orchid sprite's transition.
+
+        orchidSprite->CheckTransition ();
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus StoreScreenOrchidSpriteBackground (Gdiplus::Graphics &graphics)
+{
+    return (g_orchidSpriteDrawingElement.StoreSpriteBackground (graphics));
+} // Endproc.
+
+
+FolioStatus RestoreScreenOrchidSpriteBackground (Gdiplus::Graphics &graphics)
+{
+    return (g_orchidSpriteDrawingElement.RestoreSpriteBackground (graphics));
+} // Endproc.
+
+
+FolioStatus DrawScreenOrchidSprite (Gdiplus::Graphics &graphics)
+{
+    return (g_orchidSpriteDrawingElement.DrawSprite (graphics));
 } // Endproc.
 
 } // Endnamespace.

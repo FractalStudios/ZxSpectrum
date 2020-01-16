@@ -393,8 +393,8 @@ FolioStatus CreateRotatedDiBitmap (FolioHandle      dcHandle,
  
 	    // Compute the cosine and sine only once.
 
-	    double  cosine  = ::cos (radians);
-	    double  sine    = ::sin (radians);
+	    double  cosine  = std::cos (radians);
+	    double  sine    = std::sin (radians);
  
 	    // Compute the dimensions of the resulting bitmap.
 

@@ -9,9 +9,9 @@
 #include    <Game.h>
 #include    <Util.h>
 #include    "DrawingElement.h"
-#include    "HighScoreTable.h"
 #include    "ObjectSprite.h"
 #include    "PlayerSprite.h"
+#include    "PlayerStatistics.h"
 
 #pragma pack(push, 1)
 
@@ -44,12 +44,7 @@ enum INFORMATION_PANEL_ITEM_ID
 class InformationPanel
 {
 public:
-    static  const   UInt32  SCORE_OBJECT_COLLECTED      = 150;
-    static  const   UInt32  SCORE_AMULET_PIECE_FOUND    = 7350;
-    static  const   UInt32  SCORE_NASTY_SPRITE_DEAD     = 165;
-
-    InformationPanel (Folio::Core::Applet::Canvas   &canvas,
-                      const HighScoreTable          &highScoreTable);
+    InformationPanel (Folio::Core::Applet::Canvas &canvas);
     ~InformationPanel ();
 
     FolioStatus Create (UInt32 totalNumScreens);
@@ -63,21 +58,26 @@ public:
     {
         PLAYER_1 = 0,
         PLAYER_2,
-        MAX_NUM_PLAYERS,
+        MAX_PLAYERS,
     }; // Endenum.
 
     void    SetNumPlayers (UInt32 numPlayers);
     void    SetCurrentPlayer (PLAYER player);
     PLAYER  GetCurrentPlayer () const;
 
-    FolioStatus IncrementScore (UInt32 scoreIncrement);
-    UInt32      GetScore () const;
+    // Scores.
+    static  const   UInt32  SCORE_OBJECT_COLLECTED      = 150;
+    static  const   UInt32  SCORE_AMULET_PIECE_FOUND    = 7350;
+    static  const   UInt32  SCORE_NASTY_SPRITE_DEAD     = 165;
+
+    FolioStatus AddPlayerScore (UInt32 score);
+    UInt32      GetPlayerScore () const;
 
     FolioStatus IncrementPlayerLife (PlayerSpritePtr *playerSprite = 0);
     FolioStatus DecrementPlayerLife (PlayerSpritePtr *playerSprite = 0);
 
-    void    IncrementNumScreensVisited ();
-    UInt32  GetPercentageCompleted () const;
+    void    IncrementPlayerNumScreensVisited ();
+    UInt32  GetPlayerPercentageGameCompleted () const;
 
     void    SetFoundAmuletPiece (OBJECT_SPRITE_ID objectSpriteId);
     bool    IsFoundAmuletPieceTopLeft () const;
@@ -93,98 +93,71 @@ public:
     static  FolioNarrowString   DescribePlayer (PLAYER player);
 
 private:
+    // Information panel screen attributes.
     static  const   Int32   SCREEN_X_ORIGIN = 0;
     static  const   Int32   SCREEN_Y_ORIGIN = 0;
     static  const   Int32   SCREEN_WIDTH    = Folio::Core::Game::ZxSpectrum::MAX_SCREEN_X_PIXELS;
     static  const   Int32   SCREEN_HEIGHT   = 16;
 
-    static  const   Int32   INITIAL_NUM_LIVES   = 99;        // The initial number of lives a player can have.
-    static  const   UInt32  MAX_SCORE           = 999999;   // The maximum score a player can have.
+    Folio::Core::Applet::Canvas &m_canvas;  // The canvas.
 
     Gdiplus::Rect   m_informationPanelScreenRect;   // The information panel's screen rect.
 
-    Folio::Core::Applet::Canvas &m_canvas;          // The canvas.
-    const HighScoreTable        &m_highScoreTable;  // The high score table.
-
-    UInt32  m_totalNumScreens;      // The total number of screens. 
-    bool    m_invertScoreColours;   // Indicates if the score colours should be inverted. 
+    UInt32  m_totalNumScreens;  // The total number of screens. 
 
     UInt32  m_numPlayers;       // The number of players.
     PLAYER  m_currentPlayer;    // The current player.
+    bool    m_invertPlayerText; // Indicates if the player text should be inverted. 
 
-    // Player statistics.
-    struct PlayerStats
+    PlayerStatistics    m_playerStatistics [MAX_PLAYERS];   // The player statistics.
+
+    // Player starting attributes.
+    struct PlayerStartingAttributes
     {
-        PlayerStats ()
-        :   m_startCount(0),
-            m_score(0),
-            m_previousScoreFrameTickCount(0),
-            m_lives(INITIAL_NUM_LIVES),
-            m_numScreensVisited(0),
-            m_amuletPieceFound{false, false, false, false}
-        {} // Endproc.
-
-        ~PlayerStats ()
+        PlayerStartingAttributes ()
+        :   m_startingCounter(0),
+            m_startingPreviousFrameTickCount(0)
         {} // Endproc.
 
         void    Reset ()
         {
-            m_startCount                    = 0;
-            m_score                         = 0;
-            m_previousScoreFrameTickCount   = 0;
-            m_lives                         = INITIAL_NUM_LIVES;
-            m_numScreensVisited             = 0;
-
-            ::memset (m_amuletPieceFound, false, sizeof (m_amuletPieceFound));
+            m_startingCounter                   = 0;
+            m_startingPreviousFrameTickCount    = 0;
         } // Endproc.
 
-        UInt32  m_startCount;                   // The start count.
-        UInt32  m_score;                        // The player's score. 
-        UInt32  m_previousScoreFrameTickCount;  // The player's previous score frame tick count.
-        Int32   m_lives;                        // The player's current number of lives.
-        UInt32  m_numScreensVisited;            // The number of screens visited by the player.
-
-        // Amulet piece enumeration.
-        enum AMULET_PIECE
-        {
-            AMULET_PIECE_TOP_LEFT = 0,
-            AMULET_PIECE_TOP_RIGHT,
-            AMULET_PIECE_BOTTOM_LEFT,
-            AMULET_PIECE_BOTTOM_RIGHT,
-            MAX_AMULET_PIECES,
-        }; // Endenum.
-
-        bool    m_amuletPieceFound [MAX_AMULET_PIECES]; // Indicates if each amulet piece (TL,TR,BL,BR) has been found by the player.
+        UInt32  m_startingCounter;                  // The starting counter.
+        UInt32  m_startingPreviousFrameTickCount;   // The starting previous frame tick count.
     }; // Endstruct.
-
-    PlayerStats m_playerStats [MAX_NUM_PLAYERS];    // The player statistics.
-
-    static  Folio::Core::Util::Sound::SoundSample   m_startingSoundSample;  // Starting sound sample.
+                    
+    PlayerStartingAttributes    m_playerStartingAtttributes [MAX_PLAYERS];  // The player starting attributes.
 
     Folio::Core::Game::ItemsList            m_itemsList;            // The information panel's items.
     Folio::Core::Game::DrawingElementsList  m_drawingElementsList;  // The information panel's drawing elements.
+
+    static  Folio::Core::Util::Sound::SoundSample   m_startingSoundSample;  // The starting sound sample.
 
     FolioStatus BuildItems (FolioHandle dcHandle, 
                             FolioHandle instanceHandle);
     FolioStatus BuildDrawingElements (FolioHandle dcHandle);
     FolioStatus CheckPlayerUp (UInt32   currentTickCount,
                                bool     &isStarting);
-                                                        
+
     // The update enumeration.
     enum UPDATE
     {
         UPDATE_LIVES = 0,
-        UPDATE_PLAYER_UP,
         UPDATE_SCORE,
+        UPDATE_FLASH_PLAYER_UP,
     }; // Endenum.
 
     FolioStatus Update (UPDATE update);
+    FolioStatus UpdateLives (Gdiplus::Graphics  &graphics,
+                             bool               &redrawCanvas);
+    FolioStatus UpdateScore (Gdiplus::Graphics  &graphics,
+                             bool               &redrawCanvas);
+    FolioStatus UpdateFlashPlayerUp (Gdiplus::Graphics  &graphics,
+                                     bool               &redrawCanvas);
     FolioStatus Reset ();
-
-    FolioStatus UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type    &item,
-                                bool                                            invertColours,
-                                Gdiplus::Graphics                               &graphics, 
-                                bool                                            &redrawCanvas);
 
     void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
     
@@ -197,6 +170,12 @@ private:
 
 // Information panel pointer.
 typedef std::shared_ptr<InformationPanel>   InformationPanelPtr;
+
+
+// Routines.
+
+extern  FolioStatus CreateInformationPanel (Folio::Core::Applet::Canvas &canvas, 
+                                            InformationPanelPtr         &informationPanel);
 
 } // Endnamespace.
 

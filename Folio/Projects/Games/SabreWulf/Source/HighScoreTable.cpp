@@ -27,7 +27,7 @@ HighScoreTable::~HighScoreTable ()
 
 bool    HighScoreTable::IsHighScore (UInt32 score) const
 {
-    return (score >= m_highScoreList.back ().m_score);
+    return (m_highScoreList.empty () ? true : score >= m_highScoreList.back ().m_score);
 } // Endproc.
 
 
@@ -80,7 +80,7 @@ HighScoreTable::HighScore   HighScoreTable::GetHighScore (UInt32 highScorePositi
 
 UInt32  HighScoreTable::GetHighestScore () const
 {
-    return (m_highScoreList.front ().m_score);
+    return (m_highScoreList.empty () ? 0 : m_highScoreList.front ().m_score);
 } // Endproc.
 
 

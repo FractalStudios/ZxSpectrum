@@ -23,6 +23,7 @@
     <ClCompile Include="Source\GameOverScreen.cpp" />
     <ClCompile Include="Source\InformationPanel.cpp" />
     <ClCompile Include="Source\MainCanvasMsgHandler.cpp" />
+    <ClCompile Include="Source\ResourceOwnerId.cpp" />
     <ClCompile Include="Source\SpriteGraphics.cpp" />
     <ClCompile Include="Source\NastySprite.cpp" />
     <ClCompile Include="Source\RoomGraphics.cpp" />
@@ -34,8 +35,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Source\WeaponSprite.cpp" />
     <ClCompile Include="Source\Ultimate.cpp" />
+    <ClCompile Include="Source\WeaponSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\BackgroundItemGraphics.h" />
@@ -60,8 +61,8 @@
     <ClInclude Include="Source\SelectionScreen.h" />
     <ClInclude Include="Source\StaticSprite.h" />
     <ClInclude Include="Source\StdAfx.h" />
-    <ClInclude Include="Source\WeaponSprite.h" />
     <ClInclude Include="Source\Ultimate.h" />
+    <ClInclude Include="Source\WeaponSprite.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Source\AticAtac.rc" />

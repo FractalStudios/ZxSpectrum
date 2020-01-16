@@ -397,6 +397,47 @@ FolioStatus Semaphore::Unlock (UInt32   unlockCount,
 
 
 /**
+ * Method that will set the semaphore to the signaled state.
+ *
+ * Setting a semaphore that is already set has no effect.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if successful.
+ * <li><b>ERR_INVALID_SEQUENCE</b> if a semaphore has not been previously
+ *     created or opened using this object.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus Semaphore::Set ()
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Have we obtained a handle to a semaphore?
+
+    if (m_syncHandle == FOLIO_INVALID_HANDLE)
+    {
+        // No semaphore handle.
+
+        status = ERR_INVALID_SEQUENCE;
+    } // Endif.
+
+    else
+    {
+        // Release the semaphore.
+
+        while (::ReleaseSemaphore (m_syncHandle,
+                                   1,
+                                   NULL) == 0);
+
+        // The semaphore is in the signaled state.
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+/**
  * Method that will set the semaphore to the nonsignaled state.
  *
  * Resetting a semaphore that is already reset has no effect.

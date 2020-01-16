@@ -27,7 +27,7 @@ public:
                     Int32               screenYTop);
     ~BackgroundItem ();
 
-    void                    SetBackgroundItemGraphic (const BackgroundItemGraphicsMapPtr &backgroundItemGraphicsMap);
+    FolioStatus             SetBackgroundItemGraphic (const BackgroundItemGraphicsMap &backgroundItemGraphicsMap);
     BackgroundItemGraphic   GetBackgroundItemGraphic () const;
 
     BACKGROUND_ITEM_ID  GetBackgroundItemId () const;
@@ -44,10 +44,12 @@ public:
     FolioStatus QueryDrawingElements (FolioHandle                               dcHandle,
                                       Folio::Core::Game::DrawingElementsList    &drawingElementsList);
 
+    operator Folio::Core::Game::ItemAttributes<BACKGROUND_ITEM_ID> () const;
+
 private:
     BACKGROUND_ITEM_ID  m_backgroundItemId; // The identifier of the background item.
     Int32               m_screenXLeft;      // The screen X left (in pixels) of the background item.
-    Int32               m_screenYTop;       // The screen Y bottom (in pixels) of the background item.
+    Int32               m_screenYTop;       // The screen Y top (in pixels) of the background item.
 
     BackgroundItemGraphic                   m_backgroundItemGraphic;    // The background item's graphic.
     Folio::Core::Game::DrawingElementsList  m_drawingElementsList;      // The background item's drawing elements.

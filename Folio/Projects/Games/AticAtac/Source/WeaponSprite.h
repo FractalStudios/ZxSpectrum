@@ -64,20 +64,17 @@ private:
     void    SetSoundSamples (WEAPON_SPRITE_ID weaponSpriteId);
     void    SetInitialisedSoundSample (WEAPON_SPRITE_ID weaponSpriteId);
     void    SetTerminatedSoundSample (WEAPON_SPRITE_ID weaponSpriteId);
-    void    SetReboundSoundSample (WEAPON_SPRITE_ID weaponSpriteId);
 
     static  Folio::Core::Util::Sound::SoundSample   m_knightWeaponSpriteInitialisedSoundSample; // The knight weapon sprite initialised sound sample.
     static  Folio::Core::Util::Sound::SoundSample   m_wizardWeaponSpriteInitialisedSoundSample; // The wizard weapon sprite initialised sound sample.
     static  Folio::Core::Util::Sound::SoundSample   m_serfWeaponSpriteInitialisedSoundSample;   // The serf weapon sprite initialised sound sample.
     static  Folio::Core::Util::Sound::SoundSample   m_weaponSpriteTerminatedSoundSample;        // The weapon sprite terminated sound sample.
-    static  Folio::Core::Util::Sound::SoundSample   m_weaponSpriteReboundSoundSample;           // The weapon sprite rebound sound sample.
 
     static  void    CreateWeaponSpriteSoundSamples (WEAPON_SPRITE_ID weaponSpriteId);
     static  void    CreateKnightWeaponSpriteInitialisedSoundSample ();
     static  void    CreateWizardWeaponSpriteInitialisedSoundSample ();
     static  void    CreateSerfWeaponSpriteInitialisedSoundSample ();
     static  void    CreateWeaponSpriteTerminatedSoundSample ();
-    static  void    CreateWeaponSpriteReboundSoundSample ();
 
     // Private copy constructor to prevent copying.
     WeaponSprite (const WeaponSprite& rhs);

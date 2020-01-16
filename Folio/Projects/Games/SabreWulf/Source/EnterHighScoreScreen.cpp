@@ -1,6 +1,8 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
 #include    "EnterHighScoreScreen.h"
+#include    "Globals.h"
+#include    "Ultimate.h"
 
 namespace Folio
 {
@@ -12,7 +14,7 @@ namespace SabreWulf
 {
 
 // Enter high score screen item attributes.
-static  const   Folio::Core::Game::ItemAttributesList<ENTER_HIGH_SCORE_SCREEN_ITEM_ID>    g_highScoreScreenAttributes =
+static  const   Folio::Core::Game::ItemAttributesList<ENTER_HIGH_SCORE_SCREEN_ITEM_ID>  g_highScoreScreenAttributes =
 {
 //      m_itemId                                                m_screenXLeft           m_screenYTop        m_colour
     {   ENTER_HIGH_SCORE_SCREEN_ITEM_INFORMATION_PANEL,         0,                       0,                 Folio::Core::Game::ZxSpectrum::UNDEFINED,                                                       },
@@ -26,18 +28,18 @@ static  const   Folio::Core::Game::ItemAttributesList<ENTER_HIGH_SCORE_SCREEN_IT
     {   ENTER_HIGH_SCORE_SCREEN_ITEM_SCORE_TEXT,                COLUMN_TO_PIXEL(13),    ROW_TO_PIXEL(13),   Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::CYAN),    },
     {   ENTER_HIGH_SCORE_SCREEN_ITEM_REGISTER_TEXT,             COLUMN_TO_PIXEL( 8),    ROW_TO_PIXEL(15),   Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::MAGENTA), },
     {   ENTER_HIGH_SCORE_SCREEN_ITEM_YOUR_INITIALS_TEXT,        COLUMN_TO_PIXEL( 9),    ROW_TO_PIXEL(17),   Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::MAGENTA), },
-    {   ENTER_HIGH_SCORE_SCREEN_ITEM_INITIAL_INPUT_1,           COLUMN_TO_PIXEL(13),    ROW_TO_PIXEL(19),   Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::WHITE),    },
-    {   ENTER_HIGH_SCORE_SCREEN_ITEM_INITIAL_INPUT_2,           COLUMN_TO_PIXEL(15),    ROW_TO_PIXEL(19),   Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::WHITE),    },
-    {   ENTER_HIGH_SCORE_SCREEN_ITEM_INITIAL_INPUT_3,           COLUMN_TO_PIXEL(17),    ROW_TO_PIXEL(19),   Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::WHITE),    },
+    {   ENTER_HIGH_SCORE_SCREEN_ITEM_INITIAL_INPUT_1,           COLUMN_TO_PIXEL(13),    ROW_TO_PIXEL(19),   Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::WHITE),   },
+    {   ENTER_HIGH_SCORE_SCREEN_ITEM_INITIAL_INPUT_2,           COLUMN_TO_PIXEL(15),    ROW_TO_PIXEL(19),   Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::WHITE),   },
+    {   ENTER_HIGH_SCORE_SCREEN_ITEM_INITIAL_INPUT_3,           COLUMN_TO_PIXEL(17),    ROW_TO_PIXEL(19),   Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::WHITE),   },
 };
 
 
-EnterHighScoreScreen::EnterHighScoreScreen (const InformationPanelPtr   &informationPanel,
-                                            const SelectionScreenPtr    &selectionScreen,
-                                            HighScoreTable              &highScoreTable)
-:   m_informationPanel(informationPanel),
-    m_selectionScreen(selectionScreen),
-    m_highScoreTable(highScoreTable),
+// Enter high score screen static members.
+Folio::Core::Util::Sound::SoundSample   EnterHighScoreScreen::m_selectingInitialSoundSample(Ultimate::CreateSoundSample (0x80, 0x10));  // The selecting initial sound sample.
+Folio::Core::Util::Sound::SoundSample   EnterHighScoreScreen::m_enteredInitialSoundSample(Ultimate::CreateSoundSample (0x40, 0x30));    // The entered initial sound sample.
+
+EnterHighScoreScreen::EnterHighScoreScreen (const SelectionScreenPtr &selectionScreen)
+:   m_selectionScreen(selectionScreen),
     m_currentInitial(' ')
 {
 } // Endproc.
@@ -66,11 +68,11 @@ FolioStatus EnterHighScoreScreen::BuildScreenItems (FolioHandle dcHandle,
         case ENTER_HIGH_SCORE_SCREEN_ITEM_INFORMATION_PANEL:
             // No players.
 
-            m_informationPanel->SetNumPlayers (0);
+            g_informationPanel->SetNumPlayers (0);
 
             // Query the information panel's items.
 
-            status = m_informationPanel->QueryItems (m_itemsList);
+            status = g_informationPanel->QueryItems (m_itemsList);
             break;
 
         case ENTER_HIGH_SCORE_SCREEN_ITEM_BORDER:
@@ -84,39 +86,20 @@ FolioStatus EnterHighScoreScreen::BuildScreenItems (FolioHandle dcHandle,
         case ENTER_HIGH_SCORE_SCREEN_ITEM_YOU_HAVE_ACHIEVED_TEXT:
         case ENTER_HIGH_SCORE_SCREEN_ITEM_TODAYS_TEXT:
         case ENTER_HIGH_SCORE_SCREEN_ITEM_POSITION:
-        case ENTER_HIGH_SCORE_SCREEN_ITEM_HIGHEST_TEXT:      
-        case ENTER_HIGH_SCORE_SCREEN_ITEM_SCORE_TEXT:        
-        case ENTER_HIGH_SCORE_SCREEN_ITEM_REGISTER_TEXT:     
-        case ENTER_HIGH_SCORE_SCREEN_ITEM_YOUR_INITIALS_TEXT:     
-        case ENTER_HIGH_SCORE_SCREEN_ITEM_INITIAL_INPUT_1:   
-        case ENTER_HIGH_SCORE_SCREEN_ITEM_INITIAL_INPUT_2:   
-        case ENTER_HIGH_SCORE_SCREEN_ITEM_INITIAL_INPUT_3:   
-            { 
-                // Create an enter high score screen text item.
+        case ENTER_HIGH_SCORE_SCREEN_ITEM_HIGHEST_TEXT:
+        case ENTER_HIGH_SCORE_SCREEN_ITEM_SCORE_TEXT:
+        case ENTER_HIGH_SCORE_SCREEN_ITEM_REGISTER_TEXT:
+        case ENTER_HIGH_SCORE_SCREEN_ITEM_YOUR_INITIALS_TEXT:
+        case ENTER_HIGH_SCORE_SCREEN_ITEM_INITIAL_INPUT_1:
+        case ENTER_HIGH_SCORE_SCREEN_ITEM_INITIAL_INPUT_2:
+        case ENTER_HIGH_SCORE_SCREEN_ITEM_INITIAL_INPUT_3:
+            // Add enter high score screen text item.
 
-                Folio::Core::Game::TextItemPtr  item(new Folio::Core::Game::TextItemPtr::element_type);
-                
-                status = item->Create (dcHandle,
-                                       DRAWING_ELEMENT_ENTER_HIGH_SCORE_SCREEN_ITEM,
-                                       *Folio::Core::Game::ZxSpectrum::GetFont (),
-                                       itr->m_itemId,
-                                       itr->m_screenXLeft, 
-                                       itr->m_screenYTop,
-                                       Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE, 
-                                       Folio::Core::Game::ZxSpectrum::MapInkColour (itr->m_colour));
-
-                if (status == ERR_SUCCESS)
-                {
-                    // Set the enter high score screen item's text.
-
-                    SetItemText (*item.get ());
-            
-                    // Store the enter high score screen item in the enter high score screen items list.
-
-                    m_itemsList.push_back (item);
-                } // Endif.
-            
-            } // Endscope.
+            status = AddTextItem (dcHandle, 
+                                  DRAWING_ELEMENT_ENTER_HIGH_SCORE_SCREEN_ITEM,
+                                  *Folio::Core::Game::ZxSpectrum::GetFont (),
+                                  *itr,
+                                  SetItemText);
             break;
 
         default:
@@ -136,6 +119,8 @@ FolioStatus EnterHighScoreScreen::ProcessScreenInput ()
 
     Folio::Core::Game::Direction    direction = Folio::Core::Game::NO_DIRECTION;    // Initialise!
 
+    // Is a player direction key down?
+
     if (m_selectionScreen->IsPlayerDirectionKeyDown (direction))
     {
         // Yes. 
@@ -143,7 +128,7 @@ FolioStatus EnterHighScoreScreen::ProcessScreenInput ()
         switch (direction)
         {
         case Folio::Core::Game::E:
-            // Update the initial.
+            // Update the current initial.
 
             if (m_currentInitial == ' ')
             {
@@ -158,11 +143,11 @@ FolioStatus EnterHighScoreScreen::ProcessScreenInput ()
 
             // Update the screen.
 
-            status = UpdateScreen ();
+            status = UpdateScreen (UPDATE_INITIAL);
             break;
 
         case Folio::Core::Game::W:
-            // Update the initial.
+            // Update the current initial.
 
             if (m_currentInitial == ' ')
             {
@@ -177,7 +162,7 @@ FolioStatus EnterHighScoreScreen::ProcessScreenInput ()
 
             // Update the screen.
 
-            status = UpdateScreen ();
+            status = UpdateScreen (UPDATE_INITIAL);
             break;
 
         default:
@@ -186,22 +171,24 @@ FolioStatus EnterHighScoreScreen::ProcessScreenInput ()
 
     } // Endif.
 
+    // Is a player fire key down?
+
     else
     if (m_selectionScreen->IsPlayerFireKeyDown ())
     {
-        // Add the current initial to the high score.
+        // Yes. Add the current initial to the high score.
 
         m_highScore.m_initials += m_currentInitial;
 
-        // Have the required initials been entered?
+        // Have the required number of initials been entered?
 
-        if (m_highScore.m_initials.size () == 3)
+        if (m_highScore.m_initials.size () >= HighScoreTable::HighScore::MAX_INITIALS)
         {
-            // Yes. Add the high score to the high score table.
+            // Yes. Add the player's score to the high score table.
 
-            m_highScore.m_score = m_informationPanel->GetScore ();
+            m_highScore.m_score = g_informationPanel->GetPlayerScore ();
 
-            m_highScoreTable.AddHighScore (m_highScore);
+            g_highScoreTable.AddHighScore (m_highScore);
 
             // Stop displaying the enter high score screen.
 
@@ -215,13 +202,16 @@ FolioStatus EnterHighScoreScreen::ProcessScreenInput ()
             m_currentInitial = ' ';
         } // Endelse.
 
+        // Play the entered initial sound.
+
+        Folio::Core::Util::Sound::PlaySoundSample (m_enteredInitialSoundSample);
     } // Endelseif.
 
     return (status);
 } // Endproc.
 
 
-FolioStatus EnterHighScoreScreen::UpdateScreen ()
+FolioStatus EnterHighScoreScreen::UpdateScreen (UPDATE update)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -229,18 +219,60 @@ FolioStatus EnterHighScoreScreen::UpdateScreen ()
 
     Gdiplus::Graphics   *graphics = m_canvas->GetCanvasGraphics ();
 
-    // Update the enter high score screen items.
+    // Update the enter high score screen items (depending on the type of 
+    // update required).
 
-    bool    finished        = false;   // Initialise!
-    bool    redrawCanvas    = false;
+    bool    redrawCanvas = false;   // Initialise!
 
-    for (Folio::Core::Game::ItemsList::iterator itr = m_itemsList.begin ();
-         !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
-         ++itr)
+    switch (update)
+    {
+    case UPDATE_INITIAL:
+        status = UpdateInitial (*graphics, redrawCanvas);
+
+        if (status == ERR_SUCCESS)
+        {
+            // Play the selecting initial sound.
+
+            Folio::Core::Util::Sound::PlaySoundSample (m_selectingInitialSoundSample);
+        } // Endif.
+        break;
+
+    default:
+        status = ERR_INVALID;
+        break;
+    } // Endswitch.
+
+    // Should the canvas be redrawn?
+
+    if (redrawCanvas && (status == ERR_SUCCESS))
+    {
+        // Yes. The canvas should be redrawn on the next draw.
+
+        m_canvas->SetRedrawRqd ();
+    } // Endif.
+    
+    return (status);
+} // Endproc.
+
+
+FolioStatus EnterHighScoreScreen::UpdateInitial (Gdiplus::Graphics  &graphics,
+                                                 bool               &redrawCanvas)
+{
+    redrawCanvas = false;   // Initialise!
+
+    FolioStatus status = ERR_SUCCESS;
+
+    bool    finished = false;   // Initialise!
+
+    // Reverse order for performance.
+
+    for (Folio::Core::Game::ItemsList::reverse_iterator ritr = m_itemsList.rbegin ();
+         !finished && (status == ERR_SUCCESS) && (ritr != m_itemsList.rend ());
+         ++ritr)
     {
         // Get the enter high score screen item's identifier.
 
-        SELECTION_SCREEN_ITEM_ID    itemId = static_cast<SELECTION_SCREEN_ITEM_ID> (itr->get ()->GetItemId ());
+        ENTER_HIGH_SCORE_SCREEN_ITEM_ID itemId = static_cast<ENTER_HIGH_SCORE_SCREEN_ITEM_ID> (ritr->get ()->GetItemId ());
          
         switch (itemId)
         {
@@ -249,7 +281,9 @@ FolioStatus EnterHighScoreScreen::UpdateScreen ()
         case ENTER_HIGH_SCORE_SCREEN_ITEM_INITIAL_INPUT_3:   
             if (m_highScore.m_initials.size () == (itemId - ENTER_HIGH_SCORE_SCREEN_ITEM_INITIAL_INPUT_1))
             {
-                Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*itr));
+                // Get the enter high score text item.
+
+                Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*ritr));
 
                 // Set the enter high score text item's text.
 
@@ -257,10 +291,13 @@ FolioStatus EnterHighScoreScreen::UpdateScreen ()
 
                 // Draw the enter high score text item.
 
-                status = item->Draw (*graphics);
+                status = item->Draw (graphics);
 
-                redrawCanvas    = true;
-                finished        = true;
+                redrawCanvas = true;
+
+                // Finished.
+
+                finished = true;
             } // Endif.
             break;
 
@@ -270,13 +307,6 @@ FolioStatus EnterHighScoreScreen::UpdateScreen ()
 
     } // Endfor.
 
-    if (redrawCanvas && (status == ERR_SUCCESS))
-    {
-        // The canvas should be redrawn on the next draw.
-
-        m_canvas->SetRedrawRqd ();
-    } // Endif.
-    
     return (status);
 } // Endproc.
 
@@ -290,7 +320,7 @@ void    EnterHighScoreScreen::SetItemText (Folio::Core::Game::TextItemPtr::eleme
         break;
 
     case ENTER_HIGH_SCORE_SCREEN_ITEM_PLAYER_TEXT:
-        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribePlayer (m_informationPanel->GetCurrentPlayer ()));
+        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribePlayer (g_informationPanel->GetCurrentPlayer ()));
         break;
 
     case ENTER_HIGH_SCORE_SCREEN_ITEM_YOU_HAVE_ACHIEVED_TEXT:
@@ -302,7 +332,7 @@ void    EnterHighScoreScreen::SetItemText (Folio::Core::Game::TextItemPtr::eleme
         break;
 
     case ENTER_HIGH_SCORE_SCREEN_ITEM_POSITION:
-        item.GetGdiRasterText ()->SetTextString (HighScoreTable::DescribeHighScorePosition (m_highScoreTable.GetHighScorePosition (m_informationPanel->GetScore ())));
+        item.GetGdiRasterText ()->SetTextString (HighScoreTable::DescribeHighScorePosition (g_highScoreTable.GetHighScorePosition (g_informationPanel->GetPlayerScore ())));
         break;
 
     case ENTER_HIGH_SCORE_SCREEN_ITEM_HIGHEST_TEXT:      

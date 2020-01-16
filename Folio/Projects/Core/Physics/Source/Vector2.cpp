@@ -1,5 +1,5 @@
-// C includes.
-#include    <math.h>
+// STL includes.
+#include    <algorithm>
 
 // "Home-made" includes.
 #include    "Vector2.h"
@@ -116,8 +116,8 @@ void    Vector2::Negate ()
  */
 void    Vector2::Rotate (float angle) 
 {
-	float   x = (m_x * ::cosf (angle)) - (m_y * ::sinf (angle));
-	float   y = (m_y * ::cosf (angle)) + (m_x * ::sinf (angle));
+	float   x = (m_x * std::cos (angle)) - (m_y * std::sin (angle));
+	float   y = (m_y * std::cos (angle)) + (m_x * std::sin (angle));
 
 	m_x = x;
 	m_y = y;
@@ -153,7 +153,7 @@ float   Vector2::Normalize ()
  */
 float   Vector2::GetMagnitude () const
 {
-    return (::sqrtf (m_x * m_x + m_y * m_y));
+    return (std::sqrt (m_x * m_x + m_y * m_y));
 } // Endproc.
 
 
@@ -455,8 +455,8 @@ Vector2   Vector2::YAxis ()
 float   Vector2::GetDistance (const Vector2& firstVector2, 
                               const Vector2& secondVector2)
 {
-    return (::sqrtf (static_cast<float> (::pow ((secondVector2.m_x - firstVector2.m_x), 2) +
-                                         ::pow ((secondVector2.m_y - firstVector2.m_y), 2))));
+    return (std::sqrt (std::pow ((secondVector2.m_x - firstVector2.m_x), 2) +
+                       std::pow ((secondVector2.m_y - firstVector2.m_y), 2)));
 } // Endproc.
 
 

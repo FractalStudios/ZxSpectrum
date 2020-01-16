@@ -25,7 +25,7 @@ enum SOUND_CHANNELS
 {
     MONO = 1,
     STEREO = 2,
-    DEFAULT_SOUND_CHANNELS = MONO,
+    DEFAULT_SOUND_CHANNELS = STEREO,
 }; // Endenum.
 
 
@@ -36,56 +36,78 @@ public:
     /// The default samples per second.
     static  const   UInt32  DEFAULT_SAMPLES_PER_SECOND = 44100;
 
-    /// Signal procedure type. 
-    typedef float (* SIGNAL_PROC) (const float& timeInSeconds, 
-                                   const float& frequency,
-                                   UInt32       channel);
-    
-    /// Sample buffer (for WAVE_FORMAT_PCM). 
-    typedef std::vector<UInt8>  SampleBuffer;
+    // Sound sample wave enumeration.
+    enum SOUND_SAMPLE_WAVE
+    {
+        TRIANGLE_WAVE = 0,
+        PURE_TONE_WAVE,
+        SQUARE_WAVE,
+        BAND_LIMITED_SQUARE_WAVE,
+        DEFAULT_SOUND_SAMPLE_WAVE = PURE_TONE_WAVE,
+    }; // Endenum
 
     SoundSample ();
-    SoundSample (UInt32         duration,
-                 const float&   frequency, 
-                 SOUND_CHANNELS numSoundChannels = DEFAULT_SOUND_CHANNELS,
-                 UInt32         samplesPerSecond = DEFAULT_SAMPLES_PER_SECOND,
-                 SIGNAL_PROC    signalProc = PureToneWave);
+    SoundSample (UInt32             soundDuration,
+                 const float&       soundFrequency, 
+                 SOUND_CHANNELS     soundChannels = DEFAULT_SOUND_CHANNELS,
+                 UInt32             samplesPerSecond = DEFAULT_SAMPLES_PER_SECOND,
+                 SOUND_SAMPLE_WAVE  soundSampleWave = DEFAULT_SOUND_SAMPLE_WAVE);
     ~SoundSample ();
 
-    FolioStatus Create (UInt32          duration,
-                        const float&    frequency, 
-                        SOUND_CHANNELS  numSoundChannels = DEFAULT_SOUND_CHANNELS,
-                        UInt32          samplesPerSecond = DEFAULT_SAMPLES_PER_SECOND,
-                        SIGNAL_PROC     signalProc = PureToneWave);
+    FolioStatus Create (UInt32              soundDuration,
+                        const float&        soundFrequency, 
+                        SOUND_CHANNELS      soundChannels = DEFAULT_SOUND_CHANNELS,
+                        UInt32              samplesPerSecond = DEFAULT_SAMPLES_PER_SECOND,
+                        SOUND_SAMPLE_WAVE   soundSampleWave = DEFAULT_SOUND_SAMPLE_WAVE);
     FolioStatus AddSoundSample (const SoundSample& soundSample);
 
-    UInt32          GetDuration () const;
-    float           GetFrequency () const;
-    SOUND_CHANNELS  GetNumSoundChannels () const;
-    UInt32          GetSamplesPerSecond () const;
-    SIGNAL_PROC     GetSignalProc () const;
+    UInt32              GetSoundDuration () const;
+    float               GetSoundFrequency () const;
+    SOUND_CHANNELS      GetSoundChannels () const;
+    UInt32              GetSamplesPerSecond () const;
+    SOUND_SAMPLE_WAVE   GetSoundSampleWave () const;
     
+    /// Sample buffer.
+    typedef std::vector<UInt8>  SampleBuffer;
+
     const SampleBuffer& GetSampleBuffer () const;
 
     bool    IsSoundSampleGenerated () const;
 
-    static  float   TriangleWave (const float&  timeInSeconds, 
-                                  const float&  frequency,
-                                  UInt32        channel = 0);
-    static  float   PureToneWave (const float&  timeInSeconds, 
-                                  const float&  frequency,
-                                  UInt32        channel = 0);
-
 private:
-    UInt32          m_duration;         ///< The sound's duration (in milliseconds).
-    float           m_frequency;        ///< The sound's frequency.
-    SOUND_CHANNELS  m_numSoundChannels; ///< The number of sound channels to use when generating the sound sample.
-    UInt32          m_samplesPerSecond; ///< The sample frequency to use when generating the sound sample.
-    SIGNAL_PROC     m_signalProc;       ///< The signal procedure to use when generating the sound sample.
+    static  const   UInt32  DEFAULT_VOLUME = 127;
+
+    UInt32              m_soundDuration;    ///< The sound's duration (in milliseconds).
+    float               m_soundFrequency;   ///< The sound's frequency.
+    SOUND_CHANNELS      m_soundChannels;    ///< The sound channels to use when generating the sound sample.
+    UInt32              m_samplesPerSecond; ///< The sample frequency to use when generating the sound sample.
+    SOUND_SAMPLE_WAVE   m_soundSampleWave;  ///< The wave type algorithm to use when generating the sound sample.
 
     SampleBuffer    m_sampleBuffer; ///< Holds the generated sound sample.
 
+    // Coefficients.
+    typedef std::vector<float>  Coefficients;  
+
     void    GenerateSoundSample ();
+
+    void    GenerateTriangleWave (const float&  seconds,
+                                  UInt32        numSamples);
+    void    GeneratePureToneWave (const float&  seconds,
+                                  UInt32        numSamples);
+    void    GenerateSquareWave (const float&    seconds,
+                                UInt32          numSamples);
+    void    GenerateBandLimitedSquareWave (const float& seconds,
+                                           UInt32       numSamples);
+
+    float   TriangleWave (const float&  time, 
+                          UInt32        channel);
+    float   PureToneWave (const float&  time, 
+                          UInt32        channel); 
+    float   SquareWave (UInt32          sample,
+                        const float&    scaler);
+    float   BandLimitedSquareWave (UInt32               sample,
+                                   const float&         scaler,
+                                   const Coefficients&  coefficients); 
 }; // Endclass.
 
 // Sound samples list.

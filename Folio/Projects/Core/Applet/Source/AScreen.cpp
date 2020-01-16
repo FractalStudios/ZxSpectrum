@@ -202,12 +202,6 @@ FolioStatus AScreen::ProcessScreenFrame (UInt32* frameRateIncrement)
 } // Endproc.
 
 
-FolioStatus AScreen::UpdateScreen ()
-{
-    return (ERR_SUCCESS);
-} // Endproc.
-
-
 FolioStatus AScreen::DrawInCanvas () const
 {
     // Query the drawing elements of the screen.

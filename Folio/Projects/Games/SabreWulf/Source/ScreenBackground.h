@@ -1,8 +1,8 @@
 #pragma once
 
 // STL includes.
-#include    <memory>
 #include    <map>
+#include    <memory>
 
 // "Home-made" includes.
 #include    <Game.h>
@@ -24,8 +24,8 @@ namespace SabreWulf
 class ScreenBackground
 {
 public:
-    ScreenBackground (const BackgroundItemsList           &backgroundItemsList,
-                      const BackgroundItemGraphicsMapPtr  &backgroundItemGraphicsMap);
+    ScreenBackground (const BackgroundItemsList         &backgroundItemsList,
+                      const BackgroundItemGraphicsMap   &backgroundItemGraphicsMap);
     ~ScreenBackground ();
 
     BackgroundItemsList GetBackgroundItemsList () const;
@@ -33,7 +33,7 @@ public:
 private:
     BackgroundItemsList m_backgroundItemsList;  // The screen's background items list.
 
-    void    SetBackgroundItemGraphics (const BackgroundItemGraphicsMapPtr &backgroundItemGraphicsMap);
+    FolioStatus SetBackgroundItemGraphics (const BackgroundItemGraphicsMap &backgroundItemGraphicsMap);
 
     // Private copy constructor to prevent copying.
     ScreenBackground (const ScreenBackground& rhs);
@@ -42,7 +42,7 @@ private:
     ScreenBackground& operator= (const ScreenBackground& rhs);
 }; // Endclass.
 
-// Screen backgrounds pointer.
+// Screen background pointer.
 typedef std::shared_ptr<ScreenBackground>   ScreenBackgroundPtr;
 
 // Screen backgrounds map.
@@ -51,8 +51,10 @@ typedef std::map<ScreenMap::ScreenNumber, ScreenBackgroundPtr>  ScreenBackground
 
 // Routines.
 
-extern  FolioStatus BuildScreenBackgrounds (const BackgroundItemGraphicsMapPtr  &backgroundItemGraphicsMap,
-                                            ScreenBackgroundsMap                &screenBackgroundsMap);
+extern  FolioStatus CreateScreenBackgrounds (const BackgroundItemGraphicsMap    &backgroundItemGraphicsMap,
+                                             ScreenBackgroundsMap               &screenBackgroundsMap);
+extern  FolioStatus QueryScreenBackgroundList (ScreenMap::ScreenNumber  screenNumber,
+                                               BackgroundItemsList      &backgroundItemsList);
 
 } // Endnamespace.
 

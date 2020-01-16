@@ -1,7 +1,11 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
 #include    <Util.h>
+#include    "Globals.h"
 #include    "MainCanvasMsgHandler.h"
+
+//#define _AUTO_TEST_
+#define AUTO_TEST_SCREEN_TIME 5 * 1000
 
 namespace Folio
 {
@@ -36,7 +40,7 @@ MainCanvasMsgHandler::MainCanvasMsgHandler (Int32   maxScreenXPixels,
                                             UInt32  screenScale)
 :   ACanvasMsgHandler(maxScreenXPixels, maxScreenYPixels, screenScale),
     m_state(STATE_LOADING_SCREEN),
-    m_currentScreenIndex(ScreenMap::INITIAL_SCREEN_INDEX)
+    m_currentScreenListIndex(ScreenMap::INITIAL_SCREEN_INDEX)
 {
 } // Endproc.
 
@@ -57,6 +61,16 @@ FolioStatus MainCanvasMsgHandler::HandleCreateCanvasMsg (FolioHandle    wndHandl
     // Initialise.
 
     return (Initialise ());
+} // Endproc.
+
+
+FolioStatus MainCanvasMsgHandler::HandleDestroyCanvasMsg (FolioHandle   wndHandle,
+                                                          UInt32        wParam,
+                                                          UInt32        lParam)
+{
+    // Terminate.
+
+    return (Terminate ());
 } // Endproc.
 
 
@@ -130,14 +144,36 @@ FolioStatus MainCanvasMsgHandler::HandleProcessFrame (FolioHandle   wndHandle,
 } // Endproc.
 
 
+FolioStatus MainCanvasMsgHandler::Initialise ()
+{
+    // Set random seed.
+
+    Folio::Core::Util::Random::SetRandomSeed ();
+
+    // Initialise globals.
+
+    return (InitialiseGlobals (*m_canvas));
+} // Endproc.
+
+
+FolioStatus MainCanvasMsgHandler::Terminate ()
+{
+    // Terminate globals.
+
+    return (TerminateGlobals ());
+} // Endproc.
+
+
 FolioStatus MainCanvasMsgHandler::HandleProcessLoadingScreenFrame (FolioHandle  wndHandle,
                                                                    UInt32       *frameRateIncrement)
 {
     FolioStatus status = ERR_SUCCESS;
 
+    // Has the loading screen been created?
+
     if (!m_loadingScreen)
     {
-        // Create the loading screen.
+        // No. Create the loading screen.
 
         m_loadingScreen.reset (new LoadingScreenPtr::element_type);
 
@@ -174,11 +210,13 @@ FolioStatus MainCanvasMsgHandler::HandleProcessSelectionScreenFrame (FolioHandle
 {
     FolioStatus status = ERR_SUCCESS;
 
+    // Has the selection screen been created?
+
     if (!m_selectionScreen)
     {
-        // Create the selection screen.
+        // No. Create the selection screen.
 
-        m_selectionScreen.reset (new SelectionScreenPtr::element_type(m_informationPanel));
+        m_selectionScreen.reset (new SelectionScreenPtr::element_type);
 
         status = m_selectionScreen->Create (*m_canvas, m_canvas->GetCanvasScreenRect ());
     } // Endif.
@@ -222,11 +260,13 @@ FolioStatus MainCanvasMsgHandler::HandleProcessHighScoreScreenFrame (FolioHandle
 {
     FolioStatus status = ERR_SUCCESS;
 
+    // Has the high score screen been created?
+
     if (!m_highScoreScreen)
     {
-        // Create the high score screen.
+        // No. Create the high score screen.
 
-        m_highScoreScreen.reset (new HighScoreScreenPtr::element_type(m_informationPanel, m_highScoreTable));
+        m_highScoreScreen.reset (new HighScoreScreenPtr::element_type);
 
         status = m_highScoreScreen->Create (*m_canvas, m_canvas->GetCanvasScreenRect ());
     } // Endif.
@@ -261,13 +301,15 @@ FolioStatus MainCanvasMsgHandler::HandleProcessFoundAmuletPieceScreenFrame (Foli
 {
     FolioStatus status = ERR_SUCCESS;
 
+    // Has the found amulet piece screen been created?
+
     if (!m_foundAmuletPieceScreen)
     {
-        // Create the found amulet piece screen.
+        // No. Create the found amulet piece screen.
 
-        m_foundAmuletPieceScreen.reset (new FoundAmuletPieceScreenPtr::element_type(m_informationPanel));
+        m_foundAmuletPieceScreen.reset (new FoundAmuletPieceScreenPtr::element_type);
 
-        status = m_foundAmuletPieceScreen->Create (*m_canvas, m_canvas->GetCanvasScreenRect (), 10 * 1000);
+        status = m_foundAmuletPieceScreen->Create (*m_canvas, m_canvas->GetCanvasScreenRect ());
     } // Endif.
 
     if (status == ERR_SUCCESS)
@@ -284,9 +326,9 @@ FolioStatus MainCanvasMsgHandler::HandleProcessFoundAmuletPieceScreenFrame (Foli
 
             m_foundAmuletPieceScreen.reset ();
             
-            // Reset the found amulet piece.
+            // The player has not just found an amulet piece.
 
-            m_playerSprite->SetFoundAmuletPiece (false);
+            g_playerSprite->ResetJustFoundAmuletPiece ();
 
             // Display the current screen.
 
@@ -312,13 +354,15 @@ FolioStatus MainCanvasMsgHandler::HandleProcessGameCompletedScreenFrame (FolioHa
 {
     FolioStatus status = ERR_SUCCESS;
 
+    // Has the game completed screen been created?
+
     if (!m_gameCompletedScreen)
     {
-        // Create the game completed screen.
+        // No. Create the game completed screen.
 
-        m_gameCompletedScreen.reset (new GameCompletedScreenPtr::element_type(m_informationPanel));
+        m_gameCompletedScreen.reset (new GameCompletedScreenPtr::element_type);
 
-        status = m_gameCompletedScreen->Create (*m_canvas, m_canvas->GetCanvasScreenRect (), 10 * 1000);
+        status = m_gameCompletedScreen->Create (*m_canvas, m_canvas->GetCanvasScreenRect ());
     } // Endif.
 
     if (status == ERR_SUCCESS)
@@ -351,13 +395,15 @@ FolioStatus MainCanvasMsgHandler::HandleProcessGameOverScreenFrame (FolioHandle 
 {
     FolioStatus status = ERR_SUCCESS;
 
+    // Has the game over screen been created?
+
     if (!m_gameOverScreen)
     {
-        // Create the game over screen.
+        // No. Create the game over screen.
 
-        m_gameOverScreen.reset (new GameOverScreenPtr::element_type(m_informationPanel));
+        m_gameOverScreen.reset (new GameOverScreenPtr::element_type);
 
-        status = m_gameOverScreen->Create (*m_canvas, m_canvas->GetCanvasScreenRect (), 10 * 1000);
+        status = m_gameOverScreen->Create (*m_canvas, m_canvas->GetCanvasScreenRect ());
     } // Endif.
 
     if (status == ERR_SUCCESS)
@@ -376,7 +422,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessGameOverScreenFrame (FolioHandle 
 
             // Did the player register a high score?
 
-            if (m_highScoreTable.IsHighScore (m_informationPanel->GetScore ()))
+            if (g_highScoreTable.IsHighScore (g_informationPanel->GetPlayerScore ()))
             {
                 // Yes. Move to the enter high score screen.
 
@@ -403,13 +449,13 @@ FolioStatus MainCanvasMsgHandler::HandleProcessEnterHighScoreScreenFrame (FolioH
 {
     FolioStatus status = ERR_SUCCESS;
 
+    // Has the enter high score screen been created?
+
     if (!m_enterHighScoreScreen)
     {
-        // Create the enter high score screen.
+        // No. Create the enter high score screen.
 
-        m_enterHighScoreScreen.reset (new EnterHighScoreScreenPtr::element_type(m_informationPanel, 
-                                                                                m_selectionScreen, 
-                                                                                m_highScoreTable));
+        m_enterHighScoreScreen.reset (new EnterHighScoreScreenPtr::element_type(m_selectionScreen));
 
         status = m_enterHighScoreScreen->Create (*m_canvas, m_canvas->GetCanvasScreenRect ());
     } // Endif.
@@ -446,8 +492,8 @@ FolioStatus MainCanvasMsgHandler::HandleProcessStartingGameStateFrame (FolioHand
 
     bool    isStarting = true;  // Initialise!
 
-    FolioStatus status = m_screensList [m_currentScreenIndex]->HandleProcessFrame (isStarting,
-                                                                                   frameRateIncrement);
+    FolioStatus status = m_screensList [m_currentScreenListIndex]->HandleProcessFrame (isStarting,
+                                                                                       frameRateIncrement);
 
     // Still starting?
 
@@ -456,16 +502,51 @@ FolioStatus MainCanvasMsgHandler::HandleProcessStartingGameStateFrame (FolioHand
         // No. We're playing.
 
         m_state = STATE_PLAYING_GAME;
-        
-        // The player is alive.
-
-        m_playerSprite->SetAlive ();
     } // Endif.
 
     return (status);
 } // Endproc.
 
 
+#ifdef _AUTO_TEST_
+FolioStatus MainCanvasMsgHandler::HandleProcessPlayingGameStateFrame (FolioHandle   wndHandle,
+                                                                      UInt32        *frameRateIncrement)
+{
+    static  UInt32  s_screenTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
+
+    // Let the current screen process the frame.
+
+    bool    isStarting = false; // Initialise!
+
+    FolioStatus status = m_screensList [m_currentScreenListIndex]->HandleProcessFrame (isStarting, 
+                                                                                       frameRateIncrement);
+        
+    if (status == ERR_SUCCESS)
+    {
+        //if (m_selectionScreen->IsPlayerFireKeyDown ())
+        if (Folio::Core::Util::DateTime::GetCurrentTickCount () > (s_screenTickCount + AUTO_TEST_SCREEN_TIME))
+        {
+            m_screensList [m_currentScreenListIndex]->ExitScreen ();
+
+            s_screenTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
+
+            if (++g_screenMap.m_currentScreenMapIndex >= g_screenMap.GetTotalNumScreens ())
+            {
+                //Folio::Core::Util::g_handleMonitor.Dump ();
+                //g_resourceGraphicsCache.Dump (false);
+                g_resourceGraphicsCache.DumpNumUsedBitmaps (false);
+
+                g_screenMap.m_currentScreenMapIndex = 0;
+            } // Endif.
+            
+            status = DisplayScreen ();
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+#else
 FolioStatus MainCanvasMsgHandler::HandleProcessPlayingGameStateFrame (FolioHandle   wndHandle,
                                                                       UInt32        *frameRateIncrement)
 {
@@ -479,38 +560,38 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingGameStateFrame (FolioHandl
 
         bool    isStarting = false; // Initialise!
 
-        status = m_screensList [m_currentScreenIndex]->HandleProcessFrame (isStarting, 
-                                                                           frameRateIncrement);
+        status = m_screensList [m_currentScreenListIndex]->HandleProcessFrame (isStarting, 
+                                                                               frameRateIncrement);
         
         if (status == ERR_SUCCESS)
         {
             // Reset player fire key down.
 
-            m_playerSprite->SetFireKeyDown (false);
+            g_playerSprite->SetFireKeyDown (false);
 
             // Has the player exited a screen?
 
-            if (m_playerSprite->IsExitedScreen ())
+            if (g_playerSprite->IsExitedScreen ())
             {
                 // Yes. Display the new screen.
 
                status = DisplayScreen ();
             } // Endif.
 
-            // Has the player found an amulet piece?
+            // Has the player just found an amulet piece?
             
             else
-            if (m_playerSprite->FoundAmuletPiece ())
+            if (g_playerSprite->IsJustFoundAmuletPiece ())
             {
                 // Yes. Display the found amulet piece screen.
 
                 m_state = STATE_FOUND_AMULET_PIECE_SCREEN;
             } // Endelseif.
 
-            // Is the games over?
+            // Is the game over?
 
             else
-            if (m_playerSprite->IsGameOver ())
+            if (g_playerSprite->IsGameOver ())
             {
                 // Yes. Display the game over screen.
 
@@ -520,7 +601,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingGameStateFrame (FolioHandl
            // Has the player completed the game?
             
             else
-            if (m_playerSprite->IsGameCompleted ())
+            if (g_playerSprite->IsGameCompleted ())
             {
                 // Yes. Display the game completed screen.
 
@@ -533,7 +614,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingGameStateFrame (FolioHandl
 
     return (status);
 } // Endproc.
-
+#endif
 
 FolioStatus MainCanvasMsgHandler::HandleProcessPausedGameStateFrame (FolioHandle    wndHandle,
                                                                      UInt32         *frameRateIncrement)
@@ -559,26 +640,26 @@ FolioStatus MainCanvasMsgHandler::CheckPlayingGameStateInput ()
 
     // Is the player ready?
 
-    if (m_playerSprite->IsReady ())
+    if (g_playerSprite->IsReady ())
     {
-        // Pause game key down?  
+        // Is the pause game key down?  
 
         if (m_selectionScreen->IsPauseGameKeyDown ())
         {
-            // Yes. Pause game.
+            // Yes. Pause the game.
 
             m_state = STATE_PAUSED_GAME;
-        } // Endelseif.
+        } // Endif.
 
         else
         {
-            // Player fire key down?  
+            // Is the player fire key down?  
 
             if (m_selectionScreen->IsPlayerFireKeyDown ())
             {
                 // Yes. Set player fire key down.
 
-                m_playerSprite->SetFireKeyDown (true);
+                g_playerSprite->SetFireKeyDown (true);
             } // Endif.
 
             // Is a player's direction key down?
@@ -589,17 +670,17 @@ FolioStatus MainCanvasMsgHandler::CheckPlayingGameStateInput ()
             {
                 // Yes. Update the player's direction.
 
-                m_playerSprite->UpdateDirection (direction, true);
+                status = g_playerSprite->UpdateDirection (direction, true);
             } // Endif.
 
             // Is the player moving?
 
             else
-            if (m_playerSprite->IsMoving ())
+            if (g_playerSprite->IsMoving ())
             {
                 // Yes. Update the player's direction.
 
-                m_playerSprite->UpdateDirection (direction, false);
+                status = g_playerSprite->UpdateDirection (direction, false);
             } // Endelseif.
 
         } // Endelse.
@@ -612,38 +693,41 @@ FolioStatus MainCanvasMsgHandler::CheckPlayingGameStateInput ()
 
 FolioStatus MainCanvasMsgHandler::StartPlayingGame ()
 {
-    // Start the information panel.
+    // Initialise globals.
 
-    FolioStatus status = m_informationPanel->Start ();
+    FolioStatus status = InitialiseGlobals (*m_canvas, false);
 
     if (status == ERR_SUCCESS)
     {
-        // Start the player.
+        // Start the information panel.
 
-        status = m_playerSprite->Start ();
+        status = g_informationPanel->Start ();
 
         if (status == ERR_SUCCESS)
         {
-            // Build the screens.
+            // Start the player.
 
-            status = BuildScreens (*m_canvas,
-                                    m_screenMap,
-                                    m_informationPanel,
-                                    m_screenBackgroundsMap,
-                                    m_spriteGraphicsMap,
-                                    m_screensList);
+            status = g_playerSprite->Start ();
 
             if (status == ERR_SUCCESS)
-            {        
-                // Display the intial screen.
+            {
+                // Build the screens.
 
-                status = DisplayScreen ();
-                
+                status = BuildScreens (*m_canvas, m_screensList);
+
                 if (status == ERR_SUCCESS)
                 {        
-                    // We're starting.
+                    // Display the initial screen.
 
-                    m_state = STATE_STARTING_GAME;
+                    status = DisplayScreen ();
+                
+                    if (status == ERR_SUCCESS)
+                    {        
+                        // We're starting.
+
+                        m_state = STATE_STARTING_GAME;
+                    } // Endif.
+
                 } // Endif.
 
             } // Endif.
@@ -658,103 +742,13 @@ FolioStatus MainCanvasMsgHandler::StartPlayingGame ()
 
 FolioStatus MainCanvasMsgHandler::DisplayScreen ()
 {
-    // Get the current screen index.
+    // Get the current screen map index.
 
-    m_currentScreenIndex = m_screenMap->GetCurrentScreenIndex ();
+    m_currentScreenListIndex = g_screenMap.GetCurrentScreenMapIndex ();
 
     // Draw the current screen.
 
-    return (m_screensList [m_currentScreenIndex]->Draw (m_playerSprite, m_orchidSprite));
-} // Endproc.
-
-
-FolioStatus MainCanvasMsgHandler::Initialise ()
-{
-    // Set random seed.
-
-    Folio::Core::Util::Random::SetRandomSeed ();
-
-    // Get the canvas device context.
-
-    FolioHandle dcHandle = m_canvas->GetCanvasDcHandle ();
-    
-    // Get the canvas application instance.
-    
-    FolioHandle instanceHandle = m_canvas->GetAppletInstanceHandle ();
-
-    // Create the background item graphics.
-
-    FolioStatus status = CreateBackgroundItemGraphics (instanceHandle,
-                                                       m_backgroundItemGraphicsMap);
-
-    if (status == ERR_SUCCESS)
-    {
-        // Create the sprite graphics.
-
-        status = CreateSpriteGraphics (instanceHandle,
-                                       m_spriteGraphicsMap);
-
-        if (status == ERR_SUCCESS)
-        {
-            // Create the player sprite.
-
-            m_playerSprite.reset (new PlayerSpritePtr::element_type);
-
-            status = m_playerSprite->Create (dcHandle, m_spriteGraphicsMap);
-
-            if (status == ERR_SUCCESS)
-            {
-                // Create the orchid sprite.
-
-                m_orchidSprite.reset (new OrchidSpritePtr::element_type);
-
-                status = m_orchidSprite->Create (dcHandle, m_spriteGraphicsMap);
-
-                if (status == ERR_SUCCESS)
-                {
-                    // Create the screen map.
-
-                    m_screenMap.reset (new ScreenMap(m_spriteGraphicsMap));
-
-                    if (status == ERR_SUCCESS)
-                    {
-                        // Create the information panel.
-
-                        m_informationPanel.reset (new InformationPanelPtr::element_type(*m_canvas, 
-                                                                                        m_highScoreTable));
-
-                        status = m_informationPanel->Create (m_screenMap->GetTotalNumScreens ());
-
-                        if (status == ERR_SUCCESS)
-                        {
-                            // Create the selection screen.
-
-                            m_selectionScreen.reset (new SelectionScreenPtr::element_type(m_informationPanel));
-
-                            status = m_selectionScreen->Create (*m_canvas,  
-                                                                m_canvas->GetCanvasScreenRect ());
-
-                            if (status == ERR_SUCCESS)
-                            {
-                                // Build the screen backgrounds.
-
-                                status = BuildScreenBackgrounds (m_backgroundItemGraphicsMap,
-                                                                 m_screenBackgroundsMap);
-                            } // Endif.
-
-                        } // Endif.
-
-                    } // Endif.
-    
-                } // Endif.
-
-            } // Endif.
-
-        } // Endif.
-
-    } // Endif.
-
-    return (status);
+    return (m_screensList [m_currentScreenListIndex]->Draw ());
 } // Endproc.
 
 
@@ -774,8 +768,8 @@ void    MainCanvasMsgHandler::DisplayFrameRate () const
         FolioOStringStream  str;
         str << TXT("FrameRate: ") << frameRate
             << TXT(" FrameCount: ") << s_frameCount
-            << TXT(" ScreenIndex: ") << m_currentScreenIndex
-            << TXT(" ScreenNumber: ") << m_screenMap->GetCurrentScreenNumber ();
+            << TXT(" ScreenListIndex: ") << m_currentScreenListIndex
+            << TXT(" ScreenNumber: ") << g_screenMap.GetCurrentScreenNumber ();
         Folio::Core::Util::Wnd::SetWndText (m_canvas->GetCanvasWndHandle (), str.str ().c_str ());
     
         str << std::endl;
@@ -784,6 +778,7 @@ void    MainCanvasMsgHandler::DisplayFrameRate () const
         s_previousTickCount = currentTickCount;
         s_frameCount        = 0.0f;
     } // Endif.
+
 } // Endproc.
 
 } // Endnamespace.

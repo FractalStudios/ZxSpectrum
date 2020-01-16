@@ -340,8 +340,8 @@ FolioStatus QuerySpriteGraphicAttributes (FolioHandle                           
 
 template <typename T, typename U>
 FolioStatus QuerySpriteGraphicAttributes (FolioHandle                                   dcHandle,
-                                          T                                             spriteId,
                                           const SpriteGraphicsMap<U>&                   spriteGraphicsMap,
+                                          T                                             spriteId,
                                           Folio::Core::Game::ZxSpectrum::COLOUR         spriteColour,
                                           const SpriteGraphicCharacteristicsList<T, U>& spriteGraphicCharacteristicsList,
                                           SpriteGraphicAttributesList&                  spriteGraphicAttributesList)

@@ -1,5 +1,5 @@
-// C includes.
-#include    <math.h>
+// STL includes.
+#include    <algorithm>
 
 // "Home-made" includes.
 #include    "Vector3.h"
@@ -158,7 +158,7 @@ float   Vector3::Normalize ()
  */
 float   Vector3::GetMagnitude () const
 {
-    return (::sqrtf (m_x * m_x + m_y * m_y + m_z * m_z));
+    return (std::sqrt (m_x * m_x + m_y * m_y + m_z * m_z));
 } // Endproc.
 
 
@@ -478,9 +478,9 @@ Vector3   Vector3::ZAxis ()
 float   Vector3::GetDistance (const Vector3& firstVector3, 
                               const Vector3& secondVector3)
 {
-    return (::sqrtf (static_cast<float> (::pow ((secondVector3.m_x - firstVector3.m_x), 2) +
-                                         ::pow ((secondVector3.m_y - firstVector3.m_y), 2) + 
-                                         ::pow ((secondVector3.m_z - firstVector3.m_z), 2))));
+    return (std::sqrt (std::pow ((secondVector3.m_x - firstVector3.m_x), 2) +
+                       std::pow ((secondVector3.m_y - firstVector3.m_y), 2) + 
+                       std::pow ((secondVector3.m_z - firstVector3.m_z), 2)));
 } // Endproc.
 
 

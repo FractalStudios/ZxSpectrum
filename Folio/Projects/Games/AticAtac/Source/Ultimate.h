@@ -12,16 +12,19 @@ namespace Folio
 namespace Games
 {
 
+namespace AticAtac
+{
+
 namespace Ultimate
 {
 
 // Routines.
 
-extern  UInt32  MapMakeSoundDuration (Folio::Core::Game::ZxSpectrum::BYTE   frequency,
-                                      Folio::Core::Game::ZxSpectrum::BYTE   numLoops);
-extern  float   MapMakeSoundFrequency (Folio::Core::Game::ZxSpectrum::BYTE frequency);
-extern  Folio::Core::Util::Sound::SoundSample   MapMakeSound (Folio::Core::Game::ZxSpectrum::BYTE   frequency,
-                                                              Folio::Core::Game::ZxSpectrum::BYTE   numLoops);
+extern  Folio::Core::Util::Sound::SoundSample   CreateSoundSample (Folio::Core::Game::ZxSpectrum::BYTE  frequency,
+                                                                   Folio::Core::Game::ZxSpectrum::BYTE  numLoops);
+extern  Folio::Core::Util::Sound::SoundSample   CreateDoorSoundSample ();
+
+} // Endnamespace.
 
 } // Endnamespace.
 

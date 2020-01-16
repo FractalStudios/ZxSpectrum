@@ -1,6 +1,3 @@
-// C includes.
-#include    <math.h>
-
 // "Home-made" includes.
 #include    "ACollisionGrid.h"
 #include    "ASprite.h"
@@ -24,13 +21,37 @@ ACollisionGrid::~ACollisionGrid ()
 } // Endproc.
 
 
-FolioStatus ACollisionGrid::Create (const Gdiplus::Rect &floorRect)
+FolioStatus ACollisionGrid::Create (const Gdiplus::Rect& floorRect)
 {
     // Note the floor rect of the colllision grid.
 
     m_floorRect = floorRect;
 
     return (ERR_SUCCESS);
+} // Endproc.
+
+
+FolioStatus ACollisionGrid::Create (const Gdiplus::Rect&                            floorRect,
+                                    const Folio::Core::Game::DrawingElementsList&   drawingElementsList)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Note the floor rect of the colllision grid.
+
+    m_floorRect = floorRect;
+
+    // Add the drawing elements to the collision grid.
+
+    for (Folio::Core::Game::DrawingElementsList::const_iterator itr = drawingElementsList.begin ();
+         (status == ERR_SUCCESS) && (itr != drawingElementsList.end ());
+         ++itr)
+    {
+        // Add the drawing element to the collision grid.
+
+        status = AddCellElement (*itr);
+    } // Endfor.
+    
+    return (status);
 } // Endproc.
 
 

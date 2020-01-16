@@ -26,19 +26,11 @@ BackgroundItem::~BackgroundItem ()
 } // Endproc.
 
 
-void    BackgroundItem::SetBackgroundItemGraphic (const BackgroundItemGraphicsMapPtr &backgroundItemGraphicsMap)
+FolioStatus BackgroundItem::SetBackgroundItemGraphic (const BackgroundItemGraphicsMap &backgroundItemGraphicsMap)
 {
-    // Set the background item's graphic.
-
-    BackgroundItemGraphicsMap::const_iterator   itr = backgroundItemGraphicsMap->find (m_backgroundItemId);
-
-    if (itr != backgroundItemGraphicsMap->end ())
-    {
-        // Note the background item's graphic.
-
-        m_backgroundItemGraphic = itr->second;
-    } // Endif.
-
+    return (FindBackgroundItemGraphic (m_backgroundItemId,
+                                       backgroundItemGraphicsMap,
+                                       m_backgroundItemGraphic));
 } // Endproc.
 
 
@@ -114,9 +106,11 @@ FolioStatus BackgroundItem::QueryDrawingElements (FolioHandle                   
 
     if (m_backgroundItemGraphic)
     {
+        // Have the background item graphic's drawing elements been queried already?
+
         if (m_drawingElementsList.empty ())
         {
-            // Query the background item graphic's drawing elements.
+            // No. Query the background item graphic's drawing elements.
 
             status = m_backgroundItemGraphic->QueryDrawingElements (dcHandle,
                                                                     m_screenXLeft,
@@ -141,6 +135,16 @@ FolioStatus BackgroundItem::QueryDrawingElements (FolioHandle                   
     } // Endelse.
 
     return (status);
+} // Endproc.
+
+
+BackgroundItem::operator Folio::Core::Game::ItemAttributes<BACKGROUND_ITEM_ID> () const
+{
+    return (Folio::Core::Game::ItemAttributes<BACKGROUND_ITEM_ID>(m_backgroundItemId,
+                                                                  GetBitmapResourceId (),
+                                                                  m_screenXLeft,     
+                                                                  m_screenYTop,
+                                                                  Folio::Core::Game::ZxSpectrum::UNDEFINED));
 } // Endproc.
 
 } // Endnamespace.

@@ -1,7 +1,6 @@
 #pragma once
 
 // STL includes.
-#include    <memory>
 #include    <map>
 
 // "Home-made" includes.
@@ -62,7 +61,7 @@ enum BACKGROUND_ITEM_ID
     BACKGROUND_ITEM_955d                                            = IDB_BITMAP_BACKGROUND_ITEM_955d,
     BACKGROUND_ITEM_95cd                                            = IDB_BITMAP_BACKGROUND_ITEM_95cd,
     BACKGROUND_ITEM_9673                                            = IDB_BITMAP_BACKGROUND_ITEM_9673,
-    BACKGROUND_ITEM_BACKGROUND_ITEM_e1ec                            = IDB_BITMAP_BACKGROUND_ITEM_e1ec,
+    BACKGROUND_ITEM_e1ec                                            = IDB_BITMAP_BACKGROUND_ITEM_e1ec,
     BACKGROUND_ITEM_BACKGROUND_ITEM_e3a0_AMULET_PIECE_TOP_LEFT      = IDB_BITMAP_BACKGROUND_ITEM_e3a0_AMULET_PIECE_TOP_LEFT,
     BACKGROUND_ITEM_BACKGROUND_ITEM_e3a0_AMULET_BLANK_TOP_LEFT      = IDB_BITMAP_BACKGROUND_ITEM_e3a0_AMULET_BLANK_TOP_LEFT,
     BACKGROUND_ITEM_BACKGROUND_ITEM_e494_AMULET_PIECE_TOP_RIGHT     = IDB_BITMAP_BACKGROUND_ITEM_e494_AMULET_PIECE_TOP_RIGHT,
@@ -79,14 +78,14 @@ typedef Folio::Core::Game::ResourceGraphicPtr   BackgroundItemGraphic;
 // Background item graphics map.
 typedef std::map<BACKGROUND_ITEM_ID, BackgroundItemGraphic> BackgroundItemGraphicsMap;
              
-// Background item graphics map pointer.
-typedef std::shared_ptr<BackgroundItemGraphicsMap>  BackgroundItemGraphicsMapPtr;
-
 
 // Routines.
 
-extern  FolioStatus CreateBackgroundItemGraphics (FolioHandle                   instanceHandle,
-                                                  BackgroundItemGraphicsMapPtr  &backgroundItemGraphicsMap);
+extern  FolioStatus CreateBackgroundItemGraphics (FolioHandle               instanceHandle,
+                                                  BackgroundItemGraphicsMap &backgroundItemGraphicsMap);
+extern  FolioStatus FindBackgroundItemGraphic (BACKGROUND_ITEM_ID               backgroundItemId,
+                                               const BackgroundItemGraphicsMap  &backgroundItemGraphicsMap,
+                                               BackgroundItemGraphic            &backgroundItemGraphic);
 
 } // Endnamespace.
 

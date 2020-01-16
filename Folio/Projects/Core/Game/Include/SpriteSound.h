@@ -64,6 +64,16 @@ public:
         m_numSpriteSoundSamplesPerFrame(numSpriteSoundSamplesPerFrame)
     {} // Endproc.
 
+    operator Folio::Core::Util::Sound::SoundSample () const
+    {
+        return (*m_spriteSoundSample);
+    } // Endproc.
+
+    operator Folio::Core::Util::Sound::SoundSamplesList () const
+    {
+        return (Folio::Core::Util::Sound::SoundSamplesList(m_numSpriteSoundSamplesPerFrame, *m_spriteSoundSample));
+    } // Endproc.
+
     SpriteSoundSample   m_spriteSoundSample;                // The sprite sound sample.
     UInt32              m_numSpriteSoundSamplesPerFrame;    // The number of sprite sound samples per frane.
 }; // Endclass.

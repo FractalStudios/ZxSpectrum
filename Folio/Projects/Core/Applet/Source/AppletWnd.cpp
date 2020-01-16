@@ -78,7 +78,7 @@ FolioStatus AppletWnd::Process (FolioHandle         instanceHandle,
         MSG msg = {0};  // Initialise!
 
         UInt32  currentTickCount    = 0;    // Initialise!
-        UInt32  previousTickCount   = 0;
+        UInt32  previousTickCount   = DateTime::GetCurrentTickCount ();
 
         UInt32  frameRateIncrement = 0; // Initialise!
 
@@ -108,12 +108,6 @@ FolioStatus AppletWnd::Process (FolioHandle         instanceHandle,
                 // Get current tick count.
 
                 currentTickCount = DateTime::GetCurrentTickCount ();
-
-                if (!previousTickCount) 
-                {
-                    previousTickCount = currentTickCount;
-                } // Endif.
-
             } // Enddo.
             while ((status != ERR_STOPPED) && 
                    ((currentTickCount - previousTickCount) < TICK_COUNT_DELTA));

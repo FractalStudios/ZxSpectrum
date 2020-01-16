@@ -912,10 +912,10 @@ UInt32  GdiBitmap::GetDrawingAdjustmentMode () const
 
 
 /**
- * Indicates of there is a drawing adjustment mode for the bitmap.
+ * Indicates if there is a drawing adjustment mode for the bitmap.
  *
  * @return
- * <b>true</b> of there is a drawing adjustment for the bitmap, <b>false</b> otherwise.
+ * <b>true</b> if there is a drawing adjustment for the bitmap, <b>false</b> otherwise.
  */
 bool    GdiBitmap::IsDrawingAdjustmentMode () const
 {

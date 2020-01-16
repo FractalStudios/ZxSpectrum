@@ -2,14 +2,11 @@
 
 // STL includes.
 #include    <memory>
-#include    <vector>
 
 // "Home-made" includes.
-#include    <Applet.h>
 #include    <Game.h>
+#include    "CollisionGrid.h"
 #include    "DrawingElement.h"
-#include    "PlayerSprite.h"
-#include    "SpriteGraphics.h"
 
 #pragma pack(push, 1)
 
@@ -37,8 +34,7 @@ public:
     OrchidSprite ();
     ~OrchidSprite ();
 
-    FolioStatus Create (FolioHandle                 dcHandle,
-                        const SpriteGraphicsMapPtr  &spriteGraphicsMap);
+    FolioStatus Create (FolioHandle dcHandle);
 
     FolioStatus SetScreenBottomLeft (Int32  screenXLeft,
                                      Int32  screenYBottom);
@@ -46,42 +42,52 @@ public:
     void    StartTransitionTickCount (bool newScreen = true);
     void    CheckTransition ();
 
-    FolioStatus HandlePlayerCollision (PlayerSpritePtr &platerSprite);
-
-private:
-    static  const   Int32   INITIAL_SCREEN_X_LEFT   = 120;  // The initial screen X left (in pixels) of the ocrhid sprite.
-    static  const   Int32   INITIAL_SCREEN_Y_TOP    =  80;  // The initial screen Y top (in pixels) of the ocrhid sprite
-
-    Folio::Core::Game::ZxSpectrum::COLOUR   m_orchidSpriteColour;   // The colour of the orchid sprite.
-    UInt32                                  m_transitionTickCount;  // The transition timing (in milliseconds) of the orchid sprite.
-
-    UInt32  m_colourChangeIndex;    // The colour change index.
-
-    bool    m_infectedPlayer;   // Indicates if the orhid sprite has infected the player.
-
-    FolioStatus SetInitialisingMode (FolioHandle                            dcHandle,
-                                     const SpriteGraphicsMapPtr             &spriteGraphicsMap,
-                                     Folio::Core::Game::ZxSpectrum::COLOUR  orchidSpriteColour);
-    FolioStatus SetTerminatingMode (FolioHandle                             dcHandle,
-                                    const SpriteGraphicsMapPtr              &spriteGraphicsMap,
-                                    Folio::Core::Game::ZxSpectrum::COLOUR   orchidSpriteColour);
-
-    FolioStatus ChangeOrchidSpriteColour ();
-
-    bool    IsOrchidSpriteInfectious () const;
-
-    // Orchid type enumeration.
-    enum ORCHID_TYPE
+    // Orchid sprite type enumeration.
+    enum ORCHID_SPRITE_TYPE
     {
+        UNDEFINED_ORCHID_TYPE = -1,
         IMMUNITY = 0,   // Red.
         CONFUSION,      // Magenta.
         SPEED,          // Cyan.
         SICKNESS,       // Yellow.
         CURE,           // White.
-        DEFAULT_ORCHID_TYPE = CURE,
     }; // Endenum.
 
-    static  ORCHID_TYPE GetOrchidType (Folio::Core::Game::ZxSpectrum::COLOUR orchidSpriteColour);
+    FolioStatus HandlePlayerCollision (ORCHID_SPRITE_TYPE                       &orchidSpriteType,
+                                       Folio::Core::Game::ZxSpectrum::COLOUR    &orchidSpriteColour);
+
+private:
+    static  const   Int32   INITIAL_SCREEN_X_LEFT   = 120;  // The initial screen X left (in pixels) of the orchid sprite.
+    static  const   Int32   INITIAL_SCREEN_Y_TOP    =  80;  // The initial screen Y top (in pixels) of the orchid sprite.
+
+    Folio::Core::Game::ZxSpectrum::COLOUR   m_orchidSpriteColour;   // The colour of the orchid sprite.
+    UInt32                                  m_transitionTickCount;  // The transition tick count of the orchid sprite.
+
+    UInt32  m_colourChangeIndex;    // The colour change index of the orchid sprite.
+    bool    m_infectedPlayer;       // Indicates if the orchid sprite has infected the player.
+
+    FolioStatus SetInitialisingMode (FolioHandle                            dcHandle,
+                                     Folio::Core::Game::ZxSpectrum::COLOUR  orchidSpriteColour);
+    FolioStatus SetTerminatingMode (FolioHandle                             dcHandle,
+                                    Folio::Core::Game::ZxSpectrum::COLOUR   orchidSpriteColour);
+
+    FolioStatus ChangeOrchidSpriteColour ();
+
+    void    SetOrchidSpriteGrowing ();
+    bool    IsOrchidSpriteGrowing () const;
+
+    void    SetOrchidSpriteGrown ();
+    bool    IsOrchidSpriteGrown () const;
+
+    void    SetOrchidSpriteShrinking ();
+    bool    IsOrchidSpriteShrinking () const;
+
+    void    SetOrchidSpriteShrunk ();
+    bool    IsOrchidSpriteShrunk () const;
+
+    bool    IsOrchidSpriteInfectious () const;
+
+    static  ORCHID_SPRITE_TYPE  GetOrchidSpriteType (Folio::Core::Game::ZxSpectrum::COLOUR orchidSpriteColour);
     static  Folio::Core::Game::ZxSpectrum::COLOUR   GetOrchidSpriteColour ();
 
     // Private copy constructor to prevent copying.
@@ -94,14 +100,20 @@ private:
 // Orchid sprite pointer.
 typedef std::shared_ptr<OrchidSprite>    OrchidSpritePtr;
 
-// Orchid sprites list.
-typedef std::vector<OrchidSpritePtr>     OrchidSpritesList;
-
 // Orchid sprite drawing element.
-typedef Folio::Core::Game::SpriteDrawingElement<OrchidSpritePtr> OrchidSpriteDrawingElement;
+typedef Folio::Core::Game::SpriteDrawingElement<OrchidSpritePtr>    OrchidSpriteDrawingElement;
 
-// Orchid sprite drawing elements list.
-typedef std::vector<OrchidSpriteDrawingElement> OrchidSpriteDrawingElementsList;
+
+// Routines.
+
+extern  FolioStatus CreateOrchidSpriteDrawingElement (FolioHandle                   dcHandle,
+                                                      OrchidSpriteDrawingElement    &orchidSpriteDrawingElement);
+extern  FolioStatus InitialiseScreenOrchidSprite (CollisionGrid &collisionGrid);
+extern  FolioStatus UpdateScreenOrchidSprite ();
+extern  FolioStatus CheckScreenOrchidSprite (Gdiplus::Graphics &graphics);
+extern  FolioStatus StoreScreenOrchidSpriteBackground (Gdiplus::Graphics &graphics);
+extern  FolioStatus RestoreScreenOrchidSpriteBackground (Gdiplus::Graphics &graphics);
+extern  FolioStatus DrawScreenOrchidSprite (Gdiplus::Graphics &graphics);
 
 } // Endnamespace.
 

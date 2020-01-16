@@ -5,12 +5,9 @@
 #include    <vector>
 
 // "Home-made" includes.
-#include    <Applet.h>
 #include    <Game.h>
 #include    "CollisionGrid.h"
 #include    "DrawingElement.h"
-#include    "PlayerSprite.h"
-#include    "SpriteGraphics.h"
 
 #pragma pack(push, 1)
 
@@ -22,6 +19,10 @@ namespace Games
 
 namespace SabreWulf
 {
+
+// The maximum number of nasty sprites that can be displayed on a screen.
+const   UInt32  MAX_NASTY_SPRITES_PER_SCREEN = 3;
+
 
 // Nasty sprite identifier enumeration.
 enum NASTY_SPRITE_ID
@@ -48,34 +49,30 @@ enum NASTY_SPRITE_ID
 class NastySprite : public Folio::Core::Game::ANastySprite
 {
 public:
-    NastySprite (const PlayerSpritePtr &playerSprite);
+    NastySprite ();
     ~NastySprite ();
 
-    FolioStatus Create (FolioHandle                 dcHandle,
-                        const SpriteGraphicsMapPtr  &spriteGraphicsMap,
-                        NASTY_SPRITE_ID             nastySpriteId,
-                        const CollisionGrid         &collisionGrid);
+    FolioStatus Create (FolioHandle         dcHandle,
+                        NASTY_SPRITE_ID     nastySpriteId,
+                        UInt32              screenMapIndex,
+                        const CollisionGrid &collisionGrid);
+    FolioStatus CheckNastySprite (Folio::Core::Game::DrawingElementPtr  &drawingElement,
+                                  Gdiplus::Graphics                     &graphics,
+                                  CollisionGrid                         &collisionGrid);
 
-    FolioStatus CheckNasty (Folio::Core::Game::DrawingElementPtr    &drawingElement,
-                            Gdiplus::Graphics                       &graphics,
-                            CollisionGrid                           &collisionGrid);
+    NASTY_SPRITE_ID GetNastySpriteId () const;
+    UInt32          GetNastySpriteScreenMapIndex () const;
 
-    static  UInt32          GetCreateNastySpriteTickCount ();
     static  NASTY_SPRITE_ID GetNastySpriteToCreate (UInt32 numFoundAmuletPieces);
-    static  bool            IsRemoveScreenNastySprites (UInt32 exitScreenTickCount);
 
 private:  
-    PlayerSpritePtr m_playerSprite;     // The player sprite.
-    NASTY_SPRITE_ID m_nastySpriteId;    // The identifier of the nasty sprite.
-    UInt32          m_nastySpriteSpeed; // The speed of the nasty sprite.
-
-    static  Folio::Core::Game::SpriteStationarySoundSamplesList m_nastySpriteTerminatingSoundSamplesList;   // The nasty sprite's terminating sound samples.
+    NASTY_SPRITE_ID m_nastySpriteId;                // The identifier of the nasty sprite.
+    UInt32          m_nastySpriteScreenMapIndex;    // The screen map index of the nasty sprite.
+    UInt32          m_nastySpriteSpeed;             // The speed of the nasty sprite.
 
     FolioStatus SetInitialisingMode (FolioHandle                            dcHandle,
-                                     const SpriteGraphicsMapPtr             &spriteGraphicsMap,
                                      Folio::Core::Game::ZxSpectrum::COLOUR  nastySpriteColour);
     FolioStatus SetTerminatingMode (FolioHandle                             dcHandle,
-                                    const SpriteGraphicsMapPtr              &spriteGraphicsMap,
                                     Folio::Core::Game::ZxSpectrum::COLOUR   nastySpriteColour);
 
     FolioStatus Move (Gdiplus::Graphics &graphics,
@@ -93,8 +90,6 @@ private:
                                           const CollisionGrid   &collisionGrid);
     static  Folio::Core::Game::ZxSpectrum::COLOUR   GetNastySpriteColour (NASTY_SPRITE_ID nastySpriteId);
     static  UInt32  GetNastySpriteSpeed (NASTY_SPRITE_ID nastySpriteId);
-
-    static  Folio::Core::Game::SpriteStationarySoundSamplesList GetNastySpriteTerminatingSoundSamples ();
 
     // Private copy constructor to prevent copying.
     NastySprite (const NastySprite& rhs);
@@ -114,6 +109,20 @@ typedef Folio::Core::Game::SpriteDrawingElement<NastySpritePtr> NastySpriteDrawi
 
 // Nasty sprite drawing elements list.
 typedef std::vector<NastySpriteDrawingElement> NastySpriteDrawingElementsList;
+
+
+// Routines.
+
+extern  FolioStatus UpdateScreenNastySprites (UInt32        exitScreenTickCount,
+                                              CollisionGrid &collisionGrid);
+extern  FolioStatus CheckScreenNastySprites (FolioHandle        dcHandle,
+                                             Gdiplus::Graphics  &graphics,
+                                             CollisionGrid      &collisionGrid,
+                                             UInt32             &screenAddNastySpriteTickCount);
+extern  FolioStatus RemoveScreenNastySprites (CollisionGrid &collisionGrid);
+extern  FolioStatus StoreNastySpriteBackgrounds (Gdiplus::Graphics &graphics);
+extern  FolioStatus RestoreNastySpriteBackgrounds (Gdiplus::Graphics &graphics);
+extern  FolioStatus DrawNastySprites (Gdiplus::Graphics &graphics);
 
 } // Endnamespace.
 

@@ -15,13 +15,12 @@ namespace Games
 namespace AticAtac
 {
 
-
 // Background item graphic attributes.
 struct BackgroundItemGraphicAttributes
 {
     BACKGROUND_ITEM_ID          m_backgroundItemId;         // The identifier of the background item.
-    bool                        m_supportsRoomColouring;    // true if the background item supports room colouring.
-    bool                        m_maskRqd;                  // true if the background item requires a mask.
+    bool                        m_supportsRoomColouring;    // Indicates if the background item supports room colouring.
+    bool                        m_maskRqd;                  // Indicates if the background item requires a mask.
     CollisionGrid::CellValue    m_collisionGridCellValue;   // The collision grid cell value of the background item.
 }; // Endstruct.
 

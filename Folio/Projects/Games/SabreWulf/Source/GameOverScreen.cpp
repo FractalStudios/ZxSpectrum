@@ -1,6 +1,7 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
 #include    "GameOverScreen.h"
+#include    "Globals.h"
 
 namespace Folio
 {
@@ -23,8 +24,8 @@ static  const   Folio::Core::Game::ItemAttributesList<GAME_OVER_SCREEN_ITEM_ID> 
 };
 
 
-GameOverScreen::GameOverScreen (const InformationPanelPtr &informationPanel)
-:   m_informationPanel(informationPanel)
+GameOverScreen::GameOverScreen ()
+:   m_finishedPlayingGameOverMusic(false)
 {
 } // Endproc.
 
@@ -52,43 +53,24 @@ FolioStatus GameOverScreen::BuildScreenItems (FolioHandle   dcHandle,
         case GAME_OVER_SCREEN_ITEM_INFORMATION_PANEL:
             // No players.
 
-            m_informationPanel->SetNumPlayers (0);
+            g_informationPanel->SetNumPlayers (0);
 
             // Query the information panel's items.
 
-            status = m_informationPanel->QueryItems (m_itemsList);
+            status = g_informationPanel->QueryItems (m_itemsList);
             break;
 
         case GAME_OVER_SCREEN_ITEM_GAME_OVER_TEXT:
         case GAME_OVER_SCREEN_ITEM_PLAYER_TEXT:
         case GAME_OVER_SCREEN_ITEM_ADVENTURE_COMPLETED_TEXT:
         case GAME_OVER_SCREEN_ITEM_PERCENTAGE_COMPLETE:
-            { 
-                // Create a game over screen text item.
+            // Add game over screen text item.
 
-                Folio::Core::Game::TextItemPtr  item(new Folio::Core::Game::TextItemPtr::element_type);
-                
-                status = item->Create (dcHandle,
-                                       DRAWING_ELEMENT_GAME_OVER_SCREEN_ITEM,
-                                       *Folio::Core::Game::ZxSpectrum::GetFont (),
-                                       itr->m_itemId,
-                                       itr->m_screenXLeft, 
-                                       itr->m_screenYTop,
-                                       Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE, 
-                                       Folio::Core::Game::ZxSpectrum::MapInkColour (itr->m_colour));
-
-                if (status == ERR_SUCCESS)
-                {
-                    // Set the game over screen item's text.
-
-                    SetItemText (*item.get ());
-            
-                    // Store the game over screen item in the game over screen items list.
-
-                    m_itemsList.push_back (item);
-                } // Endif.
-            
-            } // Endscope.
+            status = AddTextItem (dcHandle, 
+                                  DRAWING_ELEMENT_GAME_OVER_SCREEN_ITEM,
+                                  *Folio::Core::Game::ZxSpectrum::GetFont (),
+                                  *itr,
+                                  SetItemText);
             break;
 
         default:
@@ -104,7 +86,10 @@ FolioStatus GameOverScreen::BuildScreenItems (FolioHandle   dcHandle,
 
 FolioStatus GameOverScreen::ProcessScreenInput ()
 {
-    if (Folio::Core::Util::KeyInput::IsAnyKeyDown ())
+    // Only process screen input once the game over music has finished playing.
+
+    if (m_finishedPlayingGameOverMusic &&
+        Folio::Core::Util::KeyInput::IsAnyKeyDown ())
     {
         // Stop displaying the game over screen.
 
@@ -112,6 +97,31 @@ FolioStatus GameOverScreen::ProcessScreenInput ()
     } // Endif.
 
     return (ERR_SUCCESS);
+} // Endproc.
+
+
+FolioStatus GameOverScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
+{
+    // Play the game over music.
+
+    return (PlayGameOverMusic ());
+} // Endproc.
+
+
+FolioStatus GameOverScreen::PlayGameOverMusic ()
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Have we finished playing the game over music?
+
+    if (!m_finishedPlayingGameOverMusic)
+    {
+        // No. Play the game over music.
+
+        status = g_musicJukebox.PlayGameOverMusic (m_finishedPlayingGameOverMusic);
+    } // Endif.
+
+    return (status);
 } // Endproc.
 
 
@@ -124,7 +134,7 @@ void    GameOverScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_typ
         break;
 
     case GAME_OVER_SCREEN_ITEM_PLAYER_TEXT:
-        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribePlayer (m_informationPanel->GetCurrentPlayer ()));
+        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribePlayer (g_informationPanel->GetCurrentPlayer ()));
         break;
 
     case GAME_OVER_SCREEN_ITEM_ADVENTURE_COMPLETED_TEXT:
@@ -132,7 +142,7 @@ void    GameOverScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_typ
         break;
 
     case GAME_OVER_SCREEN_ITEM_PERCENTAGE_COMPLETE:
-        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribePercentage (m_informationPanel->GetPercentageCompleted ()));
+        item.GetGdiRasterText ()->SetTextString (InformationPanel::DescribePercentage (g_informationPanel->GetPlayerPercentageGameCompleted ()));
         break;
 
     default:

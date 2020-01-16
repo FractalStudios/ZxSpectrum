@@ -175,8 +175,8 @@ bool    Screen::m_playEnteredScreenSound                = false;    // Indicates
 UInt32  Screen::m_currentEnteredScreenSoundSampleIndex  = 0;        // The current entered screen sound sample index.
 Folio::Core::Util::Sound::SoundSamplesList  Screen::m_enteredScreenSoundSamples;    // The entered screen sound samples.
 
-Folio::Core::Util::Sound::SoundSample   Screen::m_openDoorSoundSample(16, 8883.25f); // The open door sound sample.
-Folio::Core::Util::Sound::SoundSample   Screen::m_closeDoorSoundSample(16, 8883.25f); // The close door sound sample.
+Folio::Core::Util::Sound::SoundSample   Screen::m_openDoorSoundSample(Ultimate::CreateDoorSoundSample ());  // The open door sound sample.
+Folio::Core::Util::Sound::SoundSample   Screen::m_closeDoorSoundSample(Ultimate::CreateDoorSoundSample ()); // The close door sound sample.
 
 Screen::Screen ()
 :   m_canvas(0),
@@ -1438,6 +1438,8 @@ FolioStatus Screen::CheckNastySprites (Gdiplus::Graphics &graphics)
 
                         itr->m_drawingElement->SetCollisionGridCellValue (CollisionGrid::CELL_VALUE_NASTY_SPRITE);
 
+                        // The nasty sprite is static.
+
                         status = nastySprite->Static (graphics, m_collisionGrid);
                         break;
 
@@ -2109,7 +2111,6 @@ FolioStatus Screen::CheckMainPlayer (Gdiplus::Graphics &graphics)
     {
     case PlayerSprite::STATE_INITIALISED:
     case PlayerSprite::STATE_STATIC:
-    case PlayerSprite::STATE_FALLING:   //iac for AUTO_TEST.
         // The main player is static.
 
         status = g_mainPlayer->Static (graphics, m_collisionGrid);
@@ -3291,7 +3292,7 @@ void    Screen::CreateEnteredScreenSoundSamples ()
 
         for (Folio::Core::Game::ZxSpectrum::BYTE numLoops = 0x09; numLoops >= 0x01; --numLoops)
         {
-            m_enteredScreenSoundSamples.push_back (Ultimate::MapMakeSound (frequency, numLoops));
+            m_enteredScreenSoundSamples.push_back (Ultimate::CreateSoundSample (frequency, numLoops));
 
             if (frequency == 0xff)
             {
@@ -3300,7 +3301,7 @@ void    Screen::CreateEnteredScreenSoundSamples ()
 
             else
             {
-                frequency += 0x8;
+                frequency += 0x08;
             } // Endelse.
 
         } // Endfor.

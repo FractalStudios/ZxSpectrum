@@ -1,6 +1,9 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
+#include    "Globals.h"
 #include    "InformationPanel.h"
+#include    "ScreenMap.h"
+#include    "Ultimate.h"
 
 namespace Folio
 {
@@ -41,17 +44,15 @@ static  const   Folio::Core::Game::ItemAttributesList<INFORMATION_PANEL_ITEM_ID>
 
 
 // Information panel static members.
-Folio::Core::Util::Sound::SoundSample   InformationPanel::m_startingSoundSample(80, 1026.69f);  // Starting sound sample.
+Folio::Core::Util::Sound::SoundSample   InformationPanel::m_startingSoundSample(Ultimate::CreateSoundSample (0x80, 0x10));  // The starting sound sample.
 
-InformationPanel::InformationPanel (Folio::Core::Applet::Canvas &canvas,
-                                    const HighScoreTable        &highScoreTable)
-:   m_informationPanelScreenRect(SCREEN_X_ORIGIN, SCREEN_Y_ORIGIN, SCREEN_WIDTH, SCREEN_HEIGHT),
-    m_canvas(canvas),
-    m_highScoreTable(highScoreTable),
+InformationPanel::InformationPanel (Folio::Core::Applet::Canvas &canvas)
+:   m_canvas(canvas),
+    m_informationPanelScreenRect(SCREEN_X_ORIGIN, SCREEN_Y_ORIGIN, SCREEN_WIDTH, SCREEN_HEIGHT),
     m_totalNumScreens(0),
-    m_invertScoreColours(false),
     m_numPlayers(0),
-    m_currentPlayer(PLAYER_1)
+    m_currentPlayer(PLAYER_1),
+    m_invertPlayerText(false)
 {
 } // Endproc.
 
@@ -81,13 +82,17 @@ FolioStatus InformationPanel::Create (UInt32 totalNumScreens)
 
 FolioStatus InformationPanel::Start ()
 {
-    m_invertScoreColours = false;
-    m_currentPlayer      = PLAYER_1;
+    m_currentPlayer = PLAYER_1;
 
-    // Reset the player stats.
+    // Reset the players' statistics.
 
-    m_playerStats [PLAYER_1].Reset ();
-    m_playerStats [PLAYER_2].Reset ();
+    m_playerStatistics [PLAYER_1].Reset ();
+    m_playerStatistics [PLAYER_2].Reset ();
+
+    // Reset the players' starting attributes.
+
+    m_playerStartingAtttributes [PLAYER_1].Reset ();
+    m_playerStartingAtttributes [PLAYER_2].Reset ();
 
     // Clear the drawing list.
 
@@ -108,9 +113,11 @@ FolioStatus InformationPanel::Draw ()
 
     if (status == ERR_SUCCESS)
     {
+        // Have the information panel's drawing elements been built?
+
         if (m_drawingElementsList.empty ())
         {
-            // Build the information panel drawing elements.
+            // No. Build the information panel drawing elements.
 
             status = BuildDrawingElements (m_canvas.GetCanvasDcHandle ());
         } // Endif.
@@ -183,7 +190,18 @@ FolioStatus InformationPanel::HandleProcessFrame (bool &isStarting)
     {
         // Yes. Check player up.
 
-        status = CheckPlayerUp (Folio::Core::Util::DateTime::GetCurrentTickCount (), isStarting);
+        status = CheckPlayerUp (Folio::Core::Util::DateTime::GetCurrentTickCount (), 
+                                isStarting);
+
+        // Have we started?
+
+        if (!isStarting && (status == ERR_SUCCESS))
+        {
+            // Yes. The current player is now alive.
+
+            g_playerSprite->SetAlive ();
+        } // Endif.
+
     } // Endif.
 
     return (status);
@@ -208,16 +226,11 @@ InformationPanel::PLAYER    InformationPanel::GetCurrentPlayer () const
 } // Endproc.
 
 
-FolioStatus InformationPanel::IncrementScore (UInt32 scoreIncrement)
+FolioStatus InformationPanel::AddPlayerScore (UInt32 score)
 {
-    // Increment the current player's score.
+    // Add the current player's score.
 
-    m_playerStats [m_currentPlayer].m_score += scoreIncrement;
-
-    if (m_playerStats [m_currentPlayer].m_score > MAX_SCORE)
-    {
-        m_playerStats [m_currentPlayer].m_score = 0;
-    } // Endif.
+    m_playerStatistics [m_currentPlayer].AddScore (score);
 
     // Update the score.
 
@@ -225,9 +238,11 @@ FolioStatus InformationPanel::IncrementScore (UInt32 scoreIncrement)
 } // Endproc.
     
 
-UInt32  InformationPanel::GetScore () const
+UInt32  InformationPanel::GetPlayerScore () const
 {
-    return (m_playerStats [m_currentPlayer].m_score);
+    // Get the current player's score.
+
+    return (m_playerStatistics [m_currentPlayer].GetScore ());
 } // Endproc.
 
 
@@ -235,7 +250,7 @@ FolioStatus InformationPanel::IncrementPlayerLife (PlayerSpritePtr *playerSprite
 {
     // Increment the current player's lives.
 
-    m_playerStats [m_currentPlayer].m_lives++;
+    m_playerStatistics [m_currentPlayer].IncrementLives ();
 
     // Update the current player's lives.
 
@@ -249,45 +264,47 @@ FolioStatus InformationPanel::DecrementPlayerLife (PlayerSpritePtr *playerSprite
 
     // Decrement the current player's lives.
 
-    m_playerStats [m_currentPlayer].m_lives--;
+    m_playerStatistics [m_currentPlayer].DecrementLives ();
 
     if (playerSprite)
     {
-        // Is the game over?
+        // Is the current player alive?
 
-        if (m_playerStats [m_currentPlayer].m_lives < 0)
+        if (m_playerStatistics [m_currentPlayer].IsAlive ())
         {
-            // Yes. The player's game is over.
+            // Yes. The current player is static.
 
-            (*playerSprite)->SetGameOver ();
+            (*playerSprite)->SetState (PlayerSprite::STATE_STATIC);
         } // Endif.
 
         else
         {
-            // No. The player's static.
+            // No. The current player's game is over.
 
-            (*playerSprite)->SetState (PlayerSprite::STATE_STATIC);
+            (*playerSprite)->SetGameOver ();
         } // Endelse.
 
     } // Endif.
+
+    // Update the current player's lives.
 
     return (Update (UPDATE_LIVES));
 } // Endproc.
     
 
-void    InformationPanel::IncrementNumScreensVisited ()
+void    InformationPanel::IncrementPlayerNumScreensVisited ()
 {
     // Increment the current player's number of screens visited.
   
-    m_playerStats [m_currentPlayer].m_numScreensVisited++;
+    m_playerStatistics [m_currentPlayer].IncrementNumScreensVisited ();
 } // Endproc.
 
 
-UInt32  InformationPanel::GetPercentageCompleted () const
+UInt32  InformationPanel::GetPlayerPercentageGameCompleted () const
 {
-    // Calculate the current player's percentage completed.
+    // Calculate the percentage of the game the current player has completed.
 
-    return (100 * m_playerStats [m_currentPlayer].m_numScreensVisited / m_totalNumScreens);
+    return (m_totalNumScreens ? 100 * m_playerStatistics [m_currentPlayer].GetNumScreensVisited () / m_totalNumScreens : 0);
 } // Endproc.
 
 
@@ -295,28 +312,44 @@ void    InformationPanel::SetFoundAmuletPiece (OBJECT_SPRITE_ID objectSpriteId)
 {
     switch (objectSpriteId)
     {
-    case OBJECT_SPRITE_AMULET_PIECE_TOP_LEFT:     
-        m_playerStats [m_currentPlayer].m_amuletPieceFound [PlayerStats::AMULET_PIECE_TOP_LEFT] = true;
+    case OBJECT_SPRITE_AMULET_PIECE_TOP_LEFT:
+        // The current player has found the top-left amulet piece.
+
+        m_playerStatistics [m_currentPlayer].SetFoundAmuletPieceTopLeft ();
         
-        IncrementScore (SCORE_AMULET_PIECE_FOUND);
+        // Add to the player's score.
+
+        AddPlayerScore (SCORE_AMULET_PIECE_FOUND);
         break;
 
     case OBJECT_SPRITE_AMULET_PIECE_TOP_RIGHT:    
-        m_playerStats [m_currentPlayer].m_amuletPieceFound [PlayerStats::AMULET_PIECE_TOP_RIGHT] = true;
+        // The current player has found the top-right amulet piece.
+
+        m_playerStatistics [m_currentPlayer].SetFoundAmuletPieceTopRight ();
         
-        IncrementScore (SCORE_AMULET_PIECE_FOUND);
+        // Add to the player's score.
+
+        AddPlayerScore (SCORE_AMULET_PIECE_FOUND);
         break;
 
     case OBJECT_SPRITE_AMULET_PIECE_BOTTOM_LEFT:  
-        m_playerStats [m_currentPlayer].m_amuletPieceFound [PlayerStats::AMULET_PIECE_BOTTOM_LEFT] = true;
+        // The current player has found the bottom-left amulet piece.
+
+        m_playerStatistics [m_currentPlayer].SetFoundAmuletPieceBottomLeft ();
         
-        IncrementScore (SCORE_AMULET_PIECE_FOUND);
+        // Add to the player's score.
+
+        AddPlayerScore (SCORE_AMULET_PIECE_FOUND);
         break;
 
     case OBJECT_SPRITE_AMULET_PIECE_BOTTOM_RIGHT: 
-        m_playerStats [m_currentPlayer].m_amuletPieceFound [PlayerStats::AMULET_PIECE_BOTTOM_RIGHT] = true;
+        // The current player has found the bottom-right amulet piece.
+
+        m_playerStatistics [m_currentPlayer].SetFoundAmuletPieceBottomRight ();
         
-        IncrementScore (SCORE_AMULET_PIECE_FOUND);
+        // Add to the player's score.
+
+        AddPlayerScore (SCORE_AMULET_PIECE_FOUND);
         break;
 
     default:
@@ -328,44 +361,41 @@ void    InformationPanel::SetFoundAmuletPiece (OBJECT_SPRITE_ID objectSpriteId)
 
 bool    InformationPanel::IsFoundAmuletPieceTopLeft () const
 {
-    return (m_playerStats [m_currentPlayer].m_amuletPieceFound [PlayerStats::AMULET_PIECE_TOP_LEFT]);
+    // Has the current player found the top-left amulet piece?
+
+    return (m_playerStatistics [m_currentPlayer].IsFoundAmuletPieceTopLeft ());
 } // Endproc.
 
 
 bool    InformationPanel::IsFoundAmuletPieceTopRight () const
 {
-    return (m_playerStats [m_currentPlayer].m_amuletPieceFound [PlayerStats::AMULET_PIECE_TOP_RIGHT]);
+    // Has the current player found the top-right amulet piece?
+
+    return (m_playerStatistics [m_currentPlayer].IsFoundAmuletPieceTopRight ());
 } // Endproc.
 
 
 bool    InformationPanel::IsFoundAmuletPieceBottomLeft () const
 {
-    return (m_playerStats [m_currentPlayer].m_amuletPieceFound [PlayerStats::AMULET_PIECE_BOTTOM_LEFT]);
+    // Has the current player found the bottom-left amulet piece?
+
+    return (m_playerStatistics [m_currentPlayer].IsFoundAmuletPieceBottomLeft ());
 } // Endproc.
 
 
 bool    InformationPanel::IsFoundAmuletPieceBottomRight () const
 {
-    return (m_playerStats [m_currentPlayer].m_amuletPieceFound [PlayerStats::AMULET_PIECE_BOTTOM_RIGHT]);
+    // Has the current player found the bottom-right amulet piece?
+
+    return (m_playerStatistics [m_currentPlayer].IsFoundAmuletPieceBottomRight ());
 } // Endproc.
 
 
 UInt32  InformationPanel::GetNumFoundAmuletPieces () const
 {
-    UInt32  numAmuletPiecesFound = 0;   // Initialise!
+    // Get the number of amulet pieces the current player has found.
 
-    for (UInt32 index = PlayerStats::AMULET_PIECE_TOP_LEFT; 
-         index <= PlayerStats::AMULET_PIECE_BOTTOM_RIGHT; 
-         ++index)
-    {
-        if (m_playerStats [m_currentPlayer].m_amuletPieceFound [index])
-        {
-            numAmuletPiecesFound++;
-        } // Endif.
-
-    } // Endfor.
-
-    return (numAmuletPiecesFound);
+    return (m_playerStatistics [m_currentPlayer].GetNumFoundAmuletPieces ());
 } // Endproc.
 
 
@@ -518,7 +548,9 @@ FolioStatus InformationPanel::BuildItems (FolioHandle   dcHandle,
                                        itr->m_screenYTop,
                                        Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE, 
                                        Folio::Core::Game::ZxSpectrum::MapInkColour (itr->m_colour),
-                                       Folio::Core::Game::ZxSpectrum::MapPaperColour (itr->m_colour));
+                                       Folio::Core::Game::ZxSpectrum::MapPaperColour (itr->m_colour),
+                                       ((itr->m_itemId == INFORMATION_PANEL_ITEM_PLAYER_1_UP) ||
+                                        (itr->m_itemId == INFORMATION_PANEL_ITEM_PLAYER_2_UP)));
 
                 if (status == ERR_SUCCESS)
                 {
@@ -526,7 +558,8 @@ FolioStatus InformationPanel::BuildItems (FolioHandle   dcHandle,
 
                     SetItemText (*item.get ());
             
-                    // Store the information panel item in the information panel items list.
+                    // Store the information panel item in the information panel 
+                    // items list.
 
                     m_itemsList.push_back (item);
                 } // Endif.
@@ -639,51 +672,62 @@ FolioStatus InformationPanel::BuildDrawingElements (FolioHandle dcHandle)
 
 FolioStatus InformationPanel::CheckPlayerUp (UInt32 currentTickCount, 
                                              bool   &isStarting)
-{                                                            
+{                     
+    static  const   UINT32  MAX_STARTING_COUNT = 7;
+
     FolioStatus status = ERR_SUCCESS;
 
-    if (!m_playerStats [m_currentPlayer].m_previousScoreFrameTickCount)
+    // Is this the first in the starting game sequence?
+
+    if (m_playerStartingAtttributes [m_currentPlayer].m_startingCounter == 0)
     {
-        m_playerStats [m_currentPlayer].m_previousScoreFrameTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
+        // Yes. The current player is starting a game. 
+
+        ++m_playerStartingAtttributes [m_currentPlayer].m_startingCounter;
+        
+        // Set the current player's starting previous frame tick count.
+
+        m_playerStartingAtttributes [m_currentPlayer].m_startingPreviousFrameTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
     } // Endif.
 
+    // Should we update the information panel, i.e. has the current tick count 
+    // exceeded the flash rate since the last update?
+
     else
-    if (currentTickCount >= (m_playerStats [m_currentPlayer].m_previousScoreFrameTickCount + Folio::Core::Game::ZxSpectrum::FLASH_MILLISECONDS))
+    if (currentTickCount >= (m_playerStartingAtttributes [m_currentPlayer].m_startingPreviousFrameTickCount + Folio::Core::Game::ZxSpectrum::FLASH_MILLISECONDS))
     {
+        // Yes. Set the current player's starting previous frame tick count.
+
+        m_playerStartingAtttributes [m_currentPlayer].m_startingPreviousFrameTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
+
         // Update the information panel.
 
-        status = Update (UPDATE_PLAYER_UP);
+        status = Update (UPDATE_FLASH_PLAYER_UP);
 
-        // Have we started?
-
-        if (++m_playerStats [m_currentPlayer].m_startCount >= 10)
-        {
-            // Yes. We are no longer starting.
-
-            isStarting = false;
-
-            m_playerStats [m_currentPlayer].m_startCount = 0;   // Reset start count.
-
-            // Reset the information panel.
-
-            status = Reset ();
-            
-            if (status == ERR_SUCCESS)
-            {
-                // Decrement a player life.
-
-                status = DecrementPlayerLife ();
-            } // Endif.
-
-        } // Endif.
-        
-        else
         if (status == ERR_SUCCESS)
         {
-            // Note the previous score frame tick count.
+            // Play the starting sound.
 
-            m_playerStats [m_currentPlayer].m_previousScoreFrameTickCount = currentTickCount;
-        } // Endelseif.
+            Folio::Core::Util::Sound::PlaySoundSample (m_startingSoundSample);
+
+            // Have we started?
+                                                                                
+            if (++m_playerStartingAtttributes [m_currentPlayer].m_startingCounter > MAX_STARTING_COUNT)
+            {
+                // Yes. We are no longer starting.
+
+                isStarting = false;
+
+                // Reset starting counter.
+
+                m_playerStartingAtttributes [m_currentPlayer].m_startingCounter = 0;
+
+                // Reset the information panel.
+
+                status = Reset ();
+            } // Endif.
+        
+        } // Endif.
 
     } // Endelseif.
 
@@ -701,112 +745,20 @@ FolioStatus InformationPanel::Update (UPDATE update)
 
     // Update the information panel items (depending on the type of update required).
 
-    bool    finished        = false;   // Initialise!
-    bool    redrawCanvas    = false;
+    bool    redrawCanvas = false;   // Initialise!
 
     switch (update)
     {
     case UPDATE_LIVES:
-        for (Folio::Core::Game::ItemsList::iterator itr = m_itemsList.begin ();
-             !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
-             ++itr)
-        {
-            // Get the information panel item's identifier.
-
-            INFORMATION_PANEL_ITEM_ID   itemId = static_cast<INFORMATION_PANEL_ITEM_ID> (itr->get ()->GetItemId ());
-         
-            if ((((itemId == INFORMATION_PANEL_ITEM_PLAYER_1_LIVES) || (itemId == INFORMATION_PANEL_ITEM_PLAYER_1_GRAPHIC_CHARACTER)) &&
-                 (m_currentPlayer == PLAYER_1)) ||
-                (((itemId == INFORMATION_PANEL_ITEM_PLAYER_2_LIVES) || (itemId == INFORMATION_PANEL_ITEM_PLAYER_2_GRAPHIC_CHARACTER)) &&
-                 (m_currentPlayer == PLAYER_2)))
-            {
-                // Get the information panel text item.
-
-                Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*itr));
-
-                // Set the information panel text item's text.
-
-                SetItemText (*item);
-
-                // Draw the information panel text item.
-
-                status = item->Draw (*graphics);
-
-                redrawCanvas    = true;
-                finished        = (((itemId == INFORMATION_PANEL_ITEM_PLAYER_1_GRAPHIC_CHARACTER) && (m_currentPlayer == PLAYER_1)) ||
-                                   ((itemId == INFORMATION_PANEL_ITEM_PLAYER_2_GRAPHIC_CHARACTER) && (m_currentPlayer == PLAYER_2)));
-            } // Endif.
-
-        } // Endfor.
+        status = UpdateLives (*graphics, redrawCanvas);
         break;
     
     case UPDATE_SCORE:
-        for (Folio::Core::Game::ItemsList::iterator itr = m_itemsList.begin ();
-             !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
-             ++itr)
-        {
-            // Get the information panel item's identifier.
-
-            INFORMATION_PANEL_ITEM_ID   itemId = static_cast<INFORMATION_PANEL_ITEM_ID> (itr->get ()->GetItemId ());
-         
-            if (((itemId == INFORMATION_PANEL_ITEM_PLAYER_1_SCORE) && (m_currentPlayer == PLAYER_1)) ||
-                ((itemId == INFORMATION_PANEL_ITEM_PLAYER_2_SCORE) && (m_currentPlayer == PLAYER_2)))
-            {
-                // Get the information panel text item.
-
-                Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*itr));
-
-                // Set the information panel text item's text.
-
-                SetItemText (*item);
-
-                // Draw the information panel text item.
-
-                status = item->Draw (*graphics);
-
-                redrawCanvas    = true;
-                finished        = true;
-            } // Endif.
-
-        } // Endfor.
+        status = UpdateScore (*graphics, redrawCanvas);
         break;
     
-    case UPDATE_PLAYER_UP:
-        for (Folio::Core::Game::ItemsList::iterator itr = m_itemsList.begin ();
-             !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
-             ++itr)
-        {
-            // Get the information panel item's identifier.
-
-            INFORMATION_PANEL_ITEM_ID   itemId = static_cast<INFORMATION_PANEL_ITEM_ID> (itr->get ()->GetItemId ());
-         
-            if (((itemId == INFORMATION_PANEL_ITEM_PLAYER_1_UP) && (m_currentPlayer == PLAYER_1)) ||
-                ((itemId == INFORMATION_PANEL_ITEM_PLAYER_2_UP) && (m_currentPlayer == PLAYER_2)))
-            {
-                // Get the information panel text item.
-
-                Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*itr));
-
-                // Update the information panel text item.
-
-                m_invertScoreColours = !m_invertScoreColours;
-
-                status = UpdateTextItem (*item,
-                                         m_invertScoreColours,
-                                         *graphics, 
-                                         redrawCanvas);
-
-                if (status == ERR_SUCCESS)
-                {
-                    // Play starting sound.
-
-                    Folio::Core::Util::Sound::PlaySoundSample (m_startingSoundSample);
-                } // Endif.
-
-                finished = true;
-            } // Endif.
-
-        } // Endfor.
+    case UPDATE_FLASH_PLAYER_UP:
+        status = UpdateFlashPlayerUp (*graphics, redrawCanvas);
         break;
 
     default:
@@ -814,12 +766,150 @@ FolioStatus InformationPanel::Update (UPDATE update)
         break;
     } // Endswitch.
 
+    // Should the canvas be redrawn?
+
     if (redrawCanvas && (status == ERR_SUCCESS))
     {
-        // The canvas should be redrawn on the next draw.
+        // Yes. The canvas should be redrawn on the next draw.
 
         m_canvas.SetRedrawRqd ();
     } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus InformationPanel::UpdateLives (Gdiplus::Graphics    &graphics,
+                                           bool                 &redrawCanvas)
+{
+    redrawCanvas = false;   // Initialise!
+
+    FolioStatus status = ERR_SUCCESS;
+
+    bool    finished = false;   // Initialise!
+
+    for (Folio::Core::Game::ItemsList::iterator itr = m_itemsList.begin ();
+         !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
+         ++itr)
+    {
+        // Get the information panel item's identifier.
+
+        INFORMATION_PANEL_ITEM_ID   itemId = static_cast<INFORMATION_PANEL_ITEM_ID> (itr->get ()->GetItemId ());
+         
+        if ((((itemId == INFORMATION_PANEL_ITEM_PLAYER_1_LIVES) || (itemId == INFORMATION_PANEL_ITEM_PLAYER_1_GRAPHIC_CHARACTER)) &&
+               (m_currentPlayer == PLAYER_1)) ||
+            (((itemId == INFORMATION_PANEL_ITEM_PLAYER_2_LIVES) || (itemId == INFORMATION_PANEL_ITEM_PLAYER_2_GRAPHIC_CHARACTER)) &&
+               (m_currentPlayer == PLAYER_2)))
+        {
+            // Get the information panel text item.
+
+            Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*itr));
+
+            // Set the information panel text item's text.
+
+            SetItemText (*item);
+
+            // Draw the information panel text item.
+
+            status = item->Draw (graphics);
+
+            redrawCanvas = true;
+
+            // Finished?
+
+            finished = (((itemId == INFORMATION_PANEL_ITEM_PLAYER_1_GRAPHIC_CHARACTER) && (m_currentPlayer == PLAYER_1)) ||
+                        ((itemId == INFORMATION_PANEL_ITEM_PLAYER_2_GRAPHIC_CHARACTER) && (m_currentPlayer == PLAYER_2)));
+        } // Endif.
+
+    } // Endfor.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus InformationPanel::UpdateScore (Gdiplus::Graphics    &graphics,
+                                           bool                 &redrawCanvas)
+{
+    redrawCanvas = false;   // Initialise!
+
+    FolioStatus status = ERR_SUCCESS;
+
+    bool    finished = false;   // Initialise!
+
+    for (Folio::Core::Game::ItemsList::iterator itr = m_itemsList.begin ();
+         !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
+         ++itr)
+    {
+        // Get the information panel item's identifier.
+
+        INFORMATION_PANEL_ITEM_ID   itemId = static_cast<INFORMATION_PANEL_ITEM_ID> (itr->get ()->GetItemId ());
+         
+        if (((itemId == INFORMATION_PANEL_ITEM_PLAYER_1_SCORE) && (m_currentPlayer == PLAYER_1)) ||
+            ((itemId == INFORMATION_PANEL_ITEM_PLAYER_2_SCORE) && (m_currentPlayer == PLAYER_2)))
+        {
+            // Get the information panel text item.
+
+            Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*itr));
+
+            // Set the information panel text item's text.
+
+            SetItemText (*item);
+
+            // Draw the information panel text item.
+
+            status = item->Draw (graphics);
+
+            redrawCanvas = true;
+
+            // Finished.
+            
+            finished = true;
+        } // Endif.
+
+    } // Endfor.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus InformationPanel::UpdateFlashPlayerUp (Gdiplus::Graphics    &graphics,
+                                                   bool                 &redrawCanvas)
+{
+    redrawCanvas = false; // Initialise!
+
+    FolioStatus status = ERR_SUCCESS;
+
+    bool    finished = false;   // Initialise!
+
+    for (Folio::Core::Game::ItemsList::iterator itr = m_itemsList.begin ();
+         !finished && (status == ERR_SUCCESS) && (itr != m_itemsList.end ());
+         ++itr)
+    {
+        // Get the information panel item's identifier.
+
+        INFORMATION_PANEL_ITEM_ID   itemId = static_cast<INFORMATION_PANEL_ITEM_ID> (itr->get ()->GetItemId ());
+         
+        if (((itemId == INFORMATION_PANEL_ITEM_PLAYER_1_UP) && (m_currentPlayer == PLAYER_1)) ||
+            ((itemId == INFORMATION_PANEL_ITEM_PLAYER_2_UP) && (m_currentPlayer == PLAYER_2)))
+        {
+            // Invert the information panel text item's text.
+
+            m_invertPlayerText = !m_invertPlayerText;
+
+            // Get the information panel text item.
+
+            Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*itr));
+
+            // Invert the information panel text item.
+
+            status = item->SetInvert (m_invertPlayerText, graphics, redrawCanvas);
+
+            // Finished.
+
+            finished = true;
+        } // Endif.
+
+    } // Endfor.
 
     return (status);
 } // Endproc.
@@ -851,16 +941,15 @@ FolioStatus InformationPanel::Reset ()
         case INFORMATION_PANEL_ITEM_PLAYER_1_UP:
         case INFORMATION_PANEL_ITEM_PLAYER_2_UP:
             {
+                m_invertPlayerText = false; // Reset.
+
                 // Get the information panel text item.
 
                 Folio::Core::Game::TextItemPtr  item(std::dynamic_pointer_cast<Folio::Core::Game::TextItem> (*itr));
 
-                // Update the information panel text item.
-            
-                status = UpdateTextItem (*item,
-                                         false, // Don't invert colours.
-                                         *graphics, 
-                                         redrawCanvas);
+                // Don't invert the information panel text item's text.
+
+                status = item->SetInvert (m_invertPlayerText, *graphics, redrawCanvas);
 
                 // Finished?
             
@@ -874,68 +963,14 @@ FolioStatus InformationPanel::Reset ()
 
     } // Endfor.
 
+    // Should the canvas be redrawn?
+
     if (redrawCanvas && (status == ERR_SUCCESS))
     {
-        // The canvas should be redrawn on the next draw.
+        // Yes. The canvas should be redrawn on the next draw.
 
         m_canvas.SetRedrawRqd ();
     } // Endif.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus InformationPanel::UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type  &item,
-                                              bool                                          invertColours,
-                                              Gdiplus::Graphics                             &graphics, 
-                                              bool                                          &redrawCanvas)
-{                   
-    FolioStatus status = ERR_SUCCESS;
-
-    // Get the text item's GDI raster text.
-
-    Folio::Core::Graphic::GdiRasterTextPtr  gdiRasterText(item.GetGdiRasterText ());
-
-    // Invert the text item's colours?
-
-    if (invertColours)
-    {
-        // Yes. Invert the text item's colours
-
-        gdiRasterText->InvertColours ();
-
-        // Draw it.
-
-        status = gdiRasterText->Draw (item.GetScreenXLeft (), 
-                                      item.GetScreenYTop (), 
-                                      graphics);
-
-        if (status == ERR_SUCCESS)
-        {
-            redrawCanvas = true;
-        } // Endif.
-
-    } // Endif.
-
-    else
-    if (!invertColours && gdiRasterText->IsInvertedColours ())
-    {
-        // No. Reset the text item's colours
-
-        gdiRasterText->ResetColours ();
-
-        // Draw it.
-
-        status = gdiRasterText->Draw (item.GetScreenXLeft (), 
-                                      item.GetScreenYTop (), 
-                                      graphics);
-
-        if (status == ERR_SUCCESS)
-        {
-            redrawCanvas = true;
-        } // Endif.
-
-    } // Endelseif.
 
     return (status);
 } // Endproc.
@@ -950,15 +985,15 @@ void    InformationPanel::SetItemText (Folio::Core::Game::TextItemPtr::element_t
         break;
 
     case INFORMATION_PANEL_ITEM_PLAYER_1_SCORE:
-        item.GetGdiRasterText ()->SetTextString (DescribeScore (m_playerStats [PLAYER_1].m_score));
+        item.GetGdiRasterText ()->SetTextString (DescribeScore (m_playerStatistics [PLAYER_1].GetScore ()));
         break;
 
     case INFORMATION_PANEL_ITEM_PLAYER_1_LIVES:
-        item.GetGdiRasterText ()->SetTextString (DescribeLives (m_playerStats [PLAYER_1].m_lives));
+        item.GetGdiRasterText ()->SetTextString (DescribeLives (m_playerStatistics [PLAYER_1].GetLives ()));
         break;
 
     case INFORMATION_PANEL_ITEM_PLAYER_1_GRAPHIC_CHARACTER:
-        item.GetGdiRasterText ()->SetTextString (DescribeLivesCharacter (m_playerStats [PLAYER_1].m_lives));
+        item.GetGdiRasterText ()->SetTextString (DescribeLivesCharacter (m_playerStatistics [PLAYER_1].GetLives ()));
         break;
 
     case INFORMATION_PANEL_ITEM_HI_TEXT:
@@ -966,15 +1001,15 @@ void    InformationPanel::SetItemText (Folio::Core::Game::TextItemPtr::element_t
         break;
 
     case INFORMATION_PANEL_ITEM_HI_SCORE:
-        item.GetGdiRasterText ()->SetTextString (DescribeScore (m_highScoreTable.GetHighestScore ()));
+        item.GetGdiRasterText ()->SetTextString (DescribeScore (g_highScoreTable.GetHighestScore ()));
         break;
 
     case INFORMATION_PANEL_ITEM_PLAYER_2_LIVES:
-        item.GetGdiRasterText ()->SetTextString (DescribeLives (m_playerStats [PLAYER_2].m_lives));
+        item.GetGdiRasterText ()->SetTextString (DescribeLives (m_playerStatistics [PLAYER_2].GetLives ()));
         break;
 
     case INFORMATION_PANEL_ITEM_PLAYER_2_GRAPHIC_CHARACTER:
-        item.GetGdiRasterText ()->SetTextString (DescribeLivesCharacter (m_playerStats [PLAYER_2].m_lives));
+        item.GetGdiRasterText ()->SetTextString (DescribeLivesCharacter (m_playerStatistics [PLAYER_2].GetLives ()));
         break;
 
     case INFORMATION_PANEL_ITEM_PLAYER_2_UP:
@@ -982,13 +1017,24 @@ void    InformationPanel::SetItemText (Folio::Core::Game::TextItemPtr::element_t
         break;
 
     case INFORMATION_PANEL_ITEM_PLAYER_2_SCORE:
-        item.GetGdiRasterText ()->SetTextString (DescribeScore (m_playerStats [PLAYER_2].m_score));
+        item.GetGdiRasterText ()->SetTextString (DescribeScore (m_playerStatistics [PLAYER_2].GetScore ()));
         break;
 
     default:
         break;
     } // Endswitch.
 
+} // Endproc.
+
+
+FolioStatus CreateInformationPanel (Folio::Core::Applet::Canvas &canvas, 
+                                    InformationPanelPtr         &informationPanel)
+{
+    // Create the information panel.
+
+    informationPanel.reset (new InformationPanelPtr::element_type(canvas));
+
+    return (informationPanel->Create (ScreenMap::GetTotalNumScreens ()));
 } // Endproc.
 
 } // Endnamespace.

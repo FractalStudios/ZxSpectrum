@@ -2,6 +2,7 @@
 #include    <Game.h>
 #include    "BackgroundItem.h"
 #include    "BossSprite.h"
+#include    "NastySprite.h"
 #include    "PlayerSprite.h"
 #include    "Screen.h"
 #include    "StaticSprite.h"
@@ -18,20 +19,20 @@ namespace Games
 namespace AticAtac
 {
 
-// Maximum nasty sprite drawing elements.
+// The maximum number of nasty sprite drawing elements.
 const   UInt32  MAX_NASTY_SPRITE_DRAWING_ELEMENTS = 6;
 
 
 // Globals.
+
+// The resource graphics cache.
+extern  Folio::Core::Game::ResourceGraphicsCache    g_resourceGraphicsCache;
 
 // The background items list.
 extern  BackgroundItemsList g_backgroundItemsList;      
 
 // The static sprites list.
 extern  StaticSpritesList   g_staticSpritesList;        
-
-// The resource graphics cache.
-extern  Folio::Core::Game::ResourceGraphicsCache    g_resourceGraphicsCache;
 
 // The main player.
 extern  PlayerSpritePtr g_mainPlayer;

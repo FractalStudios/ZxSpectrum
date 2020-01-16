@@ -7,7 +7,6 @@
 #include    "BorderScreen.h"
 #include    "DrawingElement.h"
 #include    "HighScoreTable.h"
-#include    "InformationPanel.h"
 #include    "SelectionScreen.h"
 
 #pragma pack(push, 1)
@@ -45,27 +44,35 @@ enum ENTER_HIGH_SCORE_SCREEN_ITEM_ID
 class EnterHighScoreScreen : public BorderScreen
 {
 public:
-    EnterHighScoreScreen (const InformationPanelPtr &informationPanel,
-                          const SelectionScreenPtr  &electionScreen,
-                          HighScoreTable            &highScoreTable);
+    EnterHighScoreScreen (const SelectionScreenPtr &selectionScreen);
     ~EnterHighScoreScreen ();
 
 private:
-    const InformationPanelPtr   &m_informationPanel;    // The information panel.
     const SelectionScreenPtr    &m_selectionScreen;     // The selection screen.
-    HighScoreTable              &m_highScoreTable;      // The high score table.
 
     HighScoreTable::HighScore   m_highScore;    // The high score.
 
     FolioNarrowString::value_type   m_currentInitial;   // Current initial.
 
+    static  Folio::Core::Util::Sound::SoundSample   m_selectingInitialSoundSample;  // The selecting initial sound sample.
+    static  Folio::Core::Util::Sound::SoundSample   m_enteredInitialSoundSample;    // The entered initial sound sample.
+
     // AScreen method(s).
     virtual FolioStatus BuildScreenItems (FolioHandle dcHandle, 
                                           FolioHandle instanceHandle);
     virtual FolioStatus ProcessScreenInput ();    
-    virtual FolioStatus UpdateScreen ();
+    
+    // The update enumeration.
+    enum UPDATE
+    {
+        UPDATE_INITIAL = 0,
+    }; // Endenum.
 
-    void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
+    FolioStatus UpdateScreen (UPDATE update);
+    FolioStatus UpdateInitial (Gdiplus::Graphics    &graphics,
+                               bool                 &redrawCanvas);
+    
+    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
 
     // Private copy constructor to prevent copying.
     EnterHighScoreScreen (const EnterHighScoreScreen& rhs);

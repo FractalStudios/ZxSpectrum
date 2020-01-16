@@ -1,9 +1,5 @@
 #pragma once
 
-// STL includes.
-#include    <memory>
-#include    <map>
-
 // "Home-made" includes.
 #include    <Game.h>
 
@@ -108,12 +104,12 @@ enum SPRITE_ID
     SPRITE_WARTHOG_RUNNING_RIGHT_2      = IDB_BITMAP_WARTHOG_RUNNING_RIGHT_2,             
     SPRITE_WARTHOG_SLEEPING             = IDB_BITMAP_WARTHOG_SLEEPING,                    
 
-    SPRITE_INDIAN_LEFT_1                = IDB_BITMAP_INDIAN_LEFT_1,                    
-    SPRITE_INDIAN_LEFT_2                = IDB_BITMAP_INDIAN_LEFT_2,                    
-    SPRITE_INDIAN_LEFT_3                = IDB_BITMAP_INDIAN_LEFT_3,                    
-    SPRITE_INDIAN_RIGHT_1               = IDB_BITMAP_INDIAN_RIGHT_1,                   
-    SPRITE_INDIAN_RIGHT_2               = IDB_BITMAP_INDIAN_RIGHT_2,                   
-    SPRITE_INDIAN_RIGHT_3               = IDB_BITMAP_INDIAN_RIGHT_3,                   
+    SPRITE_NATIVE_LEFT_1                = IDB_BITMAP_NATIVE_LEFT_1,                    
+    SPRITE_NATIVE_LEFT_2                = IDB_BITMAP_NATIVE_LEFT_2,                    
+    SPRITE_NATIVE_LEFT_3                = IDB_BITMAP_NATIVE_LEFT_3,                    
+    SPRITE_NATIVE_RIGHT_1               = IDB_BITMAP_NATIVE_RIGHT_1,                   
+    SPRITE_NATIVE_RIGHT_2               = IDB_BITMAP_NATIVE_RIGHT_2,                   
+    SPRITE_NATIVE_RIGHT_3               = IDB_BITMAP_NATIVE_RIGHT_3,                   
 
     SPRITE_GUARDIAN_1                   = IDB_BITMAP_GUARDIAN_1,                       
     SPRITE_GUARDIAN_2                   = IDB_BITMAP_GUARDIAN_2,                       
@@ -206,21 +202,11 @@ enum SPRITE_ID
     SPRITE_EARWIG_RIGHT_2               = IDB_BITMAP_EARWIG_RIGHT_2,                    // 24 x 18.
 }; // Endenum.
 
-// Sprite graphics map.
-typedef Folio::Core::Game::SpriteGraphicsMap<SPRITE_ID> SpriteGraphicsMap;
-
-// Sprite graphics pointer.
-typedef std::shared_ptr<SpriteGraphicsMap>  SpriteGraphicsMapPtr;
-
 
 // Routines.
 
-extern  FolioStatus CreateSpriteGraphics (FolioHandle           instanceHandle,
-                                          SpriteGraphicsMapPtr  &spriteGraphicsMap);
-extern  FolioStatus FindSpriteGraphic (SPRITE_ID                                spriteId,
-                                       const SpriteGraphicsMapPtr               &spriteGraphicsMap,
-                                       Folio::Core::Game::SpriteGraphic         &spriteGraphic,
-                                       Folio::Core::Game::ZxSpectrum::COLOUR    spriteColour = Folio::Core::Game::ZxSpectrum::UNDEFINED);
+extern  FolioStatus CreateSpriteGraphics (FolioHandle                               instanceHandle,
+                                          Folio::Core::Game::ResourceGraphicsCache  &resourceGraphicsCache);
 
 } // Endnamespace.
 

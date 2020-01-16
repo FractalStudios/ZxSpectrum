@@ -6,6 +6,7 @@
 // "Home-made" includes.
 #include    "AGdiGraphicElement.h"
 #include    "GraphicConstsAndTypes.h"
+#include    "GdiBitmap.h"
 #include    "GdiRasterFont.h"
 
 #pragma pack(push, 1)
@@ -38,7 +39,8 @@ public:
 
     GdiRasterText (GdiRasterFont&           gdiRasterFont,
                    const Gdiplus::Color&    textColour = DEFAULT_TEXT_COLOUR,
-                   const Gdiplus::Color&    backgroundColour = DEFAULT_BACKGROUND_COLOUR);
+                   const Gdiplus::Color&    backgroundColour = DEFAULT_BACKGROUND_COLOUR,
+                   FolioHandle              dcHandle = FOLIO_INVALID_HANDLE);
     ~GdiRasterText ();
 
     void                SetTextString (const FolioNarrowString& textString);
@@ -50,15 +52,13 @@ public:
     void            SetBackgroundColour (const Gdiplus::Color& backgroundColour);
     Gdiplus::Color  GetBackgroundColour () const;
 
-    void    InvertColours ();
-    void    ResetColours ();
-    bool    IsInvertedColours ();
+    FolioStatus CreateGdiBitmapCache ();
+    FolioStatus CreateInvertedGdiBitmapCache ();
 
-    void            SetTextHorizontalAlignment (TextAlignment textAlignment);
-    TextAlignment   GetTextHorizontalAlignment () const;
-
-    void            SetTextVerticalAlignment (TextAlignment textAlignment);
-    TextAlignment   GetTextVerticalAlignment () const;
+    void    SetNonInverted ();
+    void    SetInverted ();
+    void    ToggleInverted ();
+    bool    IsInverted () const;
 
     FolioStatus QueryTextExtent (const FolioNarrowString&   textString,
                                  Gdiplus::Rect&             textExtent);
@@ -77,23 +77,61 @@ public:
 private:
     GdiRasterFont&    m_gdiRasterFont; ///< The text's raster font.
 
-    FolioNarrowString   m_textString;               ///< The text string.           
-    Gdiplus::Color      m_textColour;               ///< The colour of the pen used to draw the text.
-    Gdiplus::Color      m_orgTextColour;            ///< The orignal colour of the pen used to draw the text.
-    Gdiplus::Color      m_backgroundColour;         ///< The colour of the brush used to draw the background.
-    Gdiplus::Color      m_orgBackgroundColour;      ///< The orignal colour of the brush used to draw the background.
-    TextAlignment       m_textHorizontalAlignment;  ///< The horizontal alignment of the text.
-    TextAlignment       m_textVerticalAlignment;    ///< The vertical alignment of the text.
+    FolioNarrowString   m_textString;       ///< The text string.           
+    Gdiplus::Color      m_textColour;       ///< The colour of the pen used to draw the text.
+    Gdiplus::Color      m_backgroundColour; ///< The colour of the brush used to draw the background.
+    FolioHandle         m_dcHandle;         ///< The handle to the display compatible device context associated with the raster text.
+    bool                m_isInverted;       ///< <b>true</b> if the raster text is inverted, <b>false</b> otherwise.
 
     FolioByteBuffer m_textStringBitBuffer;  /// The raster bit buffer representing the text string.
 
+    bool    m_redrawGdiBitmapCache; ///< <b>true</b> if the GDI bitmap cache needs to be redrawn, <b>false</b> otherwise.
+    std::unique_ptr<GdiBitmap>  m_gdiBitmapCache;   ///< The GDI bitmap associated with the raster text.
+    
+    bool    m_redrawInvertedGdiBitmapCache; ///< <b>true</b> if the inverted GDI bitmap cache needs to be redrawn, <b>false</b> otherwise.
+    std::unique_ptr<GdiBitmap>  m_invertedGdiBitmapCache;   ///< The inverted GDI bitmap associated with the raster text.
+
+    FolioStatus DrawRasterText (Int32               screenXLeft,
+                                Int32               screenYTop,
+                                Gdiplus::Graphics&  graphics,
+                                RectList*           rects);
+
     void    DrawCharacter (FolioHandle                          dcHandle,
-                           Int32                                drawingX,
-                           Int32                                drawingY,
-                           UInt32                               characterWidth,          
+                           Int32                                drawingXStart,
+                           Int32                                drawingYStart,
                            Int32                                characterWidthInPixels,  
                            Int32                                characterHeightInPixels,
-                           const FolioByteBuffer::value_type*   characterBitBuffer) const;
+                           const FolioByteBuffer::value_type*   characterBitBuffer,
+                           const COLORREF&                      textColour,
+                           const COLORREF&                      backgroundCOlour) const;
+
+    COLORREF    GetTextColour (bool inverted) const;
+    COLORREF    GetBackgroundColour (bool inverted) const;
+
+    void    Destroy ();
+
+    bool    IsGdiBitmapCacheSupported () const;
+    bool    IsInvertedGdiBitmapCacheSupported () const;
+
+    bool    IsGdiBitmapCacheRqd () const;
+    bool    IsInvertedGdiBitmapCacheRqd () const;
+
+    void    DestroyGdiBitmapCache ();
+    bool    IsGdiBitmapCache () const;
+
+    void    DestroyInvertedGdiBitmapCache ();
+    bool    IsInvertedGdiBitmapCache () const;
+
+    FolioStatus DrawGdiBitmapCache (Int32               screenXLeft,
+                                    Int32               screenYTop,
+                                    Gdiplus::Graphics&  graphics,
+                                    RectList*           rects);
+    FolioStatus DrawInvertedGdiBitmapCache (Int32               screenXLeft,
+                                            Int32               screenYTop,
+                                            Gdiplus::Graphics&  graphics,
+                                            RectList*           rects);
+    void    DrawGdiBitmapCache (GdiBitmap&  gdiBitmap, 
+                                bool        inverted);
 }; // Endclass.
 
 /// GDI raster text pointer.

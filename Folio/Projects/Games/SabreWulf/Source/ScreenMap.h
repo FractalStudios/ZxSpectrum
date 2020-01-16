@@ -8,7 +8,6 @@
 #include    <Game.h>
 #include    "CollisionGrid.h"
 #include    "ObjectSprite.h"
-#include    "OrchidSprite.h"
 
 #pragma pack(push, 1)
 
@@ -25,44 +24,44 @@ namespace SabreWulf
 class ScreenMap
 {
 public:
-    static  const   UInt32  INITIAL_SCREEN_INDEX = 168; // Index to the initial screen.
+    static  const   UInt32  INITIAL_SCREEN_INDEX    = 168;                  // Index to the initial screen.
+    static  const   UInt32  UNDEFINED_SCREEN_INDEX  = FOLIO_INVALID_INDEX;  // Undefined screen index.
 
-    ScreenMap (const SpriteGraphicsMapPtr &spriteGraphicsMap);
+    ScreenMap ();
     ~ScreenMap ();
 
     void    ScatterObjects ();
 
-    UInt32  GetTotalNumScreens () const;
-    UInt32  GetCurrentScreenIndex () const;
-    UInt32  GetNewScreenIndex (CollisionGrid::ScreenExit::ORIENTATION orientation);
+    UInt32  GetCurrentScreenMapIndex () const;
+    UInt32  MoveToNewScreen (CollisionGrid::ScreenExit::ORIENTATION orientation);
 
-    // The screen number.
+    // The screen number (0x00-0x2f).
     typedef UInt8   ScreenNumber;
 
     ScreenNumber    GetCurrentScreenNumber () const;
-    ScreenNumber    GetScreenNumber (UInt32 screenIndex) const;
+    ScreenNumber    GetScreenNumber (UInt32 screenMapIndex) const;
 
-    bool    IsScreenOrchidSprite (OrchidSpritePtr &orchidSprite) const;
+    bool    IsScreenOrchidSprite () const;
+    Int32   GetScreenOrchidSpriteScreenXLeft () const;
+    Int32   GetScreenOrchidSpriteScreenYBottom () const;
 
     FolioStatus QueryScreenObjectSprites (FolioHandle       dcHandle,
                                           ObjectSpritesList &objectSpritesList) const;
 
-private:           
+    static  UInt32  GetTotalNumScreens ();
+
+private:
+    // Screen map size.
     static  const   UInt32  MAX_SCREEN_MAP_ROWS     = 16;
     static  const   UInt32  MAX_SCREEN_MAP_COLUMNS  = 16;
 
     static  const   UInt32  MAX_SCREEN_OBJECT_SPRITES = 2;  // Maximum number of screen object sprites.
 
-    const SpriteGraphicsMapPtr &m_spriteGraphicsMap;    // The sprite graphics map.
-
-    // The map.
-    typedef std::vector<ScreenNumber>   Map;
-
-    Map m_map;  // The screen map.
-
-    static  const   ScreenNumber    m_screenMapLayout [];   // Screen map layout.
-
-    UInt32  m_currentScreenIndex;   // The current screen index into the screen map.
+    // Screen numbers list.
+    typedef std::vector<ScreenNumber>   ScreenNumbersList;
+    
+    static  const   ScreenNumbersList   m_screenMap;    // Screen map.
+    UInt32  m_currentScreenMapIndex;    // The current index into the screen map.
 
     // Screen position.
     typedef Gdiplus::Point  ScreenPosition;
@@ -72,18 +71,18 @@ private:
 
     static  const   ScreenPositionsList m_orchidScreenPositions;    // Orchid screen positions.
 
-    static  const   UInt32  MAX_OBJECT_POSITIONS_PER_SCREEN = 4;        // Maximum object screen positions per screen.
+    static  const   UInt32  MAX_OBJECT_POSITIONS_PER_SCREEN = 4;        // Maximum number of object screen positions per screen.
     static  const   ScreenPositionsList     m_objectScreenPositions;    // Object screen positions.
     
-    typedef std::vector<UInt32>   AmuletPieceScreenLocationsList;   // Amulet piece screen locations list.
-
-    static  const   UInt32  MAX_AMULET_PIECES = 4;                                  // Maximum amulet pieces.
-    static  const   AmuletPieceScreenLocationsList   m_amuletPieceScreenLocations;  // Amulet piece screen locations.
+    // Screen index list.
+    typedef std::vector<UInt32> ScreenIndexList;
     
-    static  UInt32  m_amuletPieceScreenLocationsIndex;   // The amulet piece screen locations index.
+    static  const   UInt32  MAX_AMULET_PIECES = 4;                  // Maximum number of amulet pieces.
+    static  const   ScreenIndexList m_amuletPieceScreenIndexList;   // Amulet piece screen index list.
+    static  UInt32  m_amuletPieceScreenIndexListIndex;  // The index into the amulet piece screen index list.
 
-    static  bool    IsAmuletPieceOnScreen (UInt32               screenIndex,
-                                           OBJECT_SPRITE_ID     &amuletPieceId);
+    static  bool    IsAmuletPieceOnScreen (UInt32           screenMapIndex,
+                                           OBJECT_SPRITE_ID &amuletPieceId);
 
     // Private copy constructor to prevent copying.
     ScreenMap (const ScreenMap& rhs);
@@ -91,9 +90,6 @@ private:
     // Private assignment operator to prevent copying.
     ScreenMap& operator= (const ScreenMap& rhs);
 }; // Endclass.
-
-// Screen map pointer.
-typedef std::shared_ptr<ScreenMap>  ScreenMapPtr;
 
 } // Endnamespace.
 

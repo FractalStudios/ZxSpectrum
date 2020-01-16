@@ -38,9 +38,9 @@ static  const   InformationPanelItemAttributes  g_informationPanelAttributesTabl
 
 
 // Information panel static members.
-Folio::Core::Util::Sound::SoundSample   InformationPanel::m_startingSoundSample(80, 1026.69f);      // Starting sound sample.
-Folio::Core::Util::Sound::SoundSample   InformationPanel::m_collectedItemSoundSample(32, 3800.00f); // Collected item sound sample.
-Folio::Core::Util::Sound::SoundSample   InformationPanel::m_droppedItemSoundSample(32, 2000.00f);   // Dropped item sound sample.
+Folio::Core::Util::Sound::SoundSample   InformationPanel::m_startingSoundSample(Ultimate::CreateSoundSample (0x80, 0x60));      // Starting sound sample.
+Folio::Core::Util::Sound::SoundSample   InformationPanel::m_collectedItemSoundSample(Ultimate::CreateSoundSample (0x40, 0x40)); // Collected item sound sample.
+Folio::Core::Util::Sound::SoundSample   InformationPanel::m_droppedItemSoundSample(Ultimate::CreateSoundSample (0x20, 0x80));   // Dropped item sound sample.
 
 bool    InformationPanel::m_playIncrementMainPlayerHealthSound                  = false;    // Indicates if the increment main player health sound should be played.
 UInt32  InformationPanel::m_currentIncrementMainPlayerHealthSoundSampleIndex    = 0;        // The current increment main player health sound sample index.
@@ -52,9 +52,9 @@ Folio::Core::Util::Sound::SoundSamplesList  InformationPanel::m_decrementMainPla
 
 InformationPanel::InformationPanel ()
 :   m_canvas(0),
-    m_startCount(0),
-    m_previousTimeFrameTickCount(0),
+    m_startingCounter(0),
     m_previousScoreFrameTickCount(0),
+    m_previousTimeFrameTickCount(0),
     m_timeInSeconds(0),
     m_score(0),
     m_health(MAX_HEALTH),
@@ -81,9 +81,9 @@ FolioStatus InformationPanel::Create (Folio::Core::Applet::Canvas   &canvas,
     // Note the information panel attributes.
 
     m_canvas                        = &(canvas);
-    m_startCount                    = 0;
-    m_previousTimeFrameTickCount    = 0;
+    m_startingCounter               = 0;
     m_previousScoreFrameTickCount   = 0;
+    m_previousTimeFrameTickCount    = 0;
     m_timeInSeconds                 = 0;
     m_score                         = 0;
     m_health                        = MAX_HEALTH;
@@ -744,40 +744,57 @@ FolioStatus InformationPanel::CheckScore (UInt32    currentTickCount,
 {                                                            
     FolioStatus status = ERR_SUCCESS;
 
-    if (!m_previousScoreFrameTickCount)
+    // Have we initialised the starting counter?
+
+    if (!m_startingCounter)
     {
+        // No. Initialise the starting counter.
+
+        m_startingCounter = 1;
+
+        // Note the previous score frame tick count.
+
         m_previousScoreFrameTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
     } // Endif.
+
+    // Should we update (flash) the score?
 
     else
     if (currentTickCount >= (m_previousScoreFrameTickCount + Folio::Core::Game::ZxSpectrum::FLASH_MILLISECONDS))
     {
-        // Update the information panel.
+        // Yes. Update the information panel.
 
         status = Update (UPDATE_SCORE_COLOURS);
 
-        // Have we started?
-
-        if (++m_startCount >= 6)
-        {
-            // Yes. We are no longer starting.
-
-            isStarting = false;
-
-            m_startCount = 0;   // Reset start count.
-
-            // Reset the information panel.
-
-            status = Reset ();
-        } // Endif.
-        
-        else
         if (status == ERR_SUCCESS)
         {
-            // Note the previous score frame tick count.
+            // Play the starting sound sample.
 
-            m_previousScoreFrameTickCount = currentTickCount;
-        } // Endelseif.
+            Folio::Core::Util::Sound::PlaySoundSample (m_startingSoundSample);
+
+            // Are we still starting?
+
+            if (++m_startingCounter >= 7)
+            {
+                // No. We are no longer starting.
+
+                isStarting = false;
+
+                m_startingCounter = 0;   // Reset starting counter.
+
+                // Reset the information panel.
+
+                status = Reset ();
+            } // Endif.
+        
+            else
+            {
+                // Yes. Note the previous score frame tick count.
+
+                m_previousScoreFrameTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
+            } // Endelse.
+
+        } // Endif.
 
     } // Endelseif.
 
@@ -932,13 +949,6 @@ FolioStatus InformationPanel::Update (UPDATE update)
                                          m_invertScoreColours,
                                          *graphics, 
                                          redrawCanvas);
-
-                if (status == ERR_SUCCESS)
-                {
-                    // Play the starting sound sample.
-
-                    Folio::Core::Util::Sound::PlaySoundSample (m_startingSoundSample);
-                } // Endif.
 
                 finished = true;
             } // Endelse.
@@ -1348,9 +1358,9 @@ FolioStatus InformationPanel::UpdateTextItem (Folio::Core::Game::TextItemPtr::el
 
     if (invertColours)
     {
-        // Yes. Invert the text item's colours
+        // Yes. Toggle text item's inverted state.
 
-        gdiRasterText->InvertColours ();
+        gdiRasterText->ToggleInverted ();
 
         // Draw it.
 
@@ -1365,12 +1375,14 @@ FolioStatus InformationPanel::UpdateTextItem (Folio::Core::Game::TextItemPtr::el
 
     } // Endif.
 
-    else
-    if (!invertColours && gdiRasterText->IsInvertedColours ())
-    {
-        // No. Reset the text item's colours
+    // No. Is the text item inverted?
 
-        gdiRasterText->ResetColours ();
+    else
+    if (gdiRasterText->IsInverted ())
+    {
+        // Yes.
+
+        gdiRasterText->SetNonInverted ();
 
         // Draw it.
 
@@ -1515,16 +1527,16 @@ void    InformationPanel::CreateIncrementMainPlayerHealthSoundSamples ()
     
         for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x10; frequency <= 0x90; frequency += 0x10)
         {
-            m_incrementMainPlayerHealthSoundSamplesList.push_back (Ultimate::MapMakeSound (frequency, 0x08));
+            m_incrementMainPlayerHealthSoundSamplesList.push_back (Ultimate::CreateSoundSample (frequency, 0x08));
         } // Endfor.
         
         for (UInt32 count = 0; count < 3; ++count)
         {
-            m_incrementMainPlayerHealthSoundSamplesList.push_back (Ultimate::MapMakeSound (0x80, 0x08));
-            m_incrementMainPlayerHealthSoundSamplesList.push_back (Ultimate::MapMakeSound (0x90, 0x08));
+            m_incrementMainPlayerHealthSoundSamplesList.push_back (Ultimate::CreateSoundSample (0x80, 0x08));
+            m_incrementMainPlayerHealthSoundSamplesList.push_back (Ultimate::CreateSoundSample (0x90, 0x08));
         } // Endfor.
 
-        m_incrementMainPlayerHealthSoundSamplesList.push_back (Ultimate::MapMakeSound (0x80, 0x08));
+        m_incrementMainPlayerHealthSoundSamplesList.push_back (Ultimate::CreateSoundSample (0x80, 0x08));
     } // Endif.
 
 } // Endproc.
@@ -1540,7 +1552,7 @@ void    InformationPanel::CreateDecrementMainPlayerHealthSoundSamples ()
 
         for (Folio::Core::Game::ZxSpectrum::BYTE numLoops = 0x0f; numLoops >= 0x01; --numLoops)
         {
-            m_decrementMainPlayerHealthSoundSamplesList.push_back (Ultimate::MapMakeSound (frequency, numLoops));
+            m_decrementMainPlayerHealthSoundSamplesList.push_back (Ultimate::CreateSoundSample (frequency, numLoops));
 
             frequency++;
 

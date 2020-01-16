@@ -50,7 +50,7 @@ public:
     FolioStatus ChangeColour (const Gdiplus::Color& colour,
                               const Gdiplus::Color& newColour);
 
-    UInt32      GetId () const;
+    UInt32  GetId () const;
 
     bool    IsMonochrome () const;
 

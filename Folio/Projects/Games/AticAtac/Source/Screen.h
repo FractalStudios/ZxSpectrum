@@ -70,8 +70,6 @@ public:
 
     static  UInt32  GetTotalNumRooms ();
 
-    FolioStatus ExitScreen (); //iac for AUTO_TEST.
-
 private:
     static  const   UInt32  MAX_REMOVE_NASTY_SPRITES_TICK_COUNT = 10 * 1000;    // The maximum tick count to remove the nasty sprites.
     static  const   UInt32  MAX_OPEN_CLOSE_DOORS_TICK_COUNT     = 15 * 1000;    // The maximum tick count to open/close the screen's doors.
@@ -79,7 +77,7 @@ private:
     Folio::Core::Applet::Canvas*    m_canvas;           // The canvas.
     InformationPanel*               m_informationPanel; // The information panel.
 
-    bool                                    m_screenInitialised;            // true if the screen is initialised, false otherwise.
+    bool                                    m_screenInitialised;            // Indicates if the screen is initialised.
     UInt32                                  m_screenNumber;                 // The screen number.
     ROOM_ID                                 m_roomId;                       // The identifier of the room.
     Folio::Core::Game::ZxSpectrum::COLOUR   m_roomColour;                   // The colour of the room.
@@ -104,6 +102,7 @@ private:
 
     FolioStatus InitialiseScreen ();
     FolioStatus EnterScreen ();
+    FolioStatus ExitScreen ();
 
     FolioStatus InitialiseDoors ();
     FolioStatus CheckDoors (bool enteringScreen = false);

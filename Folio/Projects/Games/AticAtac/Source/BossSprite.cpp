@@ -866,7 +866,7 @@ Folio::Core::Game::SpriteStationarySoundSamplesList BossSprite::GetBossSpriteTer
     
         for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x3f; frequency >= 0x21; frequency -= 2)
         {
-            m_bossSpriteTerminatingSoundSamplesList.push_back (Ultimate::MapMakeSound (frequency, 0x01));
+            m_bossSpriteTerminatingSoundSamplesList.push_back (Ultimate::CreateSoundSample (frequency, 0x01));
         } // Endfor.
 
     } // Endif.

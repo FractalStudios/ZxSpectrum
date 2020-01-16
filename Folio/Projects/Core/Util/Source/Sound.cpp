@@ -171,26 +171,19 @@ FolioStatus PlaySoundSample (const SoundSample& soundSample)
     {
         // Is the waveform-audio output device open?
 
-        if (waveOut->IsOpen ())
-        {
-            // Yes. Reset the waveform-audio output device.
-        
-            status = waveOut->Reset ();
-        } // Endif.
-
-        else
+        if (!waveOut->IsOpen ())
         {
             // No. Open the waveform-audio output device.
         
-            status = waveOut->Open (soundSample.GetNumSoundChannels (), 
+            status = waveOut->Open (soundSample.GetSoundChannels (), 
                                     soundSample.GetSamplesPerSecond ());
-        } // Endelse.
+        } // Endif.
 
         if (status == ERR_SUCCESS)
         {
             // Use the waveform-audio output device to play the sound.
             
-            status = waveOut->Play (soundSample.GetDuration (), 
+            status = waveOut->Play (soundSample.GetSoundDuration (), 
                                     soundSample.GetSampleBuffer ());
         } // Endif.
 
@@ -199,6 +192,44 @@ FolioStatus PlaySoundSample (const SoundSample& soundSample)
     else
     {
         status = ERR_INTERNAL_ERROR;
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+/**
+ * Function that will play a list of sound samples.
+ *
+ * @param [in] soundSamplesList
+ * The list of sound samples to play.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if successful.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus PlaySoundSamples (const SoundSamplesList& soundSamplesList)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    if (soundSamplesList.empty ())
+    {
+        status = ERR_INVALID_PARAM1;
+    } // Endif.
+
+    else
+    {
+        // Play the sound samples.
+
+        for (SoundSamplesList::const_iterator itr = soundSamplesList.begin ();
+             itr != soundSamplesList.end ();
+             ++itr)
+        {
+            status = PlaySoundSample (*itr);
+        } // Endfor.
+
     } // Endelse.
     
     return (status);
@@ -289,20 +320,20 @@ FolioStatus PlayAsyncSoundSamples (const SoundSamplesList& soundSamplesList)
 /**
  * Function that makes a sound for a specified duration and frequency.
  *
- * @param [in] duration
+ * @param [in] soundDuration
  * The sound's duration (in milliseconds).
  *
- * @param [in] frequency
+ * @param [in] soundFrequency
  * The sound's frequency.
  *
- * @param [in] numSoundChannels
- * The number of channels to use when generating the sound sample.
+ * @param [in] soundChannels
+ * The sound channels to use when generating the sound sample.
  *
  * @param [in] samplesPerSecond
  * The sample frequency to use when generating the sound sample.
  *
- * @param [in] signalProc
- * The signal procedure to use when generating the sound sample.
+ * @param [in] soundSampleWave
+ * The wave type algorithm to use when generating the sound sample.
  *
  * @return
  * The possible return values are:<ul>
@@ -310,17 +341,17 @@ FolioStatus PlayAsyncSoundSamples (const SoundSamplesList& soundSamplesList)
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus Beep (UInt32                    duration,
-                  const float&              frequency, 
-                  SOUND_CHANNELS            numSoundChannels,
-                  UInt32                    samplesPerSecond,
-                  SoundSample::SIGNAL_PROC  signalProc)
+FolioStatus Beep (UInt32                            soundDuration,
+                  const float&                      soundFrequency, 
+                  SOUND_CHANNELS                    soundChannels,
+                  UInt32                            samplesPerSecond,
+                  SoundSample::SOUND_SAMPLE_WAVE    soundSampleWave)
 {
-    return (PlaySoundSample (SoundSample(duration,
-                                         frequency, 
-                                         numSoundChannels,
+    return (PlaySoundSample (SoundSample(soundDuration,
+                                         soundFrequency, 
+                                         soundChannels,
                                          samplesPerSecond,
-                                         signalProc))); 
+                                         soundSampleWave))); 
 } // Endproc.
 
 } // Endnamespace.

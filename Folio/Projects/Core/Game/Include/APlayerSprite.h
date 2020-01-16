@@ -24,7 +24,7 @@ class APlayerSprite : public ASprite
 public:
     virtual ~APlayerSprite ();
 
-    virtual Direction   UpdateDirection (Direction  direction, 
+    virtual FolioStatus UpdateDirection (Direction  direction, 
                                          bool       keyDown);
 
     void    SetGameOver ();

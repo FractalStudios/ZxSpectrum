@@ -143,9 +143,9 @@ private:
 
     Folio::Core::Applet::Canvas*    m_canvas;   // The canvas.
 
-    UInt32  m_startCount;                   // The start count.
-    UInt32  m_previousTimeFrameTickCount;   // The previous time frame tick count.
+    UInt32  m_startingCounter;              // The starting counter.
     UInt32  m_previousScoreFrameTickCount;  // The previous score frame tick count.
+    UInt32  m_previousTimeFrameTickCount;   // The previous time frame tick count.
 
     // Held items list.
     typedef std::list<HeldItem>   HeldItemsList;
