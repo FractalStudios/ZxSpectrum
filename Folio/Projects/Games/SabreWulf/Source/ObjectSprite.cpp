@@ -141,42 +141,44 @@ FolioStatus ObjectSprite::HandlePlayerCollision (bool &foundAmuletPiece)
 {
     foundAmuletPiece = false;   // Initialise!
 
-    FolioStatus status = ERR_SUCCESS;
-
     // The player has collided with an object sprite.
 
-    // Play the object collected sound (asynchronously).
+    // Play the object collected sound.
 
-    Folio::Core::Util::Sound::PlayAsyncSoundSample (m_objectCollectedSoundSample);
+    FolioStatus status = Folio::Core::Util::Sound::PlaySoundSample (m_objectCollectedSoundSample);
 
-    // Add to the player's score.
-
-    g_informationPanel->AddPlayerScore (InformationPanel::SCORE_OBJECT_COLLECTED);
-
-    switch (m_objectSpriteId)
+    if (status == ERR_SUCCESS)
     {
-    case OBJECT_SPRITE_AMULET_PIECE_TOP_LEFT:
-    case OBJECT_SPRITE_AMULET_PIECE_TOP_RIGHT:
-    case OBJECT_SPRITE_AMULET_PIECE_BOTTOM_LEFT:
-    case OBJECT_SPRITE_AMULET_PIECE_BOTTOM_RIGHT:
-        // The player has just found an amulet piece.
+        // Add to the player's score.
 
-        foundAmuletPiece = true;
+        g_informationPanel->AddPlayerScore (InformationPanel::SCORE_OBJECT_COLLECTED);
 
-        g_informationPanel->SetFoundAmuletPiece (m_objectSpriteId);
-        break;
+        switch (m_objectSpriteId)
+        {
+        case OBJECT_SPRITE_AMULET_PIECE_TOP_LEFT:
+        case OBJECT_SPRITE_AMULET_PIECE_TOP_RIGHT:
+        case OBJECT_SPRITE_AMULET_PIECE_BOTTOM_LEFT:
+        case OBJECT_SPRITE_AMULET_PIECE_BOTTOM_RIGHT:
+            // The player has just found an amulet piece.
+
+            foundAmuletPiece = true;
+
+            g_informationPanel->SetFoundAmuletPiece (m_objectSpriteId);
+            break;
     
-    case OBJECT_SPRITE_EXTRA_LIFE:
-        // The player has just found an extra life.
+        case OBJECT_SPRITE_EXTRA_LIFE:
+            // The player has just found an extra life.
 
-        // Increment the player's life.
+            // Increment the player's life.
 
-        status = g_informationPanel->IncrementPlayerLife ();
-        break;
+            status = g_informationPanel->IncrementPlayerLife ();
+            break;
 
-    default:
-        break;
-    } // Endswitch.
+        default:
+            break;
+        } // Endswitch.
+    
+    } // Endif.
 
     return (status);
 } // Endproc.

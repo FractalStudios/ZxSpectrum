@@ -46,6 +46,7 @@ private:
     ScreenSequenceList              m_screenSequenceList;           // The screen sequence list.
     ScreenSequenceList::iterator    m_currentScreenSequenceListItr; // The current screen sequence.
 
+    static  UInt32  m_currentSoundSampleIndex;  // The current sound sample index.
     static  Folio::Core::Util::Sound::SoundSamplesList  m_soundSamplesList; // The sound samples list.
 
     // AScreen method(s).
@@ -54,12 +55,13 @@ private:
     virtual FolioStatus QueryScreenDrawingElements (FolioHandle                             dcHandle,
                                                     Folio::Core::Game::DrawingElementsList  &drawingElementsList) const;
     virtual FolioStatus StartDisplayingScreen ();
-    virtual FolioStatus ProcessScreenFrame (UInt32 *frameRateIncrement);
+    virtual FolioStatus ProcessScreenFrame ();
 
     FolioStatus UpdateScreen ();
     void    CreateScreenSequence ();
    
     static  void    CreateSoundSamples ();
+    static  FolioStatus PlaySoundSample ();
 
     // Private copy constructor to prevent copying.
     FallingSimulationScreen (const FallingSimulationScreen& rhs);

@@ -413,7 +413,7 @@ FolioStatus SelectionScreen::ProcessScreenInput ()
 } // Endproc.
 
 
-FolioStatus SelectionScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
+FolioStatus SelectionScreen::ProcessScreenFrame ()
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -427,21 +427,19 @@ FolioStatus SelectionScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
     {
         // Yes. Process the frame when starting the game.
 
-        status = ProcessScreenFrameStartingGame (currentTickCount,
-                                                 frameRateIncrement);
+        status = ProcessScreenFrameStartingGame (currentTickCount);
     } // Endif.
 
     else
     {
         // No. Process the frame when waiting for selection.
 
-        status = ProcessScreenFrameWaitingForSelection (currentTickCount,
-                                                        frameRateIncrement);
+        status = ProcessScreenFrameWaitingForSelection (currentTickCount);
     } // Endelse.
     
     if (status == ERR_SUCCESS)
     {
-        // Should we update any current selection text on the selecion screen, 
+        // Should we update any current selection text on the selection screen, 
         // i.e. has the current tick count exceeded the flash rate since the 
         // last update?
 
@@ -722,8 +720,7 @@ FolioStatus SelectionScreen::UpdateFlashCurrentSelections (Gdiplus::Graphics    
 } // Endproc.
 
 
-FolioStatus SelectionScreen::ProcessScreenFrameWaitingForSelection (UInt32  currentTickCount,
-                                                                    UInt32  *frameRateIncrement)
+FolioStatus SelectionScreen::ProcessScreenFrameWaitingForSelection (UInt32 currentTickCount)
 {
     // Play the main game music.
 
@@ -743,7 +740,7 @@ FolioStatus SelectionScreen::ProcessScreenFrameWaitingForSelection (UInt32  curr
             m_initialFrameTickCount = currentTickCount;
         } // Endif.
 
-        // Have we displayed the selecion screen for long enough?
+        // Have we displayed the selection screen for long enough?
 
         else
         if (currentTickCount >= (m_initialFrameTickCount + MAX_DISPLAY_SCREEN_TIME))
@@ -769,8 +766,7 @@ FolioStatus SelectionScreen::ProcessScreenFrameWaitingForSelection (UInt32  curr
 } // Endproc.
 
 
-FolioStatus SelectionScreen::ProcessScreenFrameStartingGame (UInt32 currentTickCount,
-                                                             UInt32 *frameRateIncrement)
+FolioStatus SelectionScreen::ProcessScreenFrameStartingGame (UInt32 currentTickCount)
 {
     // Play the starting game music.
 
@@ -999,6 +995,10 @@ FolioStatus SelectionScreen::PlayMainGameMusic ()
 
 void    SelectionScreen::StopMainGameMusic ()
 {
+    // Stop playing the main game music.
+
+    g_musicJukebox.StopPlayingMusic ();
+
     m_finishedPlayingMainGameMusic = true;
 } // Endproc.
 

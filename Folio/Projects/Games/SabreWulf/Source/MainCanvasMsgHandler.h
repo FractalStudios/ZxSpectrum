@@ -35,8 +35,7 @@ public:
     virtual FolioStatus HandleDestroyCanvasMsg (FolioHandle wndHandle,
                                                 UInt32      wParam,
                                                 UInt32      lParam);
-    virtual FolioStatus HandleProcessFrame (FolioHandle wndHandle,
-                                            UInt32      &frameRateIncrement);
+    virtual FolioStatus HandleProcessFrame (FolioHandle wndHandle);
 
 private:
     // State enumeration.
@@ -71,26 +70,16 @@ private:
     FolioStatus Initialise ();
     FolioStatus Terminate ();
 
-    FolioStatus HandleProcessLoadingScreenFrame (FolioHandle    wndHandle,
-                                                 UInt32         *frameRateIncrement = 0);
-    FolioStatus HandleProcessSelectionScreenFrame (FolioHandle  wndHandle,
-                                                   UInt32       *frameRateIncrement = 0);
-    FolioStatus HandleProcessHighScoreScreenFrame (FolioHandle  wndHandle,
-                                                   UInt32       *frameRateIncrement = 0);
-    FolioStatus HandleProcessFoundAmuletPieceScreenFrame (FolioHandle   wndHandle,
-                                                          UInt32        *frameRateIncrement = 0);
-    FolioStatus HandleProcessGameCompletedScreenFrame (FolioHandle  wndHandle,
-                                                       UInt32       *frameRateIncrement = 0);
-    FolioStatus HandleProcessGameOverScreenFrame (FolioHandle   wndHandle,
-                                                  UInt32        *frameRateIncrement = 0);
-    FolioStatus HandleProcessEnterHighScoreScreenFrame (FolioHandle wndHandle,
-                                                        UInt32      *frameRateIncrement = 0);
-    FolioStatus HandleProcessStartingGameStateFrame (FolioHandle    wndHandle,
-                                                     UInt32         *frameRateIncrement = 0);
-    FolioStatus HandleProcessPlayingGameStateFrame (FolioHandle wndHandle,
-                                                    UInt32      *frameRateIncrement = 0);
-    FolioStatus HandleProcessPausedGameStateFrame (FolioHandle  wndHandle,
-                                                   UInt32       *frameRateIncrement = 0);
+    FolioStatus HandleProcessLoadingScreenFrame (FolioHandle wndHandle);
+    FolioStatus HandleProcessSelectionScreenFrame (FolioHandle wndHandle);
+    FolioStatus HandleProcessHighScoreScreenFrame (FolioHandle wndHandle);
+    FolioStatus HandleProcessFoundAmuletPieceScreenFrame (FolioHandle wndHandle);
+    FolioStatus HandleProcessGameCompletedScreenFrame (FolioHandle wndHandle);
+    FolioStatus HandleProcessGameOverScreenFrame (FolioHandle wndHandle);
+    FolioStatus HandleProcessEnterHighScoreScreenFrame (FolioHandle wndHandle);
+    FolioStatus HandleProcessStartingGameStateFrame (FolioHandle wndHandle);
+    FolioStatus HandleProcessPlayingGameStateFrame (FolioHandle wndHandle);
+    FolioStatus HandleProcessPausedGameStateFrame (FolioHandle wndHandle);
 
     FolioStatus CheckPlayingGameStateInput ();
     FolioStatus StartPlayingGame ();

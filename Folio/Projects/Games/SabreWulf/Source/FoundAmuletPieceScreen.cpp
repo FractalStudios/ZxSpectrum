@@ -152,7 +152,7 @@ FolioStatus FoundAmuletPieceScreen::ProcessScreenInput ()
 } // Endproc.
 
 
-FolioStatus FoundAmuletPieceScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
+FolioStatus FoundAmuletPieceScreen::ProcessScreenFrame ()
 {
     // Play the found amulet piece music.
 

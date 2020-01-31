@@ -44,8 +44,7 @@ public:
     virtual FolioStatus HandlePaintCanvasMsg (FolioHandle   wndHandle,
                                               UInt32        wParam,
                                               UInt32        lParam);
-    virtual FolioStatus HandleProcessFrame (FolioHandle wndHandle,
-                                            UInt32&     frameRateIncrement);
+    virtual FolioStatus HandleProcessFrame (FolioHandle wndHandle);
 
 protected:
     std::unique_ptr<Canvas> m_canvas;   ///< The canvas.

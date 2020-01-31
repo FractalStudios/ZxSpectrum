@@ -49,7 +49,7 @@ static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<BOSS_SPRITE_
 
 
 // Boss sprite static members.
-Folio::Core::Game::SpriteStationarySoundSamplesList BossSprite::m_bossSpriteTerminatingSoundSamplesList;  // The boss sprite's terminating sound samples.
+Folio::Core::Util::Sound::SoundSample   BossSprite::m_bossSpriteTerminatedSoundSample;  // The boss sprite terminated sound sample.
 
 BossSprite::BossSprite ()
 :   m_bossSpriteId(BOSS_SPRITE_UNDEFINED),
@@ -112,6 +112,10 @@ FolioStatus BossSprite::Create (FolioHandle                             dcHandle
 
                 if (status == ERR_SUCCESS)
                 {
+                    // Set the boss sprite's sound samples.
+
+                    SetBossSpriteSoundSamples (bossSpriteId);
+
                     // Note the boss sprite's attributes.
 
                     m_bossSpriteId      = bossSpriteId;
@@ -319,13 +323,56 @@ FolioStatus BossSprite::SetTerminatingMode (FolioHandle                         
 
             status = SetGraphicTerminatingMode (dcHandle,
                                                 spriteGraphicAttributesList,
-                                                MAX_SEQUENCE_COUNT,
-                                                &(GetBossSpriteTerminatingSoundSamples ()));
+                                                MAX_SEQUENCE_COUNT);
         } // Endif.
 
     } // Endif.
 
     return (status);
+} // Endproc.
+
+
+void    BossSprite::SetBossSpriteSoundSamples (BOSS_SPRITE_ID bossSpriteId)
+{
+    switch (bossSpriteId)
+    {
+    case BOSS_SPRITE_FRANKENSTEIN:
+        // Create the boss sprite's sound samples.
+
+        CreateBossSpriteSoundSamples (bossSpriteId);
+
+        // Set the boss sprite's terminated sound sample.
+
+        SetBossSpriteTerminatedSoundSample (bossSpriteId);
+        break;
+
+    case BOSS_SPRITE_MUMMY:            
+    case BOSS_SPRITE_HUNCHBACK:
+    case BOSS_SPRITE_DRACULA:            
+    case BOSS_SPRITE_DEVIL:                
+    default:
+        break;
+    } // Endswitch.
+
+} // Endproc.
+
+
+void    BossSprite::SetBossSpriteTerminatedSoundSample (BOSS_SPRITE_ID bossSpriteId)
+{
+    switch (bossSpriteId)
+    {
+    case BOSS_SPRITE_FRANKENSTEIN:
+        SetSpriteTerminatedSoundSample (Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(m_bossSpriteTerminatedSoundSample)));
+        break;
+
+    case BOSS_SPRITE_MUMMY:            
+    case BOSS_SPRITE_HUNCHBACK:
+    case BOSS_SPRITE_DRACULA:            
+    case BOSS_SPRITE_DEVIL:                
+    default:
+        break;
+    } // Endswitch.
+
 } // Endproc.
 
 
@@ -573,7 +620,7 @@ UInt32  BossSprite::GetSpeed (const InformationPanel    &informationPanel,
 
         else
         {
-            // The speed of the boss sprite .
+            // The speed of the boss sprite.
         
             speed = g_mainPlayer->IsReady () && Folio::Core::Game::ABossSprite::IsAtScreenRect (g_mainPlayer->GetScreenRect ()) 
                     ? STATIC_SPEED 
@@ -856,22 +903,42 @@ bool    BossSprite::IsAttractedToStaticSprite (BOSS_SPRITE_ID       bossSpriteId
 } // Endproc.
 
 
-Folio::Core::Game::SpriteStationarySoundSamplesList BossSprite::GetBossSpriteTerminatingSoundSamples ()
+void    BossSprite::CreateBossSpriteSoundSamples (BOSS_SPRITE_ID bossSpriteId)
 {
-    // Has the boss sprite's terminating sound samples been created?
+    switch (bossSpriteId)
+    {
+    case BOSS_SPRITE_FRANKENSTEIN:
+        // Create the boss sprite terminated sound sample.
 
-    if (m_bossSpriteTerminatingSoundSamplesList.empty ())
+        CreateBossSpriteTerminatedSoundSample ();
+        break;
+
+    case BOSS_SPRITE_MUMMY:            
+    case BOSS_SPRITE_HUNCHBACK:
+    case BOSS_SPRITE_DRACULA:            
+    case BOSS_SPRITE_DEVIL:                
+    default:
+        break;
+    } // Endswitch.
+
+} // Endproc.
+
+
+void    BossSprite::CreateBossSpriteTerminatedSoundSample ()
+{
+    // Has the boss sprite terminated sound sample been created?
+
+    if (!m_bossSpriteTerminatedSoundSample.IsSoundSampleGenerated ())
     {
         // No. Create each sound sample representing the required sound.
     
         for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x3f; frequency >= 0x21; frequency -= 2)
         {
-            m_bossSpriteTerminatingSoundSamplesList.push_back (Ultimate::CreateSoundSample (frequency, 0x01));
+            m_bossSpriteTerminatedSoundSample.AddSoundSample (Ultimate::CreateSoundSample (frequency, 0x01));
         } // Endfor.
 
     } // Endif.
     
-    return (m_bossSpriteTerminatingSoundSamplesList);
 } // Endproc.
 
 
@@ -893,8 +960,9 @@ FolioStatus CreateBossSprites (FolioHandle      dcHandle,
         BossSpritePtr bossSprite(new BossSprite);
 
         status = bossSprite->Create (dcHandle,
-                                       g_bossSpriteAttributesTable [index].m_bossSpriteId,
-                                       g_bossSpriteAttributesTable [index].m_bossSpriteColour);
+                                     g_bossSpriteAttributesTable [index].m_bossSpriteId,
+                                     g_bossSpriteAttributesTable [index].m_bossSpriteColour,
+                                     g_bossSpriteAttributesTable [index].m_bossSpriteFlags);
 
         if (status == ERR_SUCCESS)
         {

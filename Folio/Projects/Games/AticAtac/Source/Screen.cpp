@@ -171,8 +171,8 @@ static  const   Screen  g_screensTable [] =
   
 
 // Screen static members.
-bool    Screen::m_playEnteredScreenSound                = false;    // Indicates if the entered screen sound should be played.
-UInt32  Screen::m_currentEnteredScreenSoundSampleIndex  = 0;        // The current entered screen sound sample index.
+bool    Screen::m_playEnteredScreenSound                = true; // Indicates if the entered screen sound should be played.
+UInt32  Screen::m_currentEnteredScreenSoundSampleIndex  = 0;    // The current entered screen sound sample index.
 Folio::Core::Util::Sound::SoundSamplesList  Screen::m_enteredScreenSoundSamples;    // The entered screen sound samples.
 
 Folio::Core::Util::Sound::SoundSample   Screen::m_openDoorSoundSample(Ultimate::CreateDoorSoundSample ());  // The open door sound sample.
@@ -305,8 +305,7 @@ FolioStatus Screen::QueryDrawingElements (Folio::Core::Game::DrawingElementsList
 } // Endproc.
 
 
-FolioStatus Screen::HandleProcessFrame (bool    &isStarting,
-                                        UInt32  *frameRateIncrement)
+FolioStatus Screen::HandleProcessFrame (bool &isStarting)
 {
     // Play the screen sounds.
 
@@ -407,7 +406,6 @@ FolioStatus Screen::QueryNewScreen (UInt32 &newScreenNumber)
             switch (screenEntranceBackgroundItem->GetDoorOrientation ())
             {
             case CollisionGrid::ScreenExit::TOP:
-            case CollisionGrid::ScreenExit::FLOOR:
                 status = g_mainPlayer->SetScreenTopLeft (screenEntranceBackgroundItem->GetScreenXLeft () + (screenEntranceBackgroundItem->GetScreenWidth () - g_mainPlayer->GetScreenWidth ()) / 2,
                                                          screenEntranceBackgroundItem->GetScreenYTop ());
                 break;
@@ -424,6 +422,11 @@ FolioStatus Screen::QueryNewScreen (UInt32 &newScreenNumber)
 
             case CollisionGrid::ScreenExit::RIGHT:
                 status = g_mainPlayer->SetScreenTopLeft (screenEntranceBackgroundItem->GetScreenXLeft (),
+                                                         screenEntranceBackgroundItem->GetScreenYTop () + (screenEntranceBackgroundItem->GetScreenHeight () - g_mainPlayer->GetScreenHeight ()) / 2);
+                break;
+
+            case CollisionGrid::ScreenExit::FLOOR:
+                status = g_mainPlayer->SetScreenTopLeft (screenEntranceBackgroundItem->GetScreenXLeft () + (screenEntranceBackgroundItem->GetScreenWidth () - g_mainPlayer->GetScreenWidth ()) / 3,
                                                          screenEntranceBackgroundItem->GetScreenYTop () + (screenEntranceBackgroundItem->GetScreenHeight () - g_mainPlayer->GetScreenHeight ()) / 2);
                 break;
 
@@ -641,6 +644,8 @@ FolioStatus Screen::InitialiseScreen ()
                     // Increment the number of rooms visited.
 
                     m_informationPanel->IncrementNumRoomsVisited ();
+
+                    m_playEnteredScreenSound = true;
 
                     m_screenInitialised = true;
                 } // Endif.
@@ -979,7 +984,9 @@ FolioStatus Screen::UpdateDoor (BackgroundItem  &backgroundItem,
                     {
                         // Play the open/close door sound sample.
 
-                        Folio::Core::Util::Sound::PlaySoundSample (openDoor ? m_openDoorSoundSample : m_closeDoorSoundSample);
+                        status = Folio::Core::Util::Sound::PlaySoundSample (openDoor 
+                                                                            ? m_openDoorSoundSample 
+                                                                            : m_closeDoorSoundSample);
                     } // Endif.
 
                 } // Endif.
@@ -2206,7 +2213,7 @@ FolioStatus Screen::ProcessMainPlayer (Gdiplus::Graphics &graphics)
                         {
                             // Open the door.
 
-                            status = OpenDoor (*screenExitBackgroundItem);
+                            status = OpenDoor (*screenExitBackgroundItem, true);
                         } // Endif.
 
                     } // Endif.
@@ -3329,19 +3336,24 @@ bool    Screen::PlayEnteredScreenSound ()
     {
         // Yes. Play the entered screen sound sample.
 
-        Folio::Core::Util::Sound::PlaySoundSample (m_enteredScreenSoundSamples [m_currentEnteredScreenSoundSampleIndex]);
+        FolioStatus status = 
+            Folio::Core::Util::Sound::PlaySoundSample (m_enteredScreenSoundSamples [m_currentEnteredScreenSoundSampleIndex]);
 
-        // All entered screen sound samples played?
-
-        if (++m_currentEnteredScreenSoundSampleIndex >= m_enteredScreenSoundSamples.size ())
+        if (status == ERR_SUCCESS)
         {
-            // Yes.
+            // All entered screen sound samples played?
 
-            m_playEnteredScreenSound                = false;
-            m_currentEnteredScreenSoundSampleIndex  = 0;
+            if (++m_currentEnteredScreenSoundSampleIndex >= m_enteredScreenSoundSamples.size ())
+            {
+                // Yes.
+
+                m_playEnteredScreenSound                = false;
+                m_currentEnteredScreenSoundSampleIndex  = 0;
+            } // Endif.
+
+            playedEnteredScreenSound = true;
         } // Endif.
 
-        playedEnteredScreenSound = true;
     } // Endif.
 
     return (playedEnteredScreenSound);

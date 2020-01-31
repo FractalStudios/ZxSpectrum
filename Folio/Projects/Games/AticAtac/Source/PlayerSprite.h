@@ -34,7 +34,7 @@ enum PLAYER_SPRITE_ID
 class PlayerSprite : public Folio::Core::Game::APlayerSprite
 {
 public:
-    static  const   UInt32  MAIN_PLAYER_SPEED = 4;  // Main player speed.
+    static  const   UInt32  MAIN_PLAYER_SPEED = 3;  // Main player speed.
 
     // Player sprite flags.
     static  const   UInt32  FLAGS_NONE                  = 0x00000000;

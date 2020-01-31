@@ -254,7 +254,7 @@ FolioStatus InformationPanel::AddCollectedItem (const HeldItem  &heldItem,
     {
          // Play the collected item sound sample.
 
-        Folio::Core::Util::Sound::PlaySoundSample (m_collectedItemSoundSample);
+        status = Folio::Core::Util::Sound::PlaySoundSample (m_collectedItemSoundSample);
         
         // Is an item dropped?
 
@@ -262,7 +262,7 @@ FolioStatus InformationPanel::AddCollectedItem (const HeldItem  &heldItem,
         {
             // Yes. Play the dropped item sound sample.
 
-            Folio::Core::Util::Sound::PlaySoundSample (m_droppedItemSoundSample);
+            status = Folio::Core::Util::Sound::PlaySoundSample (m_droppedItemSoundSample);
         } // Endif.
 
     } // Endif.
@@ -283,7 +283,7 @@ FolioStatus InformationPanel::CycleCollectedItems (DroppedItem &droppedItem)
     {
         // Yes. Play the dropped item sound sample.
 
-        Folio::Core::Util::Sound::PlaySoundSample (m_droppedItemSoundSample);
+        status = Folio::Core::Util::Sound::PlaySoundSample (m_droppedItemSoundSample);
     } // Endif.
 
     return (status);
@@ -770,29 +770,34 @@ FolioStatus InformationPanel::CheckScore (UInt32    currentTickCount,
         {
             // Play the starting sound sample.
 
-            Folio::Core::Util::Sound::PlaySoundSample (m_startingSoundSample);
+            status = Folio::Core::Util::Sound::PlaySoundSample (m_startingSoundSample, 
+                                                                false); // Play synchronously.
 
-            // Are we still starting?
-
-            if (++m_startingCounter >= 7)
+            if (status == ERR_SUCCESS)
             {
-                // No. We are no longer starting.
+                // Are we still starting?
 
-                isStarting = false;
+                if (++m_startingCounter >= 7)
+                {
+                    // No. We are no longer starting.
 
-                m_startingCounter = 0;   // Reset starting counter.
+                    isStarting = false;
 
-                // Reset the information panel.
+                    m_startingCounter = 0;   // Reset starting counter.
 
-                status = Reset ();
-            } // Endif.
+                    // Reset the information panel.
+
+                    status = Reset ();
+                } // Endif.
         
-            else
-            {
-                // Yes. Note the previous score frame tick count.
+                else
+                {
+                    // Yes. Note the previous score frame tick count.
 
-                m_previousScoreFrameTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
-            } // Endelse.
+                    m_previousScoreFrameTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
+                } // Endelse.
+
+            } // Endif.
 
         } // Endif.
 
@@ -1592,19 +1597,24 @@ bool    InformationPanel::PlayIncrementMainPlayerHealthSound ()
     {
         // Yes. Play the increment main player health sound sample.
 
-        Folio::Core::Util::Sound::PlaySoundSample (m_incrementMainPlayerHealthSoundSamplesList [m_currentIncrementMainPlayerHealthSoundSampleIndex]);
+        FolioStatus status = 
+            Folio::Core::Util::Sound::PlaySoundSample (m_incrementMainPlayerHealthSoundSamplesList [m_currentIncrementMainPlayerHealthSoundSampleIndex]);
 
-        // All increment main player health sound samples played?
-
-        if (++m_currentIncrementMainPlayerHealthSoundSampleIndex >= m_incrementMainPlayerHealthSoundSamplesList.size ())
+        if (status == ERR_SUCCESS)
         {
-            // Yes.
+            // All increment main player health sound samples played?
 
-            m_playIncrementMainPlayerHealthSound                = false;
-            m_currentIncrementMainPlayerHealthSoundSampleIndex  = 0;
+            if (++m_currentIncrementMainPlayerHealthSoundSampleIndex >= m_incrementMainPlayerHealthSoundSamplesList.size ())
+            {
+                // Yes.
+
+                m_playIncrementMainPlayerHealthSound                = false;
+                m_currentIncrementMainPlayerHealthSoundSampleIndex  = 0;
+            } // Endif.
+
+            playedIncrementMainPlayerHealthSound = true;
         } // Endif.
 
-        playedIncrementMainPlayerHealthSound = true;
     } // Endif.
 
     return (playedIncrementMainPlayerHealthSound);
@@ -1621,19 +1631,24 @@ bool    InformationPanel::PlayDecrementMainPlayerHealthSound ()
     {
         // Yes. Play the decrement main player health sound sample.
 
-        Folio::Core::Util::Sound::PlaySoundSample (m_decrementMainPlayerHealthSoundSamplesList [m_currentDecrementMainPlayerHealthSoundSampleIndex]);
+        FolioStatus status = 
+            Folio::Core::Util::Sound::PlaySoundSample (m_decrementMainPlayerHealthSoundSamplesList [m_currentDecrementMainPlayerHealthSoundSampleIndex]);
 
-        // All decrement main player health sound samples played?
-
-        if (++m_currentDecrementMainPlayerHealthSoundSampleIndex >= m_decrementMainPlayerHealthSoundSamplesList.size ())
+        if (status == ERR_SUCCESS)
         {
-            // Yes.
+            // All decrement main player health sound samples played?
 
-            m_playDecrementMainPlayerHealthSound                = false;
-            m_currentDecrementMainPlayerHealthSoundSampleIndex  = 0;
+            if (++m_currentDecrementMainPlayerHealthSoundSampleIndex >= m_decrementMainPlayerHealthSoundSamplesList.size ())
+            {
+                // Yes.
+
+                m_playDecrementMainPlayerHealthSound                = false;
+                m_currentDecrementMainPlayerHealthSoundSampleIndex  = 0;
+            } // Endif.
+
+            playedDecrementMainPlayerHealthSound = true;
         } // Endif.
 
-        playedDecrementMainPlayerHealthSound = true;
     } // Endif.
 
     return (playedDecrementMainPlayerHealthSound);

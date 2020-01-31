@@ -760,7 +760,7 @@ bool    PlayerSprite::IsDead (const CollisionGrid::CellElement& cellElement)
     } // Endif.
 
     return (isDead);
-} // Endif.
+} // Endproc.
 
 
 FolioStatus PlayerSprite::SetInfection (INFECTION                               infection,

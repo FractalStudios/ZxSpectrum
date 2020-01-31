@@ -42,7 +42,7 @@ static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<NASTY_SPRITE
 
 
 // Nasty sprite static members.
-Folio::Core::Game::SpriteStationarySoundSamplesList NastySprite::m_nastySpriteTerminatingSoundSamplesList;  // The nasty sprite's terminating sound samples.
+Folio::Core::Util::Sound::SoundSample   NastySprite::m_nastySpriteTerminatedSoundSample;  // The nasty sprite terminated sound sample.
 
 NastySprite::NastySprite ()
 :   m_nastySpriteId(NASTY_SPRITE_UNDEFINED),
@@ -112,6 +112,10 @@ FolioStatus NastySprite::Create (FolioHandle            dcHandle,
 
                 if (status == ERR_SUCCESS)
                 {
+                    // Set the nasty sprite's sound samples.
+
+                    SetNastySpriteSoundSamples (nastySpriteId);
+
                     // Note the nasty sprite's attributes.
 
                     m_nastySpriteId             = nastySpriteId;
@@ -300,13 +304,30 @@ FolioStatus NastySprite::SetTerminatingMode (FolioHandle                        
 
             status = SetGraphicTerminatingMode (dcHandle,
                                                 spriteGraphicAttributesList,
-                                                MAX_SEQUENCE_COUNT,
-                                                &(GetNastySpriteTerminatingSoundSamples ()));
+                                                MAX_SEQUENCE_COUNT);
         } // Endif.
 
     } // Endif.
 
     return (status);
+} // Endproc.
+
+
+void    NastySprite::SetNastySpriteSoundSamples (NASTY_SPRITE_ID nastySpriteId)
+{
+    // Create the nasty sprite's sound samples.
+
+    CreateNastySpriteSoundSamples (nastySpriteId);
+
+    // Set the nasty sprite's terminated sound sample.
+
+    SetNastySpriteTerminatedSoundSample (nastySpriteId);
+} // Endproc.
+
+
+void    NastySprite::SetNastySpriteTerminatedSoundSample (NASTY_SPRITE_ID nastySpriteId)
+{
+    SetSpriteTerminatedSoundSample (Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(m_nastySpriteTerminatedSoundSample)));
 } // Endproc.
 
 
@@ -484,12 +505,12 @@ UInt32  NastySprite::GetSpeed (NASTY_SPRITE_ID nastySpriteId)
     case NASTY_SPRITE_JELLY_GHOUL:        
     case NASTY_SPRITE_BAT:                
     case NASTY_SPRITE_GHOUL:
-        return (Folio::Core::Util::Random::GetRandomNumber (1, 3));
+        return (Folio::Core::Util::Random::GetRandomNumber (1, 2));
 
     case NASTY_SPRITE_WITCH_FLYING: 
     case NASTY_SPRITE_GHOUL_FLYING: 
     case NASTY_SPRITE_BAT_FLYING:
-        return (Folio::Core::Util::Random::GetRandomNumber (1, 5));
+        return (Folio::Core::Util::Random::GetRandomNumber (1, 3));
     
     default:
         return (STATIC_SPEED);
@@ -498,22 +519,29 @@ UInt32  NastySprite::GetSpeed (NASTY_SPRITE_ID nastySpriteId)
 } // Endproc.
 
 
-Folio::Core::Game::SpriteStationarySoundSamplesList NastySprite::GetNastySpriteTerminatingSoundSamples ()
+void    NastySprite::CreateNastySpriteSoundSamples (NASTY_SPRITE_ID nastySpriteId)
 {
-    // Has the nasty sprite's terminating sound samples been created?
+    // Create the nasty sprite terminated sound sample.
 
-    if (m_nastySpriteTerminatingSoundSamplesList.empty ())
+    CreateNastySpriteTerminatedSoundSample ();
+} // Endproc.
+
+
+void    NastySprite::CreateNastySpriteTerminatedSoundSample ()
+{
+    // Has the nasty sprite terminated sound sample been created?
+
+    if (!m_nastySpriteTerminatedSoundSample.IsSoundSampleGenerated ())
     {
         // No. Create each sound sample representing the required sound.
     
         for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x3f; frequency >= 0x21; frequency -= 2)
         {
-            m_nastySpriteTerminatingSoundSamplesList.push_back (Ultimate::CreateSoundSample (frequency, 0x01));
+            m_nastySpriteTerminatedSoundSample.AddSoundSample (Ultimate::CreateSoundSample (frequency, 0x01));
         } // Endfor.
 
     } // Endif.
     
-    return (m_nastySpriteTerminatingSoundSamplesList);
 } // Endproc.
 
 

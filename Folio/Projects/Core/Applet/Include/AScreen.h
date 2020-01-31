@@ -27,7 +27,7 @@ public:
     FolioStatus Create (Canvas&                 canvas,
                         const Gdiplus::Rect&    clearRect,
                         UInt32                  minTimeToDisplay = 0);
-    FolioStatus HandleProcessFrame (UInt32* frameRateIncrement = 0);
+    FolioStatus HandleProcessFrame ();
 
     bool    IsDisplaying () const;
     bool    IsComplete () const;
@@ -73,7 +73,7 @@ protected:
     virtual FolioStatus SetupGamepad (Folio::Core::Game::Gamepad& gamepad);
     virtual FolioStatus StartDisplayingScreen ();
     virtual FolioStatus ProcessScreenInput ();
-    virtual FolioStatus ProcessScreenFrame (UInt32* frameRateIncrement);
+    virtual FolioStatus ProcessScreenFrame ();
 
 private:
     FolioStatus DrawInCanvas () const;

@@ -46,7 +46,7 @@ private:
     virtual FolioStatus BuildScreenItems (FolioHandle dcHandle, 
                                           FolioHandle instanceHandle);
     virtual FolioStatus ProcessScreenInput ();    
-    virtual FolioStatus ProcessScreenFrame (UInt32 *frameRateIncrement);
+    virtual FolioStatus ProcessScreenFrame ();
 
     FolioStatus PlayMainGameMusic ();
 

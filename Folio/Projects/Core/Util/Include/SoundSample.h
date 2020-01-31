@@ -61,8 +61,6 @@ public:
                         SOUND_SAMPLE_WAVE   soundSampleWave = DEFAULT_SOUND_SAMPLE_WAVE);
     FolioStatus AddSoundSample (const SoundSample& soundSample);
 
-    UInt32              GetSoundDuration () const;
-    float               GetSoundFrequency () const;
     SOUND_CHANNELS      GetSoundChannels () const;
     UInt32              GetSamplesPerSecond () const;
     SOUND_SAMPLE_WAVE   GetSoundSampleWave () const;
@@ -77,8 +75,6 @@ public:
 private:
     static  const   UInt32  DEFAULT_VOLUME = 127;
 
-    UInt32              m_soundDuration;    ///< The sound's duration (in milliseconds).
-    float               m_soundFrequency;   ///< The sound's frequency.
     SOUND_CHANNELS      m_soundChannels;    ///< The sound channels to use when generating the sound sample.
     UInt32              m_samplesPerSecond; ///< The sample frequency to use when generating the sound sample.
     SOUND_SAMPLE_WAVE   m_soundSampleWave;  ///< The wave type algorithm to use when generating the sound sample.
@@ -88,20 +84,27 @@ private:
     // Coefficients.
     typedef std::vector<float>  Coefficients;  
 
-    void    GenerateSoundSample ();
+    void    GenerateSoundSample (UInt32         soundDuration,
+                                 const float&   soundFrequency);
 
     void    GenerateTriangleWave (const float&  seconds,
+                                  const float&  soundFrequency,
                                   UInt32        numSamples);
     void    GeneratePureToneWave (const float&  seconds,
+                                  const float&  soundFrequency,
                                   UInt32        numSamples);
     void    GenerateSquareWave (const float&    seconds,
+                                const float&    soundFrequency,
                                 UInt32          numSamples);
     void    GenerateBandLimitedSquareWave (const float& seconds,
+                                           const float& soundFrequency,
                                            UInt32       numSamples);
 
     float   TriangleWave (const float&  time, 
+                          const float&  soundFrequency,
                           UInt32        channel);
     float   PureToneWave (const float&  time, 
+                          const float&  soundFrequency,
                           UInt32        channel); 
     float   SquareWave (UInt32          sample,
                         const float&    scaler);

@@ -51,6 +51,9 @@ public:
 
     FolioStatus Wait (UInt32    timeout,
                       bool      logOnInfiniteTimeout = true);
+    FolioStatus MsgWait (UInt32 waitMsgMask, 
+                         UInt32 timeout,
+                         bool   logOnInfiniteTimeout = true);
 
 private:
     /// Synchronization handle list type.

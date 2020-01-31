@@ -92,7 +92,7 @@ FolioStatus MusicJukebox::PlayMainGameMusic (bool &isFinished)
 {
     // Play the main game music.
 
-    return (PlayMusic (MAIN_GAME_MUSIC, m_mainGameMusic, isFinished));
+    return (PlayMusic (MAIN_GAME_MUSIC, m_mainGameMusic, true, isFinished));
 } // Endproc.
 
 
@@ -100,7 +100,7 @@ FolioStatus MusicJukebox::PlayStartingGameMusic (bool &isFinished)
 {
     // Play the starting game music.
 
-    return (PlayMusic (STARTING_GAME_MUSIC, m_startingGameMusic, isFinished));
+    return (PlayMusic (STARTING_GAME_MUSIC, m_startingGameMusic, false, isFinished));
 } // Endproc.
 
 
@@ -108,7 +108,7 @@ FolioStatus MusicJukebox::PlayGameOverMusic (bool &isFinished)
 {
     // Play the game over music.
 
-    return (PlayMusic (GAME_OVER_MUSIC, m_gameOverMusic, isFinished));
+    return (PlayMusic (GAME_OVER_MUSIC, m_gameOverMusic, false, isFinished));
 } // Endproc.
 
 
@@ -116,12 +116,23 @@ FolioStatus MusicJukebox::PlayFoundAmuletPieceMusic (bool &isFinished)
 {
     // Play the found amulet piece music.
 
-    return (PlayMusic (FOUND_AMULET_PIECE_MUSIC, m_foundAmuletPieceMusic, isFinished));
+    return (PlayMusic (FOUND_AMULET_PIECE_MUSIC, m_foundAmuletPieceMusic, false, isFinished));
+} // Endproc.
+
+
+FolioStatus MusicJukebox::StopPlayingMusic ()
+{
+    // Stop playing music.
+
+    StopPlayingMusic (m_currentMusic);
+
+    return (Folio::Core::Util::Sound::StopPlayingSoundSamples ());
 } // Endproc.
 
 
 FolioStatus MusicJukebox::PlayMusic (MUSIC                                              music,
                                      const Folio::Core::Util::Sound::SoundSamplesList   &soundSamplesList,
+                                     bool                                               playAsynchronously,
                                      bool                                               &isFinished)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -138,14 +149,15 @@ FolioStatus MusicJukebox::PlayMusic (MUSIC                                      
     {
         // Yes.
 
-        StopPlayingMusic ();
+        StopPlayingMusic (music);
     } // Endif.
 
     else
     {
         // No. Play the current sound sample.
 
-        status = Folio::Core::Util::Sound::PlaySoundSample (soundSamplesList [m_currentSoundSampleIndex++]);
+        status = Folio::Core::Util::Sound::PlaySoundSample (soundSamplesList [m_currentSoundSampleIndex++],
+                                                            playAsynchronously);
     } // Endelse.
 
     return (status);
@@ -167,7 +179,7 @@ void    MusicJukebox::StartPlayingMusic (MUSIC music)
 } // Endproc.
  
 
-void    MusicJukebox::StopPlayingMusic ()
+void    MusicJukebox::StopPlayingMusic (MUSIC music)
 {
     m_currentMusic              = NO_MUSIC; // Reset.
     m_currentSoundSampleIndex   = 0;

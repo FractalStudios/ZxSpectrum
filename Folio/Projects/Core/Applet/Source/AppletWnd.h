@@ -59,12 +59,16 @@ private:
     static  const   Gdiplus::ARGB   APPLET_WND_BACKGROUND_COLOUR = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR; //< The background colour of the applet window.
 
     static  const   UInt32  APPLET_WND_OBJECT_INDEX = 0;    ///< The data index to the applet window object in the applet window.
-    
-    FolioHandle m_instanceHandle;   ///< The application instance handle.
-    FolioString m_commandLine;      ///< The application command line.
-    FolioHandle m_wndHandle;        ///< The window handle of the applet window.
-    FolioHandle m_wndDCHandle;      ///< The device context handle of the applet window.
-    bool        m_appletWndReady;   ///< <b>true</b> if the applet window is ready, <b>false</b> otherwise.
+
+    static  const   UInt32  FRAMES_PER_SECOND   = Folio::Core::Game::ZxSpectrum::TV_REFRESH_FREQUENCY;
+    static  const   UInt32  TICK_COUNT_DELTA    = (1000 / FRAMES_PER_SECOND);
+
+    Int64       m_performanceFrequency; ///< The performance frequency.
+    FolioHandle m_instanceHandle;       ///< The application instance handle.
+    FolioString m_commandLine;          ///< The application command line.
+    FolioHandle m_wndHandle;            ///< The window handle of the applet window.
+    FolioHandle m_wndDCHandle;          ///< The device context handle of the applet window.
+    bool        m_appletWndReady;       ///< <b>true</b> if the applet window is ready, <b>false</b> otherwise.
 
     std::unique_ptr<ACanvasMsgHandler>  m_canvasMsgHandler;  ///< Our canvas message handler.
 
@@ -72,7 +76,8 @@ private:
 
     std::unique_ptr<Gdiplus::Graphics>  m_graphics;  ///< The graphics object of the applet window.
 
-    std::unique_ptr<Folio::Core::Game::Gamepad>  m_gamepad;  ///< The gamepad of the applet window.
+    std::unique_ptr<Folio::Core::Game::Gamepad> m_gamepad;      ///< The gamepad of the applet window.
+    Folio::Core::Game::Gamepad::CONTROLLER_ID   m_controllerId; ///< The first connected gamepad controller identifier.
 
     FolioStatus Initialise ();
     FolioStatus Terminate ();
@@ -98,8 +103,10 @@ private:
     void    DestroyGamepad ();
     bool    IsGamepad () const;
 
-    FolioStatus HandleProcessFrame (HWND      wndHandle,
-                                    UInt32&   frameRateIncrement);
+    FolioStatus MsgWait (UInt32                         timeout, 
+                         Folio::Core::Util::WaitAny&    waitAny);
+
+    FolioStatus HandleProcessFrame (HWND wndHandle);
 
     static  FolioStatus SetAppletWnd (HWND          wndHandle,
                                       AppletWnd*    appletWnd);

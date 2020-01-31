@@ -69,29 +69,15 @@ UInt32  GetCurrentTickCount ()
 
 
 /**
- * Function that will query the current current value of the 
- * high-resolution performance counter.
- *
- * @param [in] low
- * On return, will hold the current low value of the high-resolution 
- * performance counter, if successful. If this method fails then this 
- * parameter is undefined.
- *
- * @param [in] high
- * On return, will hold the current high value of the high-resolution 
- * performance counter, if successful. If this method fails then this 
- * parameter is undefined.
+ * Function that get the currrent value of the high-resolution 
+ * performance counter.
  *
  * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
+ * The currrent value of the high-resolution performance counter.
  */
-FolioStatus QueryPerformanceCounter (UInt32&    low, 
-                                     UInt32&    high)
+Int64   GetCurrentPerformanceCounter ()
 {
-    FolioStatus status = ERR_SUCCESS;
+    Int64   tickCounter = 0;    // Initialise!
 
     // Query the high-resolution performance counter.
 
@@ -99,21 +85,77 @@ FolioStatus QueryPerformanceCounter (UInt32&    low,
 
     if (::QueryPerformanceCounter (&(PerformanceCounter)))
     {
-        low     = PerformanceCounter.LowPart;
-        high    = PerformanceCounter.HighPart;
+        tickCounter = PerformanceCounter.QuadPart;
     } // Endif.
 
     else
     {
         // Build and log an error.
 
-        status = FOLIO_MAKE_OS_ERROR(::GetLastError ());
+        FolioStatus status = FOLIO_MAKE_OS_ERROR(::GetLastError ());
 
         FOLIO_LOG_CALL_ERROR (TXT("QueryPerformanceCounter"),
                               status);
     } // Endelse.
 
-    return (status);
+    return (tickCounter);
+} // Endproc.
+
+
+/**
+ * Function that get the value of the high-resolution performance frequency.
+ *
+ * @return
+ * The value of the high-resolution performance frequency.
+ */
+Int64   GetPerformanceFrequency ()
+{
+    Int64   frequency = 0;  // Initialise!
+
+    // Query the high-resolution performance frequency.
+
+    LARGE_INTEGER   PerformanceFrequency;
+
+    if (::QueryPerformanceFrequency (&(PerformanceFrequency)))
+    {
+        frequency = PerformanceFrequency.QuadPart;
+    } // Endif.
+
+    else
+    {
+        // Build and log an error.
+
+        FolioStatus status = FOLIO_MAKE_OS_ERROR(::GetLastError ());
+
+        FOLIO_LOG_CALL_ERROR (TXT("QueryPerformanceFrequency"),
+                              status);
+    } // Endelse.
+
+    return (frequency);
+} // Endproc.
+
+
+/**
+ * Function that calculates the elpased time (in milliseconds).
+ *
+ * @param [in] startTickCounter
+ * The start tick counter (a measurement of the high-resolution performance 
+ * counter).
+ *
+ * @param [in] performanceFrequency
+ * The value of the high-resolution performance frequency.
+ *
+ * @return
+ * The elapsed time (in milliseconds).
+ */
+UInt32  CalculateElapsedTime (const Int64&    startTickCounter, 
+                              const Int64&    performanceFrequency)
+{
+    Int64   elapsedTime = GetCurrentPerformanceCounter () - startTickCounter;
+    elapsedTime *= 1000000;
+    elapsedTime /= performanceFrequency;
+
+    return (static_cast<UInt32> (elapsedTime / 1000));
 } // Endproc.
 
 

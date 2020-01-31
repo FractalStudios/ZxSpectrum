@@ -114,43 +114,51 @@ FolioStatus LoadingScreen::ProcessScreenInput ()
 } // Endproc.
 
 
-FolioStatus LoadingScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
+FolioStatus LoadingScreen::ProcessScreenFrame ()
 {
     // Play the loading screen's sound sample.
 
-    PlaySoundSample ();
-
-    return (ERR_SUCCESS);
+    return (PlaySoundSample ());
 } // Endproc.
 
 
 void    LoadingScreen::CreateSoundSamples ()
 {
-    // Create each sound sample representing the required sound.
+    // Have the sound samples been created?
 
-    UInt32  milliseconds = Folio::Core::Game::ZxSpectrum::BeepDurationToMilliseconds (0.1f);
-
-    for (Int32 pitch = 1; pitch <= 5; ++pitch)
+    if (m_soundSamplesList.empty ())
     {
-        m_soundSamplesList.push_back (Folio::Core::Util::Sound::SoundSample (milliseconds, 
-                                                                             Folio::Core::Game::ZxSpectrum::BeepPitchToFrequency (pitch)));
-    } // Endfor.
+        // No. Create each sound sample representing the required sound.
+
+        UInt32  milliseconds = Folio::Core::Game::ZxSpectrum::BeepDurationToMilliseconds (0.1f);
+
+        for (Int32 pitch = 1; pitch <= 5; ++pitch)
+        {
+            m_soundSamplesList.push_back (Folio::Core::Util::Sound::SoundSample (milliseconds, 
+                                                                                 Folio::Core::Game::ZxSpectrum::BeepPitchToFrequency (pitch)));
+        } // Endfor.
+
+    } // Endif.
 
     m_currentSoundSampleIndex = 0;  // Initialise!
 } // Endproc.
 
   
-void    LoadingScreen::PlaySoundSample ()
+FolioStatus LoadingScreen::PlaySoundSample ()
 {
+    FolioStatus status = ERR_SUCCESS;
+
     // Have we completed the sound sample sequence?
 
     if (m_currentSoundSampleIndex < m_soundSamplesList.size ())
     {
         // No. Play the current sound sample sample.
 
-        Folio::Core::Util::Sound::PlaySoundSample (m_soundSamplesList [m_currentSoundSampleIndex++]);
+        status = Folio::Core::Util::Sound::PlaySoundSample (m_soundSamplesList [m_currentSoundSampleIndex++], 
+                                                            false); // Play synchronously.
     } // Endif.
 
+    return (status);
 } // Endproc.
 
 } // Endnamespace.

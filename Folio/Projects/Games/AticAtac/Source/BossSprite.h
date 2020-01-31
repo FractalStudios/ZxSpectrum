@@ -71,7 +71,7 @@ private:
     BOSS_SPRITE_ID  m_bossSpriteId;     // The identifier of the boss sprite.
     UInt32          m_bossSpriteFlags;  // The flags of the boss sprite.
 
-    static  Folio::Core::Game::SpriteStationarySoundSamplesList m_bossSpriteTerminatingSoundSamplesList;    // The boss sprite's terminating sound samples.
+    static  Folio::Core::Util::Sound::SoundSample   m_bossSpriteTerminatedSoundSample;  // The boss sprite terminated sound sample.
 
     FolioStatus SetInitialisingMode (FolioHandle                            dcHandle,
                                      Folio::Core::Game::ZxSpectrum::COLOUR  bossSpriteColour,
@@ -79,6 +79,9 @@ private:
     FolioStatus SetTerminatingMode (FolioHandle                             dcHandle,
                                     Folio::Core::Game::ZxSpectrum::COLOUR   bossSpriteColour,
                                     UInt32                                  bossSpriteFlags);
+
+    void    SetBossSpriteSoundSamples (BOSS_SPRITE_ID bossSpriteId);
+    void    SetBossSpriteTerminatedSoundSample (BOSS_SPRITE_ID bossSpriteId);
 
     bool    IsUpdateDirectionRqd (const CollisionGrid &collisionGrid) const;
     Folio::Core::Game::Direction    GetDirection (const InformationPanel    &informationPanel,
@@ -101,7 +104,8 @@ private:
     static  bool    IsAttractedToStaticSprite (BOSS_SPRITE_ID       bossSpriteId,
                                                const StaticSprite   &staticSprite);
 
-    static  Folio::Core::Game::SpriteStationarySoundSamplesList GetBossSpriteTerminatingSoundSamples ();
+    static  void    CreateBossSpriteSoundSamples (BOSS_SPRITE_ID bossSpriteId);
+    static  void    CreateBossSpriteTerminatedSoundSample ();
 
     // Private copy constructor to prevent copying.
     BossSprite (const BossSprite& rhs);

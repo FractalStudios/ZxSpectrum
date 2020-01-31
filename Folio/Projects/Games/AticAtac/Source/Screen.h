@@ -58,8 +58,7 @@ public:
     Folio::Core::Game::ZxSpectrum::COLOUR   GetRoomColour () const;
 
     FolioStatus QueryDrawingElements (Folio::Core::Game::DrawingElementsList &drawingElementsList);
-    FolioStatus HandleProcessFrame (bool    &isStarting,
-                                    UInt32  *frameRateIncrement = 0);
+    FolioStatus HandleProcessFrame (bool &isStarting);
     FolioStatus QueryNewScreen (UInt32 &newScreenNumber);
 
     FolioStatus StoreSpriteBackgrounds (Gdiplus::Graphics &graphics);

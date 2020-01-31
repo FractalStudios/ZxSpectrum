@@ -19,14 +19,17 @@ namespace Sound
 
 // Routines.
 
-extern  FolioStatus LoadSound (FolioHandle  instanceHandle,
-                               UInt16       resourceId,
-                               FolioHandle& soundHandle);
-extern  FolioStatus PlayAsyncSound (FolioHandle soundHandle);
-extern  FolioStatus PlaySoundSample (const SoundSample& soundSample);
-extern  FolioStatus PlaySoundSamples (const SoundSamplesList& soundSamplesList);
-extern  FolioStatus PlayAsyncSoundSample (const SoundSample& soundSample);
-extern  FolioStatus PlayAsyncSoundSamples (const SoundSamplesList& soundSamplesList);
+extern  FolioStatus LoadSoundResource (FolioHandle      instanceHandle,
+                                       UInt16           resourceId,
+                                       FolioHandle&     soundHandle);
+extern  FolioStatus PlaySoundResource (FolioHandle soundHandle);
+extern  FolioStatus StopPlayingSoundResource (FolioHandle soundHandle);
+
+extern  FolioStatus PlaySoundSample (const SoundSample& soundSample,
+                                     bool               playAsynchronously = true);
+extern  FolioStatus PlaySoundSamples (const SoundSamplesList&   soundSamplesList,
+                                      bool                      playAsynchronously = true);
+extern  FolioStatus StopPlayingSoundSamples ();
 
 extern  FolioStatus Beep (UInt32                            soundDuration,
                           const float&                      soundFrequency, 

@@ -46,7 +46,7 @@ FolioStatus AScreen::Create (Canvas&                canvas,
 } // Endproc.
 
 
-FolioStatus AScreen::HandleProcessFrame (UInt32* frameRateIncrement)
+FolioStatus AScreen::HandleProcessFrame ()
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -62,7 +62,7 @@ FolioStatus AScreen::HandleProcessFrame (UInt32* frameRateIncrement)
         {
             // Let the screen process the frame.
 
-            status = ProcessScreenFrame (frameRateIncrement);
+            status = ProcessScreenFrame ();
         } // Endif.
 
     } // Endif.
@@ -196,7 +196,7 @@ FolioStatus AScreen::ProcessScreenInput ()
 } // Endproc.
 
 
-FolioStatus AScreen::ProcessScreenFrame (UInt32* frameRateIncrement)
+FolioStatus AScreen::ProcessScreenFrame ()
 {
     return (ERR_SUCCESS);
 } // Endproc.

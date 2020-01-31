@@ -450,7 +450,7 @@ FolioStatus SelectionScreen::ProcessScreenInput ()
 } // Endproc.
 
 
-FolioStatus SelectionScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
+FolioStatus SelectionScreen::ProcessScreenFrame ()
 {
     FolioStatus status = ERR_SUCCESS;
 

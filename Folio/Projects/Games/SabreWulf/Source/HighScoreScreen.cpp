@@ -135,7 +135,7 @@ FolioStatus HighScoreScreen::ProcessScreenInput ()
 } // Endproc.
 
 
-FolioStatus HighScoreScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
+FolioStatus HighScoreScreen::ProcessScreenFrame ()
 {
     FolioStatus status = ERR_SUCCESS;
 

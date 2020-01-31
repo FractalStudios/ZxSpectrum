@@ -401,7 +401,7 @@ float   Vector2::operator[] (int i)
         return (m_y);
     } // Endswitch.
 
-} // Endif.
+} // Endproc.
 
 
 /**

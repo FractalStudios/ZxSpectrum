@@ -74,8 +74,7 @@ FolioStatus MainCanvasMsgHandler::HandleDestroyCanvasMsg (FolioHandle   wndHandl
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessFrame (FolioHandle   wndHandle, 
-                                                      UInt32        &frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessFrame (FolioHandle wndHandle)
 {
 #ifdef _DEBUG
     DisplayFrameRate ();
@@ -83,50 +82,48 @@ FolioStatus MainCanvasMsgHandler::HandleProcessFrame (FolioHandle   wndHandle,
 
     FolioStatus status = ERR_SUCCESS;
 
-    frameRateIncrement = 0; // Initialise!
-
     // Processing the frame is dependent on our state.
 
     switch (m_state)
     {
     case STATE_LOADING_SCREEN:
-        status = HandleProcessLoadingScreenFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessLoadingScreenFrame (wndHandle);
         break;
 
     case STATE_SELECTION_SCREEN:
-        status = HandleProcessSelectionScreenFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessSelectionScreenFrame (wndHandle);
         break;
 
     case STATE_HIGH_SCORE_SCREEN:
-        status = HandleProcessHighScoreScreenFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessHighScoreScreenFrame (wndHandle);
         break;
 
     case STATE_FOUND_AMULET_PIECE_SCREEN:
-        status = HandleProcessFoundAmuletPieceScreenFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessFoundAmuletPieceScreenFrame (wndHandle);
         break;
 
     case STATE_GAME_COMPLETED_SCREEN:
-        status = HandleProcessGameCompletedScreenFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessGameCompletedScreenFrame (wndHandle);
         break;
 
     case STATE_GAME_OVER_SCREEN:
-        status = HandleProcessGameOverScreenFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessGameOverScreenFrame (wndHandle);
         break;
 
     case STATE_ENTER_HIGH_SCORE_SCREEN:
-        status = HandleProcessEnterHighScoreScreenFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessEnterHighScoreScreenFrame (wndHandle);
         break;
 
     case STATE_STARTING_GAME:
-        status = HandleProcessStartingGameStateFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessStartingGameStateFrame (wndHandle);
         break;
 
     case STATE_PLAYING_GAME:
-        status = HandleProcessPlayingGameStateFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessPlayingGameStateFrame (wndHandle);
         break;
 
     case STATE_PAUSED_GAME:
-        status = HandleProcessPausedGameStateFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessPausedGameStateFrame (wndHandle);
         break;
 
     default:
@@ -164,8 +161,7 @@ FolioStatus MainCanvasMsgHandler::Terminate ()
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessLoadingScreenFrame (FolioHandle  wndHandle,
-                                                                   UInt32       *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessLoadingScreenFrame (FolioHandle wndHandle)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -184,7 +180,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessLoadingScreenFrame (FolioHandle  
     {
         // Let the loading screen process the frame.
 
-        status = m_loadingScreen->HandleProcessFrame (frameRateIncrement);
+        status = m_loadingScreen->HandleProcessFrame ();
 
         // Is the loading screen complete?
 
@@ -205,8 +201,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessLoadingScreenFrame (FolioHandle  
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessSelectionScreenFrame (FolioHandle    wndHandle,
-                                                                     UInt32         *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessSelectionScreenFrame (FolioHandle wndHandle)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -225,7 +220,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessSelectionScreenFrame (FolioHandle
     {
         // Let the selection screen process the frame.
 
-        status = m_selectionScreen->HandleProcessFrame (frameRateIncrement);
+        status = m_selectionScreen->HandleProcessFrame ();
 
         // Is the selection screen complete?
 
@@ -255,8 +250,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessSelectionScreenFrame (FolioHandle
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessHighScoreScreenFrame (FolioHandle    wndHandle,
-                                                                     UInt32         *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessHighScoreScreenFrame (FolioHandle wndHandle)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -275,7 +269,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessHighScoreScreenFrame (FolioHandle
     {
         // Let the high score screen process the frame.
 
-        status = m_highScoreScreen->HandleProcessFrame (frameRateIncrement);
+        status = m_highScoreScreen->HandleProcessFrame ();
 
         // Is the high score screen complete?
 
@@ -296,8 +290,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessHighScoreScreenFrame (FolioHandle
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessFoundAmuletPieceScreenFrame (FolioHandle wndHandle,
-                                                                            UInt32      *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessFoundAmuletPieceScreenFrame (FolioHandle wndHandle)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -316,7 +309,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessFoundAmuletPieceScreenFrame (Foli
     {
         // Let the found amulet piece screen process the frame.
 
-        status = m_foundAmuletPieceScreen->HandleProcessFrame (frameRateIncrement);
+        status = m_foundAmuletPieceScreen->HandleProcessFrame ();
 
         // Is the found amulet piece screen complete?
 
@@ -349,8 +342,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessFoundAmuletPieceScreenFrame (Foli
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessGameCompletedScreenFrame (FolioHandle    wndHandle,
-                                                                         UInt32         *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessGameCompletedScreenFrame (FolioHandle wndHandle)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -369,7 +361,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessGameCompletedScreenFrame (FolioHa
     {
         // Let the game completed screen process the frame.
 
-        status = m_gameCompletedScreen->HandleProcessFrame (frameRateIncrement);
+        status = m_gameCompletedScreen->HandleProcessFrame ();
 
         // Is the game completed screen complete?
 
@@ -390,8 +382,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessGameCompletedScreenFrame (FolioHa
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessGameOverScreenFrame (FolioHandle wndHandle,
-                                                                    UInt32      *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessGameOverScreenFrame (FolioHandle wndHandle)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -410,7 +401,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessGameOverScreenFrame (FolioHandle 
     {
         // Let the game over screen process the frame.
 
-        status = m_gameOverScreen->HandleProcessFrame (frameRateIncrement);
+        status = m_gameOverScreen->HandleProcessFrame ();
 
         // Is the game over screen complete?
 
@@ -444,8 +435,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessGameOverScreenFrame (FolioHandle 
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessEnterHighScoreScreenFrame (FolioHandle   wndHandle,
-                                                                          UInt32        *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessEnterHighScoreScreenFrame (FolioHandle wndHandle)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -464,7 +454,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessEnterHighScoreScreenFrame (FolioH
     {
         // Let the enter high score screen process the frame.
 
-        status = m_enterHighScoreScreen->HandleProcessFrame (frameRateIncrement);
+        status = m_enterHighScoreScreen->HandleProcessFrame ();
 
         // Is the enter high score screen complete?
 
@@ -485,15 +475,13 @@ FolioStatus MainCanvasMsgHandler::HandleProcessEnterHighScoreScreenFrame (FolioH
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessStartingGameStateFrame (FolioHandle  wndHandle,
-                                                                       UInt32       *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessStartingGameStateFrame (FolioHandle wndHandle)
 {
     // Let the current screen process the frame.
 
     bool    isStarting = true;  // Initialise!
 
-    FolioStatus status = m_screensList [m_currentScreenListIndex]->HandleProcessFrame (isStarting,
-                                                                                       frameRateIncrement);
+    FolioStatus status = m_screensList [m_currentScreenListIndex]->HandleProcessFrame (isStarting);
 
     // Still starting?
 
@@ -509,8 +497,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessStartingGameStateFrame (FolioHand
 
 
 #ifdef _AUTO_TEST_
-FolioStatus MainCanvasMsgHandler::HandleProcessPlayingGameStateFrame (FolioHandle   wndHandle,
-                                                                      UInt32        *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessPlayingGameStateFrame (FolioHandle wndHandle)
 {
     static  UInt32  s_screenTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
 
@@ -518,8 +505,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingGameStateFrame (FolioHandl
 
     bool    isStarting = false; // Initialise!
 
-    FolioStatus status = m_screensList [m_currentScreenListIndex]->HandleProcessFrame (isStarting, 
-                                                                                       frameRateIncrement);
+    FolioStatus status = m_screensList [m_currentScreenListIndex]->HandleProcessFrame (isStarting);
         
     if (status == ERR_SUCCESS)
     {
@@ -547,8 +533,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingGameStateFrame (FolioHandl
     return (status);
 } // Endproc.
 #else
-FolioStatus MainCanvasMsgHandler::HandleProcessPlayingGameStateFrame (FolioHandle   wndHandle,
-                                                                      UInt32        *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessPlayingGameStateFrame (FolioHandle wndHandle)
 {
     // Check input.
 
@@ -560,8 +545,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingGameStateFrame (FolioHandl
 
         bool    isStarting = false; // Initialise!
 
-        status = m_screensList [m_currentScreenListIndex]->HandleProcessFrame (isStarting, 
-                                                                               frameRateIncrement);
+        status = m_screensList [m_currentScreenListIndex]->HandleProcessFrame (isStarting);
         
         if (status == ERR_SUCCESS)
         {
@@ -616,8 +600,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingGameStateFrame (FolioHandl
 } // Endproc.
 #endif
 
-FolioStatus MainCanvasMsgHandler::HandleProcessPausedGameStateFrame (FolioHandle    wndHandle,
-                                                                     UInt32         *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessPausedGameStateFrame (FolioHandle wndHandle)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -754,31 +737,21 @@ FolioStatus MainCanvasMsgHandler::DisplayScreen ()
 
 void    MainCanvasMsgHandler::DisplayFrameRate () const
 {
-    static  float   s_previousTickCount = static_cast<float> (Folio::Core::Util::DateTime::GetCurrentTickCount ());  // Initialise!
-    static  float   s_frameCount        = 0.0f;
-           
-    s_frameCount++;
+    static  Int64   s_previousTickCount     = Folio::Core::Util::DateTime::GetCurrentPerformanceCounter (); // Initialise!
+    static  Int64   s_performanceFrequency  = Folio::Core::Util::DateTime::GetPerformanceFrequency ();
 
-    float   currentTickCount = static_cast<float> (Folio::Core::Util::DateTime::GetCurrentTickCount ());
+    UInt32  elapsedTime = Folio::Core::Util::DateTime::CalculateElapsedTime (s_previousTickCount,
+                                                                             s_performanceFrequency);
+    s_previousTickCount = Folio::Core::Util::DateTime::GetCurrentPerformanceCounter ();
 
-    if ((currentTickCount - s_previousTickCount) > 1000)
-    {
-        float   frameRate = s_frameCount / ((currentTickCount - s_previousTickCount) / 1000.0f);
-
-        FolioOStringStream  str;
-        str << TXT("FrameRate: ") << frameRate
-            << TXT(" FrameCount: ") << s_frameCount
-            << TXT(" ScreenListIndex: ") << m_currentScreenListIndex
-            << TXT(" ScreenNumber: ") << g_screenMap.GetCurrentScreenNumber ();
-        Folio::Core::Util::Wnd::SetWndText (m_canvas->GetCanvasWndHandle (), str.str ().c_str ());
+    FolioOStringStream  str;
+    str << TXT("FrameRate: ") << elapsedTime
+        << TXT(" ScreenListIndex: ") << m_currentScreenListIndex
+        << TXT(" ScreenNumber: ") << g_screenMap.GetCurrentScreenNumber ();
+    Folio::Core::Util::Wnd::SetWndText (m_canvas->GetCanvasWndHandle (), str.str ().c_str ());
     
-        str << std::endl;
-        ::OutputDebugString (str.str ().c_str ());
-    
-        s_previousTickCount = currentTickCount;
-        s_frameCount        = 0.0f;
-    } // Endif.
-
+    str << std::endl;
+    ::OutputDebugString (str.str ().c_str ());
 } // Endproc.
 
 } // Endnamespace.

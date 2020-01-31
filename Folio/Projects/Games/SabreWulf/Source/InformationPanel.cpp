@@ -211,7 +211,7 @@ FolioStatus InformationPanel::HandleProcessFrame (bool &isStarting)
 void    InformationPanel::SetNumPlayers (UInt32 numPlayers)
 {
     m_numPlayers = numPlayers;
-} // Endif.
+} // Endproc.
 
 
 void    InformationPanel::SetCurrentPlayer (PLAYER player)
@@ -708,23 +708,28 @@ FolioStatus InformationPanel::CheckPlayerUp (UInt32 currentTickCount,
         {
             // Play the starting sound.
 
-            Folio::Core::Util::Sound::PlaySoundSample (m_startingSoundSample);
+            status = Folio::Core::Util::Sound::PlaySoundSample (m_startingSoundSample,
+                                                                false); // Play synchronously.
 
-            // Have we started?
-                                                                                
-            if (++m_playerStartingAtttributes [m_currentPlayer].m_startingCounter > MAX_STARTING_COUNT)
+            if (status == ERR_SUCCESS)
             {
-                // Yes. We are no longer starting.
+                // Have we started?
+                                                                                
+                if (++m_playerStartingAtttributes [m_currentPlayer].m_startingCounter > MAX_STARTING_COUNT)
+                {
+                    // Yes. We are no longer starting.
 
-                isStarting = false;
+                    isStarting = false;
 
-                // Reset starting counter.
+                    // Reset starting counter.
 
-                m_playerStartingAtttributes [m_currentPlayer].m_startingCounter = 0;
+                    m_playerStartingAtttributes [m_currentPlayer].m_startingCounter = 0;
 
-                // Reset the information panel.
+                    // Reset the information panel.
 
-                status = Reset ();
+                    status = Reset ();
+                } // Endif.
+        
             } // Endif.
         
         } // Endif.

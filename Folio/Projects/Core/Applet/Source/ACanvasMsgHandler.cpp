@@ -183,13 +183,10 @@ FolioStatus ACanvasMsgHandler::HandlePaintCanvasMsg (FolioHandle    wndHandle,
 
 
 /**
- * Method that is used process a frame in the applet window.
+ * Method that is used to process a frame in the applet window.
  *
  * @param [in] wndHandle
  * The handle of the applet window.
- *
- * @param [out] frameRateIncrement
- * The frame rate increment.
  *
  * @return
  * The possible return values are:<ul>
@@ -197,13 +194,11 @@ FolioStatus ACanvasMsgHandler::HandlePaintCanvasMsg (FolioHandle    wndHandle,
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus ACanvasMsgHandler::HandleProcessFrame (FolioHandle  wndHandle,
-                                                   UInt32&      frameRateIncrement)
+FolioStatus ACanvasMsgHandler::HandleProcessFrame (FolioHandle wndHandle)
 {
     return (ERR_SUCCESS);
 
     FOLIO_UNREFERENCED(wndHandle);
-    FOLIO_UNREFERENCED(frameRateIncrement);
 } // Endproc.
 
 } // Endnamespace.
