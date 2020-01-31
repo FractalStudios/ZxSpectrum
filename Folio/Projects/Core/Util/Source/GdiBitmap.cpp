@@ -657,7 +657,7 @@ FolioStatus QueryBitmapDetails (FolioHandle bitmapHandle,
 } // Endproc.
 
 
- /**
+/**
  * Function that will query a bitmap's dimensions.
  *
  * @param [in] bitmapHandle

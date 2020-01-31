@@ -85,13 +85,11 @@ FolioStatus LoadingScreen::ProcessScreenInput ()
 } // Endproc.
 
 
-FolioStatus LoadingScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
+FolioStatus LoadingScreen::ProcessScreenFrame ()
 {
     // Play the loading screen's sound sample.
 
-    PlaySoundSample ();
-
-    return (ERR_SUCCESS);
+    return (PlaySoundSample ());
 } // Endproc.
 
 
@@ -111,17 +109,21 @@ void    LoadingScreen::CreateSoundSampleSequence ()
 } // Endproc.
 
   
-void    LoadingScreen::PlaySoundSample ()
+FolioStatus LoadingScreen::PlaySoundSample ()
 {
+    FolioStatus status = ERR_SUCCESS;
+
     // Have we finished the sound sample sequence?
 
     if (!IsSoundSampleSequenceFinished ())
     {
         // No. Play the current sound sample.
 
-        Folio::Core::Util::Sound::PlaySoundSample (m_soundSamplesList [m_currentSoundSampleIndex++]);
+        status = Folio::Core::Util::Sound::PlaySoundSample (m_soundSamplesList [m_currentSoundSampleIndex++],
+                                                            false); // Play synchronously.
     } // Endif.
 
+    return (status);
 } // Endproc.
 
 

@@ -1,8 +1,7 @@
 // "Home-made" includes.
 #include    <Trace.h>
-#include    "AsyncSound.h"
 #include    "Sound.h"
-#include    "WaveOut.h"
+#include    "SoundSamplePlayer.h"
 
 namespace Folio
 {
@@ -16,7 +15,7 @@ namespace Util
 namespace Sound
 {
 
- /**
+/**
  * Function that will load a sound resource.
  *
  * @param [in] instanceHandle
@@ -35,9 +34,9 @@ namespace Sound
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus LoadSound (FolioHandle  instanceHandle,
-                       UInt16       resourceId,
-                       FolioHandle& soundHandle)
+FolioStatus LoadSoundResource (FolioHandle      instanceHandle,
+                               UInt16           resourceId,
+                               FolioHandle&     soundHandle)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -84,7 +83,7 @@ FolioStatus LoadSound (FolioHandle  instanceHandle,
 } // Endproc.
 
 
- /**
+/**
  * Function that will play a sound resource.
  *
  * @param [in] soundHandle
@@ -92,11 +91,11 @@ FolioStatus LoadSound (FolioHandle  instanceHandle,
  *
  * @return
  * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if the sound resource was successfully loaded.
+ * <li><b>ERR_SUCCESS</b> if the sound resource was successfully played.
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus PlayAsyncSound (FolioHandle soundHandle)
+FolioStatus PlaySoundResource (FolioHandle soundHandle)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -124,21 +123,24 @@ FolioStatus PlayAsyncSound (FolioHandle soundHandle)
 } // Endproc.
 
 
- /**
- * Function that will stop a sound resource.
+/**
+ * Function that will stop playing a sound resource.
+ *
+ * @param [in] soundHandle
+ * The sound resource handle.
  *
  * @return
  * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if the sound resource was successfully loaded.
+ * <li><b>ERR_SUCCESS</b> if the sound resource was successfully stopped.
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus StopSound ()
+FolioStatus StopPlayingSoundResource (FolioHandle soundHandle)
 {
     FolioStatus status = ERR_SUCCESS;
 
     if (!::sndPlaySound (NULL,
-                        SND_SYNC | SND_NODEFAULT))
+                         SND_SYNC | SND_NODEFAULT))
     {
         status = FOLIO_MAKE_OS_ERROR(::GetLastError ());
     } // Endif.
@@ -153,45 +155,48 @@ FolioStatus StopSound ()
  * @param [in] soundSample
  * The sound sample to play.
  *
+ * @param [in] playAsynchronously
+ * <b>true</b> if a the sound sample should be played asynchronously, 
+ * <b>false</b> otherwise.
+ *
  * @return
  * The possible return values are:<ul>
  * <li><b>ERR_SUCCESS</b> if successful.
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus PlaySoundSample (const SoundSample& soundSample)
+FolioStatus PlaySoundSample (const SoundSample& soundSample,
+                             bool               playAsynchronously)
 {
     FolioStatus status = ERR_SUCCESS;
 
-    // Get the waveform-audio output device instance.
-        
-    WaveOut *waveOut = WaveOut::GetInstance ();
+    // Has the sound sample been generated?
 
-    if (waveOut)
+    if (soundSample.IsSoundSampleGenerated ())
     {
-        // Is the waveform-audio output device open?
-
-        if (!waveOut->IsOpen ())
-        {
-            // No. Open the waveform-audio output device.
+        // Yes. Get the sound sample player instance.
         
-            status = waveOut->Open (soundSample.GetSoundChannels (), 
-                                    soundSample.GetSamplesPerSecond ());
-        } // Endif.
+        SoundSamplePlayer*  soundSamplePlayer = SoundSamplePlayer::GetInstance ();
 
-        if (status == ERR_SUCCESS)
+        if (soundSamplePlayer)
         {
-            // Use the waveform-audio output device to play the sound.
+            // Play the sound sample.
             
-            status = waveOut->Play (soundSample.GetSoundDuration (), 
-                                    soundSample.GetSampleBuffer ());
+            status = soundSamplePlayer->Play (soundSample, playAsynchronously);
         } // Endif.
+ 
+        else
+        {
+            status = ERR_INTERNAL_ERROR;
+        } // Endelse.
 
     } // Endif.
- 
+
     else
     {
-        status = ERR_INTERNAL_ERROR;
+        // No.
+
+        status = ERR_INVALID_PARAM1;
     } // Endelse.
 
     return (status);
@@ -204,13 +209,18 @@ FolioStatus PlaySoundSample (const SoundSample& soundSample)
  * @param [in] soundSamplesList
  * The list of sound samples to play.
  *
+ * @param [in] playAsynchronously
+ * <b>true</b> if a the sound samples should be played asynchronously, 
+ * <b>false</b> otherwise.
+ *
  * @return
  * The possible return values are:<ul>
  * <li><b>ERR_SUCCESS</b> if successful.
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus PlaySoundSamples (const SoundSamplesList& soundSamplesList)
+FolioStatus PlaySoundSamples (const SoundSamplesList&   soundSamplesList,
+                              bool                      playAsynchronously)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -224,10 +234,10 @@ FolioStatus PlaySoundSamples (const SoundSamplesList& soundSamplesList)
         // Play the sound samples.
 
         for (SoundSamplesList::const_iterator itr = soundSamplesList.begin ();
-             itr != soundSamplesList.end ();
+             (status == ERR_SUCCESS) && (itr != soundSamplesList.end ());
              ++itr)
         {
-            status = PlaySoundSample (*itr);
+            status = PlaySoundSample (*itr, playAsynchronously);
         } // Endfor.
 
     } // Endelse.
@@ -237,10 +247,7 @@ FolioStatus PlaySoundSamples (const SoundSamplesList& soundSamplesList)
 
 
 /**
- * Function that will play a sound sample asynchronously.
- *
- * @param [in] soundSample
- * The sound sample to play.
+ * Function that will stop playing any sound samples.
  *
  * @return
  * The possible return values are:<ul>
@@ -248,71 +255,26 @@ FolioStatus PlaySoundSamples (const SoundSamplesList& soundSamplesList)
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus PlayAsyncSoundSample (const SoundSample& soundSample)
+FolioStatus StopPlayingSoundSamples ()
 {
     FolioStatus status = ERR_SUCCESS;
 
-    // Get the asynchronous sound.
+    // Get the sound sample player instance.
         
-    AsyncSound  *asyncSound = AsyncSound::GetInstance ();
+    SoundSamplePlayer*  soundSamplePlayer = SoundSamplePlayer::GetInstance ();
 
-    if (asyncSound)
+    if (soundSamplePlayer)
     {
-        // Use the asynchronous sound to play the sound sample.
-
-        status = asyncSound->PlaySoundSample (soundSample);
+        // Stop playing sound samples.
+            
+        status = soundSamplePlayer->Stop ();
     } // Endif.
  
     else
     {
         status = ERR_INTERNAL_ERROR;
     } // Endelse.
-    
-    return (status);
-} // Endproc.
 
-
-/**
- * Function that will play a list of sound samples asynchronously.
- *
- * @param [in] soundSamplesList
- * The list of sound samples to play.
- *
- * @return
- * The possible return values are:<ul>
- * <li><b>ERR_SUCCESS</b> if successful.
- * <li><b>ERR_???</b> status code otherwise.
- * </ul>
- */
-FolioStatus PlayAsyncSoundSamples (const SoundSamplesList& soundSamplesList)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    if (soundSamplesList.empty ())
-    {
-        status = ERR_INVALID_PARAM1;
-    } // Endif.
-
-    else
-    {
-        // Get the asynchronous sound.
-        
-        AsyncSound  *asyncSound = AsyncSound::GetInstance ();
-
-        if (asyncSound)
-        {
-            // Use the asynchronous sound to play the list of sound samples.
-
-            status = asyncSound->PlaySoundSamples (soundSamplesList);
-        } // Endif.
- 
-        else
-        {
-            status = ERR_INTERNAL_ERROR;
-        } // Endelse.
-    
-    } // Endelse.
-    
     return (status);
 } // Endproc.
 
@@ -351,7 +313,8 @@ FolioStatus Beep (UInt32                            soundDuration,
                                          soundFrequency, 
                                          soundChannels,
                                          samplesPerSecond,
-                                         soundSampleWave))); 
+                                         soundSampleWave), 
+                             false));   // Don't play asynchronously. 
 } // Endproc.
 
 } // Endnamespace.

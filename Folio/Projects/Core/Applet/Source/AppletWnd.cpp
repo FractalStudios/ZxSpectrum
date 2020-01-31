@@ -22,11 +22,13 @@ const   FolioCString    AppletWnd::APPLET_WND_NAME          = TXT("FolioAppletWn
  * The default class constructor.
  */
 AppletWnd::AppletWnd ()
-:   m_instanceHandle(FOLIO_INVALID_HANDLE),
+:   m_performanceFrequency(DateTime::GetPerformanceFrequency ()),
+    m_instanceHandle(FOLIO_INVALID_HANDLE),
     m_wndHandle(FOLIO_INVALID_HANDLE),
     m_wndDCHandle(FOLIO_INVALID_HANDLE),
     m_gdiHandle(FOLIO_INVALID_HANDLE),
-    m_appletWndReady(false)
+    m_appletWndReady(false),
+    m_controllerId(Folio::Core::Game::Gamepad::CONTROLLER_ID_UNDEFINED)
 {
 } // Endproc.
 
@@ -70,66 +72,28 @@ FolioStatus AppletWnd::Process (FolioHandle         instanceHandle,
     {
         // Get the first connected controller.
 
-        Folio::Core::Game::Gamepad::CONTROLLER_ID   controllerId = m_gamepad->GetFirstConnectedController ();
+        m_controllerId = m_gamepad->GetFirstConnectedController ();
 
-        static  const   UInt32  FRAMES_PER_SECOND   = 50;
-        static  const   UInt32  TICK_COUNT_DELTA    = (1000 / FRAMES_PER_SECOND);
-
-        MSG msg = {0};  // Initialise!
-
-        UInt32  currentTickCount    = 0;    // Initialise!
-        UInt32  previousTickCount   = DateTime::GetCurrentTickCount ();
-
-        UInt32  frameRateIncrement = 0; // Initialise!
+        WaitAny waitAny;
 
         do 
         {
-            Thread::Sleep (frameRateIncrement); // Pause.
+            // Wait and process windows messages on the message queue.
 
-            do
+            status = MsgWait (TICK_COUNT_DELTA, waitAny);
+
+            if (status == ERR_TIMEOUT)
             {
-                // Peek for a message to any window.
-
-                status = Wnd::PeekWndMessage (0, 0, 0, PM_REMOVE, msg);
-                
-                switch (status)
-                {
-                case ERR_SUCCESS: 
-                    Wnd::TranslateWndMessage (msg);
-                    Wnd::DispatchWndMessage (msg);
-                    break;
-
-                case ERR_NO_MSG: 
-                case ERR_STOPPED: 
-                default:
-                    break;
-                } // Endswitch.
-
-                // Get current tick count.
-
-                currentTickCount = DateTime::GetCurrentTickCount ();
-            } // Enddo.
-            while ((status != ERR_STOPPED) && 
-                   ((currentTickCount - previousTickCount) < TICK_COUNT_DELTA));
-
-            if (status != ERR_STOPPED)
-            {
-                // Note previous frame tick count.
-
-                previousTickCount = currentTickCount;
-            
                 // Check gamepad.
 
                 if (m_gamepad)
                 {
-                    m_gamepad->CheckController (controllerId);
+                    m_gamepad->CheckController (m_controllerId);
                 } // Endif.
 
                 // Process a frame.
 
-                frameRateIncrement = 0; // Reset.
-
-                status = HandleProcessFrame (static_cast<HWND> (m_wndHandle), frameRateIncrement);
+                status = HandleProcessFrame (static_cast<HWND> (m_wndHandle));
             } // Endif.
 
         } // Enddo.
@@ -604,13 +568,67 @@ bool    AppletWnd::IsGamepad () const
 
 
 /**
- * Method that is used process a frame in the applet window.
+ * Method that is used to wait and process windows messages on the message queue 
+ * for a specified amount of time.
+ *
+ * @param [in] timeout
+ * The time (in milliseconds) to wait and process windows messages on the 
+ * message queue.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_STOPPED</b> if the applet window should be stopped.
+ * <li><b>ERR_TIMEOUT</b> if the specified timeout has elapsed.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus AppletWnd::MsgWait (UInt32      timeout,
+                                WaitAny&    waitAny)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    Int64   startTickCount = DateTime::GetCurrentPerformanceCounter ();
+
+    UInt32  elapsedTickCount = 0;    // Initialise!
+
+    MSG msg = {0};  // Initialise!
+
+    do
+    {
+        // Wait for any windows message on the message queue 
+
+        status = waitAny.MsgWait (QS_ALLINPUT, timeout - elapsedTickCount);
+
+        if (status == ERR_UTIL_MSG_AVAILABLE)
+        {
+            // Peek for a message to any window.
+
+            status = Wnd::PeekWndMessage (0, 0, 0, PM_REMOVE, msg);
+                    
+            if (status == ERR_SUCCESS)
+            {
+                // Translate and dispatch the message.
+
+                Wnd::TranslateWndMessage (msg);
+                Wnd::DispatchWndMessage (msg);
+            } // Endif.
+
+        } // Endif.
+
+    } // Enddo.
+    while ((status != ERR_STOPPED)  && 
+           (status != ERR_TIMEOUT)  && 
+           (((elapsedTickCount = DateTime::CalculateElapsedTime (startTickCount, m_performanceFrequency)) < timeout))); 
+
+    return ((status == ERR_STOPPED) ? status : ERR_TIMEOUT);
+} // Endproc.
+
+
+/**
+ * Method that is used to process a frame in the applet window.
  *
  * @param [in] wndHandle
  * The handle of the applet window.
- *
- * @param [out] frameRateIncrement
- * The frame rate increment.
  *
  * @return
  * The possible return values are:<ul>
@@ -618,8 +636,7 @@ bool    AppletWnd::IsGamepad () const
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus AppletWnd::HandleProcessFrame (HWND     wndHandle,
-                                           UInt32&  frameRateIncrement)
+FolioStatus AppletWnd::HandleProcessFrame (HWND wndHandle)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -627,14 +644,13 @@ FolioStatus AppletWnd::HandleProcessFrame (HWND     wndHandle,
     {
         // Let the canvas message handler process a frame.
 
-        status = m_canvasMsgHandler->HandleProcessFrame (wndHandle, frameRateIncrement);
+        status = m_canvasMsgHandler->HandleProcessFrame (wndHandle);
 
         if (status != ERR_SUCCESS)
         {
-            FOLIO_LOG_CALL_ERROR_2 (TXT("HandleProcessFrame"),
+            FOLIO_LOG_CALL_ERROR_1 (TXT("HandleProcessFrame"),
                                     status,
-                                    wndHandle,
-                                    frameRateIncrement);
+                                    wndHandle);
         } // Endif.
 
     } // Endif.

@@ -37,9 +37,13 @@ const UInt16 DECEMBER   = 12;   ///< December.
 // Routines.
 FolioStatus QueryCurrentLocalTime (SYSTEMTIME& localTime);
 FolioStatus QueryCurrentSystemTime (SYSTEMTIME& systemTime);
-UInt32      GetCurrentTickCount ();
-FolioStatus QueryPerformanceCounter (UInt32&    low, 
-                                     UInt32&    high);
+
+UInt32  GetCurrentTickCount ();
+Int64   GetCurrentPerformanceCounter ();
+Int64   GetPerformanceFrequency ();
+UInt32  CalculateElapsedTime (const Int64&  startTickCounter, 
+                              const Int64&  performanceFrequency);
+
 void    SetSystemTimeToTopOfHour (SYSTEMTIME& systemTime);
 FolioStatus ConvertSystemTimeToFileTime (const SYSTEMTIME&  systemTime,
                                          FILETIME&          fileTime);

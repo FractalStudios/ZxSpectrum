@@ -88,6 +88,7 @@ enum
     ERR_UTIL_VALUE_NOT_FOUND,       // A registry value is not found.
     ERR_UTIL_BUFFER_OVERRUN,        // A buffer overrun has been detected.
     ERR_UTIL_BUFFER_UNDERRUN,       // A buffer underrun has been detected.
+    ERR_UTIL_MSG_AVAILABLE,         // A message is available on the message queue.
 }; // Endenum.
 
 // Graphic.

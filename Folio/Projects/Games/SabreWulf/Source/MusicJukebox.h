@@ -25,6 +25,7 @@ public:
     FolioStatus PlayStartingGameMusic (bool &isFinished);
     FolioStatus PlayGameOverMusic (bool &isFinished);
     FolioStatus PlayFoundAmuletPieceMusic (bool &isFinished);
+    FolioStatus StopPlayingMusic ();
 
 private:
     // Music enumeration.
@@ -47,10 +48,11 @@ private:
     
     FolioStatus PlayMusic (MUSIC                                            music,
                            const Folio::Core::Util::Sound::SoundSamplesList &soundSamplesList,
+                           bool                                             playAsynchronously,
                            bool                                             &isFinished);
 
     void    StartPlayingMusic (MUSIC music);
-    void    StopPlayingMusic ();
+    void    StopPlayingMusic (MUSIC music);
 }; // Endclass.
 
 } // Endnamespace.

@@ -425,7 +425,7 @@ FolioStatus ASprite::Move (Gdiplus::Graphics&       graphics,
         {
             // Play the sprite's movement sound.
 
-            PlaySpriteMovementSound ();
+            status = PlaySpriteMovementSound ();
         } // Endif.
 
     } // Endif.
@@ -1689,38 +1689,46 @@ FolioStatus ASprite::QueryCurrentSpriteBitmaps (SpriteDrawing::SpriteBitmap&    
 } // Endproc.
 
 
-void    ASprite::PlaySpriteInitialisingSound (UInt32    initialisingSpriteSoundSamplesListIndex,
-                                              bool      playAsynchronously) const
+FolioStatus ASprite::PlaySpriteInitialisingSound (UInt32    initialisingSpriteSoundSamplesListIndex,
+                                                  bool      playAsynchronously) const
 {
+    FolioStatus status = ERR_SUCCESS;
+
     if (m_playSpriteInitialisingSound)
     {
         // Play the sprite's initialising sound samples.
 
-        PlaySpriteStationarySoundSamples (m_initialisingSpriteSoundSamplesList,
-                                          initialisingSpriteSoundSamplesListIndex,
-                                          playAsynchronously);
+        status = PlaySpriteStationarySoundSamples (m_initialisingSpriteSoundSamplesList,
+                                                   initialisingSpriteSoundSamplesListIndex,
+                                                   playAsynchronously);
     } // Endif.
 
+    return (status);
 } // Endproc.
 
 
-void    ASprite::PlaySpriteTerminatingSound (UInt32 terminatingSpriteSoundSamplesListIndex,
-                                             bool   playAsynchronously) const
+FolioStatus ASprite::PlaySpriteTerminatingSound (UInt32 terminatingSpriteSoundSamplesListIndex,
+                                                 bool   playAsynchronously) const
 {
+    FolioStatus status = ERR_SUCCESS;
+
     if (m_playSpriteTerminatingSound)
     {
         // Play the sprite's terminating sound samples.
 
-        PlaySpriteStationarySoundSamples (m_terminatingSpriteSoundSamplesList,
-                                          terminatingSpriteSoundSamplesListIndex,
-                                          playAsynchronously);
+        status = PlaySpriteStationarySoundSamples (m_terminatingSpriteSoundSamplesList,
+                                                   terminatingSpriteSoundSamplesListIndex,
+                                                   playAsynchronously);
     } // Endif.
 
+    return (status);
 } // Endproc.
 
 
-void    ASprite::PlaySpriteInitialisedSound (bool playAsynchronously) const
+FolioStatus ASprite::PlaySpriteInitialisedSound (bool playAsynchronously) const
 {
+    FolioStatus status = ERR_SUCCESS;
+
     // Does the sprite support initialised sound?
 
     if (m_playSpriteInitialisedSound && 
@@ -1728,14 +1736,17 @@ void    ASprite::PlaySpriteInitialisedSound (bool playAsynchronously) const
     {
         // Yes. Play the sprite's initialised sound sample.
 
-        PlaySpriteSoundSample (m_spriteInitialisedSoundSample, playAsynchronously);
+        status = PlaySpriteSoundSample (m_spriteInitialisedSoundSample, playAsynchronously);
     } // Endif.
 
+    return (status);
 } // Endproc.
 
 
-void    ASprite::PlaySpriteTerminatedSound (bool playAsynchronously) const
+FolioStatus ASprite::PlaySpriteTerminatedSound (bool playAsynchronously) const
 {
+    FolioStatus status = ERR_SUCCESS;
+    
     // Does the sprite support terminated sound?
 
     if (m_playSpriteTerminatedSound && 
@@ -1743,14 +1754,17 @@ void    ASprite::PlaySpriteTerminatedSound (bool playAsynchronously) const
     {
         // Yes. Play the sprite's terminated sound sample.
 
-        PlaySpriteSoundSample (m_spriteTerminatedSoundSample, playAsynchronously);
+        status = PlaySpriteSoundSample (m_spriteTerminatedSoundSample, playAsynchronously);
     } // Endif.
 
+    return (status);
 } // Endproc.
 
 
-void    ASprite::PlaySpriteReboundSound (bool playAsynchronously) const
+FolioStatus ASprite::PlaySpriteReboundSound (bool playAsynchronously) const
 {
+    FolioStatus status = ERR_SUCCESS;
+    
     // Does the sprite support rebound sound?
 
     if (m_playSpriteReboundSound && 
@@ -1758,14 +1772,17 @@ void    ASprite::PlaySpriteReboundSound (bool playAsynchronously) const
     {
         // Yes. Play the sprite's rebound sound sample.
 
-        PlaySpriteSoundSample (m_spriteReboundSoundSample, playAsynchronously);
+        status = PlaySpriteSoundSample (m_spriteReboundSoundSample, playAsynchronously);
     } // Endif.
 
+    return (status);
 } // Endproc.
 
 
-void    ASprite::PlaySpriteMovementSound (bool playAsynchronously)
+FolioStatus ASprite::PlaySpriteMovementSound (bool playAsynchronously)
 {
+    FolioStatus status = ERR_SUCCESS;
+    
     switch (m_state)
     {
     case STATE_MOVING:
@@ -1782,10 +1799,11 @@ void    ASprite::PlaySpriteMovementSound (bool playAsynchronously)
             {
                 // Play the sprite's movement sound sample.
 
-                PlaySpriteSoundSample (spriteSoundSample, playAsynchronously);
+                status = PlaySpriteSoundSample (spriteSoundSample, playAsynchronously);
             } // Endif.
 
-            if (++m_currentMovementSoundSamplesListIndex >= m_currentSpriteMovementSoundSamplesList.size ())
+            if ((status == ERR_SUCCESS) &&
+                (++m_currentMovementSoundSamplesListIndex >= m_currentSpriteMovementSoundSamplesList.size ()))
             {
                 m_currentMovementSoundSamplesListIndex = 0; // Reset.
             } // Endif.
@@ -1797,6 +1815,7 @@ void    ASprite::PlaySpriteMovementSound (bool playAsynchronously)
         break;
     } // Endif.
 
+    return (status);
 } // Endproc.
 
 
@@ -2081,27 +2100,31 @@ FolioStatus ASprite::PerformGraphicInitialising (Gdiplus::Graphics& graphics,
             {
                 // Play the sprite's initialising sound.
 
-                PlaySpriteInitialisingSound (m_currentInitialisingSpriteSoundSamplesListIndex);
+                status = PlaySpriteInitialisingSound (m_currentInitialisingSpriteSoundSamplesListIndex);
 
-                if (++m_currentInitialisingSpriteSoundSamplesListIndex >= m_initialisingSpriteSoundSamplesList.size ())
+                if (status == ERR_SUCCESS)
                 {
-                    m_currentInitialisingSpriteSoundSamplesListIndex = 0;   // Reset.
-                } // Endif.
+                    if (++m_currentInitialisingSpriteSoundSamplesListIndex >= m_initialisingSpriteSoundSamplesList.size ())
+                    {
+                        m_currentInitialisingSpriteSoundSamplesListIndex = 0;   // Reset.
+                    } // Endif.
 
-                // We are initialising until the maximum sequence count is reached.
+                    // We are initialising until the maximum sequence count is reached.
 
-                m_state = (++m_currentInitialisingSequenceCount < m_initialisingMaxSequenceCount)
-                          ? STATE_INITIALISING 
-                          : STATE_INITIALISED;
+                    m_state = (++m_currentInitialisingSequenceCount < m_initialisingMaxSequenceCount)
+                              ? STATE_INITIALISING 
+                              : STATE_INITIALISED;
 
-                if (m_state == STATE_INITIALISED)
-                {
-                    m_currentInitialisingSequenceCount                  = 0;    // Reset.
-                    m_currentInitialisingSpriteSoundSamplesListIndex    = 0;
+                    if (m_state == STATE_INITIALISED)
+                    {
+                        m_currentInitialisingSequenceCount                  = 0;    // Reset.
+                        m_currentInitialisingSpriteSoundSamplesListIndex    = 0;
 
-                    // Set the current sprite bitmaps.
+                        // Set the current sprite bitmaps.
 
-                    SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingList, true);
+                        SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingList, true);
+                    } // Endif.
+
                 } // Endif.
 
             } // Endif.
@@ -2141,27 +2164,31 @@ FolioStatus ASprite::PerformGraphicTerminating (Gdiplus::Graphics&  graphics,
             {
                 // Play the sprite's terminating sound.
 
-                PlaySpriteTerminatingSound (m_currentTerminatingSpriteSoundSamplesListIndex);
+                status = PlaySpriteTerminatingSound (m_currentTerminatingSpriteSoundSamplesListIndex);
                     
-                if (++m_currentTerminatingSpriteSoundSamplesListIndex >= m_terminatingSpriteSoundSamplesList.size ())
+                if (status == ERR_SUCCESS)
                 {
-                    m_currentTerminatingSpriteSoundSamplesListIndex = 0;    // Reset.
-                } // Endif.
+                    if (++m_currentTerminatingSpriteSoundSamplesListIndex >= m_terminatingSpriteSoundSamplesList.size ())
+                    {
+                        m_currentTerminatingSpriteSoundSamplesListIndex = 0;    // Reset.
+                    } // Endif.
 
-                // We are terminating until the maximum sequence count is reached.
+                    // We are terminating until the maximum sequence count is reached.
 
-                m_state = (++m_currentTerminatingSequenceCount < m_terminatingMaxSequenceCount)
-                          ? STATE_TERMINATING 
-                          : STATE_TERMINATED;
+                    m_state = (++m_currentTerminatingSequenceCount < m_terminatingMaxSequenceCount)
+                              ? STATE_TERMINATING 
+                              : STATE_TERMINATED;
 
-                if (m_state == STATE_TERMINATED)
-                {
-                    m_currentTerminatingSequenceCount               = 0;    // Reset.
-                    m_currentTerminatingSpriteSoundSamplesListIndex = 0;
+                    if (m_state == STATE_TERMINATED)
+                    {
+                        m_currentTerminatingSequenceCount               = 0;    // Reset.
+                        m_currentTerminatingSpriteSoundSamplesListIndex = 0;
 
-                    // Set the current sprite bitmaps.
+                        // Set the current sprite bitmaps.
 
-                    SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingList, true);
+                        SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingList, true);
+                    } // Endif.
+
                 } // Endif.
 
             } // Endif.
@@ -2388,11 +2415,15 @@ FolioStatus ASprite::CheckSpritePosition (const ACollisionGrid&     collisionGri
     {
         // Yes. Play the sprite's rebound sound
 
-        PlaySpriteReboundSound ();
+        status = PlaySpriteReboundSound ();
 
-        // Set the sprite's direction.
+        if (status == ERR_SUCCESS)
+        {
+            // Set the sprite's direction.
 
-        status = SetDirection (GetFloorBoundDirection (collisionGridDirection));
+            status = SetDirection (GetFloorBoundDirection (collisionGridDirection));
+        } // Endif.
+
     } // Endif.
 
     return (status);
@@ -2433,58 +2464,48 @@ Direction  ASprite::GetFloorBoundDirection (ACollisionGrid::DIRECTION collisionG
 } // Endproc.
 
 
-void    ASprite::PlaySpriteSoundSample (const SpriteSoundSample&    spriteSoundSample,
-                                        bool                        playAsynchronously) const
+FolioStatus ASprite::PlaySpriteSoundSample (const SpriteSoundSample&    spriteSoundSample,
+                                            bool                        playAsynchronously) const
 {
-   // Play the sound sample asynchronously?
-
-    if (playAsynchronously)
-    {
-        // Yes.
-
-        Folio::Core::Util::Sound::PlayAsyncSoundSample (*spriteSoundSample);
-    } // Endif.
-
-    else
-    {
-        // No.
-
-        Folio::Core::Util::Sound::PlaySoundSample (*spriteSoundSample);
-    } // Endelse.
-
+    return (Folio::Core::Util::Sound::PlaySoundSample (*spriteSoundSample, playAsynchronously));
 } // Endproc.
 
 
-void    ASprite::PlaySpriteStationarySoundSamples (const SpriteStationarySoundSamplesList&  stationarySpriteSoundSamplesList,
-                                                   UInt32                                   stationarySpriteSoundSamplesListIndex,
-                                                   bool                                     playAsynchronously) const
+FolioStatus ASprite::PlaySpriteStationarySoundSamples (const SpriteStationarySoundSamplesList&  stationarySpriteSoundSamplesList,
+                                                       UInt32                                   stationarySpriteSoundSamplesListIndex,
+                                                       bool                                     playAsynchronously) const
 {
+    FolioStatus status = ERR_SUCCESS;
+
     if (stationarySpriteSoundSamplesListIndex < stationarySpriteSoundSamplesList.size ())
     {
         // Are there any sound samples to play?
 
-        if (stationarySpriteSoundSamplesList [stationarySpriteSoundSamplesListIndex].m_numSpriteSoundSamplesPerFrame)
+        switch (stationarySpriteSoundSamplesList [stationarySpriteSoundSamplesListIndex].m_numSpriteSoundSamplesPerFrame)
         {
-            // Yes. Play the sound samples asynchronously?
+        case 0:
+            // No.
 
-            if (playAsynchronously)
-            {
-                // Yes. Play all the sound samples for this frame asynchronously.
+            break;
 
-                Folio::Core::Util::Sound::PlayAsyncSoundSamples (stationarySpriteSoundSamplesList [stationarySpriteSoundSamplesListIndex]);
-            } // Endif.
+        case 1:
+            // Play the sound sample.
 
-            else
-            {
-                // No. Play all the sound samples for this frame synchronously.
+            status = Folio::Core::Util::Sound::PlaySoundSample (stationarySpriteSoundSamplesList [stationarySpriteSoundSamplesListIndex], 
+                                                                playAsynchronously);
+            break;
 
-                Folio::Core::Util::Sound::PlaySoundSamples (stationarySpriteSoundSamplesList [stationarySpriteSoundSamplesListIndex]);
-            } // Endelse.
+        default:
+            // Play all the sound samples.
 
-        } // Endif.
+            status = Folio::Core::Util::Sound::PlaySoundSamples (stationarySpriteSoundSamplesList [stationarySpriteSoundSamplesListIndex], 
+                                                                 playAsynchronously);
+            break;
+        } // Endswitch.
 
     } // Endif.
 
+    return (status);
 } // Endproc.
 
 

@@ -408,15 +408,15 @@ protected:
                                            SpriteDrawing::SpriteBitmap& spriteMaskedBitmap,
                                            bool                         incrementCurrentSpriteGraphicsListIndex = true);
 
-    void    PlaySpriteInitialisingSound (UInt32 initialisingSpriteSoundSamplesListIndex,
-                                         bool   playAsynchronously = true) const;
-    void    PlaySpriteTerminatingSound (UInt32  terminatingSpriteSoundSamplesListIndex,
-                                        bool    playAsynchronously = true) const;
-    void    PlaySpriteInitialisedSound (bool playAsynchronously = true) const;
-    void    PlaySpriteTerminatedSound (bool playAsynchronously = true) const;
-    void    PlaySpriteReboundSound (bool playAsynchronously = true) const;
+    FolioStatus PlaySpriteInitialisingSound (UInt32 initialisingSpriteSoundSamplesListIndex,
+                                             bool   playAsynchronously = true) const;
+    FolioStatus PlaySpriteTerminatingSound (UInt32  terminatingSpriteSoundSamplesListIndex,
+                                            bool    playAsynchronously = true) const;
+    FolioStatus PlaySpriteInitialisedSound (bool playAsynchronously = true) const;
+    FolioStatus PlaySpriteTerminatedSound (bool playAsynchronously = true) const;
+    FolioStatus PlaySpriteReboundSound (bool playAsynchronously = true) const;
 
-    void    PlaySpriteMovementSound (bool playAsynchronously = true);
+    FolioStatus PlaySpriteMovementSound (bool playAsynchronously = true);
 
     virtual Int32   CalculateCollisionXLeft () const;
     virtual Int32   CalculateCollisionYTop () const;
@@ -510,11 +510,11 @@ private:
 
     Direction   GetFloorBoundDirection (ACollisionGrid::DIRECTION collisionGridDirection) const;
 
-    void    PlaySpriteSoundSample (const SpriteSoundSample& spriteSoundSample,
-                                   bool                     playAsynchronously) const;
-    void    PlaySpriteStationarySoundSamples (const SpriteStationarySoundSamplesList&   stationarySpriteSoundSamplesList,
-                                              UInt32                                    stationarySpriteSoundSamplesListIndex,
-                                              bool                                      playAsynchronously) const;
+    FolioStatus PlaySpriteSoundSample (const SpriteSoundSample& spriteSoundSample,
+                                       bool                     playAsynchronously) const;
+    FolioStatus PlaySpriteStationarySoundSamples (const SpriteStationarySoundSamplesList&   stationarySpriteSoundSamplesList,
+                                                  UInt32                                    stationarySpriteSoundSamplesListIndex,
+                                                  bool                                      playAsynchronously) const;
 
     FolioStatus SetCurrentSpriteMovementSoundSample (Direction direction);
 }; // Endclass.

@@ -30,7 +30,7 @@ struct FrequencyTableEntry
     Folio::Core::Game::ZxSpectrum::WORD   m_frequency;
     Folio::Core::Game::ZxSpectrum::BYTE   m_duration;
     Folio::Core::Game::ZxSpectrum::WORD   m_numLoops;
-};
+}; // Endstruct.
 
 // Frequency table.
 static  const   FrequencyTableEntry g_frequencyTable [] =

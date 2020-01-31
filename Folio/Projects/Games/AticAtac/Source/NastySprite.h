@@ -80,7 +80,7 @@ private:
     UInt32          m_nastySpriteFlags;         // The flags of the nasty sprite.
     UInt32          m_nastySpriteSpeed;         // The speed of the nasty sprite.
 
-    static  Folio::Core::Game::SpriteStationarySoundSamplesList m_nastySpriteTerminatingSoundSamplesList;   // The nasty sprite's terminating sound samples.
+    static  Folio::Core::Util::Sound::SoundSample   m_nastySpriteTerminatedSoundSample; // The nasty sprite terminated sound sample.
 
     FolioStatus SetInitialisingMode (FolioHandle                            dcHandle,
                                      Folio::Core::Game::ZxSpectrum::COLOUR  nastySpriteColour,
@@ -88,6 +88,9 @@ private:
     FolioStatus SetTerminatingMode (FolioHandle                             dcHandle,
                                     Folio::Core::Game::ZxSpectrum::COLOUR   nastySpriteColour,
                                     UInt32                                  nastySpriteFlags);
+
+    void    SetNastySpriteSoundSamples (NASTY_SPRITE_ID nastySpriteId);
+    void    SetNastySpriteTerminatedSoundSample (NASTY_SPRITE_ID nastySpriteId);
 
     static  Int32   GetInitialScreenXLeft (const CollisionGrid &collisionGrid);
     static  Int32   GetInitialScreenYTop (const CollisionGrid &collisionGrid);
@@ -99,7 +102,8 @@ private:
     
     static  UInt32  GetSpeed (NASTY_SPRITE_ID nastySpriteId);
 
-    static  Folio::Core::Game::SpriteStationarySoundSamplesList GetNastySpriteTerminatingSoundSamples ();
+    static  void    CreateNastySpriteSoundSamples (NASTY_SPRITE_ID nastySpriteId);
+    static  void    CreateNastySpriteTerminatedSoundSample ();
 
     // Private copy constructor to prevent copying.
     NastySprite (const NastySprite& rhs);

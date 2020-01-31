@@ -115,7 +115,7 @@ FolioStatus GameCompletedScreen::ProcessScreenInput ()
 } // Endproc.
 
 
-FolioStatus GameCompletedScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
+FolioStatus GameCompletedScreen::ProcessScreenFrame ()
 {
     // Play the main game music.
 

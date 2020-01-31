@@ -60,7 +60,7 @@ private:
     virtual FolioStatus BuildScreenItems (FolioHandle dcHandle, 
                                           FolioHandle instanceHandle);
     virtual FolioStatus ProcessScreenInput ();    
-    virtual FolioStatus ProcessScreenFrame (UInt32 *frameRateIncrement);
+    virtual FolioStatus ProcessScreenFrame ();
 
     static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
 

@@ -297,26 +297,26 @@ FolioStatus WaitAny::Wait (UInt32   timeout,
 
             UInt32  numHandles = m_syncHandleList.size ();
 
-            UInt32  exception =
+            UInt32  waitEvent =
                 ::WaitForMultipleObjects (numHandles,
                                           &(m_syncHandleList [0]),
                                           FALSE, // Wait any.
                                           timeout);
 
-            if ((exception >= WAIT_OBJECT_0) &&
-                (exception < (WAIT_OBJECT_0 + numHandles)))
+            if ((waitEvent >= WAIT_OBJECT_0) &&
+                (waitEvent < (WAIT_OBJECT_0 + numHandles)))
             {
                 // A handle has been signaled within the wait time.
 
-                m_signalIndex = exception - WAIT_OBJECT_0;
+                m_signalIndex = waitEvent - WAIT_OBJECT_0;
             } // Endif.
 
-            else if ((exception >= WAIT_ABANDONED_0) &&
-                     (exception < (WAIT_ABANDONED_0 + numHandles)))
+            else if ((waitEvent >= WAIT_ABANDONED_0) &&
+                     (waitEvent < (WAIT_ABANDONED_0 + numHandles)))
             {
                 // The wait was satisfied by an abandoned mutex handle.
 
-                m_signalIndex = exception - WAIT_ABANDONED_0;
+                m_signalIndex = waitEvent - WAIT_ABANDONED_0;
 
                 FolioHandle handle = m_syncHandleList [m_signalIndex];
 
@@ -324,7 +324,7 @@ FolioStatus WaitAny::Wait (UInt32   timeout,
                                      handle);
             } // Endelseif.
 
-            else if (exception == WAIT_TIMEOUT)
+            else if (waitEvent == WAIT_TIMEOUT)
             {
                 // The wait time elapsed without a handle being signaled.
 
@@ -346,6 +346,136 @@ FolioStatus WaitAny::Wait (UInt32   timeout,
         } // Endelse.
 
     } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+/**
+ * Method to wait for any synchronization object to be signaled, or any windows 
+  * message (as specified) or the time-out interval to elapse.
+ *
+ * @param [in] waitMsgMask
+ * The windows message input types to wait for.
+ *
+ * @param [in] timeout
+ * Time to wait in milliseconds. If <b>FOLIO_INFINITE</b> is specified then
+ * the calling thread will be blocked indefinately until one of the
+ * synchronization objects is signaled.
+ *
+ * @param [in] logOnInfiniteTimeout
+ * In order to allow for problem reporting of potential system hang
+ * scenarios, that parameter is used to indicate if a warning should be
+ * logged if a <b>FOLIO_INFINITE</b> <i>timeout</i> has been specified and
+ * no synchronization object has been signaled within 150 seconds. Note that
+ * if the 150 seconds timeout occurs then, after logging a warning, the
+ * method will subsequently wait infinitely for any synchronization object
+ * to be signaled. <b>true</b> if the warning should be logged, <b>false</b>
+ * otherwise.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if successful.
+ * <li><b>ERR_TIMEOUT</b> if the time-out interval elapsed before any
+ *     synchronization object was signaled.
+ * <li><b>ERR_UTIL_MSG_AVAILABLE</b> if a windows message is available 
+ *     on the message queue.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus WaitAny::MsgWait (UInt32    waitMsgMask,
+                              UInt32    timeout,
+                              bool      logOnInfiniteTimeout)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // If "logOnInfiniteTimeout" has been specified and the caller wishes 
+    // to wait infinitely, then wait for 150 seconds. If there is a 
+    // subsequent timeout then log a warning before subsequently waiting 
+    // infinitely.
+
+    if (logOnInfiniteTimeout &&
+        (timeout == FOLIO_INFINITE))
+    {
+        status = MsgWait (waitMsgMask, 150 * 1000, false);  // Recurse.
+
+        if (status == ERR_TIMEOUT)
+        {
+            // Warn that there may be a problem waiting on the
+            // synchronization handle list.
+
+            FOLIO_LOG_WARNING_1 (TXT("Waited 150 seconds for synchronization object(s), now waiting infinitely."),
+                                 m_syncHandleList);
+
+            // Wait infinitely for the synchronization handle list.
+
+            status = MsgWait (waitMsgMask, INFINITE, false);    // Recurse.
+        } // Endif.
+
+    } // Endif.
+
+    else
+    {
+        // Wait for any synchronization handle.
+
+        UInt32  numHandles = m_syncHandleList.size ();
+
+        UInt32  waitEvent =
+            ::MsgWaitForMultipleObjects (numHandles,
+                                         numHandles ? &(m_syncHandleList [0]) : 0,
+                                         FALSE, // Wait any.
+                                         timeout,
+                                         waitMsgMask);
+
+        if (numHandles                      && 
+            (waitEvent >= WAIT_OBJECT_0)    &&
+            (waitEvent < (WAIT_OBJECT_0 + numHandles)))
+        {
+            // A handle has been signaled within the wait time.
+
+            m_signalIndex = waitEvent - WAIT_OBJECT_0;
+        } // Endif.
+
+        else if (waitEvent == (WAIT_OBJECT_0 + numHandles))
+        {
+            // A message is available on the message queue.
+
+            status = ERR_UTIL_MSG_AVAILABLE;
+        } // Endif.
+
+        else if ((waitEvent >= WAIT_ABANDONED_0) &&
+                 (waitEvent < (WAIT_ABANDONED_0 + numHandles)))
+        {
+            // The wait was satisfied by an abandoned mutex handle.
+
+            m_signalIndex = waitEvent - WAIT_ABANDONED_0;
+
+            FolioHandle handle = m_syncHandleList [m_signalIndex];
+
+            FOLIO_LOG_WARNING_1 (TXT("Wait abandoned."),
+                                 handle);
+        } // Endelseif.
+
+        else if (waitEvent == WAIT_TIMEOUT)
+        {
+            // The wait time elapsed without a handle being signaled.
+
+            status = ERR_TIMEOUT;
+        } // Endelseif.
+
+        else
+        {
+            // Build and log an error.
+
+            status = FOLIO_MAKE_OS_ERROR(::GetLastError ());
+
+            FOLIO_LOG_CALL_ERROR_2 (TXT("WaitForMultipleObjects"),
+                                    status,
+                                    m_syncHandleList,
+                                    timeout);
+        } // Endelse.
+
+    } // Endelse.
 
     return (status);
 } // Endproc.

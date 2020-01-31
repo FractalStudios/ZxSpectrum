@@ -94,7 +94,7 @@ private:
                                           FolioHandle instanceHandle);
     virtual FolioStatus StartDisplayingScreen ();
     virtual FolioStatus ProcessScreenInput ();    
-    virtual FolioStatus ProcessScreenFrame (UInt32 *frameRateIncrement);
+    virtual FolioStatus ProcessScreenFrame ();
 
     FolioStatus UpdateScreen ();
     FolioStatus ResetScreen ();

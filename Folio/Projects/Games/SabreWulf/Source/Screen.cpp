@@ -85,8 +85,7 @@ FolioStatus Screen::Draw ()
 } // Endproc.
 
 
-FolioStatus Screen::HandleProcessFrame (bool    &isStarting,
-                                        UInt32  *frameRateIncrement)
+FolioStatus Screen::HandleProcessFrame (bool &isStarting)
 {
     // Get the canvas graphics.
 
@@ -463,7 +462,7 @@ FolioStatus Screen::CheckScreenSprites (Gdiplus::Graphics &graphics)
 
                 if (status == ERR_SUCCESS)
                 {
-                    // Check the player sprite .
+                    // Check the player sprite.
 
                     status = g_playerSprite->CheckPlayerSprite (graphics, 
                                                                 m_collisionGrid,

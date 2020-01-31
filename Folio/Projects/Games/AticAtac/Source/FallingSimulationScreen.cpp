@@ -30,6 +30,7 @@ static  const   FallingSimulationScreenItemAttributes   g_fallingSimulationScree
 
 
 // Falling screen static members.
+UInt32  FallingSimulationScreen::m_currentSoundSampleIndex = 0; // The current sound sample index.
 Folio::Core::Util::Sound::SoundSamplesList  FallingSimulationScreen::m_soundSamplesList;    // The sound samples list.
 
 FallingSimulationScreen::FallingSimulationScreen ()
@@ -162,15 +163,15 @@ FolioStatus FallingSimulationScreen::StartDisplayingScreen ()
             
     m_currentScreenSequenceListItr = m_screenSequenceList.begin ();
 
-    // Play the sound samples.
-
-    Folio::Core::Util::Sound::PlayAsyncSoundSamples (m_soundSamplesList);
+    // Start from the beginning of the sound sample sequence.
+            
+    m_currentSoundSampleIndex = 0;
 
     return (ERR_SUCCESS);
 } // Endproc.
 
 
-FolioStatus FallingSimulationScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
+FolioStatus FallingSimulationScreen::ProcessScreenFrame ()
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -182,7 +183,7 @@ FolioStatus FallingSimulationScreen::ProcessScreenFrame (UInt32 *frameRateIncrem
 
         // Stop displaying the falling simulation screen.
 
-        StopDisplaying ();
+        status = StopDisplaying ();
     } // Endif.
 
     else
@@ -190,6 +191,14 @@ FolioStatus FallingSimulationScreen::ProcessScreenFrame (UInt32 *frameRateIncrem
         // No. Update the falling simulation screen.
 
         status = UpdateScreen ();
+
+        if (status == ERR_SUCCESS)
+        {
+            // Play the falling simulation screen's sound sample.
+
+            status = PlaySoundSample ();
+        } // Endif.
+
     } // Endelse.
 
     return (status);
@@ -250,7 +259,7 @@ void    FallingSimulationScreen::CreateScreenSequence ()
     m_screenSequenceList.push_back (FALLING_SIMULATION_SCREEN_ITEM_01);  
     m_screenSequenceList.push_back (FALLING_SIMULATION_SCREEN_ITEM_02);  
 
-    for (UInt32 index = 0; index < 42; ++index)
+    for (UInt32 index = 0; index < 32; ++index)
     {
         m_screenSequenceList.push_back (FALLING_SIMULATION_SCREEN_ITEM_03);
         m_screenSequenceList.push_back (FALLING_SIMULATION_SCREEN_ITEM_04);
@@ -266,17 +275,37 @@ void    FallingSimulationScreen::CreateScreenSequence ()
 
 void    FallingSimulationScreen::CreateSoundSamples ()
 {
+    // Have the sound samples been created?
+
     if (m_soundSamplesList.empty ())
     {
-        // Create each sound sample representing the required sound.
+        // No. Create each sound sample representing the required sound.
 
-        for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x80; frequency <= 0xff; ++frequency)
+        for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x7e; frequency <= 0xff; ++frequency)
         {
             m_soundSamplesList.push_back (Ultimate::CreateSoundSample (frequency, 0x08));
         } // Endfor.
         
     } // Endif.
 
+    m_currentSoundSampleIndex = 0;  // Initialise!
+} // Endproc.
+
+
+FolioStatus FallingSimulationScreen::PlaySoundSample ()
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Have we completed the sound sample sequence?
+
+    if (m_currentSoundSampleIndex < m_soundSamplesList.size ())
+    {
+        // No. Play the current sound sample sample.
+
+        status = Folio::Core::Util::Sound::PlaySoundSample (m_soundSamplesList [m_currentSoundSampleIndex++]); 
+    } // Endif.
+
+    return (status);
 } // Endproc.
 
 } // Endnamespace.

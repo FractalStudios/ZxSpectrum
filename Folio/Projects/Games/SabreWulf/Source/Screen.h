@@ -31,8 +31,7 @@ public:
     ~Screen ();
 
     FolioStatus Draw ();
-    FolioStatus HandleProcessFrame (bool    &isStarting,
-                                    UInt32  *frameRateIncrement = 0);
+    FolioStatus HandleProcessFrame (bool &isStarting);
     
 private:
     // Screen screen attributes.

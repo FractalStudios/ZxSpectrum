@@ -204,7 +204,8 @@ FolioStatus EnterHighScoreScreen::ProcessScreenInput ()
 
         // Play the entered initial sound.
 
-        Folio::Core::Util::Sound::PlaySoundSample (m_enteredInitialSoundSample);
+        status = Folio::Core::Util::Sound::PlaySoundSample (m_enteredInitialSoundSample, 
+                                                            false); // Play synchronously.
     } // Endelseif.
 
     return (status);
@@ -233,7 +234,8 @@ FolioStatus EnterHighScoreScreen::UpdateScreen (UPDATE update)
         {
             // Play the selecting initial sound.
 
-            Folio::Core::Util::Sound::PlaySoundSample (m_selectingInitialSoundSample);
+            status = Folio::Core::Util::Sound::PlaySoundSample (m_selectingInitialSoundSample,
+                                                                false); // Play synchronously.
         } // Endif.
         break;
 

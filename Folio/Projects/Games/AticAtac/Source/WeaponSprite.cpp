@@ -58,6 +58,7 @@ Folio::Core::Util::Sound::SoundSample   WeaponSprite::m_knightWeaponSpriteInitia
 Folio::Core::Util::Sound::SoundSample   WeaponSprite::m_wizardWeaponSpriteInitialisedSoundSample;   // The wizard weapon sprite initialised sound sample.
 Folio::Core::Util::Sound::SoundSample   WeaponSprite::m_serfWeaponSpriteInitialisedSoundSample;     // The serf weapon sprite initialised sound sample.
 Folio::Core::Util::Sound::SoundSample   WeaponSprite::m_weaponSpriteTerminatedSoundSample;          // The weapon sprite terminated sound sample.
+Folio::Core::Util::Sound::SoundSample   WeaponSprite::m_weaponSpriteReboundSoundSample;             // The weapon sprite rebound sound sample.
 
 WeaponSprite::WeaponSprite ()
 :   m_weaponSpriteId(WEAPON_SPRITE_UNDEFINED)
@@ -105,13 +106,9 @@ FolioStatus WeaponSprite::Create (FolioHandle                           dcHandle
 
         if (status == ERR_SUCCESS)
         {
-            // Create the weapon sprite's sound samples.
-
-            CreateWeaponSpriteSoundSamples (weaponSpriteId);
-
             // Set the weapon sprite's sound samples.
 
-            SetSoundSamples (weaponSpriteId);
+            SetWeaponSpriteSoundSamples (weaponSpriteId);
 
             // Note the weapon sprite's attributes.
 
@@ -220,19 +217,27 @@ Int32   WeaponSprite::GetInitialScreenYTop (const Gdiplus::Rect &mainPlayerRect)
 } // Endproc.
 
 
-void    WeaponSprite::SetSoundSamples (WEAPON_SPRITE_ID weaponSpriteId)
+void    WeaponSprite::SetWeaponSpriteSoundSamples (WEAPON_SPRITE_ID weaponSpriteId)
 {
+    // Create the weapon sprite's sound samples.
+
+    CreateWeaponSpriteSoundSamples (weaponSpriteId);
+
     // Set the weapon sprite's initialised sound sample.
 
-    SetInitialisedSoundSample (weaponSpriteId);
+    SetWeaponSpriteInitialisedSoundSample (weaponSpriteId);
 
     // Set the weapon sprite's terminated sound sample.
 
-    SetTerminatedSoundSample (weaponSpriteId);
+    SetWeaponSpriteTerminatedSoundSample (weaponSpriteId);
+
+    // Set the weapon sprite's rebound sound sample.
+
+    SetWeaponSpriteReboundSoundSample (weaponSpriteId);
 } // Endproc.
 
 
-void    WeaponSprite::SetInitialisedSoundSample (WEAPON_SPRITE_ID weaponSpriteId)
+void    WeaponSprite::SetWeaponSpriteInitialisedSoundSample (WEAPON_SPRITE_ID weaponSpriteId)
 {
     switch (weaponSpriteId)
     {
@@ -255,9 +260,15 @@ void    WeaponSprite::SetInitialisedSoundSample (WEAPON_SPRITE_ID weaponSpriteId
 } // Endproc.
 
 
-void    WeaponSprite::SetTerminatedSoundSample (WEAPON_SPRITE_ID weaponSpriteId)
+void    WeaponSprite::SetWeaponSpriteTerminatedSoundSample (WEAPON_SPRITE_ID weaponSpriteId)
 {
     SetSpriteTerminatedSoundSample (Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(m_weaponSpriteTerminatedSoundSample)));
+} // Endproc.
+
+
+void    WeaponSprite::SetWeaponSpriteReboundSoundSample (WEAPON_SPRITE_ID weaponSpriteId)
+{
+    SetSpriteReboundSoundSample (Folio::Core::Game::SpriteSoundSample(new Folio::Core::Game::SpriteSoundSample::element_type(m_weaponSpriteReboundSoundSample)));
 } // Endproc.
 
 
@@ -290,6 +301,10 @@ void    WeaponSprite::CreateWeaponSpriteSoundSamples (WEAPON_SPRITE_ID weaponSpr
     // Create the weapon sprite terminated sound sample.
 
     CreateWeaponSpriteTerminatedSoundSample ();
+
+    // Create the weapon sprite rebound sound sample.
+
+    CreateWeaponSpriteReboundSoundSample ();
 } // Endproc.
 
 
@@ -391,6 +406,24 @@ void    WeaponSprite::CreateWeaponSpriteTerminatedSoundSample ()
         for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x3f; frequency >= 0x21; frequency -= 2)
         {
             m_weaponSpriteTerminatedSoundSample.AddSoundSample (Ultimate::CreateSoundSample (frequency, 0x01));
+        } // Endfor.
+
+    } // Endif.
+
+} // Endproc.
+
+
+void    WeaponSprite::CreateWeaponSpriteReboundSoundSample ()
+{
+    // Has the weapon sprite rebound sound sample been created?
+
+    if (!m_weaponSpriteReboundSoundSample.IsSoundSampleGenerated ())
+    {
+        // No. Create the sound sample representing the required sound.
+    
+        for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x21; frequency <= 0x3f; frequency += 2)
+        {
+            m_weaponSpriteReboundSoundSample.AddSoundSample (Ultimate::CreateSoundSample (frequency, 0x01));
         } // Endfor.
 
     } // Endif.

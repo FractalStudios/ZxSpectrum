@@ -412,7 +412,7 @@ float   Vector3::operator[] (int i)
         return (m_z);
     } // Endswitch.
 
-} // Endif.
+} // Endproc.
 
 
 /**

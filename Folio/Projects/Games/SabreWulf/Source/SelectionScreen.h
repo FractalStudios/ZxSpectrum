@@ -83,7 +83,7 @@ private:
                                           FolioHandle instanceHandle);
     virtual FolioStatus StartDisplayingScreen ();
     virtual FolioStatus ProcessScreenInput ();    
-    virtual FolioStatus ProcessScreenFrame (UInt32 *frameRateIncrement);
+    virtual FolioStatus ProcessScreenFrame ();
 
     // The update enumeration.
     enum UPDATE
@@ -101,10 +101,8 @@ private:
     FolioStatus UpdateFlashCurrentSelections (Gdiplus::Graphics &graphics,
                                               bool              &redrawCanvas);
 
-    FolioStatus ProcessScreenFrameWaitingForSelection (UInt32   currentTickCount,
-                                                       UInt32   *frameRateIncrement);
-    FolioStatus ProcessScreenFrameStartingGame (UInt32  currentTickCount,
-                                                UInt32  *frameRateIncrement);
+    FolioStatus ProcessScreenFrameWaitingForSelection (UInt32 currentTickCount);
+    FolioStatus ProcessScreenFrameStartingGame (UInt32 currentTickCount);
 
     FolioStatus ResetScreen ();
     FolioStatus StartingGame ();

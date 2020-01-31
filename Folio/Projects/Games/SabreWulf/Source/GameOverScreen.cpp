@@ -100,7 +100,7 @@ FolioStatus GameOverScreen::ProcessScreenInput ()
 } // Endproc.
 
 
-FolioStatus GameOverScreen::ProcessScreenFrame (UInt32 *frameRateIncrement)
+FolioStatus GameOverScreen::ProcessScreenFrame ()
 {
     // Play the game over music.
 

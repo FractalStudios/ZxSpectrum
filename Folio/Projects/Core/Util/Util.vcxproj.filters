@@ -140,19 +140,16 @@
     <ClInclude Include="Include\SoundSample.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Include\AsyncSound.h">
-      <Filter>Header Files\SDK</Filter>
-    </ClInclude>
     <ClInclude Include="Include\Sound.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
     <ClInclude Include="Include\HandleMonitor.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Include\AsyncWaveOut.h">
+    <ClInclude Include="Include\SoundSamplePlayer.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Include\WaveOut.h">
+    <ClInclude Include="Include\WaveOutDevice.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
   </ItemGroup>
@@ -280,19 +277,16 @@
     <ClCompile Include="Source\SoundSample.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="Source\AsyncSound.cpp">
-      <Filter>Source Files\SDK</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Sound.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
     <ClCompile Include="Source\HandleMonitor.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="Source\AsyncWaveOut.cpp">
+    <ClCompile Include="Source\SoundSamplePlayer.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="Source\WaveOut.cpp">
+    <ClCompile Include="Source\WaveOutDevice.cpp">
       <Filter>Source Files\SDK</Filter>
     </ClCompile>
   </ItemGroup>

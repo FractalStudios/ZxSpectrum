@@ -40,10 +40,10 @@ private:
                                           FolioHandle instanceHandle);
     virtual FolioStatus StartDisplayingScreen ();
     virtual FolioStatus ProcessScreenInput (); 
-    virtual FolioStatus ProcessScreenFrame (UInt32 *frameRateIncrement);
+    virtual FolioStatus ProcessScreenFrame ();
 
     static  void    CreateSoundSamples ();
-    static  void    PlaySoundSample ();
+    static  FolioStatus PlaySoundSample ();
 
     // Private copy constructor to prevent copying.
     LoadingScreen (const LoadingScreen& rhs);

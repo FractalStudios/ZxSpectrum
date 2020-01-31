@@ -41,20 +41,20 @@ static  const   PlayerSpriteAttributes  g_playerSpriteAttributesTable [] =
 static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<PLAYER_SPRITE_ID, SPRITE_ID>    g_playerSpriteGraphicCharacteristics =
 {
 //      m_spriteId              m_direction             m_spriteGraphicIdsList
-    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::E,   {   SPRITE_KNIGHT_RIGHT, SPRITE_KNIGHT_WALKING_RIGHT_1, SPRITE_KNIGHT_RIGHT, SPRITE_KNIGHT_WALKING_RIGHT_2, },  },
-    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::W,   {   SPRITE_KNIGHT_LEFT, SPRITE_KNIGHT_WALKING_LEFT_1, SPRITE_KNIGHT_LEFT, SPRITE_KNIGHT_WALKING_LEFT_2,     },  },
-    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::N,   {   SPRITE_KNIGHT_UP, SPRITE_KNIGHT_WALKING_UP_1, SPRITE_KNIGHT_UP, SPRITE_KNIGHT_WALKING_UP_2,             },  },
-    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::S,   {   SPRITE_KNIGHT_DOWN, SPRITE_KNIGHT_WALKING_DOWN_1, SPRITE_KNIGHT_DOWN, SPRITE_KNIGHT_WALKING_DOWN_2,     },  },
+    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::E,   {   SPRITE_KNIGHT_RIGHT, SPRITE_KNIGHT_RIGHT, SPRITE_KNIGHT_WALKING_RIGHT_1, SPRITE_KNIGHT_WALKING_RIGHT_1, SPRITE_KNIGHT_RIGHT, SPRITE_KNIGHT_RIGHT, SPRITE_KNIGHT_WALKING_RIGHT_2, SPRITE_KNIGHT_WALKING_RIGHT_2, },  },
+    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::W,   {   SPRITE_KNIGHT_LEFT, SPRITE_KNIGHT_LEFT, SPRITE_KNIGHT_WALKING_LEFT_1, SPRITE_KNIGHT_WALKING_LEFT_1, SPRITE_KNIGHT_LEFT, SPRITE_KNIGHT_LEFT, SPRITE_KNIGHT_WALKING_LEFT_2, SPRITE_KNIGHT_WALKING_LEFT_2,         },  },
+    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::N,   {   SPRITE_KNIGHT_UP, SPRITE_KNIGHT_UP, SPRITE_KNIGHT_WALKING_UP_1, SPRITE_KNIGHT_WALKING_UP_1, SPRITE_KNIGHT_UP, SPRITE_KNIGHT_UP, SPRITE_KNIGHT_WALKING_UP_2, SPRITE_KNIGHT_WALKING_UP_2,                         },  },
+    {   PLAYER_SPRITE_KNIGHT,   Folio::Core::Game::S,   {   SPRITE_KNIGHT_DOWN, SPRITE_KNIGHT_DOWN, SPRITE_KNIGHT_WALKING_DOWN_1, SPRITE_KNIGHT_WALKING_DOWN_1, SPRITE_KNIGHT_DOWN, SPRITE_KNIGHT_DOWN, SPRITE_KNIGHT_WALKING_DOWN_2, SPRITE_KNIGHT_WALKING_DOWN_2,         },  },
 
-    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::E,   {   SPRITE_WIZARD_RIGHT, SPRITE_WIZARD_WALKING_RIGHT_1, SPRITE_WIZARD_RIGHT, SPRITE_WIZARD_WALKING_RIGHT_2, },  },
-    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::W,   {   SPRITE_WIZARD_LEFT, SPRITE_WIZARD_WALKING_LEFT_1, SPRITE_WIZARD_LEFT, SPRITE_WIZARD_WALKING_LEFT_2,     },  },
-    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::N,   {   SPRITE_WIZARD_UP, SPRITE_WIZARD_WALKING_UP_1, SPRITE_WIZARD_UP, SPRITE_WIZARD_WALKING_UP_2,             },  },
-    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::S,   {   SPRITE_WIZARD_DOWN, SPRITE_WIZARD_WALKING_DOWN_1, SPRITE_WIZARD_DOWN, SPRITE_WIZARD_WALKING_DOWN_2,     },  },
+    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::E,   {   SPRITE_WIZARD_RIGHT, SPRITE_WIZARD_RIGHT, SPRITE_WIZARD_WALKING_RIGHT_1, SPRITE_WIZARD_WALKING_RIGHT_1, SPRITE_WIZARD_RIGHT, SPRITE_WIZARD_RIGHT, SPRITE_WIZARD_WALKING_RIGHT_2, SPRITE_WIZARD_WALKING_RIGHT_2, },  },
+    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::W,   {   SPRITE_WIZARD_LEFT, SPRITE_WIZARD_LEFT, SPRITE_WIZARD_WALKING_LEFT_1, SPRITE_WIZARD_WALKING_LEFT_1, SPRITE_WIZARD_LEFT, SPRITE_WIZARD_LEFT, SPRITE_WIZARD_WALKING_LEFT_2, SPRITE_WIZARD_WALKING_LEFT_2,         },  },
+    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::N,   {   SPRITE_WIZARD_UP, SPRITE_WIZARD_UP, SPRITE_WIZARD_WALKING_UP_1, SPRITE_WIZARD_WALKING_UP_1, SPRITE_WIZARD_UP, SPRITE_WIZARD_UP, SPRITE_WIZARD_WALKING_UP_2, SPRITE_WIZARD_WALKING_UP_2,                         },  },
+    {   PLAYER_SPRITE_WIZARD,   Folio::Core::Game::S,   {   SPRITE_WIZARD_DOWN, SPRITE_WIZARD_DOWN, SPRITE_WIZARD_WALKING_DOWN_1, SPRITE_WIZARD_WALKING_DOWN_1, SPRITE_WIZARD_DOWN, SPRITE_WIZARD_DOWN, SPRITE_WIZARD_WALKING_DOWN_2, SPRITE_WIZARD_WALKING_DOWN_2,         },  },
 
-    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::E,   {   SPRITE_SERF_RIGHT, SPRITE_SERF_WALKING_RIGHT_1, SPRITE_SERF_RIGHT, SPRITE_SERF_WALKING_RIGHT_2,         },  },
-    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::W,   {   SPRITE_SERF_LEFT, SPRITE_SERF_WALKING_LEFT_1, SPRITE_SERF_LEFT, SPRITE_SERF_WALKING_LEFT_2,             },  },
-    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::N,   {   SPRITE_SERF_UP, SPRITE_SERF_WALKING_UP_1, SPRITE_SERF_UP, SPRITE_SERF_WALKING_UP_2,                     },  },
-    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::S,   {   SPRITE_SERF_DOWN, SPRITE_SERF_WALKING_DOWN_1, SPRITE_SERF_DOWN, SPRITE_SERF_WALKING_DOWN_2,             },  },
+    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::E,   {   SPRITE_SERF_RIGHT, SPRITE_SERF_RIGHT, SPRITE_SERF_WALKING_RIGHT_1, SPRITE_SERF_WALKING_RIGHT_1, SPRITE_SERF_RIGHT, SPRITE_SERF_RIGHT, SPRITE_SERF_WALKING_RIGHT_2, SPRITE_SERF_WALKING_RIGHT_2,                 },  },
+    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::W,   {   SPRITE_SERF_LEFT, SPRITE_SERF_LEFT, SPRITE_SERF_WALKING_LEFT_1, SPRITE_SERF_WALKING_LEFT_1, SPRITE_SERF_LEFT, SPRITE_SERF_LEFT, SPRITE_SERF_WALKING_LEFT_2, SPRITE_SERF_WALKING_LEFT_2,                         },  },
+    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::N,   {   SPRITE_SERF_UP, SPRITE_SERF_UP, SPRITE_SERF_WALKING_UP_1, SPRITE_SERF_WALKING_UP_1, SPRITE_SERF_UP, SPRITE_SERF_UP, SPRITE_SERF_WALKING_UP_2, SPRITE_SERF_WALKING_UP_2,                                         },  },
+    {   PLAYER_SPRITE_SERF,     Folio::Core::Game::S,   {   SPRITE_SERF_DOWN, SPRITE_SERF_DOWN, SPRITE_SERF_WALKING_DOWN_1, SPRITE_SERF_WALKING_DOWN_1, SPRITE_SERF_DOWN, SPRITE_SERF_DOWN, SPRITE_SERF_WALKING_DOWN_2, SPRITE_SERF_WALKING_DOWN_2,                         },  },
 };
 
 
@@ -343,7 +343,7 @@ Folio::Core::Game::SpriteStationarySoundSamplesList PlayerSprite::GetPlayerSprit
         {
             for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x7f; frequency >= 0x5d; frequency -= 0x02)
             {
-                m_playerSpriteInitialisingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::CreateSoundSample (frequency, 0x10), 4));
+                m_playerSpriteInitialisingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::CreateSoundSample (frequency, 0x10), 2));
             } // Endfor.
     
         } // Endif.
@@ -352,7 +352,7 @@ Folio::Core::Game::SpriteStationarySoundSamplesList PlayerSprite::GetPlayerSprit
         {
             for (Folio::Core::Game::ZxSpectrum::BYTE frequency = 0x5d; frequency <= 0x7f; frequency += 0x02)
             {
-                m_playerSpriteInitialisingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::CreateSoundSample (frequency, 0x10), 4));
+                m_playerSpriteInitialisingSoundSamplesList.push_back (Folio::Core::Game::SpriteStationarySoundSample(Ultimate::CreateSoundSample (frequency, 0x10), 2));
             } // Endfor.
     
         } // Endelse.

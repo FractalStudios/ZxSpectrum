@@ -72,8 +72,7 @@ FolioStatus MainCanvasMsgHandler::HandleDestroyCanvasMsg (FolioHandle   wndHandl
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessFrame (FolioHandle   wndHandle, 
-                                                      UInt32        &frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessFrame (FolioHandle wndHandle)
 {
 #ifdef _DEBUG
     DisplayFrameRate ();
@@ -81,38 +80,36 @@ FolioStatus MainCanvasMsgHandler::HandleProcessFrame (FolioHandle   wndHandle,
 
     FolioStatus status = ERR_SUCCESS;
 
-    frameRateIncrement = 0; // Initialise!
-
     // Processing the frame is dependent on our state.
 
     switch (m_state)
     {
     case STATE_LOADING:
-        status = HandleProcessLoadingStateFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessLoadingStateFrame (wndHandle);
         break;
 
     case STATE_SELECTING:
-        status = HandleProcessSelectingStateFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessSelectingStateFrame (wndHandle);
         break;
 
     case STATE_STARTING:
-        status = HandleProcessStartingStateFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessStartingStateFrame (wndHandle);
         break;
 
     case STATE_PLAYING:
-        status = HandleProcessPlayingStateFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessPlayingStateFrame (wndHandle);
         break;
 
     case STATE_MAIN_PLAYER_FALLING:
-        status = HandleProcessMainPlayerFallingStateFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessMainPlayerFallingStateFrame (wndHandle);
         break;
 
     case STATE_PAUSED:
-        status = HandleProcessPausedStateFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessPausedStateFrame (wndHandle);
         break;
 
     case STATE_GAME_OVER:
-        status = HandleProcessGameOverStateFrame (wndHandle, &(frameRateIncrement));
+        status = HandleProcessGameOverStateFrame (wndHandle);
         break;
 
     default:
@@ -130,12 +127,11 @@ FolioStatus MainCanvasMsgHandler::HandleProcessFrame (FolioHandle   wndHandle,
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessLoadingStateFrame (FolioHandle   wndHandle,
-                                                                  UInt32        *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessLoadingStateFrame (FolioHandle wndHandle)
 {
     // Let the loading screen process the frame.
 
-    FolioStatus status = m_loadingScreen.HandleProcessFrame (frameRateIncrement);
+    FolioStatus status = m_loadingScreen.HandleProcessFrame ();
 
     // Is the loading screen complete?
 
@@ -150,12 +146,11 @@ FolioStatus MainCanvasMsgHandler::HandleProcessLoadingStateFrame (FolioHandle   
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessSelectingStateFrame (FolioHandle wndHandle,
-                                                                    UInt32      *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessSelectingStateFrame (FolioHandle wndHandle)
 {
     // Let the selection screen process the frame.
 
-    FolioStatus status = m_selectionScreen.HandleProcessFrame (frameRateIncrement);
+    FolioStatus status = m_selectionScreen.HandleProcessFrame ();
 
     // Is the selection screen complete?
 
@@ -170,14 +165,13 @@ FolioStatus MainCanvasMsgHandler::HandleProcessSelectingStateFrame (FolioHandle 
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessStartingStateFrame (FolioHandle  wndHandle,
-                                                                   UInt32       *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessStartingStateFrame (FolioHandle wndHandle)
 {
     // Let the current screen process the frame.
 
     bool    isStarting = true;  // Initialise!
 
-    FolioStatus status = m_currentScreen->HandleProcessFrame (isStarting, frameRateIncrement);
+    FolioStatus status = m_currentScreen->HandleProcessFrame (isStarting);
 
     // Still starting?
 
@@ -195,8 +189,8 @@ FolioStatus MainCanvasMsgHandler::HandleProcessStartingStateFrame (FolioHandle  
     return (status);
 } // Endproc.
 
-FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   wndHandle,
-                                                                  UInt32        *frameRateIncrement)
+
+FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle wndHandle)
 {
     // Check input.
 
@@ -208,7 +202,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   
 
         bool    isStarting = false; // Initialise!
 
-        status = m_currentScreen->HandleProcessFrame (isStarting, frameRateIncrement);
+        status = m_currentScreen->HandleProcessFrame (isStarting);
         
         if (status == ERR_SUCCESS)
         {
@@ -318,12 +312,11 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingStateFrame (FolioHandle   
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessMainPlayerFallingStateFrame (FolioHandle wndHandle,
-                                                                            UInt32      *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessMainPlayerFallingStateFrame (FolioHandle wndHandle)
 {
     // Let the falling simulation screen process the frame.
 
-    FolioStatus status = m_fallingSimulationScreen.HandleProcessFrame (frameRateIncrement);
+    FolioStatus status = m_fallingSimulationScreen.HandleProcessFrame ();
 
     if (status == ERR_SUCCESS)
     {
@@ -370,8 +363,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessMainPlayerFallingStateFrame (Foli
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessPausedStateFrame (FolioHandle    wndHandle,
-                                                                 UInt32         *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessPausedStateFrame (FolioHandle wndHandle)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -388,12 +380,11 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPausedStateFrame (FolioHandle    
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::HandleProcessGameOverStateFrame (FolioHandle  wndHandle,
-                                                                   UInt32       *frameRateIncrement)
+FolioStatus MainCanvasMsgHandler::HandleProcessGameOverStateFrame (FolioHandle wndHandle)
 {
     // Let the game over screen process the frame.
 
-    FolioStatus status = m_gameOverScreen->HandleProcessFrame (frameRateIncrement);
+    FolioStatus status = m_gameOverScreen->HandleProcessFrame ();
 
     // Is the game over screen complete?
 
@@ -746,29 +737,20 @@ FolioStatus MainCanvasMsgHandler::Terminate ()
 
 void    MainCanvasMsgHandler::DisplayFrameRate () const
 {
-    static  float   s_previousTickCount = static_cast<float> (Folio::Core::Util::DateTime::GetCurrentTickCount ());  // Initialise!
-    static  float   s_frameCount        = 0.0f;
-           
-    s_frameCount++;
+    static  Int64   s_previousTickCount     = Folio::Core::Util::DateTime::GetCurrentPerformanceCounter (); // Initialise!
+    static  Int64   s_performanceFrequency  = Folio::Core::Util::DateTime::GetPerformanceFrequency ();
 
-    float   currentTickCount = static_cast<float> (Folio::Core::Util::DateTime::GetCurrentTickCount ());
+    UInt32  elapsedTime = Folio::Core::Util::DateTime::CalculateElapsedTime (s_previousTickCount,
+                                                                             s_performanceFrequency);
+    s_previousTickCount = Folio::Core::Util::DateTime::GetCurrentPerformanceCounter ();
 
-    if ((currentTickCount - s_previousTickCount) > 1000)
-    {
-        float   frameRate = s_frameCount / ((currentTickCount - s_previousTickCount) / 1000.0f);
-
-        FolioOStringStream  str;
-        str << TXT("FrameRate: ") << frameRate
-            << TXT(" FrameCount: ") << s_frameCount
-            << TXT(" ScreenNumber: ") << m_currentScreenNumber; 
-        Folio::Core::Util::Wnd::SetWndText (m_canvas->GetCanvasWndHandle (), str.str ().c_str ());
+    FolioOStringStream  str;
+    str << TXT("FrameRate: ") << elapsedTime
+        << TXT(" ScreenNumber: ") << m_currentScreenNumber; 
+    Folio::Core::Util::Wnd::SetWndText (m_canvas->GetCanvasWndHandle (), str.str ().c_str ());
     
-        str << std::endl;
-        ::OutputDebugString (str.str ().c_str ());
-    
-        s_previousTickCount = currentTickCount;
-        s_frameCount        = 0.0f;
-    } // Endif.
+    str << std::endl;
+    ::OutputDebugString (str.str ().c_str ());
 } // Endproc.
 
 } // Endnamespace.

@@ -481,9 +481,10 @@ FolioStatus APlayerSprite::PerformBottomUpOrTopDownInitialising (Gdiplus::Graphi
                         {
                             // Play the player sprite's initialising sound synchronously.
 
-                            PlaySpriteInitialisingSound (std::abs (drawingHeightAdjustment), false);
+                            status = PlaySpriteInitialisingSound (std::abs (drawingHeightAdjustment), false);
 
-                            if (m_state == STATE_INITIALISED)
+                            if ((status == ERR_SUCCESS) && 
+                                (m_state == STATE_INITIALISED))
                             {
                                 // Important to reset the drawing adjustment mode of the 
                                 // player sprite's masked bitmap.
@@ -592,9 +593,10 @@ FolioStatus APlayerSprite::PerformBottomUpOrTopDownTerminating (Gdiplus::Graphic
                             {
                                 // Play the player sprite's terminating sound synchronously.
 
-                                PlaySpriteTerminatingSound (std::abs (drawingHeightAdjustment), false);
+                                status = PlaySpriteTerminatingSound (std::abs (drawingHeightAdjustment), false);
 
-                                if (m_state == STATE_TERMINATED)
+                                if  ((status == ERR_SUCCESS) &&
+                                     (m_state == STATE_TERMINATED))
                                 {
                                     // Important to reset the drawing adjustment mode of the 
                                     // player sprite's masked bitmap.

@@ -37,8 +37,7 @@ public:
     virtual FolioStatus HandleDestroyCanvasMsg (FolioHandle wndHandle,
                                                 UInt32      wParam,
                                                 UInt32      lParam);
-    virtual FolioStatus HandleProcessFrame (FolioHandle wndHandle,
-                                            UInt32      &frameRateIncrement);
+    virtual FolioStatus HandleProcessFrame (FolioHandle wndHandle);
 
 private:
     // State enumeration.
@@ -66,20 +65,13 @@ private:
 
     std::unique_ptr<GameOverScreen> m_gameOverScreen;   // The game over screen.
 
-    FolioStatus HandleProcessLoadingStateFrame (FolioHandle wndHandle,
-                                                UInt32      *frameRateIncrement = 0);
-    FolioStatus HandleProcessSelectingStateFrame (FolioHandle   wndHandle,
-                                                  UInt32        *frameRateIncrement = 0);
-    FolioStatus HandleProcessStartingStateFrame (FolioHandle    wndHandle,
-                                                 UInt32         *frameRateIncrement = 0);
-    FolioStatus HandleProcessPlayingStateFrame (FolioHandle wndHandle,
-                                                UInt32      *frameRateIncrement = 0);
-    FolioStatus HandleProcessMainPlayerFallingStateFrame (FolioHandle   wndHandle,
-                                                          UInt32        *frameRateIncrement = 0);
-    FolioStatus HandleProcessPausedStateFrame (FolioHandle  wndHandle,
-                                               UInt32       *frameRateIncrement = 0);
-    FolioStatus HandleProcessGameOverStateFrame (FolioHandle    wndHandle,
-                                                 UInt32         *frameRateIncrement = 0);
+    FolioStatus HandleProcessLoadingStateFrame (FolioHandle wndHandle);
+    FolioStatus HandleProcessSelectingStateFrame (FolioHandle wndHandle);
+    FolioStatus HandleProcessStartingStateFrame (FolioHandle wndHandle);
+    FolioStatus HandleProcessPlayingStateFrame (FolioHandle wndHandle);
+    FolioStatus HandleProcessMainPlayerFallingStateFrame (FolioHandle wndHandle);
+    FolioStatus HandleProcessPausedStateFrame (FolioHandle wndHandle);
+    FolioStatus HandleProcessGameOverStateFrame (FolioHandle wndHandle);
 
     FolioStatus CheckPlayingStateInput ();
 

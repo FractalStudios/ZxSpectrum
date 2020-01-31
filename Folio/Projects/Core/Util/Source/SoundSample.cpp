@@ -23,9 +23,7 @@ static  const   float   DUTY_CYCLE  = 0.5f; // Required duty cycle.
  * The default class constructor.
  */
 SoundSample::SoundSample ()
-:   m_soundDuration(0),
-    m_soundFrequency(0.0f),
-    m_soundChannels(DEFAULT_SOUND_CHANNELS),
+:   m_soundChannels(DEFAULT_SOUND_CHANNELS),
     m_samplesPerSecond(DEFAULT_SAMPLES_PER_SECOND),
     m_soundSampleWave(DEFAULT_SOUND_SAMPLE_WAVE)
 {
@@ -55,15 +53,13 @@ SoundSample::SoundSample (UInt32            soundDuration,
                           SOUND_CHANNELS    soundChannels,
                           UInt32            samplesPerSecond,
                           SOUND_SAMPLE_WAVE soundSampleWave)
-:   m_soundDuration(soundDuration),
-    m_soundFrequency(soundFrequency),
-    m_soundChannels(soundChannels),
+:   m_soundChannels(soundChannels),
     m_samplesPerSecond(samplesPerSecond),
     m_soundSampleWave(soundSampleWave)
 {
     // Generate the sound sample.
 
-    GenerateSoundSample ();
+    GenerateSoundSample (soundDuration, soundFrequency);
 } // Endproc.
 
 
@@ -107,7 +103,7 @@ FolioStatus SoundSample::Create (UInt32             soundDuration,
 {
     FolioStatus status = ERR_SUCCESS;
 
-    // Has the sound sample been generated?
+    // Has a sound sample been generated already?
 
     if (IsSoundSampleGenerated ())
     {
@@ -120,15 +116,13 @@ FolioStatus SoundSample::Create (UInt32             soundDuration,
     {
         // No. Note the sound sample attributes.
 
-        m_soundDuration     = soundDuration;
-        m_soundFrequency    = soundFrequency;
         m_soundChannels     = soundChannels;
         m_samplesPerSecond  = samplesPerSecond;
         m_soundSampleWave   = soundSampleWave;
 
         // Generate the sound sample.
 
-        GenerateSoundSample ();
+        GenerateSoundSample (soundDuration, soundFrequency);
     } // Endelse.
 
     return (status);
@@ -160,10 +154,6 @@ FolioStatus SoundSample::AddSoundSample (const SoundSample& soundSample)
         if ((m_soundChannels == soundSample.m_soundChannels) &&
             (m_samplesPerSecond == soundSample.m_samplesPerSecond))
         {
-            // Increment the sound sample's duration.
-
-            m_soundDuration += soundSample.m_soundDuration;
-
             // Add the sound sample buffer.
 
             m_sampleBuffer.insert (m_sampleBuffer.end (), 
@@ -182,8 +172,6 @@ FolioStatus SoundSample::AddSoundSample (const SoundSample& soundSample)
     {
         // No. Note the sound sample attributes.
 
-        m_soundDuration     = soundSample.m_soundDuration;
-        m_soundFrequency    = soundSample.m_soundFrequency;        
         m_soundChannels     = soundSample.m_soundChannels; 
         m_samplesPerSecond  = soundSample.m_samplesPerSecond; 
         m_soundSampleWave   = soundSample.m_soundSampleWave;
@@ -191,30 +179,6 @@ FolioStatus SoundSample::AddSoundSample (const SoundSample& soundSample)
     } // Endelse.
 
     return (status);
-} // Endproc.
-
-
-/**
- * Method that will return the sound's duration.
- *
- * @return
- * The sound's duration (in milliseconds).
- */
-UInt32  SoundSample::GetSoundDuration () const
-{
-    return (m_soundDuration);
-} // Endproc.
-
-
-/**
- * Method that will return the sound's frequency.
- *
- * @return
- * The sound's frequency.
- */
-float   SoundSample::GetSoundFrequency () const
-{
-    return (m_soundFrequency);
 } // Endproc.
 
 
@@ -282,16 +246,23 @@ bool    SoundSample::IsSoundSampleGenerated () const
 
 /**
  * Method that generates the sound sample.
+ *
+ * @param [in] soundDuration
+ * The sound's duration (in milliseconds).
+ *
+ * @param [in] soundFrequency
+ * The sound's frequency.
  */
-void    SoundSample::GenerateSoundSample ()
+void    SoundSample::GenerateSoundSample (UInt32        soundDuration,
+                                          const float&  soundFrequency) 
 {
     m_sampleBuffer.clear ();    // Initialise!
     
-    if (m_soundDuration)
+    if (soundDuration)
     {
         // Convert sound duration to seconds.
 
-        float   seconds = static_cast<float > (m_soundDuration / 1000.0f);
+        float   seconds = static_cast<float > (soundDuration / 1000.0f);
 
         // Calculate the number of samples.
 
@@ -303,19 +274,19 @@ void    SoundSample::GenerateSoundSample ()
         switch (m_soundSampleWave)
         {
         case TRIANGLE_WAVE:
-            GenerateTriangleWave (seconds, numSamples);
+            GenerateTriangleWave (seconds, soundFrequency, numSamples);
             break;
 
         case PURE_TONE_WAVE:
-            GeneratePureToneWave (seconds, numSamples);
+            GeneratePureToneWave (seconds, soundFrequency, numSamples);
             break;
 
         case SQUARE_WAVE:
-            GenerateSquareWave (seconds, numSamples);
+            GenerateSquareWave (seconds, soundFrequency, numSamples);
             break;
 
         case BAND_LIMITED_SQUARE_WAVE:
-            GenerateBandLimitedSquareWave (seconds, numSamples);
+            GenerateBandLimitedSquareWave (seconds, soundFrequency, numSamples);
             break;
 
         default:
@@ -333,10 +304,14 @@ void    SoundSample::GenerateSoundSample ()
  * @param [in] seconds
  * The sound's duration (in seconds).
  *
+ * @param [in] soundFrequency
+ * The sound's frequency.
+ *
  * @param [in] numSamples
  * The number of samples to use when generating the sound sample.
  */
 void    SoundSample::GenerateTriangleWave (const float& seconds,
+                                           const float& soundFrequency,
                                            UInt32       numSamples)
 {
     // Build sample buffer.
@@ -347,7 +322,7 @@ void    SoundSample::GenerateTriangleWave (const float& seconds,
     {
         for (UInt32 channel = 0; channel < static_cast<UInt32> (m_soundChannels); ++channel)
         {
-            float   amplitude = TriangleWave ((sample + channel) * seconds / numSamples, channel);
+            float   amplitude = TriangleWave ((sample + channel) * seconds / numSamples, soundFrequency, channel);
 
             m_sampleBuffer.push_back (static_cast<SampleBuffer::value_type> (std::round (amplitude * DEFAULT_VOLUME)));
         } // Endfor.
@@ -363,11 +338,15 @@ void    SoundSample::GenerateTriangleWave (const float& seconds,
  * @param [in] seconds
  * The sound's duration (in seconds).
  *
+ * @param [in] soundFrequency
+ * The sound's frequency.
+ *
  * @param [in] numSamples
  * The number of samples to use when generating the sound sample.
  */
-void    SoundSample::GeneratePureToneWave (const float&     seconds,
-                                           UInt32           numSamples)
+void    SoundSample::GeneratePureToneWave (const float& seconds,
+                                           const float& soundFrequency,
+                                           UInt32       numSamples)
 {
     // Build sample buffer.
 
@@ -377,7 +356,7 @@ void    SoundSample::GeneratePureToneWave (const float&     seconds,
     {
         for (UInt32 channel = 0; channel < static_cast<UInt32> (m_soundChannels); ++channel)
         {
-            float   amplitude = PureToneWave ((sample + channel) * seconds / numSamples, channel);
+            float   amplitude = PureToneWave ((sample + channel) * seconds / numSamples, soundFrequency, channel);
 
             m_sampleBuffer.push_back (static_cast<SampleBuffer::value_type> (std::round (amplitude * DEFAULT_VOLUME)));
         } // Endfor.
@@ -393,13 +372,17 @@ void    SoundSample::GeneratePureToneWave (const float&     seconds,
  * @param [in] seconds
  * The sound's duration (in seconds).
  *
+ * @param [in] soundFrequency
+ * The sound's frequency.
+ *
  * @param [in] numSamples
  * The number of samples to use when generating the sound sample.
  */
 void    SoundSample::GenerateSquareWave (const float&   seconds,
+                                         const float&   soundFrequency,
                                          UInt32         numSamples)
 {
-    float   scaler = m_soundFrequency / m_samplesPerSecond;
+    float   scaler = soundFrequency / m_samplesPerSecond;
 
     // Build sample buffer.
 
@@ -425,15 +408,19 @@ void    SoundSample::GenerateSquareWave (const float&   seconds,
  * @param [in] seconds
  * The sound's duration (in seconds).
  *
+ * @param [in] soundFrequency
+ * The sound's frequency.
+ *
  * @param [in] numSamples
  * The number of samples to use when generating the sound sample.
  */
 void    SoundSample::GenerateBandLimitedSquareWave (const float&    seconds,
+                                                    const float&    soundFrequency,
                                                     UInt32          numSamples)
 {
     // Calculate harmonic amplitudes.
 
-    UInt32  numHarmonics = static_cast<UInt32> (std::round (m_samplesPerSecond / (m_soundFrequency * 2.0f)));
+    UInt32  numHarmonics = static_cast<UInt32> (std::round (m_samplesPerSecond / (soundFrequency * 2.0f)));
 
     // Build harmonic amplitudes.
 
@@ -447,7 +434,7 @@ void    SoundSample::GenerateBandLimitedSquareWave (const float&    seconds,
         coefficients.push_back (static_cast<float> (2.0 * std::sin (i * DUTY_CYCLE * PI) / (i * PI)));
     } // Endfor.
 
-    float   scaler = static_cast<float> (m_soundFrequency * PI * 2.0 / m_samplesPerSecond);
+    float   scaler = static_cast<float> (soundFrequency * PI * 2.0 / m_samplesPerSecond);
 
     // Build sample buffer.
 
@@ -473,6 +460,9 @@ void    SoundSample::GenerateBandLimitedSquareWave (const float&    seconds,
  * @param [in] time
  * The time.
  *
+ * @param [in] soundFrequency
+ * The sound's frequency.
+ *
  * @param [in] channel
  * The sound channel.
  *
@@ -480,11 +470,12 @@ void    SoundSample::GenerateBandLimitedSquareWave (const float&    seconds,
  * The amplitude.
  */
 float   SoundSample::TriangleWave (const float& time,
+                                   const float& soundFrequency,
                                    UInt32       channel) 
 {
     // amplitude = asin (sin (2 * pi * frequency * time + phaseOffset)) * 2 / pi
 
-    float   angle = static_cast<float> (2.0 * PI * m_soundFrequency * time);
+    float   angle = static_cast<float> (2.0 * PI * soundFrequency * time);
 
     return (static_cast<float> ((std::asin (std::sin (angle + channel * PI / 2.0))) * 2.0 / PI));
 } // Endproc.
@@ -496,6 +487,9 @@ float   SoundSample::TriangleWave (const float& time,
  * @param [in] time
  * The time.
  *
+ * @param [in] soundFrequency
+ * The sound's frequency.
+ *
  * @param [in] channel
  * The sound channel.
  *
@@ -503,11 +497,12 @@ float   SoundSample::TriangleWave (const float& time,
  * The amplitude.
  */
 float   SoundSample::PureToneWave (const float& time, 
+                                   const float& soundFrequency,
                                    UInt32       channel) 
 {
     // amplitude = sin (2 * pi * frequency * time + phaseOffset)
 
-    float    angle = static_cast<float> (2.0 * PI * m_soundFrequency * time);
+    float    angle = static_cast<float> (2.0 * PI * soundFrequency * time);
     
     return (static_cast<float> (std::sin (angle + channel * PI / 2.0)));
 } // Endproc.
