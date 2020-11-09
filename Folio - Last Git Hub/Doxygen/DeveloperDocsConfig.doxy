@@ -1,5 +1,0 @@
-@INCLUDE = $(FOLIO_PROJECT_DIR)\Doxygen\GlobalDeveloperDocsConfig.doxy
-
-PROJECT_NAME           = "Folio Developer's Guide" 
-
-
