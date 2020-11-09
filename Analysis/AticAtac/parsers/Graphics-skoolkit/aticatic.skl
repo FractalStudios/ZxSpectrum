@@ -1,0 +1,3832 @@
+; Sprite: Locked Normal Door
+;
+; #UDGTABLE
+; {
+; #UDGARRAY4,,4,4,,2;$A69E-$A6A1;$A6BE-$A6C1;$A6DE-$A6E1@$A700-$A70B(RedLockedNormalDoor)
+; #UDGARRAY4,,4,4,,2;$A69E-$A6A1;$A6BE-$A6C1;$A6DE-$A6E1@$A70E-$A719(GreenLockedNormalDoor)
+; #UDGARRAY4,,4,4,,2;$A69E-$A6A1;$A6BE-$A6C1;$A6DE-$A6E1@$A71C-$A727(CyanLockedNormalDoor)
+; #UDGARRAY4,,4,4,,2;$A69E-$A6A1;$A6BE-$A6C1;$A6DE-$A6E1@$A72A-$A735(YellowLockedNormalDoor)
+; }
+; TABLE#
+@label=SpriteLockedNormalDoor
+b$A69C DEFB $04                             ;  Width (in bytes).
+ $A69D DEFB $18                             ;  Height (in pixels).
+ $A69E DEFB $FF,$1B,$30,$FF,$1F,$1B,$30,$F8 ; { Graphic data.
+ $A6A6 DEFB $02,$1B,$30,$40,$3E,$1B,$30,$7C ;
+ $A6AE DEFB $7F,$33,$18,$3E,$07,$33,$18,$20 ;
+ $A6B6 DEFB $F8,$33,$18,$1F,$F8,$33,$00,$1F ;
+ $A6BE DEFB $08,$63,$07,$08,$F0,$63,$17,$0F ;
+ $A6C6 DEFB $F0,$63,$19,$0F,$1E,$63,$0E,$08 ;
+ $A6CE DEFB $FE,$C3,$00,$1F,$F8,$C3,$06,$1F ;
+ $A6D6 DEFB $CC,$C3,$06,$33,$3E,$C3,$06,$7C ;
+ $A6DE DEFB $7D,$80,$01,$BE,$3B,$F0,$0F,$DC ;
+ $A6E6 DEFB $17,$BF,$FD,$E8,$07,$7B,$DE,$E0 ;
+ $A6EE DEFB $03,$7B,$DE,$C0,$00,$77,$EE,$00 ;
+ $A6F6 DEFB $00,$07,$E0,$00,$00,$00,$00,$00 ; }
+
+; Attributes: Red Locked Normal Door
+@label=AttribRedLockedNormalDoor
+b$A6FE DEFB $04                             ;  Width (in bytes).
+ $A6FF DEFB $03                             ;  Height (in bytes).
+ $A700 DEFB $43,$42,$42,$43,$43,$42,$46,$43 ; { Colour attribute data.
+ $A708 DEFB $43,$43,$43,$43                 ; }
+
+; Attributes: Green Locked Normal Door
+@label=AttribGreenLockedNormalDoor
+b$A70C DEFB $04                             ;  Width (in bytes).
+ $A70D DEFB $03                             ;  Height (in bytes).
+ $A70E DEFB $43,$44,$44,$43,$43,$44,$46,$43 ; { Colour attribute data.
+ $A716 DEFB $43,$43,$43,$43                 ; }
+
+; Attributes: Cyan Locked Normal Door
+@label=AttribCyanLockedNormalDoor
+b$A71A DEFB $04                             ;  Width (in bytes).
+ $A71B DEFB $03                             ;  Height (in bytes).
+ $A71C DEFB $43,$45,$45,$43,$43,$45,$46,$43 ; { Colour attribute data.
+ $A724 DEFB $43,$43,$43,$43                 ; }
+
+; Attributes: Yellow Locked Normal Door
+@label=AttribYellowLockedNormalDoor
+b$A728 DEFB $04                             ;  Width (in bytes).
+ $A729 DEFB $03                             ;  Height (in bytes).
+ $A72A DEFB $43,$46,$46,$43,$43,$46,$43,$43 ; { Colour attribute data.
+ $A732 DEFB $43,$43,$43,$43                 ; }
+
+; Attributes: Red Locked Cave Door
+@label=AttribRedLockedCaveDoor
+b$A736 DEFB $04                             ;  Width (in bytes).
+ $A737 DEFB $03                             ;  Height (in bytes).
+ $A738 DEFB $FF,$42,$42,$FF,$FF,$42,$46,$FF ; { Colour attribute data.
+ $A740 DEFB $FF,$FF,$FF,$FF                 ; }
+
+; Attributes: Green Locked Cave Door
+@label=AttribGreenLockedCaveDoor
+b$A744 DEFB $04                             ;  Width (in bytes).
+ $A745 DEFB $03                             ;  Height (in bytes).
+ $A746 DEFB $FF,$44,$44,$FF,$FF,$44,$46,$FF ; { Colour attribute data.
+ $A74E DEFB $FF,$FF,$FF,$FF                 ; }
+
+; Attributes: Cyan Locked Cave Door
+@label=AttribCyanLockedCaveDoor
+b$A752 DEFB $04                             ;  Width (in bytes).
+ $A753 DEFB $03                             ;  Height (in bytes).
+ $A754 DEFB $FF,$45,$45,$FF,$FF,$45,$46,$FF ; { Colour attribute data.
+ $A75C DEFB $FF,$FF,$FF,$FF                 ; }
+
+; Attributes: Yellow Locked Cave Door
+@label=AttribYellowLockedCaveDoor
+b$A760 DEFB $04                             ;  Width (in bytes).
+ $A761 DEFB $03                             ;  Height (in bytes).
+ $A762 DEFB $FF,$46,$46,$FF,$FF,$46,$43,$FF ; { Colour attribute data.
+ $A76A DEFB $FF,$FF,$FF,$FF                 ; }
+
+; Sprite: Normal Door Frame
+;
+; #UDGTABLE
+; {
+; #UDGARRAY4,,4,4,,2;$A770-$A773;$A790-$A793;$A7B0-$A7B3@$A7D2-$A7DD(NormalDoorFrame)
+; }
+; TABLE#
+@label=SpriteNormalDoorFrame
+b$A76E DEFB $04                             ;  Width (in bytes).
+ $A76F DEFB $18                             ;  Height (in pixels).
+ $A770 DEFB $FF,$00,$00,$FF,$1F,$00,$00,$F8 ; { Graphic data.
+ $A778 DEFB $02,$00,$00,$40,$3E,$00,$00,$7C ;
+ $A780 DEFB $7C,$00,$00,$3E,$04,$00,$00,$20 ;
+ $A788 DEFB $F8,$00,$00,$1F,$F8,$00,$00,$1F ;
+ $A790 DEFB $08,$00,$00,$08,$F0,$00,$00,$0F ;
+ $A798 DEFB $F0,$00,$00,$0F,$10,$00,$00,$08 ;
+ $A7A0 DEFB $F0,$00,$00,$1F,$F8,$00,$00,$1F ;
+ $A7A8 DEFB $CC,$00,$00,$33,$3E,$00,$00,$7C ;
+ $A7B0 DEFB $7D,$80,$01,$BE,$3B,$F0,$0F,$DC ;
+ $A7B8 DEFB $17,$BF,$FD,$E8,$07,$7B,$DE,$E0 ;
+ $A7C0 DEFB $03,$7B,$DE,$C0,$00,$77,$EE,$00 ;
+ $A7C8 DEFB $00,$07,$E0,$00,$00,$00,$00,$00 ; }
+
+; Attributes: Normal Door Frame
+@label=AttribNormalDoorFrame
+b$A7D0 DEFB $04                             ;  Width (in bytes).
+ $A7D1 DEFB $03                             ;  Height (in bytes).
+ $A7D2 DEFB $43,$00,$00,$43,$43,$00,$00,$43 ; { Colour attribute data.
+ $A7DA DEFB $43,$43,$43,$43                 ; }
+
+; Attributes: Cave Door Frame
+@label=AttribCaveDoorFrame
+b$A7DE DEFB $04                             ;  Width (in bytes).
+ $A7DF DEFB $03                             ;  Height (in bytes).
+ $A7E0 DEFB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; { Colour attribute data.
+ $A7E8 DEFB $FF,$FF,$FF,$FF                 ; }
+
+; Sprite: Table
+;
+; #UDGTABLE
+; {
+; #UDGARRAY4,,4,4,,2;$A7EE-$A7F1;$A80E-$A811;$A82E-$A831@$A848-$A853{,2*4}(Table)
+; }
+; TABLE#
+@label=SpriteTable
+b$A7EC DEFB $04                             ;  Width (in bytes).
+ $A7ED DEFB $16                             ;  Height (in pixels).
+ $A7EE DEFB $60,$00,$00,$06,$70,$00,$00,$0E ; { Graphic data.
+ $A7F6 DEFB $30,$00,$00,$0C,$30,$00,$00,$0C ;
+ $A7FE DEFB $70,$00,$00,$0E,$70,$00,$00,$0E ;
+ $A806 DEFB $78,$00,$00,$1E,$3F,$FF,$FF,$FC ;
+ $A80E DEFB $7F,$FF,$FF,$FE,$80,$00,$00,$01 ;
+ $A816 DEFB $7F,$FF,$FF,$FE,$FF,$FF,$FF,$FF ;
+ $A81E DEFB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ;
+ $A826 DEFB $7F,$FF,$FF,$FE,$7F,$FF,$FF,$FE ;
+ $A82E DEFB $7F,$FF,$FF,$FE,$3F,$FF,$FF,$FC ;
+ $A836 DEFB $3F,$FF,$FF,$FC,$1F,$FF,$FF,$F8 ;
+ $A83E DEFB $1F,$FF,$FF,$F8,$0F,$FF,$FF,$F0 ; }
+
+; Attributes: Table
+@label=AttribTable
+b$A846 DEFB $04                             ;  Width (in bytes).
+ $A847 DEFB $03                             ;  Height (in bytes).
+ $A848 DEFB $45,$45,$45,$45,$42,$42,$42,$42 ; { Colour attribute data.
+ $A850 DEFB $42,$42,$42,$42                 ; }
+
+; Screen Table
+;
+; #TABLE(default)
+; { =h Offset   | =h Field              | =h Description }
+; { $00         | Colour Attribute      | Colour attribute. }
+; { $01         | Screen Type           | Screen type. }
+; TABLE#
+@label=ScreenTable
+b$A854 DEFB $42,$00 ; Screen $00.
+ $A856 DEFB $43,$02 ; Screen $01.
+ $A858 DEFB $44,$03 ; Screen $02.
+ $A85A DEFB $45,$02 ; Screen $03.
+ $A85C DEFB $46,$04 ; Screen $04.
+ $A85E DEFB $47,$02 ; Screen $05.
+ $A860 DEFB $46,$03 ; Screen $06.
+ $A862 DEFB $45,$02 ; Screen $07.
+ $A864 DEFB $44,$04 ; Screen $08.
+ $A866 DEFB $43,$00 ; Screen $09.
+ $A868 DEFB $42,$03 ; Screen $0A.
+ $A86A DEFB $43,$03 ; Screen $0B.
+ $A86C DEFB $44,$03 ; Screen $0C.
+ $A86E DEFB $45,$00 ; Screen $0D.
+ $A870 DEFB $46,$04 ; Screen $0E.
+ $A872 DEFB $47,$04 ; Screen $0F.
+ $A874 DEFB $46,$04 ; Screen $10.
+ $A876 DEFB $45,$04 ; Screen $11.
+ $A878 DEFB $44,$04 ; Screen $12.
+ $A87A DEFB $43,$00 ; Screen $13.
+ $A87C DEFB $42,$03 ; Screen $14.
+ $A87E DEFB $43,$03 ; Screen $15.
+ $A880 DEFB $44,$03 ; Screen $16.
+ $A882 DEFB $45,$00 ; Screen $17.
+ $A884 DEFB $46,$04 ; Screen $18.
+ $A886 DEFB $47,$03 ; Screen $19.
+ $A888 DEFB $46,$05 ; Screen $1A.
+ $A88A DEFB $45,$00 ; Screen $1B.
+ $A88C DEFB $44,$08 ; Screen $1C.
+ $A88E DEFB $43,$01 ; Screen $1D.
+ $A890 DEFB $42,$04 ; Screen $1E.
+ $A892 DEFB $43,$02 ; Screen $1F.
+ $A894 DEFB $44,$03 ; Screen $20.
+ $A896 DEFB $45,$02 ; Screen $21.
+ $A898 DEFB $46,$04 ; Screen $22.
+ $A89A DEFB $47,$02 ; Screen $23.
+ $A89C DEFB $46,$03 ; Screen $24.
+ $A89E DEFB $45,$02 ; Screen $25.
+ $A8A0 DEFB $44,$05 ; Screen $26.
+ $A8A2 DEFB $43,$00 ; Screen $27.
+ $A8A4 DEFB $42,$04 ; Screen $28.
+ $A8A6 DEFB $43,$00 ; Screen $29.
+ $A8A8 DEFB $44,$03 ; Screen $2A.
+ $A8AA DEFB $45,$00 ; Screen $2B.
+ $A8AC DEFB $46,$04 ; Screen $2C.
+ $A8AE DEFB $47,$00 ; Screen $2D.
+ $A8B0 DEFB $46,$03 ; Screen $2E.
+ $A8B2 DEFB $45,$05 ; Screen $2F.
+ $A8B4 DEFB $44,$01 ; Screen $30.
+ $A8B6 DEFB $43,$0A ; Screen $31.
+ $A8B8 DEFB $42,$0A ; Screen $32.
+ $A8BA DEFB $43,$01 ; Screen $33.
+ $A8BC DEFB $44,$0A ; Screen $34.
+ $A8BE DEFB $45,$01 ; Screen $35.
+ $A8C0 DEFB $46,$09 ; Screen $36.
+ $A8C2 DEFB $47,$09 ; Screen $37.
+ $A8C4 DEFB $46,$01 ; Screen $38.
+ $A8C6 DEFB $45,$01 ; Screen $39.
+ $A8C8 DEFB $44,$01 ; Screen $3A.
+ $A8CA DEFB $43,$01 ; Screen $3B.
+ $A8CC DEFB $42,$01 ; Screen $3C.
+ $A8CE DEFB $43,$01 ; Screen $3D.
+ $A8D0 DEFB $44,$01 ; Screen $3E.
+ $A8D2 DEFB $45,$09 ; Screen $3F.
+ $A8D4 DEFB $46,$01 ; Screen $40.
+ $A8D6 DEFB $47,$01 ; Screen $41.
+ $A8D8 DEFB $46,$0A ; Screen $42.
+ $A8DA DEFB $45,$01 ; Screen $43.
+ $A8DC DEFB $44,$09 ; Screen $44.
+ $A8DE DEFB $43,$01 ; Screen $45.
+ $A8E0 DEFB $42,$01 ; Screen $46.
+ $A8E2 DEFB $43,$09 ; Screen $47.
+ $A8E4 DEFB $45,$01 ; Screen $48.
+ $A8E6 DEFB $45,$0A ; Screen $49.
+ $A8E8 DEFB $46,$09 ; Screen $4A.
+ $A8EA DEFB $47,$01 ; Screen $4B.
+ $A8EC DEFB $46,$01 ; Screen $4C.
+ $A8EE DEFB $45,$0A ; Screen $4D.
+ $A8F0 DEFB $44,$01 ; Screen $4E.
+ $A8F2 DEFB $43,$09 ; Screen $4F.
+ $A8F4 DEFB $42,$01 ; Screen $50.
+ $A8F6 DEFB $43,$0A ; Screen $51.
+ $A8F8 DEFB $44,$09 ; Screen $52.
+ $A8FA DEFB $45,$01 ; Screen $53.
+ $A8FC DEFB $46,$01 ; Screen $54.
+ $A8FE DEFB $47,$01 ; Screen $55.
+ $A900 DEFB $46,$00 ; Screen $56.
+ $A902 DEFB $45,$00 ; Screen $57.
+ $A904 DEFB $44,$00 ; Screen $58.
+ $A906 DEFB $43,$00 ; Screen $59.
+ $A908 DEFB $42,$00 ; Screen $5A.
+ $A90A DEFB $47,$00 ; Screen $5B.
+ $A90C DEFB $43,$00 ; Screen $5C.
+ $A90E DEFB $44,$00 ; Screen $5D.
+ $A910 DEFB $45,$00 ; Screen $5E.
+ $A912 DEFB $46,$00 ; Screen $5F.
+ $A914 DEFB $47,$00 ; Screen $60.
+ $A916 DEFB $46,$00 ; Screen $61.
+ $A918 DEFB $45,$00 ; Screen $62.
+ $A91A DEFB $44,$00 ; Screen $63.
+ $A91C DEFB $43,$00 ; Screen $64.
+ $A91E DEFB $42,$00 ; Screen $65.
+ $A920 DEFB $43,$00 ; Screen $66.
+ $A922 DEFB $44,$00 ; Screen $67.
+ $A924 DEFB $45,$00 ; Screen $68.
+ $A926 DEFB $46,$00 ; Screen $69.
+ $A928 DEFB $47,$00 ; Screen $6A.
+ $A92A DEFB $46,$00 ; Screen $6B.
+ $A92C DEFB $45,$00 ; Screen $6C.
+ $A92E DEFB $44,$00 ; Screen $6D.
+ $A930 DEFB $43,$00 ; Screen $6E.
+ $A932 DEFB $42,$04 ; Screen $6F.
+ $A934 DEFB $43,$00 ; Screen $70.
+ $A936 DEFB $44,$05 ; Screen $71.
+ $A938 DEFB $45,$05 ; Screen $72.
+ $A93A DEFB $46,$03 ; Screen $73.
+ $A93C DEFB $47,$01 ; Screen $74.
+ $A93E DEFB $46,$00 ; Screen $75.
+ $A940 DEFB $45,$00 ; Screen $76.
+ $A942 DEFB $44,$03 ; Screen $77.
+ $A944 DEFB $43,$00 ; Screen $78.
+ $A946 DEFB $42,$04 ; Screen $79.
+ $A948 DEFB $43,$00 ; Screen $7A.
+ $A94A DEFB $44,$03 ; Screen $7B.
+ $A94C DEFB $45,$00 ; Screen $7C.
+ $A94E DEFB $46,$04 ; Screen $7D.
+ $A950 DEFB $47,$00 ; Screen $7E.
+ $A952 DEFB $46,$00 ; Screen $7F.
+ $A954 DEFB $45,$00 ; Screen $80.
+ $A956 DEFB $44,$00 ; Screen $81.
+ $A958 DEFB $43,$00 ; Screen $82.
+ $A95A DEFB $42,$00 ; Screen $83.
+ $A95C DEFB $43,$00 ; Screen $84.
+ $A95E DEFB $44,$00 ; Screen $85.
+ $A960 DEFB $45,$00 ; Screen $86.
+ $A962 DEFB $46,$00 ; Screen $87.
+ $A964 DEFB $47,$00 ; Screen $88.
+ $A966 DEFB $46,$00 ; Screen $89.
+ $A968 DEFB $45,$00 ; Screen $8A.
+ $A96A DEFB $44,$04 ; Screen $8B.
+ $A96C DEFB $43,$04 ; Screen $8C.
+ $A96E DEFB $42,$04 ; Screen $8D.
+ $A970 DEFB $47,$0B ; Screen $8E.
+ $A972 DEFB $43,$01 ; Screen $8F.
+ $A974 DEFB $44,$01 ; Screen $90.
+ $A976 DEFB $45,$01 ; Screen $91.
+ $A978 DEFB $46,$01 ; Screen $92.
+ $A97A DEFB $47,$01 ; Screen $93.
+ $A97C DEFB $46,$01 ; Screen $94.
+
+; Unused data at $A97E
+@label=UnusedDataAt$A97E
+u$A97E DEFB $00,$00,$00,$0C,$38,$38,$DF,$A9
+ $A986 DEFB $EF,$A9,$28,$28,$04,$AA,$78,$AA
+ $A98E DEFB $38,$38,$34,$AB,$54,$AB,$38,$18
+ $A996 DEFB $7D,$AB,$EF,$A9,$18,$38,$8D,$AB
+ $A99E DEFB $EF,$A9,$10,$30,$4A,$AC,$E9,$AB
+ $A9A6 DEFB $10,$30,$9D,$AB,$E9,$AB,$30,$10
+ $A9AE DEFB $96,$AC,$E9,$AB,$30,$10,$E2,$AC
+ $A9B6 DEFB $E9,$AB,$30,$18,$D0,$BE,$7E,$BD
+ $A9BE DEFB $18,$30,$54,$BE,$7E,$BD,$38,$38
+ $A9C6 DEFB $D0,$A9,$D8,$A9,$38,$38,$A9,$97
+ $A9CE DEFB $09,$98,$04,$BF,$04,$00,$1F,$BF
+ $A9D6 DEFB $1F,$00,$00,$01,$FF,$02,$03,$FF
+ $A9DE DEFB $FF,$04,$BB,$04,$04,$BB,$04,$BB
+ $A9E6 DEFB $BB,$1F,$A0,$1F,$1F,$A0,$1F,$A0
+ $A9EE DEFB $A0,$00,$01,$03,$04,$FF,$02,$01
+ $A9F6 DEFB $03,$06,$FF,$05,$01,$04,$06,$FF
+ $A9FE DEFB $07,$03,$04,$06,$FF,$FF,$93,$05
+ $AA06 DEFB $24,$7D,$25,$7D,$02,$8E,$11,$AD
+ $AA0E DEFB $26,$B7,$46,$AD,$4F,$90,$3B,$96
+ $AA16 DEFB $2E,$90,$79,$AD,$70,$90,$8C,$B9
+ $AA1E DEFB $97,$B4,$7A,$96,$81,$93,$8A,$99
+ $AA26 DEFB $82,$94,$97,$85,$A2,$BF,$B9,$9C
+ $AA2E DEFB $B8,$9B,$AD,$79,$AE,$79,$91,$71
+ $AA36 DEFB $90,$70,$90,$4F,$AD,$46,$28,$72
+ $AA3E DEFB $2F,$70,$12,$79,$11,$78,$0A,$74
+ $AA46 DEFB $12,$46,$2F,$4F,$26,$3C,$2F,$3C
+ $AA4E DEFB $05,$2C,$17,$2C,$2F,$2B,$17,$13
+ $AA56 DEFB $37,$24,$38,$25,$24,$02,$23,$01
+ $AA5E DEFB $46,$12,$4F,$2F,$79,$12,$70,$2F
+ $AA66 DEFB $83,$26,$83,$2F,$94,$2F,$9C,$37
+ $AA6E DEFB $9B,$38,$BE,$23,$BF,$24,$AC,$17
+ $AA76 DEFB $93,$17,$00,$2F,$31,$39,$FF,$01
+ $AA7E DEFB $FF,$02,$FF,$03,$01,$04,$20,$FF
+ $AA86 DEFB $04,$FF,$05,$06,$08,$04,$FF,$06
+ $AA8E DEFB $FF,$07,$06,$08,$0B,$FF,$08,$FF
+ $AA96 DEFB $09,$08,$04,$02,$FF,$0A,$0C,$0B
+ $AA9E DEFB $06,$FF,$0B,$FF,$0C,$FF,$0D,$13
+ $AAA6 DEFB $0C,$11,$FF,$0E,$0F,$0C,$0B,$FF
+ $AAAE DEFB $0F,$FF,$10,$FF,$11,$10,$FF,$12
+ $AAB6 DEFB $15,$18,$10,$FF,$13,$10,$FF,$14
+ $AABE DEFB $17,$13,$FF,$15,$FF,$16,$19,$FF
+ $AAC6 DEFB $17,$FF,$18,$FF,$19,$FF,$1A,$19
+ $AACE DEFB $35,$FF,$1B,$1A,$36,$16,$FF,$1C
+ $AAD6 DEFB $02,$1D,$1E,$FF,$1D,$FF,$1E,$FF
+ $AADE DEFB $1F,$FF,$20,$1F,$FF,$21,$1E,$22
+ $AAE6 DEFB $25,$FF,$22,$1D,$FF,$23,$22,$24
+ $AAEE DEFB $25,$FF,$24,$FF,$25,$FF,$26,$24
+ $AAF6 DEFB $25,$28,$FF,$27,$24,$29,$28,$FF
+ $AAFE DEFB $28,$FF,$29,$FF,$2A,$FF,$2B,$29
+ $AB06 DEFB $FF,$2C,$28,$2D,$FF,$2D,$FF,$2E
+ $AB0E DEFB $2A,$2D,$FF,$2F,$2D,$30,$FF,$30
+ $AB16 DEFB $31,$2E,$FF,$31,$FF,$32,$31,$33
+ $AB1E DEFB $39,$FF,$33,$FF,$34,$33,$36,$FF
+ $AB26 DEFB $35,$FF,$36,$FF,$37,$FF,$38,$33
+ $AB2E DEFB $37,$39,$FF,$39,$FF,$FF,$02,$A3
+ $AB36 DEFB $02,$1C,$1C,$02,$A3,$02,$BD,$1C
+ $AB3E DEFB $BD,$A3,$A3,$BD,$1C,$BD,$30,$A0
+ $AB46 DEFB $1F,$8F,$1F,$30,$30,$1F,$8F,$1F
+ $AB4E DEFB $A0,$30,$A0,$8F,$8F,$A0,$00,$09
+ $AB56 DEFB $07,$01,$FF,$02,$01,$03,$0B,$FF
+ $AB5E DEFB $04,$03,$05,$0D,$FF,$06,$05,$0F
+ $AB66 DEFB $07,$FF,$08,$07,$09,$0F,$FF,$0A
+ $AB6E DEFB $01,$09,$0B,$FF,$0C,$03,$0B,$0D
+ $AB76 DEFB $FF,$0E,$05,$0D,$0F,$FF,$FF,$03
+ $AB7E DEFB $9C,$03,$23,$BC,$23,$BC,$9C,$1F
+ $AB86 DEFB $80,$1F,$3F,$A0,$3F,$A0,$80,$23
+ $AB8E DEFB $03,$9C,$03,$9C,$BC,$23,$BC,$3F
+ $AB96 DEFB $1F,$80,$1F,$80,$A0,$3F,$A0,$8A
+ $AB9E DEFB $BA,$08,$04,$35,$BB,$8A,$BB,$B7
+ $ABA6 DEFB $04,$38,$28,$38,$3D,$3D,$3D,$3D
+ $ABAE DEFB $51,$41,$51,$41,$63,$45,$63,$45
+ $ABB6 DEFB $73,$48,$73,$48,$81,$4B,$81,$4B
+ $ABBE DEFB $8D,$4E,$8D,$4E,$97,$50,$97,$50
+ $ABC6 DEFB $9F,$6F,$9F,$6F,$97,$71,$97,$71
+ $ABCE DEFB $8D,$74,$8D,$74,$81,$77,$81,$77
+ $ABD6 DEFB $73,$7A,$73,$7A,$63,$7E,$63,$7E
+ $ABDE DEFB $51,$82,$51,$82,$3D,$87,$3D,$87
+ $ABE6 DEFB $28,$35,$BA,$01,$FF,$02,$03,$01
+ $ABEE DEFB $FF,$03,$FF,$04,$01,$03,$FF,$05
+ $ABF6 DEFB $01,$FF,$06,$23,$05,$FF,$07,$FF
+ $ABFE DEFB $08,$21,$07,$FF,$09,$FF,$0A,$1F
+ $AC06 DEFB $09,$FF,$0B,$FF,$0C,$1D,$0B,$FF
+ $AC0E DEFB $0D,$FF,$0E,$1B,$0D,$FF,$0F,$FF
+ $AC16 DEFB $10,$19,$0F,$FF,$11,$FF,$12,$17
+ $AC1E DEFB $11,$02,$FF,$17,$03,$FF,$18,$17
+ $AC26 DEFB $FF,$19,$FF,$1A,$19,$FF,$1B,$FF
+ $AC2E DEFB $1C,$1B,$FF,$1D,$FF,$1E,$1D,$FF
+ $AC36 DEFB $1F,$FF,$20,$1F,$FF,$21,$FF,$22
+ $AC3E DEFB $21,$FF,$23,$FF,$24,$04,$05,$23
+ $AC46 DEFB $FF,$25,$FF,$FF,$8A,$05,$08,$BB
+ $AC4E DEFB $38,$04,$8A,$04,$B7,$BB,$38,$97
+ $AC56 DEFB $38,$82,$3D,$82,$3D,$6E,$41,$6E
+ $AC5E DEFB $41,$5C,$45,$5C,$45,$4C,$48,$4C
+ $AC66 DEFB $48,$3E,$4B,$3E,$4B,$32,$4E,$32
+ $AC6E DEFB $4E,$28,$50,$28,$50,$20,$6F,$20
+ $AC76 DEFB $6F,$28,$71,$28,$71,$32,$74,$32
+ $AC7E DEFB $74,$3E,$77,$3E,$77,$4C,$7A,$4C
+ $AC86 DEFB $7A,$5C,$7E,$5C,$7E,$6E,$82,$6E
+ $AC8E DEFB $82,$82,$87,$82,$87,$97,$35,$05
+ $AC96 DEFB $05,$8A,$BB,$08,$04,$38,$04,$8A
+ $AC9E DEFB $BB,$B7,$97,$38,$82,$38,$82,$3D
+ $ACA6 DEFB $64,$3D,$6E,$41,$5C,$41,$5C,$45
+ $ACAE DEFB $4C,$45,$4C,$48,$3E,$48,$3E,$4B
+ $ACB6 DEFB $32,$4B,$32,$4E,$28,$4E,$28,$50
+ $ACBE DEFB $20,$50,$20,$6F,$28,$6F,$28,$71
+ $ACC6 DEFB $32,$71,$32,$74,$3E,$74,$3E,$77
+ $ACCE DEFB $4C,$77,$4C,$7A,$5C,$7A,$5C,$7E
+ $ACD6 DEFB $6E,$7E,$6E,$82,$82,$82,$82,$87
+ $ACDE DEFB $97,$87,$05,$35,$BA,$8A,$04,$08
+ $ACE6 DEFB $BB,$35,$BB,$8A,$04,$B7,$28,$38
+ $ACEE DEFB $3D,$38,$3D,$3D,$51,$3D,$51,$41
+ $ACF6 DEFB $63,$41,$63,$45,$73,$45,$73,$48
+ $ACFE DEFB $81,$48,$81,$4B,$8D,$4B,$8D,$4E
+ $AD06 DEFB $97,$4E,$97,$50,$9F,$50,$9F,$6F
+ $AD0E DEFB $97,$6F,$97,$71,$8D,$71,$8D,$74
+ $AD16 DEFB $81,$74,$81,$77,$73,$77,$73,$7A
+ $AD1E DEFB $63,$7A,$63,$7E,$51,$7E,$51,$82
+ $AD26 DEFB $3D,$82,$3D,$87,$28,$87,$BA,$35
+
+
+; Sprite: Knight Walking Down 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AD2F-$AD30;$AD3F-$AD40;$AD4F-$AD50{,6*4}(KnightWalkingDown1)
+; }
+; TABLE#
+@label=SpriteKnightWalkingDown1
+b$AD2E DEFB $12                             ;  Height (in pixels).
+ $AD2F DEFB $3C,$00,$3C,$F0,$1F,$78,$1B,$94 ; { Graphic data.
+ $AD37 DEFB $05,$4E,$6B,$6E,$E9,$2C,$EF,$E8 ;
+ $AD3F DEFB $44,$40,$26,$C8,$20,$08,$30,$18 ;
+ $AD47 DEFB $3F,$F8,$13,$F0,$13,$F0,$09,$E0 ;
+ $AD4F DEFB $05,$C0,$02,$80                 ; }
+
+; Sprite: Knight Down
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AD54-$AD55;$AD64-$AD65;$AD74-$AD75{,6*4}(KnightDown)
+; }
+; TABLE#
+@label=SpriteKnightDown
+b$AD53 DEFB $12                             ;  Height (in pixels).
+ $AD54 DEFB $1E,$F0,$0E,$E0,$05,$40,$03,$F0 ; { Graphic data.
+ $AD5C DEFB $65,$4C,$EB,$6E,$E9,$2E,$6F,$EC ;
+ $AD64 DEFB $04,$40,$26,$C8,$20,$08,$30,$18 ;
+ $AD6C DEFB $3F,$F8,$13,$F0,$13,$F0,$09,$E0 ;
+ $AD74 DEFB $05,$C0,$02,$80                 ; }
+
+; Sprite: Knight Walking Down 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AD79-$AD7A;$AD89-$AD8A;$AD99-$AD9A{,6*4}(KnightWalkingDown2)
+; }
+; TABLE#
+@label=SpriteKnightWalkingDown2
+b$AD78 DEFB $12                             ;  Height (in pixels).
+ $AD79 DEFB $00,$78,$1E,$78,$3D,$F0,$53,$B0 ; { Graphic data.
+ $AD81 DEFB $E5,$40,$EB,$6C,$69,$2E,$2F,$EE ;
+ $AD89 DEFB $04,$44,$26,$C8,$20,$08,$30,$18 ;
+ $AD91 DEFB $3F,$F8,$13,$F0,$13,$F0,$09,$E0 ;
+ $AD99 DEFB $05,$C0,$02,$80                 ; }
+
+; Sprite: Knight Walking Up 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AD9E-$AD9F;$ADAE-$ADAF;$ADBE-$ADBF{,6*4}(KnightWalkingUp1)
+; }
+; TABLE#
+@label=SpriteKnightWalkingUp1
+b$AD9D DEFB $12                             ;  Height (in pixels).
+ $AD9E DEFB $3C,$00,$3C,$F0,$1F,$78,$1B,$94 ; { Graphic data.
+ $ADA6 DEFB $07,$CE,$6F,$EE,$EF,$EC,$EF,$E8 ;
+ $ADAE DEFB $40,$00,$3F,$F8,$27,$F8,$27,$F8 ;
+ $ADB6 DEFB $30,$38,$13,$F0,$13,$F0,$09,$E0 ;
+ $ADBE DEFB $05,$C0,$02,$80                 ; }
+
+; Sprite: Knight Up
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$ADC3-$ADC4;$ADD3-$ADD4;$ADE3-$ADE4{,6*4}(KnightUp)
+; }
+; TABLE#
+@label=SpriteKnightUp
+b$ADC2 DEFB $12                             ;  Height (in pixels).
+ $ADC3 DEFB $1E,$F0,$0E,$E0,$05,$40,$03,$80 ; { Graphic data.
+ $ADCB DEFB $67,$CC,$EF,$EE,$EF,$EE,$6F,$EC ;
+ $ADD3 DEFB $00,$00,$3F,$F8,$27,$F8,$27,$F8 ;
+ $ADDB DEFB $30,$38,$13,$F0,$13,$F0,$09,$E0 ;
+ $ADE3 DEFB $05,$C0,$02,$80                 ; }
+
+; Sprite: Knight Walking Up 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$ADE8-$ADE9;$ADF8-$ADF9;$AE08-$AE09{,6*4}(KnightWalkingUp2)
+; }
+; TABLE#
+@label=SpriteKnightWalkingUp2
+b$ADE7 DEFB $12                             ;  Height (in pixels).
+ $ADE8 DEFB $00,$78,$1E,$78,$3D,$F0,$53,$B0 ; { Graphic data.
+ $ADF0 DEFB $E7,$C0,$EF,$EC,$6F,$EE,$2F,$EE ;
+ $ADF8 DEFB $00,$04,$3F,$F8,$27,$F8,$27,$F8 ;
+ $AE00 DEFB $30,$38,$13,$F0,$13,$F0,$09,$E0 ;
+ $AE08 DEFB $05,$C0,$02,$80                 ; }
+
+; Sprite: Knight Walking Left 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AE0D-$AE0E;$AE1D-$AE1E;$AE2D-$AE2E{,6*4}(KnightWalkingLeft1)
+; }
+; TABLE#
+@label=SpriteKnightWalkingLeft1
+b$AE0C DEFB $12                             ;  Height (in pixels).
+ $AE0D DEFB $0C,$70,$1C,$38,$3B,$98,$37,$60 ; { Graphic data.
+ $AE15 DEFB $06,$10,$37,$08,$27,$98,$1F,$F0 ;
+ $AE1D DEFB $67,$80,$6B,$7C,$1A,$FC,$01,$FC ;
+ $AE25 DEFB $1F,$FC,$08,$08,$09,$F8,$04,$F0 ;
+ $AE2D DEFB $02,$E0,$01,$40                 ; }
+
+; Sprite: Knight Left
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AE32-$AE33;$AE42-$AE43;$AE52-$AE53{,6*4}(KnightLeft)
+; }
+; TABLE#
+@label=SpriteKnightLeft
+b$AE31 DEFB $12                             ;  Height (in pixels).
+ $AE32 DEFB $07,$C0,$03,$C0,$00,$00,$03,$F0 ; { Graphic data.
+ $AE3A DEFB $06,$38,$04,$18,$0F,$98,$1F,$F0 ;
+ $AE42 DEFB $67,$80,$6B,$7C,$1A,$FC,$01,$FC ;
+ $AE4A DEFB $1F,$FC,$08,$08,$09,$F8,$04,$F0 ;
+ $AE52 DEFB $02,$E0,$01,$40                 ; }
+
+; Sprite: Knight Walking Left 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AE57-$AE58;$AE67-$AE68;$AE77-$AE78{,6*4}(KnightWalkingLeft2)
+; }
+; TABLE#
+@label=SpriteKnightWalkingLeft2
+b$AE56 DEFB $12                             ;  Height (in pixels).
+ $AE57 DEFB $0C,$70,$1C,$38,$3B,$D8,$37,$E0 ; { Graphic data.
+ $AE5F DEFB $04,$74,$08,$3A,$07,$1E,$1F,$F8 ;
+ $AE67 DEFB $67,$80,$6B,$7C,$1A,$FC,$01,$FC ;
+ $AE6F DEFB $1F,$FC,$08,$08,$09,$F8,$04,$F0 ;
+ $AE77 DEFB $02,$E0,$01,$40                 ; }
+
+; Sprite: Knight Walking Right 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AE7C-$AE7D;$AE8C-$AE8D;$AE9C-$AE9D{,6*4}(KnightWalkingRight1)
+; }
+; TABLE#
+@label=SpriteKnightWalkingRight1
+b$AE7B DEFB $12                             ;  Height (in pixels).
+ $AE7C DEFB $0E,$30,$1C,$38,$1B,$DC,$07,$EC ; { Graphic data.
+ $AE84 DEFB $2E,$20,$5C,$10,$78,$E0,$1F,$F8 ;
+ $AE8C DEFB $01,$E6,$3E,$D6,$27,$58,$27,$80 ;
+ $AE94 DEFB $27,$F8,$10,$30,$13,$F0,$09,$E0 ;
+ $AE9C DEFB $05,$C0,$02,$80                 ; }
+
+; Sprite: Knight Right
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AEA1-$AEA2;$AEB1-$AEB2;$AEC1-$AEC2{,6*4}(KnightRight)
+; }
+; TABLE#
+@label=SpriteKnightRight
+b$AEA0 DEFB $12                             ;  Height (in pixels).
+ $AEA1 DEFB $03,$E0,$03,$C0,$00,$00,$0F,$C0 ; { Graphic data.
+ $AEA9 DEFB $1C,$60,$18,$20,$19,$F0,$0F,$F8 ;
+ $AEB1 DEFB $01,$E6,$3E,$D6,$27,$58,$27,$80 ;
+ $AEB9 DEFB $27,$F8,$10,$30,$13,$F0,$09,$E0 ;
+ $AEC1 DEFB $05,$C0,$02,$80                 ; }
+
+; Sprite: Knight Walking Right 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AEC6-$AEC7;$AED6-$AED7;$AEE6-$AEE7{,6*4}(KnightWalkingRight2)
+; }
+; TABLE#
+@label=SpriteKnightWalkingRight2
+b$AEC5 DEFB $12                             ;  Height (in pixels).
+ $AEC6 DEFB $0E,$30,$1C,$38,$18,$DC,$06,$EC ; { Graphic data.
+ $AECE DEFB $08,$60,$10,$EC,$19,$E4,$0F,$F8 ;
+ $AED6 DEFB $01,$E6,$3E,$D6,$27,$58,$27,$80 ;
+ $AEDE DEFB $27,$F8,$10,$30,$13,$F0,$09,$E0 ;
+ $AEE6 DEFB $05,$C0,$02,$80                 ; }
+
+; Sprite: Unused
+;
+; Unused sprite.
+@label=SpriteUnused
+b$AEEA DEFB $00                             ;  Width (in bytes).
+ $AEEB DEFB $00                             ;  Height (in pixels).
+
+; Unused data at $AEEC
+@label=UnusedDataAt$AEEC
+u$AEEC DEFB $10,$00,$00,$00,$00,$00,$00,$00
+ $AEF4 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $AEFC DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $AF04 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $AF0C DEFB $00
+
+; Sprite: Leaf
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AF0E-$AF0F;$AF1E-$AF1F(Leaf)
+; }
+; TABLE#
+@label=SpriteLeaf
+b$AF0D DEFB $10                             ;  Height (in pixels).
+ $AF0E DEFB $00,$03,$00,$3F,$00,$FA,$03,$F2 ; { Graphic data.
+ $AF16 DEFB $06,$0A,$0F,$DA,$1F,$BC,$3F,$3C ;
+ $AF1E DEFB $20,$B8,$7D,$B8,$7B,$B0,$F3,$A0 ;
+ $AF26 DEFB $9B,$C0,$DB,$80,$DE,$00,$F8,$00 ; }
+
+; Sprite: Key
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AF2F-$AF30;$AF3F-$AF40{,6*4}(Key)
+; }
+; TABLE#
+@label=SpriteKey
+b$AF2E DEFB $0A                             ;  Height (in pixels).
+ $AF2F DEFB $0C,$00,$1E,$17,$12,$12,$7B,$1A ; { Graphic data.
+ $AF37 DEFB $CF,$FF,$CF,$FF,$7B,$00,$12,$00 ;
+ $AF3F DEFB $1E,$00,$0C,$00                 ; }
+
+; Sprite: Medicine Bottle
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AF44-$AF45;$AF54-$AF55;$AF64-$AF65{,4*4}(MedicineBottle)
+; }
+; TABLE#
+@label=SpriteMedicineBottle
+b$AF43 DEFB $14                             ;  Height (in pixels).
+ $AF44 DEFB $19,$FC,$19,$FC,$19,$C0,$19,$DC ; { Graphic data.
+ $AF4C DEFB $19,$DC,$19,$DC,$19,$DC,$19,$DC ;
+ $AF54 DEFB $19,$DC,$19,$DC,$19,$C0,$19,$FC ;
+ $AF5C DEFB $1C,$FC,$0E,$F8,$03,$60,$01,$40 ;
+ $AF64 DEFB $01,$40,$01,$40,$02,$E0,$01,$C0 ; }
+
+; Sprite: Bottle
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AF6D-$AF6E;$AF7D-$AF7E;$AF8D-$AF8E{,4*4}(Bottle)
+; }
+; TABLE#
+@label=SpriteBottle
+b$AF6C DEFB $14                             ;  Height (in pixels).
+ $AF6D DEFB $19,$F0,$19,$F0,$19,$F0,$19,$F0 ; { Graphic data.
+ $AF75 DEFB $19,$F0,$19,$F0,$19,$F0,$19,$F0 ;
+ $AF7D DEFB $19,$F0,$09,$E0,$0D,$E0,$0D,$E0 ;
+ $AF85 DEFB $05,$C0,$05,$C0,$06,$C0,$02,$80 ;
+ $AF8D DEFB $02,$80,$02,$80,$05,$C0,$03,$80 ; }
+
+; Sprite: Broken
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AF96-$AF97;$AFA6-$AFA7(Broken)
+; }
+; TABLE#
+@label=SpriteBroken
+b$AF95 DEFB $10                             ;  Height (in pixels).
+ $AF96 DEFB $A0,$00,$B0,$00,$98,$00,$AF,$80 ; { Graphic data.
+ $AF9E DEFB $D0,$00,$DF,$C0,$6F,$E0,$73,$F0 ;
+ $AFA6 DEFB $3C,$74,$3F,$88,$1F,$F8,$0F,$F8 ;
+ $AFAE DEFB $07,$F8,$03,$FC,$00,$FE,$00,$1F ; }
+
+; Sprite: Rope
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AFB7-$AFB8;$AFC7-$AFC8(Rope)
+; }
+; TABLE#
+@label=SpriteRope
+b$AFB6 DEFB $10                             ;  Height (in pixels).
+ $AFB7 DEFB $C0,$00,$E0,$02,$E0,$0C,$00,$30 ; { Graphic data.
+ $AFBF DEFB $C0,$30,$E0,$40,$E0,$C0,$40,$80 ;
+ $AFC7 DEFB $00,$30,$E0,$36,$70,$06,$70,$03 ;
+ $AFCF DEFB $2C,$1E,$1E,$EC,$0E,$E0,$04,$60 ; }
+
+; Sprite: Arm
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AFD8-$AFD9;$AFE8-$AFE9(Arm)
+; }
+; TABLE#
+@label=SpriteArm
+b$AFD7 DEFB $10                             ;  Height (in pixels).
+ $AFD8 DEFB $90,$08,$B1,$0E,$F6,$1E,$7C,$37 ; { Graphic data.
+ $AFE0 DEFB $78,$67,$30,$CF,$31,$9E,$33,$3C ;
+ $AFE8 DEFB $32,$78,$76,$F0,$76,$F0,$75,$E0 ;
+ $AFF0 DEFB $E7,$C0,$3F,$00,$3E,$00,$18,$00 ; }
+
+; Sprite: Bowl
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$AFF9-$AFFA;$B009-$B00A(Bowl)
+; }
+; TABLE#
+@label=SpriteBowl
+b$AFF8 DEFB $10                             ;  Height (in pixels).
+ $AFF9 DEFB $05,$E0,$00,$00,$33,$FC,$67,$FE ; { Graphic data.
+ $B001 DEFB $00,$00,$C7,$FF,$FF,$FF,$00,$00 ;
+ $B009 DEFB $6F,$FE,$67,$3E,$7B,$DE,$3F,$EC ;
+ $B011 DEFB $0B,$E8,$0C,$F0,$0F,$80,$07,$00 ; }
+
+; Sprite: Apple
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B01A-$B01B;$B02A-$B02B(Apple)
+; }
+; TABLE#
+@label=SpriteApple
+b$B019 DEFB $10                             ;  Height (in pixels).
+ $B01A DEFB $03,$E0,$0F,$F8,$1F,$FC,$3F,$FE ; { Graphic data.
+ $B022 DEFB $7F,$FE,$7F,$FF,$7F,$FF,$67,$FF ;
+ $B02A DEFB $63,$FF,$33,$FF,$3B,$06,$1F,$F8 ;
+ $B032 DEFB $0E,$DC,$01,$86,$07,$7B,$06,$3C ; }
+
+; Status Panel Graphic
+@label=StatusPanel
+b$B03A DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; { Graphic data.
+ $B042 DEFB $00,$00,$03,$0F,$1F,$3D,$7E,$79 ;
+ $B04A DEFB $00,$00,$FF,$FF,$FF,$B4,$4A,$00 ;
+ $B052 DEFB $00,$00,$80,$FE,$FF,$D5,$AD,$42 ;
+ $B05A DEFB $00,$00,$00,$00,$F0,$7F,$56,$50 ;
+ $B062 DEFB $00,$00,$00,$00,$03,$FF,$B5,$44 ;
+ $B06A DEFB $00,$00,$01,$1F,$FF,$DA,$25,$41 ;
+ $B072 DEFB $00,$07,$FF,$FE,$FC,$FC,$D8,$3F ;
+ $B07A DEFB $00,$F0,$08,$04,$02,$02,$02,$F1 ;
+ $B082 DEFB $D0,$CA,$E0,$C0,$C0,$C0,$60,$60 ;
+ $B08A DEFB $3B,$1B,$1B,$1B,$1B,$19,$0C,$0C ;
+ $B092 DEFB $89,$89,$85,$85,$FD,$81,$81,$81 ;
+ $B09A DEFB $0C,$06,$03,$03,$03,$01,$01,$01 ;
+ $B0A2 DEFB $41,$42,$FC,$00,$00,$80,$80,$80 ;
+ $B0AA DEFB $60,$30,$1C,$06,$3E,$1C,$0C,$06 ;
+ $B0B2 DEFB $0C,$18,$18,$18,$0C,$0C,$0C,$0C ;
+ $B0BA DEFB $06,$06,$06,$06,$06,$06,$06,$06 ;
+ $B0C2 DEFB $06,$06,$06,$06,$06,$06,$0C,$0C ;
+ $B0CA DEFB $0C,$0C,$0C,$18,$18,$18,$18,$18 ;
+ $B0D2 DEFB $18,$30,$30,$30,$30,$30,$30,$30 ;
+ $B0DA DEFB $30,$60,$60,$60,$60,$60,$60,$60 ;
+ $B0E2 DEFB $60,$60,$60,$60,$30,$30,$30,$18 ;
+ $B0EA DEFB $0C,$18,$18,$18,$30,$30,$18,$30 ;
+ $B0F2 DEFB $30,$38,$0C,$06,$0C,$18,$18,$18 ;
+ $B0FA DEFB $0C,$0C,$0C,$0C,$0C,$06,$06,$06 ;
+ $B102 DEFB $06,$06,$06,$06,$03,$03,$03,$03 ;
+ $B10A DEFB $03,$03,$03,$03,$03,$03,$03,$03 ;
+ $B112 DEFB $03,$03,$03,$03,$03,$06,$06,$06 ;
+ $B11A DEFB $06,$06,$06,$06,$0C,$0C,$0C,$0C ;
+ $B122 DEFB $0C,$18,$18,$18,$18,$30,$30,$30 ;
+ $B12A DEFB $30,$60,$60,$60,$7F,$7E,$0C,$18 ;
+ $B132 DEFB $00,$00,$0C,$1E,$1D,$0B,$07,$37 ;
+ $B13A DEFB $7F,$FF,$80,$7F,$FF,$C1,$80,$00 ;
+ $B142 DEFB $00,$80,$98,$3C,$DC,$E8,$F0,$76 ;
+ $B14A DEFB $01,$03,$03,$03,$06,$06,$0C,$7F ;
+ $B152 DEFB $80,$00,$00,$00,$00,$00,$00,$FC ;
+ $B15A DEFB $70,$F0,$18,$FC,$F8,$C0,$C0,$C0 ;
+ $B162 DEFB $6E,$EC,$EC,$EC,$EC,$EC,$6E,$37 ;
+ $B16A DEFB $3E,$49,$49,$49,$49,$2A,$1C,$08 ;
+ $B172 DEFB $3B,$1B,$1B,$1B,$1B,$1B,$3B,$76 ;
+ $B17A DEFB $00,$80,$80,$80,$80,$80,$00,$00 ;
+ $B182 DEFB $00,$03,$07,$0E,$07,$01,$00,$00 ;
+ $B18A DEFB $FD,$C3,$DF,$2F,$97,$EB,$77,$31 ;
+ $B192 DEFB $C2,$C1,$81,$81,$01,$FD,$05,$05 ;
+ $B19A DEFB $C0,$60,$60,$60,$30,$18,$0F,$07 ;
+ $B1A2 DEFB $07,$0B,$1D,$1E,$0C,$00,$00,$FF ;
+ $B1AA DEFB $80,$C1,$FF,$7F,$80,$FF,$7F,$3E ;
+ $B1B2 DEFB $F0,$E8,$DC,$3C,$9B,$9F,$7C,$E0 ;
+ $B1BA DEFB $00,$00,$00,$3F,$FF,$C0,$00,$00 ;
+ $B1C2 DEFB $00,$00,$00,$00,$F0,$FF,$0F,$00 ;
+ $B1CA DEFB $30,$3F,$30,$18,$18,$0C,$FE,$FF ;
+ $B1D2 DEFB $89,$F1,$01,$01,$02,$04,$08,$F0 ;
+ $B1DA DEFB $FF,$00,$00,$00,$00,$00,$00,$00 ;
+ $B1E2 DEFB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ;
+ $B1EA DEFB $FF,$FF,$7F,$7B,$7B,$39,$39,$38 ;
+ $B1F2 DEFB $00,$00,$80,$80,$80,$80,$C0,$C0 ;
+ $B1FA DEFB $10,$10,$10,$00,$00,$00,$00,$00 ;
+ $B202 DEFB $60,$20,$10,$00,$00,$00,$00,$00 ;
+ $B20A DEFB $C0,$C0,$C0,$60,$60,$60,$30,$30 ;
+ $B212 DEFB $30,$18,$18,$18,$18,$30,$30,$30 ;
+ $B21A DEFB $18,$0C,$0C,$0C,$0C,$0C,$0C,$0C ;
+ $B222 DEFB $0C,$0C,$0C,$0C,$0C,$0C,$0C,$0C ;
+ $B22A DEFB $0C,$0C,$0C,$0C,$18,$18,$18,$18 ;
+ $B232 DEFB $18,$30,$30,$30,$30,$60,$60,$60 ;
+ $B23A DEFB $60,$60,$60,$C0,$C0,$C0,$C0,$C0 ;
+ $B242 DEFB $C0,$C0,$C0,$C0,$C0,$C0,$C0,$C0 ;
+ $B24A DEFB $60,$60,$60,$60,$60,$30,$30,$30 ;
+ $B252 DEFB $18,$18,$18,$0C,$0C,$0C,$0C,$06 ;
+ $B25A DEFB $06,$06,$06,$06,$03,$03,$03,$03 ;
+ $B262 DEFB $03,$03,$03,$03,$03,$03,$03,$03 ;
+ $B26A DEFB $06,$06,$06,$06,$06,$0C,$0C,$0C ;
+ $B272 DEFB $0C,$18,$18,$18,$18,$30,$30,$30 ;
+ $B27A DEFB $60,$60,$60,$C0,$C0,$C0,$80,$80 ;
+ $B282 DEFB $07,$0F,$0F,$07,$01,$0F,$07,$00 ;
+ $B28A DEFB $C3,$E7,$0F,$CE,$EF,$E7,$C3,$00 ;
+ $B292 DEFB $C3,$E7,$8F,$0E,$1F,$E7,$C3,$00 ;
+ $B29A DEFB $8F,$CF,$EE,$EF,$EF,$CE,$8E,$00 ;
+ $B2A2 DEFB $CF,$EF,$6E,$EF,$CE,$CF,$EF,$00 ;
+ $B2AA DEFB $80,$80,$00,$C0,$00,$E0,$E0,$00 ;
+ $B2B2 DEFB $00,$00,$08,$1E,$27,$23,$71,$5F ;
+ $B2BA DEFB $00,$00,$40,$40,$80,$80,$00,$C3 ;
+ $B2C2 DEFB $00,$00,$00,$00,$00,$00,$00,$16 ;
+ $B2CA DEFB $00,$00,$00,$05,$03,$03,$03,$33 ;
+ $B2D2 DEFB $00,$00,$00,$AC,$18,$18,$18,$18 ;
+ $B2DA DEFB $4F,$22,$1F,$05,$7F,$47,$3B,$00 ;
+ $B2E2 DEFB $EF,$6C,$2C,$AC,$4C,$CE,$87,$00 ;
+ $B2EA DEFB $BE,$18,$18,$18,$18,$9C,$0C,$00 ;
+ $B2F2 DEFB $FB,$DB,$DB,$DB,$DB,$FB,$61,$00 ;
+ $B2FA DEFB $18,$18,$18,$18,$18,$DE,$8C,$00 ;
+ $B302 DEFB $FE,$FE,$FE,$38,$38,$38,$38,$00 ;
+ $B30A DEFB $7C,$7C,$38,$38,$38,$7C,$7C,$00 ;
+ $B312 DEFB $82,$EE,$FE,$FE,$D6,$D6,$D6,$00 ;
+ $B31A DEFB $F8,$F8,$E0,$FC,$E0,$FE,$FE,$00 ;
+ $B322 DEFB $00,$18,$18,$00,$00,$18,$18,$00 ;
+ $B32A DEFB $01,$02,$03,$04,$05,$06,$07,$08 ;
+ $B332 DEFB $09,$4F,$50,$51,$52,$53,$0A,$0B ;
+ $B33A DEFB $0E,$54,$55,$56,$57,$58,$0C,$0D ;
+ $B342 DEFB $0F,$00,$00,$00,$00,$00,$00,$3A ;
+ $B34A DEFB $10,$00,$00,$00,$00,$00,$00,$3B ;
+ $B352 DEFB $11,$00,$00,$00,$00,$00,$00,$3C ;
+ $B35A DEFB $12,$00,$00,$00,$00,$00,$00,$3D ;
+ $B362 DEFB $13,$00,$59,$5A,$5B,$5C,$00,$3E ;
+ $B36A DEFB $14,$00,$00,$00,$5D,$00,$00,$3F ;
+ $B372 DEFB $15,$49,$4A,$4B,$4C,$4D,$4E,$40 ;
+ $B37A DEFB $16,$00,$00,$00,$00,$00,$00,$41 ;
+ $B382 DEFB $17,$00,$00,$00,$00,$00,$00,$42 ;
+ $B38A DEFB $18,$00,$00,$00,$00,$00,$00,$43 ;
+ $B392 DEFB $19,$00,$00,$00,$00,$00,$00,$44 ;
+ $B39A DEFB $1A,$00,$00,$00,$00,$00,$00,$45 ;
+ $B3A2 DEFB $1B,$00,$00,$00,$00,$00,$00,$46 ;
+ $B3AA DEFB $1C,$00,$00,$00,$00,$00,$00,$47 ;
+ $B3B2 DEFB $1D,$00,$00,$00,$00,$00,$00,$48 ;
+ $B3BA DEFB $1E,$1F,$20,$21,$00,$00,$22,$23 ;
+ $B3C2 DEFB $24,$25,$26,$27,$28,$29,$2A,$2B ;
+ $B3CA DEFB $2C,$2D,$2E,$2F,$30,$31,$32,$33 ;
+ $B3D2 DEFB $00,$34,$35,$00,$00,$00,$00,$00 ;
+ $B3DA DEFB $00,$00,$36,$37,$00,$00,$00,$00 ;
+ $B3E2 DEFB $00,$00,$38,$39,$00,$00,$00,$00 ; }
+
+; Sprite: Big Door Frame
+;
+; #UDGTABLE
+; {
+; #UDGARRAY6,,4,6,,2;$B3EC-$B3F1;$B41C-$B421;$B44C-$B451;$B47C-$B481@$B4AE-$B4C5(BigDoorFrame)
+; }
+; TABLE#
+@label=SpriteBigDoorFrame
+b$B3EA DEFB $06                             ;  Width (in bytes).
+ $B3EB DEFB $20                             ;  Height (in pixels).
+ $B3EC DEFB $FF,$FE,$00,$00,$3F,$FF,$00,$FE ; { Graphic data.
+ $B3F4 DEFB $00,$00,$7F,$00,$01,$FC,$00,$00 ;
+ $B3FC DEFB $3F,$80,$00,$00,$00,$00,$00,$00 ;
+ $B404 DEFB $01,$F8,$00,$00,$1F,$80,$03,$F8 ;
+ $B40C DEFB $00,$00,$1F,$C0,$03,$F0,$00,$00 ;
+ $B414 DEFB $0F,$C0,$00,$00,$00,$00,$00,$00 ;
+ $B41C DEFB $07,$E0,$00,$00,$07,$E0,$0F,$E0 ;
+ $B424 DEFB $00,$00,$07,$F0,$0F,$C0,$00,$00 ;
+ $B42C DEFB $03,$F0,$00,$00,$00,$00,$00,$00 ;
+ $B434 DEFB $1F,$80,$00,$00,$01,$F8,$1F,$80 ;
+ $B43C DEFB $00,$00,$01,$F8,$1F,$80,$00,$00 ;
+ $B444 DEFB $01,$F8,$10,$00,$00,$00,$00,$08 ;
+ $B44C DEFB $07,$80,$00,$00,$01,$E0,$1F,$80 ;
+ $B454 DEFB $00,$00,$01,$F8,$1F,$00,$00,$00 ;
+ $B45C DEFB $00,$F8,$0E,$40,$00,$00,$02,$70 ;
+ $B464 DEFB $08,$E0,$00,$00,$07,$10,$03,$F4 ;
+ $B46C DEFB $00,$00,$2F,$C0,$07,$EF,$00,$00 ;
+ $B474 DEFB $F7,$E0,$03,$CE,$77,$EE,$73,$C0 ;
+ $B47C DEFB $01,$DE,$F6,$6F,$7B,$80,$00,$9E ;
+ $B484 DEFB $F6,$6F,$79,$00,$00,$3C,$E6,$67 ;
+ $B48C DEFB $3C,$00,$00,$1D,$EE,$EE,$B8,$00 ;
+ $B494 DEFB $00,$01,$EE,$77,$80,$00,$00,$00 ;
+ $B49C DEFB $08,$10,$00,$00,$00,$00,$0F,$F0 ;
+ $B4A4 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; }
+
+; Attributes: Big Door Frame
+@label=AttribBigDoorFrame
+b$B4AC DEFB $06                             ;  Width (in bytes).
+ $B4AD DEFB $04                             ;  Height (in bytes).
+ $B4AE DEFB $43,$43,$00,$00,$43,$43,$43,$43 ; { Colour attribute data.
+ $B4B6 DEFB $00,$00,$43,$43,$43,$43,$43,$43 ;
+ $B4BE DEFB $43,$43,$43,$43,$43,$43,$43,$43 ; }
+
+; Sprite: Picture
+;
+; #UDGTABLE
+; {
+; #UDGARRAY4,$07,4,4,,2;$B4C8-$B4CB;$B4E8-$B4EB;$B508-$B50B(Picture)
+; }
+; TABLE#
+@label=SpritePicture
+b$B4C6 DEFB $04                             ;  Width (in bytes).
+ $B4C7 DEFB $18                             ;  Height (in pixels).
+ $B4C8 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; { Graphic data.
+ $B4D0 DEFB $03,$80,$01,$C0,$07,$C6,$63,$E0 ;
+ $B4D8 DEFB $06,$7F,$FE,$60,$03,$FF,$FF,$C0 ;
+ $B4E0 DEFB $01,$80,$01,$80,$01,$80,$01,$80 ;
+ $B4E8 DEFB $03,$8C,$31,$C0,$07,$8F,$F1,$E0 ;
+ $B4F0 DEFB $03,$0C,$30,$C0,$0B,$0F,$F0,$D0 ;
+ $B4F8 DEFB $0F,$0C,$90,$F0,$07,$0D,$B0,$E0 ;
+ $B500 DEFB $06,$07,$E0,$60,$0E,$03,$C0,$70 ;
+ $B508 DEFB $1E,$00,$00,$78,$37,$FF,$FF,$EC ;
+ $B510 DEFB $1F,$FF,$FF,$F4,$35,$FF,$FF,$AC ;
+ $B518 DEFB $1B,$1C,$31,$D8,$0E,$06,$60,$70 ;
+ $B520 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; }
+
+; Attributes: Picture
+@label=AttribPicture
+b$B528 DEFB $04                             ;  Width (in bytes).
+ $B529 DEFB $03                             ;  Height (in bytes).
+ $B52A DEFB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ; { Colour attribute data.
+ $B532 DEFB $FF,$FF,$FF,$FF                 ; }
+
+; Sprite: Serf Walking Down 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B537-$B538;$B547-$B548;$B557-$B558{,6*4}(SerfWalkingDown1)
+; }
+; TABLE#
+@label=SpriteSerfWalkingDown1
+b$B536 DEFB $12                             ;  Height (in pixels).
+ $B537 DEFB $1F,$38,$17,$38,$0E,$3C,$01,$5E ; { Graphic data.
+ $B53F DEFB $03,$DE,$27,$EE,$77,$70,$77,$F4 ;
+ $B547 DEFB $77,$74,$45,$D0,$00,$80,$0A,$28 ;
+ $B54F DEFB $1B,$6C,$08,$0C,$1C,$14,$17,$FC ;
+ $B557 DEFB $0D,$E8,$07,$50                 ; }
+
+; Sprite: Serf Down
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B55C-$B55D;$B56C-$B56D;$B57C-$B57D{,6*4}(SerfDown)
+; }
+; TABLE#
+@label=SpriteSerfDown
+b$B55B DEFB $12                             ;  Height (in pixels).
+ $B55C DEFB $0F,$F8,$0D,$68,$06,$30,$01,$40 ; { Graphic data.
+ $B564 DEFB $23,$E2,$37,$F6,$37,$76,$17,$F4 ;
+ $B56C DEFB $17,$74,$05,$D0,$00,$80,$0A,$28 ;
+ $B574 DEFB $1B,$6C,$08,$0C,$1C,$14,$17,$FC ;
+ $B57C DEFB $0D,$E8,$07,$50                 ; }
+
+; Sprite: Serf Walking Down 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B581-$B582;$B591-$B592;$B5A1-$B5A2{,6*4}(SerfWalkingDown2)
+; }
+; TABLE#
+@label=SpriteSerfWalkingDown2
+b$B580 DEFB $12                             ;  Height (in pixels).
+ $B581 DEFB $07,$7C,$07,$74,$1F,$58,$3D,$60 ; { Graphic data.
+ $B589 DEFB $3D,$E0,$3B,$F2,$07,$77,$17,$F7 ;
+ $B591 DEFB $17,$77,$05,$D2,$00,$80,$0A,$28 ;
+ $B599 DEFB $1B,$6C,$08,$0C,$1C,$14,$17,$FC ;
+ $B5A1 DEFB $0D,$E8,$07,$A0                 ; }
+
+; Sprite: Serf Walking Up 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B5A6-$B5A7;$B5B6-$B5B7;$B5C6-$B5C7{,6*4}(SerfWalkingUp1)
+; }
+; TABLE#
+@label=SpriteSerfWalkingUp1
+b$B5A5 DEFB $12                             ;  Height (in pixels).
+ $B5A6 DEFB $1E,$40,$1E,$70,$0A,$B0,$07,$D8 ; { Graphic data.
+ $B5AE DEFB $0F,$D8,$4F,$E8,$EF,$E0,$EC,$6C ;
+ $B5B6 DEFB $E2,$4C,$8D,$A8,$15,$70,$1B,$D0 ;
+ $B5BE DEFB $3A,$98,$2B,$68,$15,$D0,$2F,$B8 ;
+ $B5C6 DEFB $13,$50,$0A,$A0                 ; }
+
+; Sprite: Serf Up
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B5CB-$B5CC;$B5DB-$B5DC;$B5EB-$B5EC{,6*4}(SerfUp)
+; }
+; TABLE#
+@label=SpriteSerfUp
+b$B5CA DEFB $12                             ;  Height (in pixels).
+ $B5CB DEFB $0E,$E0,$0E,$E0,$02,$80,$07,$C0 ; { Graphic data.
+ $B5D3 DEFB $47,$C4,$6F,$EC,$6F,$EC,$2C,$68 ;
+ $B5DB DEFB $23,$88,$0D,$A0,$15,$70,$1B,$D0 ;
+ $B5E3 DEFB $3A,$98,$2B,$68,$15,$D0,$2F,$B8 ;
+ $B5EB DEFB $13,$50,$0A,$A0                 ; }
+
+; Sprite: Serf Walking Up 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B5F0-$B5F1;$B600-$B601;$B610-$B611{,6*4}(SerfWalkingUp2)
+; }
+; TABLE#
+@label=SpriteSerfWalkingUp2
+b$B5EF DEFB $12                             ;  Height (in pixels).
+ $B5F0 DEFB $04,$F0,$1C,$F0,$1A,$A0,$37,$C0 ; { Graphic data.
+ $B5F8 DEFB $37,$E0,$2F,$E4,$0F,$EE,$6C,$3E ;
+ $B600 DEFB $63,$8E,$2D,$A2,$15,$70,$1B,$D0 ;
+ $B608 DEFB $3A,$98,$2B,$68,$15,$D0,$2F,$B8 ;
+ $B610 DEFB $13,$50,$0A,$A0                 ; }
+
+; Sprite: Serf Walking Left 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B615-$B616;$B625-$B626;$B635-$B636{,6*4}(SerfWalkingLeft1)
+; }
+; TABLE#
+@label=SpriteSerfWalkingLeft1
+b$B614 DEFB $12                             ;  Height (in pixels).
+ $B615 DEFB $03,$70,$0F,$78,$3F,$1C,$FB,$EC ; { Graphic data.
+ $B61D DEFB $CB,$10,$77,$88,$07,$C8,$37,$88 ;
+ $B625 DEFB $77,$30,$0F,$C0,$11,$50,$60,$B8 ;
+ $B62D DEFB $68,$68,$19,$D0,$07,$A8,$19,$58 ;
+ $B635 DEFB $16,$F0,$0A,$A0                 ; }
+
+; Sprite: Serf Left
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B63A-$B63B;$B64A-$B64B;$B65A-$B65B{,6*4}(SerfLeft)
+; }
+; TABLE#
+@label=SpriteSerfLeft
+b$B639 DEFB $12                             ;  Height (in pixels).
+ $B63A DEFB $3F,$E0,$2F,$E0,$24,$C0,$19,$E0 ; { Graphic data.
+ $B642 DEFB $03,$F0,$06,$38,$06,$18,$07,$18 ;
+ $B64A DEFB $07,$30,$0F,$C0,$11,$50,$60,$B8 ;
+ $B652 DEFB $68,$68,$19,$D0,$07,$A8,$19,$58 ;
+ $B65A DEFB $16,$F0,$0A,$A0                 ; }
+
+; Sprite: Serf Walking Left 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B65F-$B660;$B66F-$B670;$B67F-$B680{,6*4}(SerfWalkingLeft2)
+; }
+; TABLE#
+@label=SpriteSerfWalkingLeft2
+b$B65E DEFB $12                             ;  Height (in pixels).
+ $B65F DEFB $03,$F0,$3A,$F8,$5A,$5C,$4D,$9C ; { Graphic data.
+ $B667 DEFB $30,$30,$07,$F8,$08,$7A,$18,$1A ;
+ $B66F DEFB $07,$3C,$0F,$C0,$11,$50,$60,$B8 ;
+ $B677 DEFB $68,$68,$19,$D0,$07,$A8,$19,$58 ;
+ $B67F DEFB $16,$F0,$0A,$A0                 ; }
+
+; Sprite: Serf Walking Right 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B684-$B685;$B694-$B695;$B6A4-$B6A5{,6*4}(SerfWalkingRight1)
+; }
+; TABLE#
+@label=SpriteSerfWalkingRight1
+b$B683 DEFB $12                             ;  Height (in pixels).
+ $B684 DEFB $0F,$C0,$1F,$5C,$3A,$5A,$39,$B2 ; { Graphic data.
+ $B68C DEFB $0C,$0C,$1F,$E0,$5E,$10,$58,$18 ;
+ $B694 DEFB $3C,$E0,$03,$F0,$05,$88,$1D,$06 ;
+ $B69C DEFB $16,$16,$0B,$98,$15,$E0,$1A,$98 ;
+ $B6A4 DEFB $0F,$E8,$05,$50                 ; }
+
+; Sprite: Serf Right
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B6A9-$B6AA;$B6B9-$B6BA;$B6C9-$B6CA{,6*4}(SerfRight)
+; }
+; TABLE#
+@label=SpriteSerfRight
+b$B6A8 DEFB $12                             ;  Height (in pixels).
+ $B6A9 DEFB $07,$FC,$07,$F4,$03,$24,$07,$98 ; { Graphic data.
+ $B6B1 DEFB $0F,$C0,$1C,$60,$18,$60,$18,$E0 ;
+ $B6B9 DEFB $0C,$E0,$03,$F0,$05,$88,$1D,$06 ;
+ $B6C1 DEFB $16,$16,$0B,$98,$15,$E0,$1A,$98 ;
+ $B6C9 DEFB $0F,$E8,$05,$50                 ; }
+
+; Sprite: Serf Walking Right 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B6CE-$B6CF;$B6DE-$B6DF;$B6EE-$B6EF{,6*4}(SerfWalkingRight2)
+; }
+; TABLE#
+@label=SpriteSerfWalkingRight2
+b$B6CD DEFB $12                             ;  Height (in pixels).
+ $B6CE DEFB $0E,$C0,$1E,$F0,$31,$FC,$37,$DF ; { Graphic data.
+ $B6D6 DEFB $08,$D3,$11,$EE,$13,$E0,$11,$EC ;
+ $B6DE DEFB $0C,$EE,$03,$F0,$05,$88,$1D,$06 ;
+ $B6E6 DEFB $16,$16,$0B,$98,$15,$E0,$1A,$98 ;
+ $B6EE DEFB $0F,$E8,$05,$50                 ; }
+
+; Sprite: Clock
+;
+; #UDGTABLE
+; {
+; #UDGARRAY4,,4,4,,2;$B6F4-$B6F7;$B714-$B717;$B734-$B737;$B754-$B757@$B776-$B785(Clock)
+; }
+; TABLE#
+@label=SpriteClock
+b$B6F2 DEFB $04                             ;  Width (in bytes).
+ $B6F3 DEFB $20                             ;  Height (in pixels).
+ $B6F4 DEFB $00,$3F,$FC,$00,$00,$70,$0E,$00 ; { Graphic data.
+ $B6FC DEFB $00,$77,$EE,$00,$00,$67,$E6,$00 ;
+ $B704 DEFB $00,$67,$E6,$00,$00,$6B,$F6,$00 ;
+ $B70C DEFB $00,$E8,$F7,$00,$00,$CF,$F3,$00 ;
+ $B714 DEFB $00,$DF,$FB,$00,$00,$DF,$FB,$00 ;
+ $B71C DEFB $00,$C0,$03,$00,$00,$FF,$FF,$00 ;
+ $B724 DEFB $00,$FF,$FF,$00,$01,$F9,$9F,$80 ;
+ $B72C DEFB $01,$E0,$07,$80,$01,$C0,$03,$80 ;
+ $B734 DEFB $01,$F7,$8F,$80,$01,$C0,$43,$80 ;
+ $B73C DEFB $01,$E0,$27,$80,$06,$79,$9E,$60 ;
+ $B744 DEFB $06,$9F,$F9,$60,$06,$E7,$E7,$60 ;
+ $B74C DEFB $07,$69,$96,$E0,$06,$EE,$77,$60 ;
+ $B754 DEFB $06,$F7,$6F,$60,$07,$6E,$F6,$E0 ;
+ $B75C DEFB $06,$EF,$77,$60,$06,$F6,$EF,$60 ;
+ $B764 DEFB $01,$6F,$76,$00,$00,$6E,$F6,$00 ;
+ $B76C DEFB $00,$1F,$68,$00,$00,$03,$E0,$00 ; }
+
+; Attributes: Clock
+@label=AttribClock
+b$B774 DEFB $04                             ;  Width (in bytes).
+ $B775 DEFB $04                             ;  Height (in bytes).
+ $B776 DEFB $45,$45,$45,$45,$45,$45,$45,$45 ; { Colour attribute data.
+ $B77E DEFB $45,$45,$45,$45,$45,$45,$45,$45 ; }
+
+; Sprite: Wizard Walking Down 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B787-$B788;$B797-$B798;$B7A7-$B7A8{,4*4}(WizardWalkingDown1)
+; }
+; TABLE#
+@label=SpriteWizardWalkingDown1
+b$B786 DEFB $14                             ;  Height (in pixels).
+ $B787 DEFB $3C,$00,$4C,$F0,$1F,$68,$1B,$84 ; { Graphic data.
+ $B78F DEFB $06,$6E,$6C,$6E,$EE,$EC,$EF,$E8 ;
+ $B797 DEFB $44,$40,$16,$D0,$18,$30,$1F,$F0 ;
+ $B79F DEFB $1E,$70,$0C,$E0,$0C,$E0,$04,$C0 ;
+ $B7A7 DEFB $06,$40,$03,$80,$03,$80,$01,$00 ; }
+
+; Sprite: Wizard Down
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B7B0-$B7B1;$B7C0-$B7C1;$B7D0-$B7D1{,4*4}(WizardDown)
+; }
+; TABLE#
+@label=SpriteWizardDown
+b$B7AF DEFB $14                             ;  Height (in pixels).
+ $B7B0 DEFB $1E,$F0,$26,$C8,$05,$40,$03,$80 ; { Graphic data.
+ $B7B8 DEFB $66,$CC,$EC,$6E,$EE,$EE,$6F,$EC ;
+ $B7C0 DEFB $04,$40,$16,$D0,$18,$30,$1F,$F0 ;
+ $B7C8 DEFB $1E,$70,$0C,$E0,$0C,$E0,$04,$C0 ;
+ $B7D0 DEFB $06,$40,$03,$80,$03,$80,$01,$00 ; }
+
+; Sprite: Wizard Walking Down 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B7D9-$B7DA;$B7E9-$B7EA;$B7F9-$B7FA{,4*4}(WizardWalkingDown2)
+; }
+; TABLE#
+@label=SpriteWizardWalkingDown2
+b$B7D8 DEFB $14                             ;  Height (in pixels).
+ $B7D9 DEFB $00,$78,$1E,$64,$2D,$F0,$43,$B0 ; { Graphic data.
+ $B7E1 DEFB $E6,$C0,$EC,$6C,$6E,$EE,$2F,$EE ;
+ $B7E9 DEFB $04,$44,$16,$D0,$18,$30,$1F,$F0 ;
+ $B7F1 DEFB $1E,$70,$0C,$E0,$0C,$E0,$04,$C0 ;
+ $B7F9 DEFB $06,$40,$03,$80,$03,$80,$01,$00 ; }
+
+; Sprite: Wizard Walking Up 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B802-$B803;$B812-$B813;$B822-$B823{,4*4}(WizardWalkingUp1)
+; }
+; TABLE#
+@label=SpriteWizardWalkingUp1
+b$B801 DEFB $14                             ;  Height (in pixels).
+ $B802 DEFB $1E,$00,$26,$78,$0F,$D4,$0D,$C2 ; { Graphic data.
+ $B80A DEFB $03,$E7,$3E,$F7,$FF,$F6,$77,$F4 ;
+ $B812 DEFB $20,$00,$0F,$F8,$0D,$F8,$08,$F8 ;
+ $B81A DEFB $0D,$F8,$07,$F0,$07,$70,$02,$20 ;
+ $B822 DEFB $03,$60,$01,$C0,$01,$C0,$00,$80 ; }
+
+; Sprite: Wizard Up
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B82B-$B82C;$B83B-$B83C;$B84B-$B84C{,4*4}(WizardUp)
+; }
+; TABLE#
+@label=SpriteWizardUp
+b$B82A DEFB $14                             ;  Height (in pixels).
+ $B82B DEFB $0F,$78,$13,$64,$02,$A0,$01,$C0 ; { Graphic data.
+ $B833 DEFB $33,$E6,$77,$F7,$77,$F7,$37,$F6 ;
+ $B83B DEFB $00,$00,$0F,$F8,$0D,$F8,$08,$F8 ;
+ $B843 DEFB $0D,$F8,$07,$F0,$07,$70,$02,$20 ;
+ $B84B DEFB $03,$60,$01,$C0,$01,$C0,$00,$80 ; }
+
+; Sprite: Wizard Walking Up 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B854-$B855;$B864-$B865;$B874-$B875{,4*4}(WizardWalkingUp2)
+; }
+; TABLE#
+@label=SpriteWizardWalkingUp2
+b$B853 DEFB $14                             ;  Height (in pixels).
+ $B854 DEFB $00,$3C,$0F,$32,$16,$F8,$21,$D8 ; { Graphic data.
+ $B85C DEFB $73,$E0,$77,$F6,$37,$F7,$17,$F7 ;
+ $B864 DEFB $00,$02,$0F,$F8,$0D,$F8,$08,$F8 ;
+ $B86C DEFB $0D,$F8,$07,$F0,$07,$70,$02,$20 ;
+ $B874 DEFB $03,$60,$01,$C0,$01,$C0,$00,$80 ; }
+
+; Sprite: Wizard Walking Left 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B87D-$B87E;$B88D-$B88E;$B89D-$B89E{,4*4}(WizardWalkingLeft1)
+; }
+; TABLE#
+@label=SpriteWizardWalkingLeft1
+b$B87C DEFB $14                             ;  Height (in pixels).
+ $B87D DEFB $0C,$F0,$1C,$38,$33,$98,$47,$60 ; { Graphic data.
+ $B885 DEFB $06,$10,$37,$08,$07,$98,$31,$F0 ;
+ $B88D DEFB $35,$80,$0D,$78,$00,$D8,$1F,$88 ;
+ $B895 DEFB $0F,$D8,$05,$F0,$05,$F0,$02,$E0 ;
+ $B89D DEFB $02,$E0,$01,$C0,$01,$C0,$00,$80 ; }
+
+; Sprite: Wizard Left
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B8A6-$B8A7;$B8B6-$B8B7;$B8C6-$B8C7{,4*4}(WizardLeft)
+; }
+; TABLE#
+@label=SpriteWizardLeft
+b$B8A5 DEFB $14                             ;  Height (in pixels).
+ $B8A6 DEFB $07,$C0,$09,$C0,$00,$00,$03,$F0 ; { Graphic data.
+ $B8AE DEFB $06,$38,$04,$18,$07,$98,$31,$F0 ;
+ $B8B6 DEFB $35,$80,$0D,$78,$00,$D8,$1F,$88 ;
+ $B8BE DEFB $0F,$D8,$05,$F0,$05,$F0,$02,$E0 ;
+ $B8C6 DEFB $02,$E0,$01,$C0,$01,$C0,$00,$80 ; }
+
+; Sprite: Wizard Walking Left 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B8CF-$B8D0;$B8DF-$B8E0;$B8EF-$B8F0{,4*4}(WizardWalkingLeft2)
+; }
+; TABLE#
+@label=SpriteWizardWalkingLeft2
+b$B8CE DEFB $14                             ;  Height (in pixels).
+ $B8CF DEFB $03,$F0,$1C,$38,$33,$D8,$47,$E0 ; { Graphic data.
+ $B8D7 DEFB $04,$74,$08,$3A,$07,$1E,$31,$F8 ;
+ $B8DF DEFB $35,$80,$0D,$78,$00,$D8,$1F,$88 ;
+ $B8E7 DEFB $0F,$D8,$05,$F0,$05,$F0,$02,$E0 ;
+ $B8EF DEFB $02,$E0,$01,$C0,$01,$C0,$00,$80 ; }
+
+; Sprite: Wizard Walking Right 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B8F8-$B8F9;$B908-$B909;$B918-$B919{,4*4}(WizardWalkingRight1)
+; }
+; TABLE#
+@label=SpriteWizardWalkingRight1
+b$B8F7 DEFB $14                             ;  Height (in pixels).
+ $B8F8 DEFB $0F,$30,$1C,$38,$1B,$CC,$07,$E2 ; { Graphic data.
+ $B900 DEFB $2E,$20,$5C,$10,$78,$E0,$1F,$8C ;
+ $B908 DEFB $01,$AC,$1E,$B0,$1B,$00,$11,$F8 ;
+ $B910 DEFB $1B,$F0,$0F,$A0,$0F,$A0,$07,$40 ;
+ $B918 DEFB $07,$40,$03,$80,$03,$80,$01,$00 ; }
+
+; Sprite: Wizard Right
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B921-$B922;$B931-$B932;$B941-$B942{,4*4}(WizardRight)
+; }
+; TABLE#
+@label=SpriteWizardRight
+b$B920 DEFB $14                             ;  Height (in pixels).
+ $B921 DEFB $03,$E0,$03,$90,$00,$00,$0F,$C0 ; { Graphic data.
+ $B929 DEFB $1C,$60,$18,$20,$19,$E0,$0F,$8C ;
+ $B931 DEFB $01,$AC,$1E,$B0,$1B,$00,$11,$F8 ;
+ $B939 DEFB $1B,$F0,$0F,$A0,$0F,$A0,$07,$40 ;
+ $B941 DEFB $07,$40,$03,$80,$03,$80,$01,$00 ; }
+
+; Sprite: Wizard Walking Right 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B94A-$B94B;$B95A-$B95B;$B96A-$B96B{,4*4}(WizardWalkingRight2)
+; }
+; TABLE#
+@label=SpriteWizardWalkingRight2
+b$B949 DEFB $14                             ;  Height (in pixels).
+ $B94A DEFB $0F,$30,$1C,$38,$19,$CC,$06,$E2 ; { Graphic data.
+ $B952 DEFB $08,$60,$10,$EC,$19,$E0,$0F,$8C ;
+ $B95A DEFB $01,$AC,$1E,$B0,$1B,$00,$11,$F8 ;
+ $B962 DEFB $1B,$F0,$0F,$A0,$0F,$A0,$07,$40 ;
+ $B96A DEFB $07,$40,$03,$80,$03,$80,$01,$00 ; }
+
+; Sprite: Serf Sword 7
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B973-$B974;$B983-$B984{,4*4}(SerfSword7)
+; }
+; TABLE#
+@label=SpriteSerfSword7
+b$B972 DEFB $0C                             ;  Height (in pixels).
+ $B973 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; { Graphic data.
+ $B97B DEFB $00,$20,$00,$10,$00,$12,$7F,$DF ;
+ $B983 DEFB $FF,$DF,$00,$12,$00,$10,$00,$20 ; }
+
+; Sprite: Serf Sword 4
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B98C-$B98D;$B99C-$B99D{,3*4}(SerfSword4)
+; }
+; TABLE#
+@label=SpriteSerfSword4
+b$B98B DEFB $0D                             ;  Height (in pixels).
+ $B98C DEFB $00,$00,$00,$1C,$01,$DC,$00,$7C ; { Graphic data.
+ $B994 DEFB $00,$30,$00,$D8,$01,$C8,$03,$88 ;
+ $B99C DEFB $07,$00,$0E,$00,$1C,$00,$18,$00 ;
+ $B9A4 DEFB $10,$00                         ; }
+
+; Sprite: Serf Sword 5
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B9A7-$B9A8;$B9B7-$B9B8(SerfSword5)
+; }
+; TABLE#
+@label=SpriteSerfSword5
+b$B9A6 DEFB $10                             ;  Height (in pixels).
+ $B9A7 DEFB $01,$80,$03,$C0,$01,$80,$01,$80 ; { Graphic data.
+ $B9AF DEFB $07,$E0,$08,$10,$01,$80,$01,$80 ;
+ $B9B7 DEFB $01,$80,$01,$80,$01,$80,$01,$80 ;
+ $B9BF DEFB $01,$80,$01,$80,$01,$80,$00,$80 ; }
+
+; Sprite: Serf Sword 6
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B9C8-$B9C9;$B9D8-$B9D9{,3*4}(SerfSword6)
+; }
+; TABLE#
+@label=SpriteSerfSword6
+b$B9C7 DEFB $0D                             ;  Height (in pixels).
+ $B9C8 DEFB $00,$00,$00,$00,$38,$00,$3B,$80 ; { Graphic data.
+ $B9D0 DEFB $3E,$00,$0C,$00,$1B,$00,$13,$80 ;
+ $B9D8 DEFB $11,$C0,$00,$E0,$00,$70,$00,$38 ;
+ $B9E0 DEFB $00,$1C                         ; }
+
+; Sprite: Serf Sword 3
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B9E3-$B9E4;$B9F3-$B9F4{,4*4}(SerfSword3)
+; }
+; TABLE#
+@label=SpriteSerfSword3
+b$B9E2 DEFB $0C                             ;  Height (in pixels).
+ $B9E3 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; { Graphic data.
+ $B9EB DEFB $04,$00,$08,$00,$48,$00,$FD,$FF ;
+ $B9F3 DEFB $FD,$FE,$48,$00,$08,$00,$04,$00 ; }
+
+; Sprite: Serf Sword 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$B9FC-$B9FD;$BA0C-$BA0D{,4*4}(SerfSword2)
+; }
+; TABLE#
+@label=SpriteSerfSword2
+b$B9FB DEFB $0C                             ;  Height (in pixels).
+ $B9FC DEFB $00,$00,$00,$08,$00,$18,$00,$38 ; { Graphic data.
+ $BA04 DEFB $00,$70,$00,$E0,$11,$C0,$13,$80 ;
+ $BA0C DEFB $1D,$00,$0C,$00,$3E,$00,$3B,$80 ; }
+
+; Unused data at $BA14
+@label=UnusedDataAt$BA14
+u$BA14 DEFB $38,$00
+
+; Sprite: Serf Sword 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BA17-$BA18;$BA27-$BA28(SerfSword1)
+; }
+; TABLE#
+@label=SpriteSerfSword1
+b$BA16 DEFB $10                             ;  Height (in pixels).
+ $BA17 DEFB $01,$00,$01,$80,$01,$80,$01,$80 ; { Graphic data.
+ $BA1F DEFB $01,$80,$01,$80,$01,$80,$01,$80 ;
+ $BA27 DEFB $01,$80,$01,$80,$08,$10,$07,$E0 ;
+ $BA2F DEFB $01,$80,$01,$80,$03,$C0,$01,$80 ; }
+
+; Sprite: Serf Sword 8
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BA38-$BA39;$BA48-$BA49(SerfSword8)
+; }
+; TABLE#
+@label=SpriteSerfSword8
+b$BA37 DEFB $10                             ;  Height (in pixels).
+ $BA38 DEFB $00,$00,$00,$00,$10,$00,$18,$00 ; { Graphic data.
+ $BA40 DEFB $1C,$00,$0E,$00,$07,$00,$03,$88 ;
+ $BA48 DEFB $01,$C8,$00,$D8,$00,$30,$00,$7C ;
+ $BA50 DEFB $01,$DC,$00,$1C,$00,$00,$00,$00 ; }
+
+; Sprite: Knight Axe 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BA59-$BA5A;$BA69-$BA6A(KnightAxe1)
+; }
+; TABLE#
+@label=SpriteKnightAxe1
+b$BA58 DEFB $10                             ;  Height (in pixels).
+ $BA59 DEFB $00,$00,$00,$00,$3C,$00,$7E,$00 ; { Graphic data.
+ $BA61 DEFB $C3,$00,$3C,$00,$18,$00,$3D,$FF ;
+ $BA69 DEFB $3D,$FF,$00,$00,$00,$00,$00,$00 ;
+ $BA71 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; }
+
+; Sprite: Knight Axe 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BA7A-$BA7B;$BA8A-$BA8B(KnightAxe2)
+; }
+; TABLE#
+@label=SpriteKnightAxe2
+b$BA79 DEFB $10                             ;  Height (in pixels).
+ $BA7A DEFB $00,$00,$00,$04,$00,$0E,$00,$1C ; { Graphic data.
+ $BA82 DEFB $00,$38,$3C,$70,$60,$E0,$D9,$C0 ;
+ $BA8A DEFB $BA,$80,$BF,$00,$8E,$00,$1C,$00 ;
+ $BA92 DEFB $08,$00,$00,$00,$00,$00,$00,$00 ; }
+
+; Sprite: Knight Axe 3
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BA9B-$BA9C;$BAAB-$BAAC(KnightAxe3)
+; }
+; TABLE#
+@label=SpriteKnightAxe3
+b$BA9A DEFB $10                             ;  Height (in pixels).
+ $BA9B DEFB $01,$80,$01,$80,$01,$80,$01,$80 ; { Graphic data.
+ $BAA3 DEFB $01,$80,$01,$80,$01,$80,$01,$80 ;
+ $BAAB DEFB $09,$80,$18,$00,$35,$80,$37,$80 ;
+ $BAB3 DEFB $37,$80,$35,$80,$18,$00,$08,$00 ; }
+
+; Sprite: Knight Axe 4
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BABC-$BABD;$BACC-$BACD(KnightAxe4)
+; }
+; TABLE#
+@label=SpriteKnightAxe4
+b$BABB DEFB $10                             ;  Height (in pixels).
+ $BABC DEFB $00,$00,$20,$00,$70,$00,$38,$00 ; { Graphic data.
+ $BAC4 DEFB $1C,$00,$0E,$00,$07,$00,$03,$80 ;
+ $BACC DEFB $01,$40,$00,$E0,$04,$70,$05,$F8 ;
+ $BAD4 DEFB $05,$D0,$06,$C0,$03,$00,$01,$E0 ; }
+
+; Sprite: Knight Axe 5
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BADD-$BADE;$BAED-$BAEE(KnightAxe5)
+; }
+; TABLE#
+@label=SpriteKnightAxe5
+b$BADC DEFB $10                             ;  Height (in pixels).
+ $BADD DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; { Graphic data.
+ $BAE5 DEFB $00,$00,$00,$00,$00,$00,$FF,$BC ;
+ $BAED DEFB $FF,$BC,$00,$18,$00,$3C,$00,$C3 ;
+ $BAF5 DEFB $00,$7E,$00,$3C,$00,$00,$00,$00 ; }
+
+; Sprite: Knight Axe 6
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BAFE-$BAFF;$BB0E-$BB0F(KnightAxe6)
+; }
+; TABLE#
+@label=SpriteKnightAxe6
+b$BAFD DEFB $10                             ;  Height (in pixels).
+ $BAFE DEFB $00,$00,$00,$00,$00,$00,$00,$10 ; { Graphic data.
+ $BB06 DEFB $00,$38,$00,$71,$00,$FD,$01,$5D ;
+ $BB0E DEFB $03,$9B,$07,$06,$0E,$3C,$1C,$00 ;
+ $BB16 DEFB $38,$00,$70,$00,$20,$00,$00,$00 ; }
+
+; Sprite: Knight Axe 7
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BB1F-$BB20;$BB2F-$BB30(KnightAxe7)
+; }
+; TABLE#
+@label=SpriteKnightAxe7
+b$BB1E DEFB $10                             ;  Height (in pixels).
+ $BB1F DEFB $00,$10,$00,$18,$01,$AC,$01,$EC ; { Graphic data.
+ $BB27 DEFB $01,$EC,$01,$AC,$00,$18,$01,$90 ;
+ $BB2F DEFB $01,$80,$01,$80,$01,$80,$01,$80 ;
+ $BB37 DEFB $01,$80,$01,$80,$01,$80,$01,$80 ; }
+
+; Sprite: Knight Axe 8
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BB40-$BB41;$BB50-$BB51(KnightAxe8)
+; }
+; TABLE#
+@label=SpriteKnightAxe8
+b$BB3F DEFB $10                             ;  Height (in pixels).
+ $BB40 DEFB $07,$80,$00,$C0,$03,$60,$0B,$A0 ; { Graphic data.
+ $BB48 DEFB $1F,$A0,$0E,$20,$07,$00,$02,$80 ;
+ $BB50 DEFB $01,$C0,$00,$E0,$00,$70,$00,$38 ;
+ $BB58 DEFB $00,$1C,$00,$0E,$00,$04,$00,$00 ; }
+
+; Sprite: Wizard Potion 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BB61-$BB62;$BB71-$BB72{,1*4}(WizardPotion1)
+; }
+; TABLE#
+@label=SpriteWizardPotion1
+b$BB60 DEFB $0F                             ;  Height (in pixels).
+ $BB61 DEFB $00,$00,$00,$00,$00,$00,$00,$24 ; { Graphic data.
+ $BB69 DEFB $00,$80,$09,$80,$02,$D0,$0D,$60 ;
+ $BB71 DEFB $06,$F0,$43,$42,$05,$A0,$12,$A0 ;
+ $BB79 DEFB $00,$00,$00,$00,$01,$00         ; }
+
+; Sprite: Wizard Potion 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BB80-$BB81;$BB90-$BB91{,1*4}(WizardPotion2)
+; }
+; TABLE#
+@label=SpriteWizardPotion2
+b$BB7F DEFB $0F                             ;  Height (in pixels).
+ $BB80 DEFB $00,$00,$00,$08,$00,$00,$20,$80 ; { Graphic data.
+ $BB88 DEFB $01,$00,$03,$A0,$02,$08,$15,$F0 ;
+ $BB90 DEFB $05,$A8,$06,$60,$01,$80,$08,$20 ;
+ $BB98 DEFB $04,$80,$00,$10,$00,$00         ; }
+
+; Sprite: Wizard Potion 3
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BB9F-$BBA0;$BBAF-$BBB0{,1*4}(WizardPotion3)
+; }
+; TABLE#
+@label=SpriteWizardPotion3
+b$BB9E DEFB $0F                             ;  Height (in pixels).
+ $BB9F DEFB $00,$00,$00,$80,$00,$00,$01,$00 ; { Graphic data.
+ $BBA7 DEFB $04,$10,$01,$82,$03,$60,$45,$68 ;
+ $BBAF DEFB $0E,$B0,$07,$42,$09,$90,$01,$00 ;
+ $BBB7 DEFB $20,$00,$00,$08,$10,$80         ; }
+
+; Sprite: Wizard Potion 4
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BBBE-$BBBF;$BBCE-$BBCF{,1*4}(WizardPotion4)
+; }
+; TABLE#
+@label=SpriteWizardPotion4
+b$BBBD DEFB $0F                             ;  Height (in pixels).
+ $BBBE DEFB $00,$00,$01,$00,$10,$04,$00,$00 ; { Graphic data.
+ $BBC6 DEFB $00,$40,$01,$90,$07,$40,$05,$E2 ;
+ $BBCE DEFB $17,$68,$03,$C0,$09,$C0,$00,$02 ;
+ $BBD6 DEFB $01,$00,$00,$00,$00,$00         ; }
+
+; Sprite: Cursor Directions Left Pane
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BBDD-$BBDE;$BBED-$BBEE;$BBFD-$BBFE{,4*4}(CursorDirectionsLeftPane)
+; }
+; TABLE#
+@label=SpriteCursorDirectionsLeftPane
+b$BBDC DEFB $14                             ;  Height (in pixels).
+ $BBDD DEFB $00,$01,$00,$03,$00,$07,$00,$0F ; { Graphic data.
+ $BBE5 DEFB $00,$1F,$00,$43,$00,$C3,$01,$C3 ;
+ $BBED DEFB $03,$F8,$07,$F8,$07,$F8,$03,$F8 ;
+ $BBF5 DEFB $01,$C3,$00,$C3,$00,$43,$00,$1F ;
+ $BBFD DEFB $00,$0F,$00,$07,$00,$03,$00,$01 ; }
+
+; Sprite: Cursor Directions Right Pane
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BC06-$BC07;$BC16-$BC17;$BC26-$BC27{,4*4}(CursorDirectionsRightPane)
+; }
+; TABLE#
+@label=SpriteCursorDirectionsRightPane
+b$BC05 DEFB $14                             ;  Height (in pixels).
+ $BC06 DEFB $80,$00,$C0,$00,$E0,$00,$F0,$00 ; { Graphic data.
+ $BC0E DEFB $F8,$00,$C2,$00,$C3,$00,$C3,$80 ;
+ $BC16 DEFB $1F,$C0,$1F,$E0,$1F,$E0,$1F,$C0 ;
+ $BC1E DEFB $C3,$80,$C3,$00,$C2,$00,$F8,$00 ;
+ $BC26 DEFB $F0,$00,$E0,$00,$C0,$00,$80,$00 ; }
+
+; Sprite: Keyboard Left Pane
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BC2F-$BC30;$BC3F-$BC40(KeyboardLeftPane)
+; }
+; TABLE#
+@label=SpriteKeyboardLeftPane
+b$BC2E DEFB $10                             ;  Height (in pixels).
+ $BC2F DEFB $0F,$FF,$0F,$FF,$09,$24,$09,$24 ; { Graphic data.
+ $BC37 DEFB $0F,$FF,$09,$24,$09,$24,$0F,$FF ;
+ $BC3F DEFB $0C,$92,$0C,$92,$07,$FF,$08,$00 ;
+ $BC47 DEFB $0F,$FF,$08,$45,$0D,$11,$07,$FF ; }
+
+; Sprite: Keyboard Right Pane
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BC50-$BC51;$BC60-$BC61(KeyboardRightPane)
+; }
+; TABLE#
+@label=SpriteKeyboardRightPane
+b$BC4F DEFB $10                             ;  Height (in pixels).
+ $BC50 DEFB $FF,$F8,$FF,$F8,$92,$48,$92,$48 ; { Graphic data.
+ $BC58 DEFB $FF,$F8,$92,$48,$92,$48,$FF,$F8 ;
+ $BC60 DEFB $49,$38,$49,$38,$FF,$F0,$00,$08 ;
+ $BC68 DEFB $FF,$F8,$FF,$F8,$FF,$F8,$FF,$F0 ; }
+
+; Sprite: Joystick Left Pane
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BC71-$BC72;$BC81-$BC82;$BC91-$BC92{,1*4}(JoystickLeftPane)
+; }
+; TABLE#
+@label=SpriteJoystickLeftPane
+b$BC70 DEFB $17                             ;  Height (in pixels).
+ $BC71 DEFB $00,$C7,$01,$8F,$03,$1F,$00,$00 ; { Graphic data.
+ $BC79 DEFB $03,$1F,$01,$8F,$00,$C7,$00,$00 ;
+ $BC81 DEFB $00,$33,$00,$0B,$00,$0B,$00,$0B ;
+ $BC89 DEFB $00,$01,$00,$01,$00,$00,$00,$03 ;
+ $BC91 DEFB $00,$07,$00,$0F,$00,$09,$00,$09 ;
+ $BC99 DEFB $00,$0C,$00,$06,$00,$03         ; }
+
+; Sprite: Joystick Right Pane
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BCA0-$BCA1;$BCB0-$BCB1;$BCC0-$BCC1{,1*4}(JoystickRightPane)
+; }
+; TABLE#
+@label=SpriteJoystickRightPane
+b$BC9F DEFB $17                             ;  Height (in pixels).
+ $BCA0 DEFB $FF,$00,$FF,$80,$FF,$C0,$00,$00 ; { Graphic data.
+ $BCA8 DEFB $FF,$C0,$FF,$80,$FF,$00,$00,$00 ;
+ $BCB0 DEFB $FC,$00,$F0,$00,$F0,$00,$F0,$00 ;
+ $BCB8 DEFB $80,$00,$80,$00,$00,$00,$C0,$00 ;
+ $BCC0 DEFB $E0,$00,$F0,$00,$F0,$00,$F0,$00 ;
+ $BCC8 DEFB $70,$00,$60,$00,$C0,$00         ; }
+
+; Sprite: Cave Door Frame
+;
+; #UDGTABLE
+; {
+; #UDGARRAY4,$07,4,4,,2;$BCD0-$BCD3;$BCF0-$BCF3;$BD10-$BD13(CaveDoorFrame)
+; }
+; TABLE#
+@label=SpriteCaveDoorFrame
+b$BCCE DEFB $04                             ;  Width (in bytes).
+ $BCCF DEFB $18                             ;  Height (in pixels).
+ $BCD0 DEFB $FF,$00,$00,$FF,$03,$00,$00,$B0 ; { Graphic data.
+ $BCD8 DEFB $03,$00,$00,$B0,$07,$00,$00,$98 ;
+ $BCE0 DEFB $0D,$00,$00,$98,$18,$80,$01,$0E ;
+ $BCE8 DEFB $38,$80,$01,$0C,$78,$80,$01,$18 ;
+ $BCF0 DEFB $58,$80,$01,$30,$CC,$80,$01,$38 ;
+ $BCF8 DEFB $8C,$40,$02,$2C,$0C,$40,$02,$26 ;
+ $BD00 DEFB $0C,$40,$02,$3B,$1C,$40,$02,$E1 ;
+ $BD08 DEFB $34,$40,$02,$83,$62,$20,$04,$86 ;
+ $BD10 DEFB $F2,$20,$04,$86,$7F,$2C,$05,$4C ;
+ $BD18 DEFB $0F,$62,$25,$4C,$03,$C1,$7D,$58 ;
+ $BD20 DEFB $00,$F0,$DF,$78,$00,$3D,$87,$F0 ;
+ $BD28 DEFB $00,$0F,$00,$C0,$00,$02,$00,$00 ; }
+
+; Sprite: Pumpkin 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BD31-$BD32;$BD41-$BD42;$BD51-$BD52{,5*4}(Pumpkin1)
+; }
+; TABLE#
+@label=SpritePumpkin1
+b$BD30 DEFB $13                             ;  Height (in pixels).
+ $BD31 DEFB $07,$E0,$1F,$F8,$3F,$FC,$7D,$BE ; { Graphic data.
+ $BD39 DEFB $7B,$9E,$F5,$0F,$EF,$67,$F6,$67 ;
+ $BD41 DEFB $FF,$FF,$FF,$7F,$EA,$47,$F7,$CF ;
+ $BD49 DEFB $7B,$CE,$7F,$FE,$3F,$FC,$0D,$B0 ;
+ $BD51 DEFB $01,$C0,$00,$E0,$00,$60         ; }
+
+; Sprite: Pumpkin 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$BD58-$BD59;$BD68-$BD69;$BD78-$BD79{,5*4}(Pumpkin2)
+; }
+; TABLE#
+@label=SpritePumpkin2
+b$BD57 DEFB $13                             ;  Height (in pixels).
+ $BD58 DEFB $07,$E0,$1F,$F8,$3F,$FC,$7D,$FE ; { Graphic data.
+ $BD60 DEFB $79,$BE,$F0,$5F,$E6,$EF,$E6,$77 ;
+ $BD68 DEFB $FF,$FF,$FE,$FF,$E2,$6F,$F3,$DF ;
+ $BD70 DEFB $73,$FF,$7F,$FE,$3F,$FC,$0D,$B0 ;
+ $BD78 DEFB $01,$C0,$00,$E0,$00,$60         ; }
+
+; Unused data at $BD7E
+@label=UnusedDataAt$BD7E
+u$BD7E DEFB $00,$17,$01,$04,$FF,$01,$FF,$02
+ $BD86 DEFB $03,$19,$01,$FF,$03,$FF,$04,$FF
+ $BD8E DEFB $05,$06,$1B,$03,$FF,$06,$FF,$07
+ $BD96 DEFB $08,$06,$1D,$FF,$08,$FF,$09,$04
+ $BD9E DEFB $33,$0A,$FF,$0A,$FF,$0B,$0D,$1F
+ $BDA6 DEFB $08,$FF,$0C,$FF,$0D,$FF,$0E,$0F
+ $BDAE DEFB $0D,$0C,$FF,$0F,$FF,$10,$31,$0A
+ $BDB6 DEFB $35,$FF,$11,$12,$23,$0F,$FF,$12
+ $BDBE DEFB $FF,$13,$36,$35,$FF,$14,$25,$15
+ $BDC6 DEFB $12,$FF,$15,$FF,$16,$17,$04,$33
+ $BDCE DEFB $FF,$17,$FF,$18,$19,$17,$01,$FF
+ $BDD6 DEFB $19,$FF,$1A,$1B,$19,$03,$FF,$1B
+ $BDDE DEFB $FF,$1C,$1D,$1B,$06,$FF,$1D,$FF
+ $BDE6 DEFB $1E,$1F,$1D,$08,$FF,$1F,$FF,$20
+ $BDEE DEFB $0D,$1F,$FF,$21,$FF,$22,$23,$21
+ $BDF6 DEFB $0F,$FF,$23,$FF,$24,$25,$23,$12
+ $BDFE DEFB $FF,$25,$FF,$26,$25,$27,$15,$FF
+ $BE06 DEFB $27,$FF,$28,$27,$29,$3C,$FF,$29
+ $BE0E DEFB $FF,$2A,$2B,$3A,$29,$FF,$2B,$FF
+ $BE16 DEFB $2C,$2D,$2B,$38,$FF,$2D,$FF,$2E
+ $BE1E DEFB $2F,$2D,$36,$FF,$2F,$FF,$30,$13
+ $BE26 DEFB $31,$2F,$FF,$31,$FF,$32,$33,$31
+ $BE2E DEFB $0A,$FF,$33,$FF,$34,$FF,$35,$34
+ $BE36 DEFB $FF,$36,$FF,$37,$2D,$38,$36,$FF
+ $BE3E DEFB $38,$FF,$39,$2B,$38,$3A,$FF,$3A
+ $BE46 DEFB $FF,$3B,$3A,$29,$3C,$FF,$3C,$FF
+ $BE4E DEFB $3D,$15,$3C,$27,$FF,$FF,$79,$0A
+ $BE56 DEFB $86,$04,$91,$04,$A6,$19,$46,$0A
+ $BE5E DEFB $9B,$38,$A7,$4B,$9A,$58,$AA,$68
+ $BE66 DEFB $37,$01,$2A,$07,$9B,$7E,$9B,$87
+ $BE6E DEFB $9B,$8F,$A8,$8F,$95,$A1,$2A,$1E
+ $BE76 DEFB $95,$B8,$88,$BE,$24,$30,$79,$B5
+ $BE7E DEFB $46,$B5,$4F,$27,$70,$27,$79,$23
+ $BE86 DEFB $82,$23,$8F,$30,$84,$47,$89,$52
+ $BE8E DEFB $80,$5B,$8B,$66,$85,$74,$85,$7D
+ $BE96 DEFB $89,$80,$81,$88,$81,$99,$77,$9D
+ $BE9E DEFB $70,$98,$4F,$98,$46,$9C,$3D,$9C
+ $BEA6 DEFB $30,$8F,$3B,$78,$36,$6D,$3F,$64
+ $BEAE DEFB $34,$59,$3A,$4C,$3A,$42,$36,$3F
+ $BEB6 DEFB $3E,$37,$3E,$26,$47,$22,$24,$38
+ $BEBE DEFB $18,$30,$24,$41,$15,$57,$25,$67
+ $BEC6 DEFB $18,$74,$24,$87,$18,$A6,$2E,$BB
+ $BECE DEFB $39,$BB,$0A,$79,$04,$86,$04,$91
+ $BED6 DEFB $19,$A6,$0A,$46,$38,$9B,$4B,$A7
+ $BEDE DEFB $58,$9A,$68,$AA,$01,$37,$07,$2A
+ $BEE6 DEFB $7E,$9B,$87,$9B,$8F,$9B,$8F,$A8
+ $BEEE DEFB $A1,$95,$1E,$2A,$B8,$95,$BE,$88
+ $BEF6 DEFB $30,$24,$B5,$79,$B5,$46,$27,$4F
+ $BEFE DEFB $27,$70,$23,$79,$23,$82,$30,$8F
+ $BF06 DEFB $47,$84,$52,$89,$5B,$80,$66,$8B
+ $BF0E DEFB $74,$85,$7D,$85,$80,$89,$88,$81
+ $BF16 DEFB $99,$81,$9D,$77,$98,$70,$98,$4F
+ $BF1E DEFB $9C,$46,$9C,$3D,$8F,$30,$78,$3B
+ $BF26 DEFB $6D,$36,$64,$3F,$59,$34,$4C,$3A
+ $BF2E DEFB $42,$3A,$3F,$36,$37,$3E,$26,$3E
+ $BF36 DEFB $22,$47,$38,$24,$30,$18,$41,$24
+ $BF3E DEFB $57,$15,$67,$25,$74,$18,$87,$24
+ $BF46 DEFB $A6,$18,$BB,$2E,$BB,$39
+
+; Font
+;
+; #UDGTABLE
+; {
+; #UDG$BF4C,$47(Font$BF4C)
+; #UDG$BF54,$47(Font$BF54)
+; #UDG$BF5C,$47(Font$BF5C)
+; #UDG$BF64,$47(Font$BF64)
+; #UDG$BF6C,$47(Font$BF6C)
+; #UDG$BF74,$47(Font$BF74)
+; #UDG$BF7C,$47(Font$BF7C)
+; #UDG$BF84,$47(Font$BF84)
+; #UDG$BF8C,$47(Font$BF8C)
+; #UDG$BF94,$47(Font$BF94)
+; #UDG$BF9C,$47(Font$BF9C)
+; #UDG$BFA4,$47(Font$BFA4)
+; #UDG$BFAC,$47(Font$BFAC)
+; #UDG$BFB4,$47(Font$BFB4)
+; #UDG$BFBC,$47(Font$BFBC)
+; #UDG$BFC4,$47(Font$BFC4)
+; #UDG$BFCC,$47(Font$BFCC)
+; #UDG$BFD4,$47(Font$BFD4)
+; #UDG$BFDC,$47(Font$BFDC)
+; #UDG$BFE4,$47(Font$BFE4)
+; #UDG$BFEC,$47(Font$BFEC)
+; #UDG$BFF4,$47(Font$BFF4)
+; #UDG$BFFC,$47(Font$BFFC)
+; #UDG$C004,$47(Font$C004)
+; #UDG$C00C,$47(Font$C00C)
+; #UDG$C014,$47(Font$C014)
+; #UDG$C01C,$47(Font$C01C)
+; #UDG$C024,$47(Font$C024)
+; #UDG$C02C,$47(Font$C02C)
+; #UDG$C034,$47(Font$C034)
+; #UDG$C03C,$47(Font$C03C)
+; #UDG$C044,$47(Font$C044)
+; #UDG$C04C,$47(Font$C04C)
+; #UDG$C054,$47(Font$C054)
+; #UDG$C05C,$47(Font$C05C)
+; #UDG$C064,$47(Font$C064)
+; #UDG$C06C,$47(Font$C06C)
+; #UDG$C074,$47(Font$C074)
+; #UDG$C07C,$47(Font$C07C)
+; #UDG$C084,$47(Font$C084)
+; #UDG$C08C,$47(Font$C08C)
+; #UDG$C094,$47(Font$C094)
+; #UDG$C09C,$47(Font$C09C)
+; #UDG$C0A4,$47(Font$C0A4)
+; #UDG$C0AC,$47(Font$C0AC)
+; #UDG$C0B4,$47(Font$C0B4)
+; #UDG$C0BC,$47(Font$C0BC)
+; #UDG$C0C4,$47(Font$C0C4)
+; #UDG$C0CC,$47(Font$C0CC)
+; #UDG$C0D4,$47(Font$C0D4)
+; #UDG$C0DC,$47(Font$C0DC)
+; #UDG$C0E4,$47(Font$C0E4)
+; #UDG$C0EC,$47(Font$C0EC)
+; #UDG$C0F4,$47(Font$C0F4)
+; #UDG$C0FC,$47(Font$C0FC)
+; #UDG$C104,$47(Font$C104)
+; #UDG$C10C,$47(Font$C10C)
+; #UDG$C114,$47(Font$C114)
+; #UDG$C11C,$47(Font$C11C)
+; }
+; TABLE#
+@label=Font
+b$BF4C DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $BF54 DEFB $18,$18,$18,$18,$18,$00,$18,$18
+ $BF5C DEFB $28,$28,$00,$00,$00,$00,$00,$00
+ $BF64 DEFB $00,$18,$18,$00,$00,$18,$18,$00
+ $BF6C DEFB $00,$62,$64,$08,$10,$26,$46,$00
+ $BF74 DEFB $3C,$42,$99,$A1,$A1,$99,$42,$3C
+ $BF7C DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $BF84 DEFB $10,$10,$00,$00,$00,$00,$00,$00
+ $BF8C DEFB $08,$18,$18,$18,$18,$18,$18,$08
+ $BF94 DEFB $10,$18,$18,$18,$18,$18,$18,$10
+ $BF9C DEFB $00,$14,$58,$3E,$7C,$1A,$28,$00
+ $BFA4 DEFB $00,$18,$18,$7E,$78,$18,$18,$00
+ $BFAC DEFB $00,$00,$00,$00,$00,$00,$20,$20
+ $BFB4 DEFB $00,$00,$00,$7E,$7E,$00,$00,$00
+ $BFBC DEFB $00,$00,$00,$00,$00,$00,$18,$18
+ $BFC4 DEFB $0C,$0C,$18,$18,$30,$30,$60,$60
+ $BFCC DEFB $7C,$FE,$C6,$C6,$C6,$FE,$7C,$00
+ $BFD4 DEFB $18,$38,$58,$18,$18,$18,$3C,$00
+ $BFDC DEFB $7C,$FE,$06,$7C,$C0,$FE,$FE,$00
+ $BFE4 DEFB $FE,$FC,$08,$1C,$06,$FE,$FC,$00
+ $BFEC DEFB $0C,$1C,$3C,$6C,$FE,$0C,$0C,$00
+ $BFF4 DEFB $FE,$FE,$C0,$FC,$06,$FE,$7C,$00
+ $BFFC DEFB $7C,$FE,$C0,$FC,$C6,$FE,$7C,$00
+ $C004 DEFB $FE,$FC,$0C,$18,$18,$30,$30,$00
+ $C00C DEFB $7C,$FE,$C6,$7C,$C6,$FE,$7C,$00
+ $C014 DEFB $7C,$FE,$C6,$7E,$06,$FE,$7C,$00
+ $C01C DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $C024 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $C02C DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $C034 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $C03C DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $C044 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $C04C DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $C054 DEFB $38,$38,$6C,$7C,$EE,$EE,$C6,$00
+ $C05C DEFB $FC,$FE,$E6,$FC,$E6,$FE,$FC,$00
+ $C064 DEFB $3C,$7E,$F8,$E0,$F8,$7E,$3C,$00
+ $C06C DEFB $F8,$FC,$FE,$C6,$FE,$FC,$F8,$00
+ $C074 DEFB $F8,$F8,$E0,$FC,$E0,$FE,$FE,$00
+ $C07C DEFB $FE,$FE,$E0,$FC,$E0,$E0,$E0,$00
+ $C084 DEFB $3C,$7E,$F8,$E0,$FE,$7E,$3A,$00
+ $C08C DEFB $EE,$EE,$FE,$FE,$FE,$EE,$EE,$00
+ $C094 DEFB $7C,$7C,$38,$38,$38,$7C,$7C,$00
+ $C09C DEFB $0E,$0E,$0E,$0E,$EE,$7C,$38,$00
+ $C0A4 DEFB $EE,$EC,$F8,$F8,$F8,$EC,$EE,$00
+ $C0AC DEFB $E0,$E0,$E0,$E0,$FE,$FE,$FE,$00
+ $C0B4 DEFB $82,$EE,$FE,$FE,$D6,$D6,$D6,$00
+ $C0BC DEFB $8E,$CE,$EE,$FE,$EE,$E6,$E2,$00
+ $C0C4 DEFB $38,$7C,$FE,$EE,$FE,$7C,$38,$00
+ $C0CC DEFB $FC,$FE,$E6,$FE,$FC,$E0,$E0,$00
+ $C0D4 DEFB $38,$7C,$FE,$EE,$FE,$7C,$3E,$00
+ $C0DC DEFB $FC,$FE,$E6,$FE,$FC,$EC,$EE,$00
+ $C0E4 DEFB $7C,$FE,$F0,$7C,$1E,$FE,$7C,$00
+ $C0EC DEFB $FE,$FE,$FE,$38,$38,$38,$38,$00
+ $C0F4 DEFB $EE,$EE,$EE,$EE,$FE,$FE,$7C,$00
+ $C0FC DEFB $EE,$EE,$6C,$7C,$38,$38,$10,$00
+ $C104 DEFB $D6,$D6,$D6,$FE,$FE,$EE,$82,$00
+ $C10C DEFB $EE,$EE,$6C,$38,$6C,$EE,$EE,$00
+ $C114 DEFB $EE,$6C,$7C,$38,$38,$38,$38,$00
+ $C11C DEFB $FE,$FC,$F8,$10,$3E,$7E,$FE,$00
+
+
+; Sprite: Can
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C125-$C126;$C135-$C136;$C145-$C146{,4*4}(Can)
+; }
+; TABLE#
+@label=SpriteCan
+b$C124 DEFB $14                             ;  Height (in pixels).
+ $C125 DEFB $07,$E0,$18,$18,$2F,$F4,$7E,$1E ; { Graphic data.
+ $C12D DEFB $3E,$34,$3E,$54,$3E,$EC,$3D,$DC ;
+ $C135 DEFB $3D,$BC,$39,$DC,$23,$BC,$27,$7C ;
+ $C13D DEFB $26,$BC,$2F,$FC,$38,$1C,$20,$C4 ;
+ $C145 DEFB $5D,$22,$20,$C4,$18,$18,$07,$E0 ; }
+
+; Sprite: Money Bag
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C14E-$C14F;$C15E-$C15F(MoneyBag)
+; }
+; TABLE#
+@label=SpriteMoneyBag
+b$C14D DEFB $10                             ;  Height (in pixels).
+ $C14E DEFB $1F,$F8,$7F,$7E,$F8,$1E,$F0,$4F ; { Graphic data.
+ $C156 DEFB $F8,$0F,$F9,$7F,$FC,$0F,$7F,$7F ;
+ $C15E DEFB $7F,$FF,$3E,$1E,$1D,$EE,$87,$B4 ;
+ $C166 DEFB $7F,$18,$CE,$04,$11,$34,$0E,$C8 ; }
+
+; Sprite: Gobstopper
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C16F-$C170;$C17F-$C180(Gobstopper)
+; }
+; TABLE#
+@label=SpriteGobstopper
+b$C16E DEFB $10                             ;  Height (in pixels).
+ $C16F DEFB $07,$A0,$1F,$E8,$3B,$74,$6A,$9A ; { Graphic data.
+ $C177 DEFB $5F,$DA,$D8,$CD,$B0,$75,$FC,$75 ;
+ $C17F DEFB $F2,$35,$C0,$1D,$C8,$1D,$76,$3A ;
+ $C187 DEFB $70,$3A,$38,$74,$1F,$E8,$07,$A0 ; }
+
+; Sprite: Amulet
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C190-$C191;$C1A0-$C1A1{,3*4}(Amulet)
+; }
+; TABLE#
+@label=SpriteAmulet
+b$C18F DEFB $0D                             ;  Height (in pixels).
+ $C190 DEFB $1F,$F8,$28,$14,$48,$12,$9A,$B1 ; { Graphic data.
+ $C198 DEFB $F7,$EF,$D5,$58,$A7,$B5,$F7,$F1 ;
+ $C1A0 DEFB $08,$0F,$F7,$F1,$77,$52,$37,$D4 ;
+ $C1A8 DEFB $17,$F8                         ; }
+
+; Sprite: Candy Bar
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C1AB-$C1AC;$C1BB-$C1BC(CandyBar)
+; }
+; TABLE#
+@label=SpriteCandyBar
+b$C1AA DEFB $10                             ;  Height (in pixels).
+ $C1AB DEFB $10,$00,$38,$00,$44,$00,$82,$00 ; { Graphic data.
+ $C1B3 DEFB $7F,$00,$3F,$80,$10,$40,$08,$20 ;
+ $C1BB DEFB $07,$F0,$03,$F8,$01,$04,$00,$82 ;
+ $C1C3 DEFB $00,$7F,$00,$3E,$00,$14,$00,$08 ; }
+
+; Sprite: Ham
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C1CC-$C1CD;$C1DC-$C1DD;$C1EC-$C1ED{,4*4}(Ham)
+; }
+; TABLE#
+@label=SpriteHam
+b$C1CB DEFB $14                             ;  Height (in pixels).
+ $C1CC DEFB $0F,$FC,$10,$02,$11,$C1,$11,$C3 ; { Graphic data.
+ $C1D4 DEFB $18,$0E,$0F,$FC,$0F,$F8,$07,$F8 ;
+ $C1DC DEFB $07,$F0,$07,$F0,$03,$E0,$03,$E0 ;
+ $C1E4 DEFB $03,$C0,$00,$00,$01,$80,$01,$80 ;
+ $C1EC DEFB $01,$80,$01,$C0,$07,$E0,$07,$60 ; }
+
+; Sprite: Lollipop
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C1F5-$C1F6;$C205-$C206;$C215-$C216{,6*4}(Lollipop)
+; }
+; TABLE#
+@label=SpriteLollipop
+b$C1F4 DEFB $12                             ;  Height (in pixels).
+ $C1F5 DEFB $00,$18,$00,$38,$00,$30,$00,$70 ; { Graphic data.
+ $C1FD DEFB $00,$60,$00,$E0,$0F,$40,$3F,$C0 ;
+ $C205 DEFB $7F,$E0,$7F,$E0,$FF,$F0,$CF,$F0 ;
+ $C20D DEFB $CF,$F0,$C7,$F0,$61,$E0,$71,$E0 ;
+ $C215 DEFB $3F,$C0,$0F,$00                 ; }
+
+; Sprite: Ice Cream Cone
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C21A-$C21B;$C22A-$C22B;$C23A-$C23B{,6*4}(IceCreamCone)
+; }
+; TABLE#
+@label=SpriteIceCreamCone
+b$C219 DEFB $12                             ;  Height (in pixels).
+ $C21A DEFB $00,$01,$00,$0F,$00,$54,$03,$FE ; { Graphic data.
+ $C222 DEFB $15,$54,$3F,$FC,$7D,$54,$07,$F8 ;
+ $C22A DEFB $C9,$D0,$D0,$F8,$E8,$D0,$F2,$70 ;
+ $C232 DEFB $79,$50,$74,$60,$3D,$40,$0F,$00 ;
+ $C23A DEFB $0C,$00,$00,$00                 ; }
+
+; Unused data at $C23E
+@label=UnusedDataAt$C23E
+u$C23E DEFB $00,$00,$00,$00,$00,$02,$00,$01
+ $C246 DEFB $40,$04,$20,$02,$80,$0A,$A0,$00
+ $C24E DEFB $50,$01,$00,$04,$40
+
+; Sprite: Character Appear 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C254-$C255;$C264-$C265{,3*4}(CharacterAppear2)
+; }
+; TABLE#
+@label=SpriteCharacterAppear2
+b$C253 DEFB $0D                             ;  Height (in pixels).
+ $C254 DEFB $00,$00,$00,$00,$00,$00,$00,$80 ; { Graphic data.
+ $C25C DEFB $02,$00,$09,$50,$04,$80,$02,$D0 ;
+ $C264 DEFB $0B,$88,$01,$A0,$15,$08,$00,$A0 ;
+ $C26C DEFB $02,$00                         ; }
+
+; Sprite: Character Appear 3
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C26F-$C270;$C27F-$C280{,1*4}(CharacterAppear3)
+; }
+; TABLE#
+@label=SpriteCharacterAppear3
+b$C26E DEFB $0F                             ;  Height (in pixels).
+ $C26F DEFB $00,$00,$01,$20,$02,$08,$80,$A0 ; { Graphic data.
+ $C277 DEFB $22,$14,$14,$60,$03,$50,$55,$82 ;
+ $C27F DEFB $09,$74,$13,$40,$24,$50,$01,$94 ;
+ $C287 DEFB $0A,$40,$00,$10,$01,$00         ; }
+
+; Sprite: Character Appear 4
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C28E-$C28F;$C29E-$C29F(CharacterAppear4)
+; }
+; TABLE#
+@label=SpriteCharacterAppear4
+b$C28D DEFB $10                             ;  Height (in pixels).
+ $C28E DEFB $00,$80,$12,$08,$00,$40,$2A,$02 ; { Graphic data.
+ $C296 DEFB $00,$A8,$85,$40,$12,$52,$45,$A8 ;
+ $C29E DEFB $11,$14,$05,$28,$52,$52,$05,$00 ;
+ $C2A6 DEFB $08,$90,$22,$44,$09,$20,$00,$40 ; }
+
+; Sprite: Locked Cave Door
+;
+; #UDGTABLE
+; {
+; #UDGARRAY4,$07,4,4,,2;$C2B0-$C2B3;$C2D0-$C2D3;$C2F0-$C2F3(LockedCaveDoor)
+; }
+; TABLE#
+@label=SpriteLockedCaveDoor
+b$C2AE DEFB $04                             ;  Width (in bytes).
+ $C2AF DEFB $18                             ;  Height (in pixels).
+ $C2B0 DEFB $FF,$1B,$18,$FF,$03,$1B,$18,$B0 ; { Graphic data.
+ $C2B8 DEFB $03,$1B,$18,$B0,$07,$1B,$18,$98 ;
+ $C2C0 DEFB $0D,$33,$0C,$98,$1A,$33,$0C,$98 ;
+ $C2C8 DEFB $3A,$33,$0C,$EC,$7A,$33,$00,$58 ;
+ $C2D0 DEFB $5A,$63,$0E,$70,$CE,$63,$17,$78 ;
+ $C2D8 DEFB $8C,$63,$19,$2C,$0C,$63,$0E,$26 ;
+ $C2E0 DEFB $0C,$C3,$00,$23,$1C,$C3,$03,$21 ;
+ $C2E8 DEFB $32,$C3,$03,$43,$62,$43,$02,$46 ;
+ $C2F0 DEFB $F8,$00,$00,$86,$7F,$C0,$03,$0C ;
+ $C2F8 DEFB $0F,$38,$1C,$0C,$03,$C7,$FC,$18 ;
+ $C300 DEFB $00,$F0,$DF,$38,$00,$3D,$87,$F0 ;
+ $C308 DEFB $00,$0F,$00,$C0,$00,$02,$00,$00 ; }
+
+; Sprite: Spider 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C311-$C312;$C321-$C322{,2*4}(Spider1)
+; }
+; TABLE#
+@label=SpriteSpider1
+b$C310 DEFB $0E                             ;  Height (in pixels).
+ $C311 DEFB $0C,$30,$0C,$30,$C0,$03,$C6,$63 ; { Graphic data.
+ $C319 DEFB $60,$06,$1F,$F8,$39,$9C,$74,$2E ;
+ $C321 DEFB $76,$6E,$79,$9E,$7F,$FE,$3F,$FC ;
+ $C329 DEFB $1F,$F8,$0F,$F0                 ; }
+
+; Sprite: Spider 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C32E-$C32F;$C33E-$C33F{,2*4}(Spider2)
+; }
+; TABLE#
+@label=SpriteSpider2
+b$C32D DEFB $0E                             ;  Height (in pixels).
+ $C32E DEFB $00,$00,$60,$06,$66,$66,$06,$60 ; { Graphic data.
+ $C336 DEFB $33,$CC,$1F,$F8,$39,$9C,$74,$2E ;
+ $C33E DEFB $76,$6E,$79,$9E,$7F,$FE,$3F,$FC ;
+ $C346 DEFB $1F,$F8,$0F,$F0                 ; }
+
+; Sprite: Ghost 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C34B-$C34C;$C35B-$C35C(Ghost1)
+; }
+; TABLE#
+@label=SpriteGhost1
+b$C34A DEFB $10                             ;  Height (in pixels).
+ $C34B DEFB $03,$FF,$FF,$FC,$3F,$F0,$0F,$FC ; { Graphic data.
+ $C353 DEFB $3F,$FF,$FF,$FC,$3F,$F8,$13,$9E ;
+ $C35B DEFB $65,$2F,$ED,$68,$33,$9E,$3F,$F1 ;
+ $C363 DEFB $67,$F8,$03,$B8,$03,$1C,$02,$00 ; }
+
+; Sprite: Ghost 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C36C-$C36D;$C37C-$C37D(Ghost2)
+; }
+; TABLE#
+@label=SpriteGhost2
+b$C36B DEFB $10                             ;  Height (in pixels).
+ $C36C DEFB $FF,$80,$7F,$FF,$0F,$FC,$3F,$F0 ; { Graphic data.
+ $C374 DEFB $FF,$FF,$7F,$FE,$1F,$FC,$33,$98 ;
+ $C37C DEFB $65,$2F,$7D,$6E,$73,$98,$1F,$F8 ;
+ $C384 DEFB $3F,$F8,$7F,$6E,$63,$62,$01,$20 ; }
+
+; Sprite: Bouncy 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C38D-$C38E;$C39D-$C39E{,5*4}(Bouncy1)
+; }
+; TABLE#
+@label=SpriteBouncy1
+b$C38C DEFB $0B                             ;  Height (in pixels).
+ $C38D DEFB $0E,$E0,$1F,$F0,$39,$38,$34,$90 ; { Graphic data.
+ $C395 DEFB $36,$D8,$39,$38,$1F,$F0,$0F,$E0 ;
+ $C39D DEFB $1C,$70,$38,$38,$F0,$1E         ; }
+
+; Sprite: Bouncy 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C3A4-$C3A5;$C3B4-$C3B5{,7*4}(Bouncy2)
+; }
+; TABLE#
+@label=SpriteBouncy2
+b$C3A3 DEFB $09                             ;  Height (in pixels).
+ $C3A4 DEFB $0E,$E0,$1F,$F0,$39,$38,$34,$98 ; { Graphic data.
+ $C3AC DEFB $36,$D8,$39,$38,$1F,$F0,$3F,$F8 ;
+ $C3B4 DEFB $F8,$3E                         ; }
+
+; Sprite: Smorph 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C3B7-$C3B8;$C3C7-$C3C8;$C3D7-$C3D8{,4*4}(Smorph1)
+; }
+; TABLE#
+@label=SpriteSmorph1
+b$C3B6 DEFB $14                             ;  Height (in pixels).
+ $C3B7 DEFB $01,$C0,$03,$80,$03,$00,$03,$00 ; { Graphic data.
+ $C3BF DEFB $83,$81,$87,$C1,$8F,$E1,$CF,$F3 ;
+ $C3C7 DEFB $DF,$F3,$DF,$FB,$DF,$FB,$DF,$FB ;
+ $C3CF DEFB $D9,$9B,$D9,$9B,$19,$98,$19,$98 ;
+ $C3D7 DEFB $19,$98,$1F,$F8,$0F,$F0,$07,$E0 ; }
+
+; Sprite: Smorph 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C3E0-$C3E1;$C3F0-$C3F1;$C400-$C401{,4*4}(Smorph2)
+; }
+; TABLE#
+@label=SpriteSmorph2
+b$C3DF DEFB $14                             ;  Height (in pixels).
+ $C3E0 DEFB $03,$80,$01,$C0,$00,$C0,$00,$C0 ; { Graphic data.
+ $C3E8 DEFB $01,$C0,$03,$E0,$87,$F1,$8F,$F1 ;
+ $C3F0 DEFB $8F,$F9,$DF,$FB,$DF,$FB,$DF,$FB ;
+ $C3F8 DEFB $D9,$9B,$D9,$9B,$D9,$9B,$D9,$9B ;
+ $C400 DEFB $99,$99,$0F,$F0,$0F,$F0,$07,$E0 ; }
+
+; Sprite: Jelly Ghoul 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C409-$C40A;$C419-$C41A(JellyGhoul1)
+; }
+; TABLE#
+@label=SpriteJellyGhoul1
+b$C408 DEFB $10                             ;  Height (in pixels).
+ $C409 DEFB $03,$C0,$07,$E0,$7F,$FE,$FF,$FF ; { Graphic data.
+ $C411 DEFB $FF,$FF,$7F,$FE,$3F,$FE,$1F,$FC ;
+ $C419 DEFB $1C,$EC,$18,$44,$18,$44,$1C,$44 ;
+ $C421 DEFB $0C,$CC,$0F,$F8,$07,$F0,$03,$C0 ; }
+
+; Sprite: Jelly Ghoul 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C42A-$C42B;$C43A-$C43B(JellyGhoul2)
+; }
+; TABLE#
+@label=SpriteJellyGhoul2
+b$C429 DEFB $10                             ;  Height (in pixels).
+ $C42A DEFB $78,$0C,$FC,$1E,$FE,$3F,$FF,$FF ; { Graphic data.
+ $C432 DEFB $7F,$FF,$3F,$FE,$1F,$FC,$1F,$FC ;
+ $C43A DEFB $1C,$EC,$18,$44,$18,$44,$1C,$44 ;
+ $C442 DEFB $0C,$CC,$0F,$F8,$07,$F0,$03,$C0 ; }
+
+; Sprite: Bat 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C44B-$C44C;$C45B-$C45C;$C46B-$C46C{,6*4}(Bat1)
+; }
+; TABLE#
+@label=SpriteBat1
+b$C44A DEFB $12                             ;  Height (in pixels).
+ $C44B DEFB $00,$00,$00,$00,$00,$00,$04,$40 ; { Graphic data.
+ $C453 DEFB $0C,$60,$03,$80,$07,$C0,$06,$C0 ;
+ $C45B DEFB $0D,$60,$1F,$F0,$1C,$70,$38,$38 ;
+ $C463 DEFB $30,$18,$60,$0C,$40,$04,$C0,$06 ;
+ $C46B DEFB $80,$02,$80,$02                 ; }
+
+; Sprite: Bat 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C470-$C471;$C480-$C481{,2*4}(Bat2)
+; }
+; TABLE#
+@label=SpriteBat2
+b$C46F DEFB $0E                             ;  Height (in pixels).
+ $C470 DEFB $80,$02,$80,$02,$80,$02,$40,$04 ; { Graphic data.
+ $C478 DEFB $60,$0C,$64,$4C,$3C,$78,$3B,$B8 ;
+ $C480 DEFB $17,$D0,$06,$C0,$05,$40,$0F,$E0 ;
+ $C488 DEFB $0C,$60,$08,$20                 ; }
+
+; Sprite: Chicken Carcass
+;
+; #UDGTABLE
+; {
+; #UDGARRAY6,$07,4,6,,2;$C48E-$C493;$C4BE-$C4C3;$C4EE-$C4F3;$C51E-$C523{,2*4}(ChickenCarcass)
+; }
+; TABLE#
+@label=SpriteChickenCarcass
+b$C48C DEFB $06                             ;  Width (in bytes).
+ $C48D DEFB $1E                             ;  Height (in pixels).
+ $C48E DEFB $00,$00,$0F,$FF,$F8,$00,$00,$00 ; { Graphic data.
+ $C496 DEFB $FF,$FE,$3E,$00,$00,$07,$FF,$FD ;
+ $C49E DEFB $DF,$80,$00,$1F,$E7,$01,$E8,$C0 ;
+ $C4A6 DEFB $00,$7E,$E4,$F0,$E7,$60,$01,$F6 ;
+ $C4AE DEFB $73,$FC,$73,$80,$03,$33,$27,$F8 ;
+ $C4B6 DEFB $33,$C0,$04,$18,$0F,$FD,$38,$C0 ;
+ $C4BE DEFB $08,$00,$0F,$FD,$18,$E0,$00,$00 ;
+ $C4C6 DEFB $1F,$FD,$18,$E0,$00,$00,$1F,$FD ;
+ $C4CE DEFB $18,$E0,$00,$00,$3F,$FD,$18,$E0 ;
+ $C4D6 DEFB $00,$00,$3F,$FB,$38,$E0,$00,$00 ;
+ $C4DE DEFB $7F,$FB,$38,$E8,$00,$00,$7F,$F6 ;
+ $C4E6 DEFB $71,$D8,$00,$1E,$DF,$EE,$71,$DC ;
+ $C4EE DEFB $00,$0D,$3F,$DC,$F3,$BC,$00,$02 ;
+ $C4F6 DEFB $FF,$3C,$E3,$78,$00,$05,$E0,$79 ;
+ $C4FE DEFB $E3,$70,$00,$0B,$9E,$F1,$D8,$E0 ;
+ $C506 DEFB $00,$17,$3E,$E3,$BF,$C0,$0C,$2E ;
+ $C50E DEFB $1F,$1B,$7F,$80,$1E,$DC,$07,$FC ;
+ $C516 DEFB $FE,$00,$37,$B8,$01,$BB,$F8,$00 ;
+ $C51E DEFB $33,$F0,$00,$3F,$E0,$00,$1D,$E0 ;
+ $C526 DEFB $00,$00,$00,$00,$03,$C0,$00,$00 ;
+ $C52E DEFB $00,$00,$06,$E0,$00,$00,$00,$00 ;
+ $C536 DEFB $06,$60,$00,$00,$00,$00,$03,$C0 ;
+ $C53E DEFB $00,$00,$00,$00                 ; }
+
+; Sprite: Full Chicken
+;
+; #UDGTABLE
+; {
+; #UDGARRAY6,$07,4,6,,2;$C544-$C549;$C574-$C579;$C5A4-$C5A9;$C5D4-$C5D9{,2*4}(FullChicken)
+; }
+; TABLE#
+@label=SpriteFullChicken
+b$C542 DEFB $06                             ;  Width (in bytes).
+ $C543 DEFB $1E                             ;  Height (in pixels).
+ $C544 DEFB $00,$00,$FF,$FF,$FE,$00,$00,$07 ; { Graphic data.
+ $C54C DEFB $FF,$FF,$FF,$80,$00,$1F,$FF,$0F ;
+ $C554 DEFB $FF,$C0,$00,$7F,$FE,$F7,$FF,$E0 ;
+ $C55C DEFB $01,$FF,$F9,$BB,$FF,$F0,$03,$FF ;
+ $C564 DEFB $F7,$FD,$FF,$F8,$07,$FF,$EF,$F5 ;
+ $C56C DEFB $FF,$FC,$0F,$FF,$DF,$DE,$FF,$EC ;
+ $C574 DEFB $1F,$DF,$5D,$BE,$FF,$FE,$36,$FD ;
+ $C57C DEFB $BF,$F6,$DE,$FE,$3F,$FF,$B7,$FE ;
+ $C584 DEFB $FF,$FE,$1B,$BF,$7E,$BE,$FF,$BA ;
+ $C58C DEFB $0E,$FB,$7F,$FD,$BB,$FA,$07,$BE ;
+ $C594 DEFB $F7,$7D,$FF,$FE,$01,$F6,$FF,$DB ;
+ $C59C DEFB $FF,$FE,$00,$DD,$FE,$F7,$FF,$7E ;
+ $C5A4 DEFB $00,$3B,$77,$ED,$7F,$DE,$00,$17 ;
+ $C5AC DEFB $FE,$DF,$FF,$EC,$00,$0B,$FF,$3F ;
+ $C5B4 DEFB $FB,$F8,$00,$1F,$C0,$FB,$FF,$B0 ;
+ $C5BC DEFB $00,$1F,$BF,$FF,$BF,$E0,$0C,$2F ;
+ $C5C4 DEFB $37,$BF,$FB,$C0,$1E,$DE,$1D,$FB ;
+ $C5CC DEFB $FF,$80,$37,$B8,$07,$BF,$BE,$00 ;
+ $C5D4 DEFB $33,$F0,$01,$FB,$F8,$00,$1D,$E0 ;
+ $C5DC DEFB $00,$3F,$E0,$00,$03,$C0,$00,$00 ;
+ $C5E4 DEFB $00,$00,$06,$E0,$00,$00,$00,$00 ;
+ $C5EC DEFB $06,$60,$00,$00,$00,$00,$03,$C0 ;
+ $C5F4 DEFB $00,$00,$00,$00                 ; }
+
+; Sprite: Character Dead 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C5F9-$C5FA;$C609-$C60A{,5*4}(CharacterDead1)
+; }
+; TABLE#
+@label=SpriteCharacterDead1
+b$C5F8 DEFB $0B                             ;  Height (in pixels).
+ $C5F9 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; { Graphic data.
+ $C601 DEFB $00,$00,$03,$40,$05,$C0,$07,$60 ;
+ $C609 DEFB $06,$A0,$03,$C0,$01,$00         ; }
+
+; Sprite: Character Dead 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C610-$C611;$C620-$C621{,3*4}(CharacterDead2)
+; }
+; TABLE#
+@label=SpriteCharacterDead2
+b$C60F DEFB $0D                             ;  Height (in pixels).
+ $C610 DEFB $00,$00,$00,$00,$00,$00,$00,$80 ; { Graphic data.
+ $C618 DEFB $01,$A0,$0B,$48,$02,$F0,$1F,$40 ;
+ $C620 DEFB $06,$F8,$07,$B0,$09,$C8,$02,$A0 ;
+ $C628 DEFB $02,$90                         ; }
+
+; Sprite: Character Dead 3
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C62B-$C62C;$C63B-$C63C{,1*4}(CharacterDead3)
+; }
+; TABLE#
+@label=SpriteCharacterDead3
+b$C62A DEFB $0F                             ;  Height (in pixels).
+ $C62B DEFB $00,$00,$05,$00,$11,$10,$09,$10 ; { Graphic data.
+ $C633 DEFB $04,$24,$38,$08,$00,$10,$70,$00 ;
+ $C63B DEFB $00,$0E,$10,$00,$64,$2C,$0A,$92 ;
+ $C643 DEFB $12,$A8,$02,$80,$00,$80         ; }
+
+; Sprite: Character Dead 4
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C64A-$C64B;$C65A-$C65B(CharacterDead4)
+; }
+; TABLE#
+@label=SpriteCharacterDead4
+b$C649 DEFB $10                             ;  Height (in pixels).
+ $C64A DEFB $01,$00,$11,$10,$08,$20,$00,$02 ; { Graphic data.
+ $C652 DEFB $40,$04,$20,$00,$00,$00,$C0,$00 ;
+ $C65A DEFB $00,$03,$00,$00,$40,$02,$80,$01 ;
+ $C662 DEFB $00,$00,$20,$04,$44,$82,$04,$80 ; }
+
+; Sprite: Antler Trophy
+;
+; #UDGTABLE
+; {
+; #UDGARRAY4,,4,4,,2;$C66C-$C66F;$C68C-$C68F@$C962-$C969(AntlerTrophy)
+; }
+; TABLE#
+@label=SpriteAntlerTrophy
+b$C66A DEFB $04                             ;  Width (in bytes).
+ $C66B DEFB $10                             ;  Height (in pixels).
+ $C66C DEFB $00,$03,$C0,$00,$00,$04,$20,$00 ; { Graphic data.
+ $C674 DEFB $00,$08,$10,$00,$00,$13,$C8,$00 ;
+ $C67C DEFB $00,$27,$E4,$00,$00,$2D,$B4,$00 ;
+ $C684 DEFB $00,$49,$92,$00,$00,$7F,$FE,$00 ;
+ $C68C DEFB $03,$F9,$9F,$C0,$07,$F5,$AF,$E0 ;
+ $C694 DEFB $0F,$F6,$6F,$F0,$1C,$B9,$9D,$38 ;
+ $C69C DEFB $30,$9F,$F9,$0C,$20,$8F,$F1,$04 ;
+ $C6A4 DEFB $00,$C0,$03,$00,$00,$3F,$FC,$00 ; }
+
+; Sprite: Trophy
+;
+; #UDGTABLE
+; {
+; #UDGARRAY2,,4,2,,2;$C6AE-$C6AF;$C6BE-$C6BF@$C96C-$C96F(Trophy)
+; }
+; TABLE#
+@label=SpriteTrophy
+b$C6AC DEFB $02                             ;  Width (in bytes).
+ $C6AD DEFB $10                             ;  Height (in pixels).
+ $C6AE DEFB $03,$C0,$04,$20,$08,$10,$13,$C8 ; { Graphic data.
+ $C6B6 DEFB $27,$E4,$2D,$B4,$4D,$B2,$4F,$F2 ;
+ $C6BE DEFB $49,$92,$94,$29,$B6,$6D,$B9,$9D ;
+ $C6C6 DEFB $BF,$FD,$98,$19,$C0,$03,$3F,$FC ; }
+
+; Sprite: Bookcase
+;
+; #UDGTABLE
+; {
+; #UDGARRAY5,,4,5,,2;$C6D0-$C6D4;$C6F8-$C6FC;$C720-$C724;$C748-$C74C@$C972-$C985(Bookcase)
+; }
+; TABLE#
+@label=SpriteBookcase
+b$C6CE DEFB $05                             ;  Width (in bytes).
+ $C6CF DEFB $20                             ;  Height (in pixels).
+ $C6D0 DEFB $1F,$FF,$FF,$FF,$F8,$18,$00,$00 ; { Graphic data.
+ $C6D8 DEFB $00,$18,$14,$00,$00,$00,$28,$13 ;
+ $C6E0 DEFB $FF,$FF,$FF,$C8,$12,$00,$00,$00 ;
+ $C6E8 DEFB $48,$12,$00,$00,$00,$48,$12,$00 ;
+ $C6F0 DEFB $00,$00,$48,$3F,$FF,$FF,$FF,$FC ;
+ $C6F8 DEFB $30,$00,$00,$00,$0C,$28,$00,$00 ;
+ $C700 DEFB $00,$14,$24,$00,$00,$00,$24,$23 ;
+ $C708 DEFB $FF,$FF,$FF,$C4,$22,$00,$00,$00 ;
+ $C710 DEFB $44,$22,$00,$00,$00,$44,$22,$00 ;
+ $C718 DEFB $00,$00,$44,$7F,$FF,$FF,$FF,$FE ;
+ $C720 DEFB $60,$00,$00,$00,$06,$50,$C6,$F6 ;
+ $C728 DEFB $EF,$0A,$48,$C7,$F6,$ED,$12,$47 ;
+ $C730 DEFB $CE,$F6,$EB,$E2,$44,$CE,$F6,$ED ;
+ $C738 DEFB $22,$44,$DC,$F6,$EB,$22,$44,$DC ;
+ $C740 DEFB $F6,$ED,$22,$44,$F8,$F6,$EB,$22 ;
+ $C748 DEFB $FF,$FF,$FF,$FF,$FF,$00,$00,$00 ;
+ $C750 DEFB $00,$00,$FF,$FF,$FF,$FF,$FF,$7F ;
+ $C758 DEFB $FF,$FF,$FF,$FE,$3F,$FF,$FF,$FF ;
+ $C760 DEFB $FC,$1F,$FF,$FF,$FF,$F8,$0F,$FF ;
+ $C768 DEFB $FF,$FF,$F0,$07,$FF,$FF,$FF,$E0 ; }
+
+; Sprite: Open Trap Door
+;
+; #UDGTABLE
+; {
+; #UDGARRAY4,,4,4,,2;$C772-$C775;$C792-$C795;$C7B2-$C7B5;$C7D2-$C7D5@$C988-$C997(OpenTrapDoor)
+; }
+; TABLE#
+@label=SpriteOpenTrapDoor
+b$C770 DEFB $04                             ;  Width (in bytes).
+ $C771 DEFB $20                             ;  Height (in pixels).
+ $C772 DEFB $00,$3C,$F0,$00,$0E,$66,$F9,$C0 ; { Graphic data.
+ $C77A DEFB $1F,$5E,$BB,$F8,$3F,$5C,$D1,$FC ;
+ $C782 DEFB $77,$58,$55,$FE,$7B,$6B,$56,$0E ;
+ $C78A DEFB $DD,$BB,$77,$F6,$DF,$D8,$01,$8E ;
+ $C792 DEFB $4F,$00,$00,$76,$63,$00,$00,$F2 ;
+ $C79A DEFB $3E,$00,$00,$F0,$00,$00,$00,$CE ;
+ $C7A2 DEFB $7E,$00,$00,$1F,$3F,$00,$00,$7F ;
+ $C7AA DEFB $DE,$00,$00,$5F,$DB,$00,$00,$63 ;
+ $C7B2 DEFB $BE,$00,$00,$3E,$E0,$00,$00,$00 ;
+ $C7BA DEFB $0E,$00,$00,$3E,$7E,$00,$00,$7F ;
+ $C7C2 DEFB $4E,$00,$00,$43,$73,$00,$00,$7D ;
+ $C7CA DEFB $3F,$00,$00,$0F,$00,$00,$00,$E3 ;
+ $C7D2 DEFB $3F,$36,$7D,$78,$7F,$EE,$FE,$BC ;
+ $C7DA DEFB $6F,$EE,$BE,$BC,$2F,$DA,$BE,$CC ;
+ $C7E2 DEFB $37,$DE,$BF,$78,$19,$DA,$C7,$60 ;
+ $C7EA DEFB $0F,$CE,$7E,$00,$01,$C6,$00,$00 ; }
+
+; Sprite: Shut Trap Door
+;
+; #UDGTABLE
+; {
+; #UDGARRAY4,,4,4,,2;$C7F4-$C7F7;$C814-$C817;$C834-$C837;$C854-$C857@$C99A-$C9A9(ShutTrapDoor)
+; }
+; TABLE#
+@label=SpriteShutTrapDoor
+b$C7F2 DEFB $04                             ;  Width (in bytes).
+ $C7F3 DEFB $20                             ;  Height (in pixels).
+ $C7F4 DEFB $00,$3C,$F0,$00,$0E,$66,$F9,$C0 ; { Graphic data.
+ $C7FC DEFB $1F,$5E,$BB,$F8,$3F,$5C,$D1,$FC ;
+ $C804 DEFB $77,$58,$55,$FE,$7B,$6B,$56,$0E ;
+ $C80C DEFB $DD,$BB,$77,$F6,$DF,$D8,$01,$8E ;
+ $C814 DEFB $4F,$FF,$FF,$76,$63,$92,$49,$F2 ;
+ $C81C DEFB $3E,$92,$49,$F0,$00,$FF,$F9,$CE ;
+ $C824 DEFB $7E,$EA,$AD,$1F,$3F,$FF,$F9,$7F ;
+ $C82C DEFB $DE,$92,$49,$5F,$DB,$92,$49,$63 ;
+ $C834 DEFB $BE,$92,$49,$3E,$E0,$92,$49,$00 ;
+ $C83C DEFB $0E,$FF,$F9,$3E,$7E,$EA,$AD,$7F ;
+ $C844 DEFB $4E,$FF,$F9,$43,$73,$92,$49,$7D ;
+ $C84C DEFB $3F,$92,$49,$0F,$00,$FF,$FF,$E3 ;
+ $C854 DEFB $3F,$36,$7D,$78,$7F,$EE,$FE,$BC ;
+ $C85C DEFB $6F,$EE,$BE,$BC,$2F,$DA,$BE,$CC ;
+ $C864 DEFB $37,$DE,$BF,$78,$19,$DA,$C7,$60 ;
+ $C86C DEFB $0F,$CE,$7E,$00,$01,$C6,$00,$00 ; }
+
+; Sprite: Rug
+;
+; #UDGTABLE
+; {
+; #UDGARRAY6,$07,4,6,,2;$C876-$C87B;$C8A6-$C8AB;$C8D6-$C8DB;$C906-$C90B;$C936-$C93B{,1*4}(Rug)
+; }
+; TABLE#
+@label=SpriteRug
+b$C874 DEFB $06                             ;  Width (in bytes).
+ $C875 DEFB $27                             ;  Height (in pixels).
+ $C876 DEFB $00,$03,$80,$00,$02,$00,$00,$07 ; { Graphic data.
+ $C87E DEFB $C0,$00,$0D,$00,$00,$07,$C0,$00 ;
+ $C886 DEFB $1E,$00,$00,$07,$C0,$00,$1F,$00 ;
+ $C88E DEFB $00,$03,$C0,$00,$1F,$00,$00,$03 ;
+ $C896 DEFB $80,$00,$3E,$00,$00,$03,$80,$00 ;
+ $C89E DEFB $3C,$00,$00,$03,$80,$00,$7C,$00 ;
+ $C8A6 DEFB $00,$03,$80,$00,$78,$00,$00,$03 ;
+ $C8AE DEFB $80,$00,$70,$00,$00,$02,$80,$00 ;
+ $C8B6 DEFB $F0,$00,$00,$07,$80,$00,$B0,$00 ;
+ $C8BE DEFB $00,$07,$C7,$E1,$F0,$00,$00,$06 ;
+ $C8C6 DEFB $7E,$3B,$20,$00,$00,$07,$FD,$DF ;
+ $C8CE DEFB $E0,$00,$03,$CF,$1E,$3C,$E0,$00 ;
+ $C8D6 DEFB $0F,$FE,$EF,$FB,$70,$00,$79,$BF ;
+ $C8DE DEFB $1C,$FC,$DE,$00,$BB,$D9,$FB,$67 ;
+ $C8E6 DEFB $F3,$F0,$FF,$F6,$FC,$DB,$1E,$7F ;
+ $C8EE DEFB $BB,$D9,$8F,$E6,$EF,$CE,$E9,$BF ;
+ $C8F6 DEFB $76,$3F,$1C,$03,$0F,$FB,$8D,$D9 ;
+ $C8FE DEFB $F0,$00,$03,$CC,$FE,$36,$E0,$00 ;
+ $C906 DEFB $00,$07,$C7,$F9,$E0,$00,$00,$07 ;
+ $C90E DEFB $FF,$FF,$20,$00,$00,$04,$C7,$E1 ;
+ $C916 DEFB $F0,$00,$00,$07,$80,$00,$B0,$00 ;
+ $C91E DEFB $00,$02,$80,$00,$F0,$00,$00,$03 ;
+ $C926 DEFB $80,$00,$50,$00,$00,$02,$80,$00 ;
+ $C92E DEFB $78,$00,$00,$03,$80,$00,$7C,$00 ;
+ $C936 DEFB $00,$03,$80,$00,$3C,$00,$00,$03 ;
+ $C93E DEFB $80,$00,$3E,$00,$00,$03,$C0,$00 ;
+ $C946 DEFB $1F,$00,$00,$07,$C0,$00,$1F,$00 ;
+ $C94E DEFB $00,$07,$C0,$00,$1E,$00,$00,$07 ;
+ $C956 DEFB $C0,$00,$0D,$00,$00,$03,$80,$00 ;
+ $C95E DEFB $02,$00                         ; }
+
+; Attributes: Antler Trophy
+@label=AttribAntlerTrophy
+b$C960 DEFB $04                             ;  Width (in bytes).
+ $C961 DEFB $02                             ;  Height (in bytes).
+ $C962 DEFB $47,$47,$47,$47,$47,$47,$47,$47 ; { Colour attribute data.
+
+; Attributes: Trophy
+@label=AttribTrophy
+b$C96A DEFB $02                             ;  Width (in bytes).
+ $C96B DEFB $02                             ;  Height (in bytes).
+ $C96C DEFB $45,$45,$45,$45 ; { Colour attribute data.
+
+; Attributes: Bookcase
+@label=AttribBookcase
+b$C970 DEFB $05                             ;  Width (in bytes).
+ $C971 DEFB $04                             ;  Height (in bytes).
+ $C972 DEFB $46,$46,$46,$46,$46,$46,$46,$46 ; { Colour attribute data.
+ $C97A DEFB $46,$46,$46,$45,$43,$44,$46,$46 ;
+ $C982 DEFB $46,$46,$46,$46                 ; }
+
+; Attributes: Open Trap Door
+@label=AttribOpenTrapDoor
+b$C986 DEFB $04                             ;  Width (in bytes).
+ $C987 DEFB $04                             ;  Height (in bytes).
+ $C988 DEFB $43,$43,$43,$43,$43,$00,$00,$43 ; { Colour attribute data.
+ $C990 DEFB $43,$00,$00,$43,$43,$43,$43,$43 ; }
+
+; Attributes: Shut Trap Door
+@label=AttribShutTrapDoor
+b$C998 DEFB $04                             ;  Width (in bytes).
+ $C999 DEFB $04                             ;  Height (in bytes).
+ $C99A DEFB $43,$43,$43,$43,$43,$46,$46,$43 ; { Colour attribute data.
+ $C9A2 DEFB $43,$46,$46,$43,$43,$43,$43,$43 ; }
+
+; Attributes: Rug
+@label=AttribRug
+b$C9AA DEFB $06                             ;  Width (in bytes).
+ $C9AB DEFB $05                             ;  Height (in bytes).
+ $C9AC DEFB $07,$07,$07,$07,$07,$07,$07,$07 ; { Colour attribute data.
+ $C9B4 DEFB $07,$07,$07,$07,$07,$07,$07,$07 ;
+ $C9BC DEFB $07,$07,$07,$07,$07,$07,$07,$07 ;
+ $C9C4 DEFB $07,$07,$07,$07,$07,$07         ; }
+
+; Sprite: Acg Shield
+;
+; #UDGTABLE
+; {
+; #UDGARRAY2,,4,2,,2;$C9CC-$C9CD;$C9DC-$C9DD@$CA52-$CA55(AcgShield)
+; }
+; TABLE#
+@label=SpriteAcgShield
+b$C9CA DEFB $02                             ;  Width (in bytes).
+ $C9CB DEFB $10                             ;  Height (in pixels).
+ $C9CC DEFB $01,$80,$07,$E0,$0F,$F0,$1F,$D8 ; { Graphic data.
+ $C9D4 DEFB $30,$0C,$3F,$DC,$7F,$FE,$7F,$FE ;
+ $C9DC DEFB $54,$42,$D5,$DB,$C5,$D3,$D5,$DF ;
+ $C9E4 DEFB $C4,$43,$FF,$FF,$E7,$E7,$81,$81 ; }
+
+; Sprite: Shield
+;
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$C9EE-$C9EF;$C9FE-$C9FF(Shield)
+; }
+; TABLE#
+@label=SpriteShield
+b$C9EC DEFB $02                             ;  Width (in bytes).
+ $C9ED DEFB $10                             ;  Height (in pixels).
+ $C9EE DEFB $01,$80,$07,$E0,$08,$10,$19,$98 ; { Graphic data.
+ $C9F6 DEFB $39,$9C,$30,$0C,$75,$AE,$7F,$FE ;
+ $C9FE DEFB $7F,$FE,$DC,$2F,$D7,$EB,$C4,$23 ;
+ $CA06 DEFB $D7,$EB,$FD,$7F,$E7,$E7,$81,$81 ; }
+
+; Sprite: Knight
+;
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CA10-$CA11;$CA20-$CA21;$CA30-$CA31;$CA40-$CA41(Knight)
+; }
+; TABLE#
+@label=SpriteKnight
+b$CA0E DEFB $02                             ;  Width (in bytes).
+ $CA0F DEFB $20                             ;  Height (in pixels).
+ $CA10 DEFB $30,$0C,$1C,$38,$1E,$7A,$0E,$72 ; { Graphic data.
+ $CA18 DEFB $06,$62,$0A,$52,$1C,$3A,$0A,$52 ;
+ $CA20 DEFB $07,$E2,$47,$E7,$47,$E2,$07,$E0 ;
+ $CA28 DEFB $60,$06,$67,$E6,$A6,$65,$CC,$33 ;
+ $CA30 DEFB $AD,$B5,$6D,$B6,$7F,$FE,$7F,$FE ;
+ $CA38 DEFB $78,$1E,$37,$EC,$03,$C0,$07,$E0 ;
+ $CA40 DEFB $0E,$70,$19,$98,$07,$E0,$0F,$F0 ;
+ $CA48 DEFB $07,$E0,$03,$C0,$00,$00,$00,$00 ; }
+
+; Attributes: Acg Shield
+@label=AttribAcgShield
+b$CA50 DEFB $02                             ;  Width (in bytes).
+ $CA51 DEFB $02                             ;  Height (in bytes).
+ $CA52 DEFB $43,$47,$47,$43 ; { Colour attribute data.
+
+; Attributes: Shield
+@label=AttribShield
+b$CA56 DEFB $02                             ;  Width (in bytes).
+ $CA57 DEFB $02                             ;  Height (in bytes).
+ $CA58 DEFB $FF,$FF,$FF,$FF ; { Colour attribute data.
+
+; Attributes: Knight
+@label=AttribKnight
+b$CA5C DEFB $02                             ;  Width (in bytes).
+ $CA5D DEFB $04                             ;  Height (in bytes).
+ $CA5E DEFB $45,$45,$45,$45,$45,$45,$45,$45 ; { Colour attribute data.
+
+; Attributes: Shut Cave Door
+@label=AttribShutCaveDoor
+b$CA66 DEFB $04                             ;  Width (in bytes).
+ $CA67 DEFB $03                             ;  Height (in bytes).
+ $CA68 DEFB $FF,$47,$47,$FF,$FF,$47,$47,$FF ; { Colour attribute data.
+ $CA70 DEFB $FF,$FF,$FF,$FF                 ; }
+
+; Attributes: Shut Normal Door
+@label=AttribShutNormalDoor
+b$CA74 DEFB $04                             ;  Width (in bytes).
+ $CA75 DEFB $03                             ;  Height (in bytes).
+ $CA76 DEFB $43,$47,$47,$43,$43,$47,$47,$43 ; { Colour attribute data.
+ $CA7E DEFB $43,$43,$43,$43                 ; }
+
+; Sprite: Shut Normal Door
+;
+; #UDGTABLE
+; {
+; #UDGARRAY4,,4,4,,2;$CA84-$CA87;$CAA4-$CAA7;$CAC4-$CAC7@$CA76-$CA81(ShutNormalDoor)
+; }
+; TABLE#
+@label=SpriteShutNormalDoor
+b$CA82 DEFB $04                             ;  Width (in bytes).
+ $CA83 DEFB $18                             ;  Height (in pixels).
+ $CA84 DEFB $FF,$3B,$DC,$FF,$1F,$3B,$DC,$F8 ; { Graphic data.
+ $CA8C DEFB $0C,$3B,$DC,$40,$3E,$3B,$DC,$7C ;
+ $CA94 DEFB $7C,$00,$00,$3E,$04,$7B,$CE,$20 ;
+ $CA9C DEFB $F8,$7B,$D7,$1F,$F8,$7B,$D1,$1F ;
+ $CAA4 DEFB $08,$7B,$CE,$08,$F0,$7B,$C0,$0F ;
+ $CAAC DEFB $F0,$00,$00,$0F,$10,$FB,$DF,$08 ;
+ $CAB4 DEFB $F0,$FB,$DF,$1F,$F8,$7B,$DE,$1F ;
+ $CABC DEFB $CC,$3B,$DC,$33,$3F,$0B,$D0,$7C ;
+ $CAC4 DEFB $7D,$80,$01,$BE,$3B,$F0,$0F,$DC ;
+ $CACC DEFB $17,$BF,$FD,$E8,$07,$7B,$DE,$E0 ;
+ $CAD4 DEFB $03,$7B,$DE,$C0,$00,$77,$EE,$00 ;
+ $CADC DEFB $00,$07,$E0,$00,$00,$00,$00,$00 ; }
+
+; Sprite: Shut Cave Door
+;
+; #UDGTABLE
+; {
+; #UDGARRAY4,$07,4,4,,2;$CAE6-$CAE9;$CB06-$CB09;$CB26-$CB29(ShutCaveDoor)
+; }
+; TABLE#
+@label=SpriteShutCaveDoor
+b$CAE4 DEFB $04                             ;  Width (in bytes).
+ $CAE5 DEFB $18                             ;  Height (in pixels).
+ $CAE6 DEFB $FF,$3B,$DC,$FF,$03,$3B,$DC,$B0 ; { Graphic data.
+ $CAEE DEFB $03,$3B,$DC,$B0,$07,$3B,$DC,$98 ;
+ $CAF6 DEFB $0D,$00,$00,$98,$1A,$7B,$CE,$4E ;
+ $CAFE DEFB $3A,$7B,$D7,$EC,$7A,$7B,$D1,$58 ;
+ $CB06 DEFB $5A,$7B,$CE,$70,$CE,$7B,$C0,$78 ;
+ $CB0E DEFB $8C,$00,$00,$2C,$0C,$FB,$DF,$26 ;
+ $CB16 DEFB $0C,$FB,$DF,$23,$1C,$7B,$DE,$21 ;
+ $CB1E DEFB $32,$3B,$DC,$43,$62,$0B,$D0,$46 ;
+ $CB26 DEFB $F1,$00,$00,$86,$7F,$C0,$03,$0C ;
+ $CB2E DEFB $0F,$38,$1C,$0C,$03,$C7,$FC,$18 ;
+ $CB36 DEFB $00,$F0,$DF,$38,$00,$3D,$87,$F0 ;
+ $CB3E DEFB $00,$0F,$00,$C0,$00,$02,$00,$00 ; }
+
+; Sprite: Mummy 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CB47-$CB48;$CB57-$CB58;$CB67-$CB68(Mummy1)
+; }
+; TABLE#
+@label=SpriteMummy1
+b$CB46 DEFB $18                             ;  Height (in pixels).
+ $CB47 DEFB $0F,$00,$0F,$78,$03,$78,$04,$30 ; { Graphic data.
+ $CB4F DEFB $07,$70,$07,$40,$01,$F0,$07,$E0 ;
+ $CB57 DEFB $0E,$20,$0F,$E0,$0F,$E0,$04,$20 ;
+ $CB5F DEFB $CF,$E5,$E8,$67,$F7,$CB,$5B,$BE ;
+ $CB67 DEFB $17,$D4,$03,$80,$07,$C0,$0C,$60 ;
+ $CB6F DEFB $0F,$E0,$0D,$60,$07,$C0,$03,$80 ; }
+
+; Sprite: Mummy 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CB78-$CB79;$CB88-$CB89;$CB98-$CB99(Mummy2)
+; }
+; TABLE#
+@label=SpriteMummy2
+b$CB77 DEFB $18                             ;  Height (in pixels).
+ $CB78 DEFB $0F,$E8,$0F,$E8,$03,$30,$04,$70 ; { Graphic data.
+ $CB80 DEFB $07,$40,$07,$F0,$01,$E0,$07,$E0 ;
+ $CB88 DEFB $07,$10,$07,$F0,$07,$F0,$02,$10 ;
+ $CB90 DEFB $AF,$E5,$78,$67,$F7,$CB,$5B,$BE ;
+ $CB98 DEFB $17,$D4,$03,$80,$07,$C0,$0C,$60 ;
+ $CBA0 DEFB $0F,$E0,$0D,$60,$07,$C0,$03,$80 ; }
+
+; Sprite: Mummy 3
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CBA9-$CBAA;$CBB9-$CBBA;$CBC9-$CBCA(Mummy3)
+; }
+; TABLE#
+@label=SpriteMummy3
+b$CBA8 DEFB $18                             ;  Height (in pixels).
+ $CBA9 DEFB $00,$78,$0F,$78,$0F,$30,$07,$70 ; { Graphic data.
+ $CBB1 DEFB $04,$40,$07,$70,$07,$70,$01,$E0 ;
+ $CBB9 DEFB $07,$10,$07,$F0,$07,$F0,$02,$10 ;
+ $CBC1 DEFB $A7,$F5,$E4,$37,$F3,$EB,$5B,$FE ;
+ $CBC9 DEFB $17,$F4,$01,$C0,$03,$E0,$06,$30 ;
+ $CBD1 DEFB $07,$F0,$06,$B0,$03,$E0,$01,$C0 ; }
+
+; Sprite: Frankenstien 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CBDA-$CBDB;$CBEA-$CBEB;$CBFA-$CBFB(Frankenstien1)
+; }
+; TABLE#
+@label=SpriteFrankenstien1
+b$CBD9 DEFB $18                             ;  Height (in pixels).
+ $CBDA DEFB $3E,$00,$1E,$60,$00,$F0,$0E,$70 ; { Graphic data.
+ $CBE2 DEFB $0E,$B0,$0E,$C4,$4F,$E4,$4F,$EA ;
+ $CBEA DEFB $A0,$0A,$AF,$EE,$EE,$EE,$FE,$FE ;
+ $CBF2 DEFB $FF,$FE,$7E,$FC,$0F,$E0,$20,$08 ;
+ $CBFA DEFB $37,$D8,$24,$48,$0F,$E0,$14,$50 ;
+ $CC02 DEFB $16,$D0,$10,$10,$1A,$B0,$0F,$E0 ; }
+
+; Sprite: Frankenstien 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CC0B-$CC0C;$CC1B-$CC1C;$CC2B-$CC2C(Frankenstien2)
+; }
+; TABLE#
+@label=SpriteFrankenstien2
+b$CC0A DEFB $18                             ;  Height (in pixels).
+ $CC0B DEFB $1E,$F0,$1E,$F0,$00,$00,$0E,$E0 ; { Graphic data.
+ $CC13 DEFB $4E,$E4,$4E,$E4,$AF,$EA,$AF,$EA ;
+ $CC1B DEFB $E0,$0E,$EF,$EE,$EF,$EE,$FE,$FE ;
+ $CC23 DEFB $FF,$FE,$7E,$FC,$0F,$E0,$20,$08 ;
+ $CC2B DEFB $37,$D8,$24,$48,$0F,$E0,$14,$50 ;
+ $CC33 DEFB $16,$D0,$10,$10,$1A,$B0,$0F,$E0 ; }
+
+; Sprite: Frankenstien 3
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CC3C-$CC3D;$CC4C-$CC4D;$CC5C-$CC5D(Frankenstien3)
+; }
+; TABLE#
+@label=SpriteFrankenstien3
+b$CC3B DEFB $18                             ;  Height (in pixels).
+ $CC3C DEFB $00,$F8,$0C,$F0,$1E,$00,$1C,$E0 ; { Graphic data.
+ $CC44 DEFB $1A,$E0,$46,$E0,$4F,$E0,$AE,$E4 ;
+ $CC4C DEFB $0A,$A0,$EF,$EA,$EF,$EE,$FE,$FE ;
+ $CC54 DEFB $FF,$FE,$7E,$FC,$0F,$F0,$20,$08 ;
+ $CC5C DEFB $37,$D8,$24,$48,$0F,$E0,$14,$50 ;
+ $CC64 DEFB $16,$D0,$10,$10,$1A,$B0,$0F,$E0 ; }
+
+; Sprite: Devil 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CC6D-$CC6E;$CC7D-$CC7E;$CC8D-$CC8E(Devil1)
+; }
+; TABLE#
+@label=SpriteDevil1
+b$CC6C DEFB $18                             ;  Height (in pixels).
+ $CC6D DEFB $0C,$07,$0C,$63,$00,$65,$0C,$04 ; { Graphic data.
+ $CC75 DEFB $0C,$EC,$0E,$F8,$0F,$D0,$0F,$C0 ;
+ $CC7D DEFB $05,$40,$0B,$A0,$0D,$60,$AB,$A8 ;
+ $CC85 DEFB $FF,$FF,$3F,$FC,$07,$C0,$0A,$A0 ;
+ $CC8D DEFB $11,$10,$14,$50,$16,$D0,$31,$18 ;
+ $CC95 DEFB $7B,$BC,$6F,$EC,$47,$C4,$40,$04 ; }
+
+; Sprite: Devil 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CC9E-$CC9F;$CCAE-$CCAF;$CCBE-$CCBF(Devil2)
+; }
+; TABLE#
+@label=SpriteDevil2
+b$CC9D DEFB $18                             ;  Height (in pixels).
+ $CC9E DEFB $06,$C7,$06,$C3,$00,$05,$06,$C4 ; { Graphic data.
+ $CCA6 DEFB $06,$CC,$06,$D8,$07,$D0,$07,$C0 ;
+ $CCAE DEFB $05,$40,$0B,$A0,$0D,$60,$AB,$AA ;
+ $CCB6 DEFB $FF,$FE,$3F,$F8,$07,$C0,$0A,$A0 ;
+ $CCBE DEFB $11,$10,$14,$50,$16,$D0,$31,$18 ;
+ $CCC6 DEFB $7B,$BC,$6F,$EC,$47,$C4,$40,$04 ; }
+
+; Sprite: Devil 3
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CCCF-$CCD0;$CCDF-$CCE0;$CCEF-$CCF0(Devil3)
+; }
+; TABLE#
+@label=SpriteDevil3
+b$CCCE DEFB $18                             ;  Height (in pixels).
+ $CCCF DEFB $00,$37,$06,$33,$06,$05,$00,$34 ; { Graphic data.
+ $CCD7 DEFB $07,$3C,$07,$78,$03,$F0,$07,$F0 ;
+ $CCDF DEFB $02,$A0,$05,$D0,$06,$B0,$A5,$D5 ;
+ $CCE7 DEFB $FF,$FF,$3F,$FC,$03,$E0,$05,$50 ;
+ $CCEF DEFB $08,$88,$0A,$28,$0B,$68,$18,$8C ;
+ $CCF7 DEFB $39,$CE,$37,$F6,$23,$E2,$20,$02 ; }
+
+; Sprite: Dracula 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CD00-$CD01;$CD10-$CD11;$CD20-$CD21(Dracula1)
+; }
+; TABLE#
+@label=SpriteDracula1
+b$CCFF DEFB $18                             ;  Height (in pixels).
+ $CD00 DEFB $00,$F0,$0C,$00,$1C,$C0,$38,$C0 ; { Graphic data.
+ $CD08 DEFB $B4,$C2,$CE,$DE,$F7,$DE,$F7,$DE ;
+ $CD10 DEFB $F8,$3E,$7F,$FC,$7F,$FC,$6B,$AC ;
+ $CD18 DEFB $23,$88,$3F,$F8,$0F,$E0,$3A,$B8 ;
+ $CD20 DEFB $72,$9C,$41,$04,$54,$54,$16,$D0 ;
+ $CD28 DEFB $19,$30,$1B,$B0,$0F,$E0,$07,$C0 ; }
+
+; Sprite: Dracula 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CD31-$CD32;$CD41-$CD42;$CD51-$CD52(Dracula2)
+; }
+; TABLE#
+@label=SpriteDracula2
+b$CD30 DEFB $18                             ;  Height (in pixels).
+ $CD31 DEFB $1E,$F0,$0E,$E0,$00,$00,$06,$C0 ; { Graphic data.
+ $CD39 DEFB $86,$C2,$F6,$DE,$F7,$DE,$F7,$DE ;
+ $CD41 DEFB $F8,$3E,$7F,$FC,$7F,$FC,$6B,$AC ;
+ $CD49 DEFB $23,$88,$3F,$F8,$0F,$E0,$3A,$B8 ;
+ $CD51 DEFB $72,$9C,$41,$04,$54,$54,$16,$D0 ;
+ $CD59 DEFB $19,$30,$1B,$B0,$0F,$E0,$07,$C0 ; }
+
+; Sprite: Dracula 3
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CD62-$CD63;$CD72-$CD73;$CD82-$CD83(Dracula3)
+; }
+; TABLE#
+@label=SpriteDracula3
+b$CD61 DEFB $18                             ;  Height (in pixels).
+ $CD62 DEFB $1E,$00,$00,$60,$06,$70,$06,$38 ; { Graphic data.
+ $CD6A DEFB $86,$5A,$F6,$E6,$F7,$DE,$F7,$DE ;
+ $CD72 DEFB $F8,$3E,$7F,$FC,$7F,$EC,$6B,$AC ;
+ $CD7A DEFB $23,$88,$3F,$F8,$0F,$E0,$3A,$B8 ;
+ $CD82 DEFB $72,$9C,$41,$04,$54,$54,$16,$D0 ;
+ $CD8A DEFB $19,$30,$1B,$B0,$0F,$E0,$07,$C0 ; }
+
+; Sprite: Gravestone
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CD93-$CD94;$CDA3-$CDA4;$CDB3-$CDB4{,3*4}(Gravestone)
+; }
+; TABLE#
+@label=SpriteGravestone
+b$CD92 DEFB $15                             ;  Height (in pixels).
+ $CD93 DEFB $22,$00,$4B,$C0,$56,$80,$37,$60 ; { Graphic data.
+ $CD9B DEFB $FB,$00,$7B,$80,$FD,$80,$7D,$CE ;
+ $CDA3 DEFB $9E,$AE,$9E,$77,$2F,$F9,$4F,$F6 ;
+ $CDAB DEFB $07,$EC,$07,$C0,$0F,$D8,$1F,$DC ;
+ $CDB3 DEFB $3D,$EC,$3D,$E2,$3A,$DC,$16,$B8 ;
+ $CDBB DEFB $00,$70                         ; }
+
+; Sprite: Crucifix
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CDBE-$CDBF;$CDCE-$CDCF;$CDDE-$CDDF{,6*4}(Crucifix)
+; }
+; TABLE#
+@label=SpriteCrucifix
+b$CDBD DEFB $12                             ;  Height (in pixels).
+ $CDBE DEFB $01,$80,$03,$C0,$03,$C0,$01,$80 ; { Graphic data.
+ $CDC6 DEFB $01,$80,$01,$80,$01,$80,$01,$80 ;
+ $CDCE DEFB $03,$C0,$66,$66,$FD,$BF,$FD,$BF ;
+ $CDD6 DEFB $66,$66,$03,$C0,$01,$80,$03,$C0 ;
+ $CDDE DEFB $03,$C0,$01,$80                 ; }
+
+; Sprite: Skull
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CDE3-$CDE4;$CDF3-$CDF4{,1*4}(Skull)
+; }
+; TABLE#
+@label=SpriteSkull
+b$CDE2 DEFB $0F                             ;  Height (in pixels).
+ $CDE3 DEFB $02,$D0,$03,$50,$04,$A8,$0C,$08 ; { Graphic data.
+ $CDEB DEFB $1C,$C8,$38,$44,$30,$84,$76,$32 ;
+ $CDF3 DEFB $7B,$5A,$73,$1A,$79,$12,$38,$02 ;
+ $CDFB DEFB $3F,$02,$1F,$FC,$07,$F0         ; }
+
+; Sprite: Witch Flying Left 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CE02-$CE03;$CE12-$CE13;$CE22-$CE23{,2*4}(WitchFlyingLeft1)
+; }
+; TABLE#
+@label=SpriteWitchFlyingLeft1
+b$CE01 DEFB $16                             ;  Height (in pixels).
+ $CE02 DEFB $00,$0A,$07,$DA,$00,$BA,$3C,$D8 ; { Graphic data.
+ $CE0A DEFB $07,$FC,$07,$FE,$07,$FE,$05,$FF ;
+ $CE12 DEFB $1D,$FF,$3E,$F7,$E6,$F6,$C3,$78 ;
+ $CE1A DEFB $09,$60,$0F,$C0,$0F,$C0,$2F,$20 ;
+ $CE22 DEFB $3B,$40,$16,$E0,$0D,$F0,$03,$F8 ;
+ $CE2A DEFB $07,$FC,$08,$1F                 ; }
+
+; Sprite: Witch Flying Left 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CE2F-$CE30;$CE3F-$CE40;$CE4F-$CE50{,2*4}(WitchFlyingLeft2)
+; }
+; TABLE#
+@label=SpriteWitchFlyingLeft2
+b$CE2E DEFB $16                             ;  Height (in pixels).
+ $CE2F DEFB $00,$80,$07,$D5,$00,$BA,$3C,$D4 ; { Graphic data.
+ $CE37 DEFB $07,$FC,$07,$FE,$07,$FE,$05,$FF ;
+ $CE3F DEFB $0D,$FF,$1E,$F7,$76,$F6,$E3,$7C ;
+ $CE47 DEFB $49,$60,$0F,$C0,$0F,$00,$2F,$20 ;
+ $CE4F DEFB $3B,$40,$16,$E0,$0D,$F0,$03,$F8 ;
+ $CE57 DEFB $07,$FC,$08,$1F                 ; }
+
+; Sprite: Witch Flying Right 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CE5C-$CE5D;$CE6C-$CE6D;$CE7C-$CE7D{,2*4}(WitchFlyingRight1)
+; }
+; TABLE#
+@label=SpriteWitchFlyingRight1
+b$CE5B DEFB $16                             ;  Height (in pixels).
+ $CE5C DEFB $10,$00,$AB,$E0,$5D,$00,$2B,$3C ; { Graphic data.
+ $CE64 DEFB $3F,$E0,$7F,$E0,$7F,$E0,$FF,$A0 ;
+ $CE6C DEFB $FF,$B0,$EF,$78,$6F,$6E,$3E,$C7 ;
+ $CE74 DEFB $06,$92,$03,$F0,$00,$F0,$04,$F4 ;
+ $CE7C DEFB $02,$DC,$07,$68,$0F,$B0,$1F,$C0 ;
+ $CE84 DEFB $3F,$E0,$F8,$10                 ; }
+
+; Sprite: Witch Flying Right 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CE89-$CE8A;$CE99-$CE9A;$CEA9-$CEAA{,2*4}(WitchFlyingRight2)
+; }
+; TABLE#
+@label=SpriteWitchFlyingRight2
+b$CE88 DEFB $16                             ;  Height (in pixels).
+ $CE89 DEFB $50,$00,$AB,$E0,$5D,$00,$2B,$3C ; { Graphic data.
+ $CE91 DEFB $3F,$E0,$7F,$E0,$7F,$E0,$FF,$A0 ;
+ $CE99 DEFB $FF,$B8,$EF,$7C,$6F,$67,$3E,$C3 ;
+ $CEA1 DEFB $06,$90,$03,$F0,$00,$F0,$04,$F4 ;
+ $CEA9 DEFB $02,$DC,$07,$68,$0F,$B0,$1F,$C0 ;
+ $CEB1 DEFB $3F,$E0,$F8,$10                 ; }
+
+; Sprite: Ghoul Flying Left 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CEB6-$CEB7;$CEC6-$CEC7;$CED6-$CED7{,5*4}(GhoulFlyingLeft1)
+; }
+; TABLE#
+@label=SpriteGhoulFlyingLeft1
+b$CEB5 DEFB $13                             ;  Height (in pixels).
+ $CEB6 DEFB $0C,$CE,$1F,$FC,$3F,$F8,$2F,$B0 ; { Graphic data.
+ $CEBE DEFB $17,$B0,$3B,$10,$3D,$B0,$7E,$F0 ;
+ $CEC6 DEFB $FF,$70,$E3,$70,$1D,$70,$0A,$E0 ;
+ $CECE DEFB $15,$C6,$24,$3C,$47,$FC,$4F,$F8 ;
+ $CED6 DEFB $7F,$E0,$3F,$80,$1E,$00         ; }
+
+; Sprite: Ghoul Flying Left 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CEDD-$CEDE;$CEED-$CEEE;$CEFD-$CEFE{,5*4}(GhoulFlyingLeft2)
+; }
+; TABLE#
+@label=SpriteGhoulFlyingLeft2
+b$CEDC DEFB $13                             ;  Height (in pixels).
+ $CEDD DEFB $03,$00,$1F,$FF,$0F,$FC,$37,$B0 ; { Graphic data.
+ $CEE5 DEFB $3B,$B0,$7D,$10,$7E,$D0,$FF,$70 ;
+ $CEED DEFB $E7,$B0,$0B,$B0,$0D,$70,$0C,$E0 ;
+ $CEF5 DEFB $17,$C0,$26,$1F,$47,$FC,$4F,$F8 ;
+ $CEFD DEFB $7F,$E0,$3F,$80,$1E,$00         ; }
+
+; Sprite: Ghoul Flying Right 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CF04-$CF05;$CF14-$CF15;$CF24-$CF25{,5*4}(GhoulFlyingRight1)
+; }
+; TABLE#
+@label=SpriteGhoulFlyingRight1
+b$CF03 DEFB $13                             ;  Height (in pixels).
+ $CF04 DEFB $00,$C0,$FF,$F8,$3F,$F0,$0D,$EC ; { Graphic data.
+ $CF0C DEFB $0D,$DC,$08,$BE,$0D,$7E,$0E,$FF ;
+ $CF14 DEFB $0D,$E7,$0D,$D0,$0E,$B0,$07,$30 ;
+ $CF1C DEFB $03,$E8,$F8,$64,$3F,$E2,$1F,$F2 ;
+ $CF24 DEFB $07,$F3,$01,$FC,$00,$78         ; }
+
+; Sprite: Ghoul Flying Right 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CF2B-$CF2C;$CF3B-$CF3C;$CF4B-$CF4C{,5*4}(GhoulFlyingRight2)
+; }
+; TABLE#
+@label=SpriteGhoulFlyingRight2
+b$CF2A DEFB $13                             ;  Height (in pixels).
+ $CF2B DEFB $73,$30,$3F,$F8,$1F,$FC,$0D,$F4 ; { Graphic data.
+ $CF33 DEFB $0D,$E8,$08,$DC,$0D,$BC,$0F,$7E ;
+ $CF3B DEFB $0E,$FF,$0E,$C7,$0E,$B8,$07,$50 ;
+ $CF43 DEFB $63,$A8,$3C,$24,$3F,$E2,$1F,$F2 ;
+ $CF4B DEFB $07,$FE,$01,$FC,$00,$78         ; }
+
+; Sprite: Bat Flying Left 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CF52-$CF53;$CF62-$CF63;$CF72-$CF73{,5*4}(BatFlyingLeft1)
+; }
+; TABLE#
+@label=SpriteBatFlyingLeft1
+b$CF51 DEFB $13                             ;  Height (in pixels).
+ $CF52 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; { Graphic data.
+ $CF5A DEFB $00,$00,$00,$00,$67,$F0,$FF,$FF ;
+ $CF62 DEFB $BF,$FE,$DF,$80,$F7,$F0,$DC,$10 ;
+ $CF6A DEFB $25,$F8,$0B,$E8,$0C,$18,$07,$F8 ;
+ $CF72 DEFB $03,$F8,$00,$FC,$00,$1F         ; }
+
+; Sprite: Bat Flying Left 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CF79-$CF7A;$CF89-$CF8A{,3*4}(BatFlyingLeft2)
+; }
+; TABLE#
+@label=SpriteBatFlyingLeft2
+b$CF78 DEFB $0D                             ;  Height (in pixels).
+ $CF79 DEFB $00,$1F,$00,$FC,$03,$F8,$07,$04 ; { Graphic data.
+ $CF81 DEFB $08,$38,$07,$90,$67,$E0,$FF,$9F ;
+ $CF89 DEFB $BF,$FE,$DF,$F0,$F0,$00,$B0,$00 ;
+ $CF91 DEFB $20,$00                         ; }
+
+; Sprite: Bat Flying Right 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CF94-$CF95;$CFA4-$CFA5{,3*4}(BatFlyingRight1)
+; }
+; TABLE#
+@label=SpriteBatFlyingRight1
+b$CF93 DEFB $0D                             ;  Height (in pixels).
+ $CF94 DEFB $F8,$00,$3F,$00,$1F,$C0,$2F,$E0 ; { Graphic data.
+ $CF9C DEFB $1C,$10,$09,$E0,$07,$E6,$F9,$FF ;
+ $CFA4 DEFB $7F,$FD,$0F,$FB,$00,$0F,$00,$0D ;
+ $CFAC DEFB $00,$04                         ; }
+
+; Sprite: Bat Flying Right 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$CFAF-$CFB0;$CFBF-$CFC0;$CFCF-$CFD0{,5*4}(BatFlyingRight2)
+; }
+; TABLE#
+@label=SpriteBatFlyingRight2
+b$CFAE DEFB $13                             ;  Height (in pixels).
+ $CFAF DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; { Graphic data.
+ $CFB7 DEFB $00,$00,$00,$00,$0F,$E6,$FF,$FF ;
+ $CFBF DEFB $7F,$FD,$01,$FB,$0F,$EF,$08,$6D ;
+ $CFC7 DEFB $1F,$A4,$27,$D0,$18,$30,$1F,$E0 ;
+ $CFCF DEFB $1F,$C0,$3F,$00,$F8,$00         ; }
+
+; Sprite: Barrel
+;
+; #UDGTABLE
+; {
+; #UDGARRAY4,,4,4,,2;$CFD7-$CFDA;$CFF7-$CFFA;$D017-$D01A;$D037-$D03A@$D059-$D068(Barrel)
+; }
+; TABLE#
+@label=SpriteBarrel
+b$CFD5 DEFB $04                             ;  Width (in bytes).
+ $CFD6 DEFB $20                             ;  Height (in pixels).
+ $CFD7 DEFB $00,$0F,$F0,$00,$00,$70,$0E,$00 ; { Graphic data.
+ $CFDF DEFB $01,$87,$B1,$80,$02,$7B,$DE,$40 ;
+ $CFE7 DEFB $04,$FD,$EF,$A0,$0B,$7E,$F7,$D0 ;
+ $CFEF DEFB $17,$BF,$7B,$E8,$17,$DF,$BD,$E8 ;
+ $CFF7 DEFB $2F,$FF,$FF,$F4,$6E,$63,$8F,$B6 ;
+ $CFFF DEFB $5E,$49,$27,$BA,$56,$49,$24,$2A ;
+ $D007 DEFB $5E,$63,$8C,$BA,$DC,$49,$24,$FB ;
+ $D00F DEFB $EE,$49,$24,$F7,$AF,$63,$8C,$B5 ;
+ $D017 DEFB $B7,$FF,$FF,$ED,$BB,$DF,$F7,$DD ;
+ $D01F DEFB $9D,$EF,$FB,$B9,$CE,$77,$FE,$73 ;
+ $D027 DEFB $C7,$8F,$F1,$E3,$63,$F0,$0F,$C6 ;
+ $D02F DEFB $70,$FF,$FF,$0E,$38,$1F,$F8,$1C ;
+ $D037 DEFB $1E,$00,$40,$78,$0F,$C0,$23,$F0 ;
+ $D03F DEFB $03,$FF,$FF,$C0,$00,$FF,$FF,$00 ;
+ $D047 DEFB $00,$1F,$F8,$00,$00,$00,$00,$00 ;
+ $D04F DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; }
+
+; Attributes: Barrel
+@label=AttribBarrel
+b$D057 DEFB $04                             ;  Width (in bytes).
+ $D058 DEFB $04                             ;  Height (in bytes).
+ $D059 DEFB $46,$46,$46,$46,$46,$46,$46,$46 ; { Colour attribute data.
+ $D061 DEFB $46,$46,$46,$46,$46,$46,$46,$46 ; }
+
+; Sprite: Acg Exit Door
+;
+; #UDGTABLE
+; {
+; #UDGARRAY8,,4,8,,2;$D06B-$D072;$D0AB-$D0B2;$D0EB-$D0F2;$D12B-$D132;$D16B-$D172@$D1AD-$D1D4(AcgExitDoor)
+; }
+; TABLE#
+@label=SpriteAcgExitDoor
+b$D069 DEFB $08                             ;  Width (in bytes).
+ $D06A DEFB $28                             ;  Height (in pixels).
+ $D06B DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; { Graphic data.
+ $D073 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ;
+ $D07B DEFB $00,$00,$00,$00,$00,$00,$00,$00 ;
+ $D083 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ;
+ $D08B DEFB $00,$3C,$00,$00,$00,$00,$3C,$00 ;
+ $D093 DEFB $00,$42,$00,$00,$00,$00,$42,$00 ;
+ $D09B DEFB $00,$BD,$00,$00,$00,$00,$BD,$00 ;
+ $D0A3 DEFB $00,$EF,$00,$00,$00,$00,$F7,$00 ;
+ $D0AB DEFB $FF,$EB,$FF,$FF,$7F,$FF,$F7,$FF ;
+ $D0B3 DEFB $00,$6A,$1F,$FF,$7F,$F8,$56,$00 ;
+ $D0BB DEFB $00,$5A,$3F,$FF,$7F,$FC,$52,$00 ;
+ $D0C3 DEFB $00,$D6,$3F,$E3,$63,$FC,$6B,$00 ;
+ $D0CB DEFB $00,$D6,$7F,$D1,$51,$FE,$6B,$00 ;
+ $D0D3 DEFB $00,$B6,$7F,$D1,$51,$FE,$69,$00 ;
+ $D0DB DEFB $00,$B6,$FF,$CD,$4D,$FF,$6D,$00 ;
+ $D0E3 DEFB $01,$B6,$FF,$E3,$63,$FF,$6D,$80 ;
+ $D0EB DEFB $01,$A4,$FF,$FF,$FF,$FF,$25,$80 ;
+ $D0F3 DEFB $01,$2C,$FF,$36,$30,$FF,$34,$80 ;
+ $D0FB DEFB $01,$6C,$FF,$34,$E6,$FF,$36,$80 ;
+ $D103 DEFB $03,$6C,$FF,$04,$E4,$FF,$36,$C0 ;
+ $D10B DEFB $03,$6C,$FF,$04,$E4,$FF,$36,$C0 ;
+ $D113 DEFB $02,$6C,$FF,$34,$E7,$FF,$36,$40 ;
+ $D11B DEFB $02,$6C,$FF,$34,$E7,$FF,$36,$40 ;
+ $D123 DEFB $06,$CC,$7F,$8E,$30,$FE,$33,$60 ;
+ $D12B DEFB $04,$CC,$7F,$FF,$FF,$FE,$33,$20 ;
+ $D133 DEFB $07,$F4,$3F,$FF,$7F,$FC,$2F,$E0 ;
+ $D13B DEFB $1F,$FC,$1F,$FF,$7F,$F8,$3F,$F8 ;
+ $D143 DEFB $38,$0E,$0F,$FF,$7F,$F0,$70,$1C ;
+ $D14B DEFB $67,$F3,$03,$FF,$7F,$C0,$CF,$E6 ;
+ $D153 DEFB $5F,$FD,$00,$7F,$FE,$00,$BF,$FA ;
+ $D15B DEFB $3F,$FE,$00,$07,$60,$00,$7F,$FC ;
+ $D163 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ;
+ $D16B DEFB $7F,$FF,$FF,$FF,$FF,$FF,$FF,$FE ;
+ $D173 DEFB $7F,$FF,$FF,$FF,$FF,$FF,$FF,$FE ;
+ $D17B DEFB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF ;
+ $D183 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ;
+ $D18B DEFB $AA,$AA,$AA,$AA,$AA,$AA,$AA,$AA ;
+ $D193 DEFB $55,$55,$55,$55,$55,$55,$55,$56 ;
+ $D19B DEFB $2A,$AA,$AA,$AA,$AA,$AA,$AA,$AC ;
+ $D1A3 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; }
+
+; Attributes: Acg Exit Door
+@label=AttribAcgExitDoor
+b$D1AB DEFB $08                             ;  Width (in bytes).
+ $D1AC DEFB $05                             ;  Height (in bytes).
+ $D1AD DEFB $FF,$47,$43,$43,$43,$43,$47,$FF ; { Colour attribute data.
+ $D1B5 DEFB $FF,$47,$43,$43,$43,$43,$47,$FF ;
+ $D1BD DEFB $47,$47,$43,$43,$43,$43,$47,$47 ;
+ $D1C5 DEFB $47,$47,$43,$43,$43,$43,$47,$47 ;
+ $D1CD DEFB $46,$46,$46,$46,$46,$46,$46,$46 ; }
+
+; Sprite: ACG Key Left
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$D1D6-$D1D7;$D1E6-$D1E7{,5*4}(ACGKeyLeft)
+; }
+; TABLE#
+@label=SpriteACGKeyLeft
+b$D1D5 DEFB $0B                             ;  Height (in pixels).
+ $D1D6 DEFB $0C,$CE,$0C,$DF,$0F,$D8,$0F,$D8 ; { Graphic data.
+ $D1DE DEFB $0C,$D8,$0C,$DF,$07,$FE,$3F,$FF ;
+ $D1E6 DEFB $5F,$FF,$40,$00,$3F,$FF         ; }
+
+; Sprite: ACG KeyMiddle
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$D1ED-$D1EE;$D1FD-$D1FE{,1*4}(ACGKeyMiddle)
+; }
+; TABLE#
+@label=SpriteACGKeyMiddle
+b$D1EC DEFB $0F                             ;  Height (in pixels).
+ $D1ED DEFB $3C,$00,$7E,$00,$66,$00,$6E,$01 ; { Graphic data.
+ $D1F5 DEFB $60,$01,$7E,$03,$3C,$0F,$FF,$F0 ;
+ $D1FD DEFB $FF,$FF,$00,$0F,$FF,$F0,$00,$0F ;
+ $D205 DEFB $00,$03,$00,$01,$00,$01         ; }
+
+; Sprite: ACG Key Right
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$D20C-$D20D;$D21C-$D21D;$D22C-$D22D{,5*4}(ACGKeyRight)
+; }
+; TABLE#
+@label=SpriteACGKeyRight
+b$D20B DEFB $13                             ;  Height (in pixels).
+ $D20C DEFB $1C,$00,$7F,$00,$7F,$00,$C3,$80 ; { Graphic data.
+ $D214 DEFB $C3,$C0,$81,$DC,$81,$66,$1B,$42 ;
+ $D21C DEFB $9F,$73,$C7,$B1,$C7,$B1,$9F,$73 ;
+ $D224 DEFB $1B,$42,$81,$66,$81,$BC,$C3,$80 ;
+ $D22C DEFB $F8,$80,$7F,$00,$1C,$00         ; }
+
+; Sprite: Mushroom
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$D233-$D234;$D243-$D244(Mushroom)
+; }
+; TABLE#
+@label=SpriteMushroom
+b$D232 DEFB $10                             ;  Height (in pixels).
+ $D233 DEFB $00,$70,$00,$FC,$00,$7E,$00,$7E ; { Graphic data.
+ $D23B DEFB $00,$FC,$00,$FC,$7E,$3C,$CF,$C8 ;
+ $D243 DEFB $6F,$F0,$FF,$3C,$7F,$3E,$77,$F3 ;
+ $D24B DEFB $33,$F3,$1F,$9E,$0F,$FC,$03,$F0 ; }
+
+; Sprite: Picture 2
+;
+; #UDGTABLE
+; {
+; #UDGARRAY4,,4,4,,2;$D255-$D258;$D275-$D278@$D297-$D29E(Picture2)
+; }
+; TABLE#
+@label=SpritePicture2
+b$D253 DEFB $04                             ;  Width (in bytes).
+ $D254 DEFB $10                             ;  Height (in pixels).
+ $D255 DEFB $01,$FF,$FF,$80,$01,$FF,$FF,$80 ; { Graphic data.
+ $D25D DEFB $01,$80,$01,$80,$01,$87,$E1,$80 ;
+ $D265 DEFB $03,$8D,$31,$C0,$03,$18,$98,$C0 ;
+ $D26D DEFB $03,$13,$C8,$C0,$03,$16,$68,$C0 ;
+ $D275 DEFB $07,$1F,$F8,$E0,$06,$19,$98,$60 ;
+ $D27D DEFB $06,$19,$98,$60,$06,$0F,$F0,$60 ;
+ $D285 DEFB $0E,$00,$00,$70,$0C,$00,$00,$30 ;
+ $D28D DEFB $0F,$FF,$FF,$F0,$0F,$FF,$FF,$F0 ; }
+
+; Attributes: Picture 2
+@label=AttribPicture2
+b$D295 DEFB $04                             ;  Width (in bytes).
+ $D296 DEFB $02                             ;  Height (in bytes).
+ $D297 DEFB $46,$46,$46,$46,$46,$46,$46,$46 ; { Colour attribute data.
+
+; Sprite: Spanner
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$D2A0-$D2A1;$D2B0-$D2B1(Spanner)
+; }
+; TABLE#
+@label=SpriteSpanner
+b$D29F DEFB $10                             ;  Height (in pixels).
+ $D2A0 DEFB $20,$00,$70,$00,$78,$00,$3C,$00 ; { Graphic data.
+ $D2A8 DEFB $1E,$00,$0F,$00,$07,$80,$03,$C0 ;
+ $D2B0 DEFB $01,$E0,$00,$F8,$00,$7E,$00,$7F ;
+ $D2B8 DEFB $00,$7F,$00,$63,$00,$63,$00,$22 ; }
+
+; Sprite: Ghoul 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$D2C1-$D2C2;$D2D1-$D2D2{,5*4}(Ghoul1)
+; }
+; TABLE#
+@label=SpriteGhoul1
+b$D2C0 DEFB $0B                             ;  Height (in pixels).
+ $D2C1 DEFB $09,$10,$DD,$B9,$FF,$FF,$7F,$FF ; { Graphic data.
+ $D2C9 DEFB $3F,$FE,$1C,$9C,$0A,$2C,$0B,$6C ;
+ $D2D1 DEFB $0C,$98,$07,$F0,$01,$E0         ; }
+
+; Sprite: Ghoul 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$D2D8-$D2D9;$D2E8-$D2E9{,5*4}(Ghoul2)
+; }
+; TABLE#
+@label=SpriteGhoul2
+b$D2D7 DEFB $0B                             ;  Height (in pixels).
+ $D2D8 DEFB $00,$00,$00,$00,$01,$01,$D7,$D7 ; { Graphic data.
+ $D2E0 DEFB $FF,$FF,$F9,$3E,$74,$5C,$36,$D8 ;
+ $D2E8 DEFB $19,$30,$0F,$E0,$03,$C0         ; }
+
+; Sprite: Skeleton
+;
+; #UDGTABLE
+; {
+; #UDGARRAY5,$07,4,5,,2;$D2F0-$D2F4;$D318-$D31C;$D340-$D344;$D368-$D36C;$D390-$D394(Skeleton)
+; }
+; TABLE#
+@label=SpriteSkeleton
+b$D2EE DEFB $05                             ;  Width (in bytes).
+ $D2EF DEFB $28                             ;  Height (in pixels).
+ $D2F0 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; { Graphic data.
+ $D2F8 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ;
+ $D300 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ;
+ $D308 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ;
+ $D310 DEFB $00,$00,$00,$00,$00,$60,$00,$00 ;
+ $D318 DEFB $00,$E0,$78,$00,$00,$00,$FC,$EC ;
+ $D320 DEFB $40,$00,$00,$6E,$C6,$70,$00,$00 ;
+ $D328 DEFB $C1,$C3,$60,$00,$00,$C6,$A1,$C0 ;
+ $D330 DEFB $00,$00,$BF,$30,$80,$00,$00,$7C ;
+ $D338 DEFB $1C,$00,$00,$00,$6B,$9F,$00,$00 ;
+ $D340 DEFB $FF,$50,$4E,$FF,$00,$00,$24,$E1 ;
+ $D348 DEFB $00,$00,$00,$28,$10,$00,$00,$00 ;
+ $D350 DEFB $12,$60,$00,$00,$00,$14,$30,$00 ;
+ $D358 DEFB $00,$00,$14,$18,$00,$00,$00,$14 ;
+ $D360 DEFB $46,$00,$00,$00,$0C,$99,$00,$00 ;
+ $D368 DEFB $00,$02,$AE,$E0,$00,$00,$06,$7B ;
+ $D370 DEFB $60,$00,$50,$0C,$E7,$30,$00,$27 ;
+ $D378 DEFB $18,$87,$18,$50,$17,$78,$FF,$0B ;
+ $D380 DEFB $98,$07,$00,$7E,$03,$B0,$05,$00 ;
+ $D388 DEFB $3C,$03,$80,$05,$00,$00,$00,$E0 ;
+ $D390 DEFB $0B,$00,$00,$00,$40,$14,$00,$00 ;
+ $D398 DEFB $00,$F0,$14,$00,$00,$00,$28,$68 ;
+ $D3A0 DEFB $00,$00,$00,$2E,$F0,$00,$00,$00 ;
+ $D3A8 DEFB $1F,$B8,$00,$00,$00,$1B,$F8,$00 ;
+ $D3B0 DEFB $00,$00,$1F,$70,$00,$00,$00,$0E ; }
+
+; Attributes: Skeleton
+@label=AttribSkeleton
+b$D3B8 DEFB $05                             ;  Width (in bytes).
+ $D3B9 DEFB $05                             ;  Height (in bytes).
+ $D3BA DEFB $FF,$FF,$FF,$FF,$FF,$FF,$47,$47 ; { Colour attribute data.
+ $D3C2 DEFB $47,$FF,$FF,$47,$47,$FF,$FF,$47 ;
+ $D3CA DEFB $47,$47,$47,$47,$47,$FF,$FF,$FF ;
+ $D3D2 DEFB $47                             ; }
+
+; Sprite: Hunchback 1
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$D3D4-$D3D5;$D3E4-$D3E5;$D3F4-$D3F5(Hunchback1)
+; }
+; TABLE#
+@label=SpriteHunchback1
+b$D3D3 DEFB $18                             ;  Height (in pixels).
+ $D3D4 DEFB $00,$3C,$3C,$38,$1C,$00,$00,$38 ; { Graphic data.
+ $D3DC DEFB $0E,$38,$0E,$38,$0F,$38,$67,$F8 ;
+ $D3E4 DEFB $03,$F8,$60,$00,$77,$F8,$37,$38 ;
+ $D3EC DEFB $37,$78,$43,$9C,$1D,$8C,$06,$C2 ;
+ $D3F4 DEFB $7B,$62,$7F,$72,$53,$62,$73,$44 ;
+ $D3FC DEFB $3E,$CC,$1E,$F8,$05,$F0,$03,$E0 ; }
+
+; Sprite: Hunchback 2
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$D405-$D406;$D415-$D416;$D425-$D426(Hunchback2)
+; }
+; TABLE#
+@label=SpriteHunchback2
+b$D404 DEFB $18                             ;  Height (in pixels).
+ $D405 DEFB $0F,$3C,$07,$38,$00,$00,$07,$38 ; { Graphic data.
+ $D40D DEFB $07,$38,$07,$38,$07,$38,$37,$F8 ;
+ $D415 DEFB $07,$F8,$30,$00,$27,$F8,$26,$78 ;
+ $D41D DEFB $26,$F8,$03,$9C,$1D,$8C,$06,$CC ;
+ $D425 DEFB $7B,$66,$7F,$66,$53,$66,$73,$4C ;
+ $D42D DEFB $3E,$CC,$1E,$F8,$05,$F0,$03,$E0 ; }
+
+; Sprite: Hunchback 3
+;
+; This sprite is 2 bytes wide.
+; .
+; #UDGTABLE
+; {
+; #UDGARRAY2,$07,4,2,,2;$D436-$D437;$D446-$D447;$D456-$D457(Hunchback3)
+; }
+; TABLE#
+@label=SpriteHunchback3
+b$D435 DEFB $18                             ;  Height (in pixels).
+ $D436 DEFB $0F,$00,$07,$3C,$00,$38,$07,$00 ; { Graphic data.
+ $D43E DEFB $07,$38,$07,$3C,$07,$3C,$67,$F8 ;
+ $D446 DEFB $07,$F8,$60,$00,$77,$F8,$37,$38 ;
+ $D44E DEFB $37,$38,$43,$9C,$1D,$8C,$06,$C2 ;
+ $D456 DEFB $7B,$62,$7F,$72,$53,$62,$73,$44 ;
+ $D45E DEFB $3E,$CC,$1E,$F8,$05,$F0,$03,$E0 ; }
+
+; Sprite: Barrels
+;
+; #UDGTABLE
+; {
+; #UDGARRAY5,,4,5,,2;$D468-$D46C;$D490-$D494;$D4B8-$D4BC;$D4E0-$D4E4@$D4F1-$D504{,5*4}(Barrels)
+; }
+; TABLE#
+@label=SpriteBarrels
+b$D466 DEFB $05                             ;  Width (in bytes).
+ $D467 DEFB $1B                             ;  Height (in pixels).
+ $D468 DEFB $03,$C0,$3C,$03,$C0,$0F,$F0,$FF ; { Graphic data.
+ $D470 DEFB $0F,$F0,$1F,$F9,$FF,$9F,$F8,$1F ;
+ $D478 DEFB $F9,$FF,$9F,$F8,$2F,$F6,$FF,$6F ;
+ $D480 DEFB $F4,$43,$C0,$3C,$03,$C4,$30,$0F ;
+ $D488 DEFB $00,$F0,$0C,$2C,$3F,$C3,$FC,$34 ;
+ $D490 DEFB $23,$7F,$E7,$FE,$C4,$30,$7F,$E7 ;
+ $D498 DEFB $FE,$0C,$2C,$BF,$DB,$FC,$34,$13 ;
+ $D4A0 DEFB $8F,$00,$F1,$C8,$10,$C0,$3C,$03 ;
+ $D4A8 DEFB $08,$0C,$B0,$FF,$0D,$30,$03,$8D ;
+ $D4B0 DEFB $FF,$B1,$C0,$00,$C1,$FF,$83,$00 ;
+ $D4B8 DEFB $00,$D2,$FF,$4B,$00,$00,$4E,$3C ;
+ $D4C0 DEFB $72,$00,$00,$43,$00,$C2,$00,$00 ;
+ $D4C8 DEFB $32,$C3,$4C,$00,$00,$0E,$3C,$70 ;
+ $D4D0 DEFB $00,$00,$03,$00,$C0,$00,$00,$02 ;
+ $D4D8 DEFB $C3,$40,$00,$00,$01,$3C,$80,$00 ;
+ $D4E0 DEFB $00,$01,$00,$80,$00,$00,$00,$C3 ;
+ $D4E8 DEFB $00,$00,$00,$00,$3C,$00,$00     ; }
+
+; Attributes: Barrels
+@label=AttribBarrels
+b$D4EF DEFB $05                             ;  Width (in bytes).
+ $D4F0 DEFB $04                             ;  Height (in bytes).
+ $D4F1 DEFB $43,$43,$43,$43,$43,$43,$43,$43 ; { Colour attribute data.
+ $D4F9 DEFB $43,$43,$43,$43,$43,$43,$43,$43 ;
+ $D501 DEFB $43,$43,$43,$43                 ; }
+
+; Unused data at $D505
+@label=UnusedDataAt$D505
+u$D505 DEFB $00,$00,$00,$00,$00,$00,$01,$00
+ $D50D DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D515 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D51D DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D525 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D52D DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D535 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D53D DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D545 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D54D DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D555 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D55D DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D565 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D56D DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D575 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D57D DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D585 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D58D DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D595 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D59D DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D5A5 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D5AD DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D5B5 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D5BD DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D5C5 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D5CD DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D5D5 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D5DD DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D5E5 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D5ED DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D5F5 DEFB $00,$00,$00,$00,$00,$00,$00,$00
+ $D5FD DEFB $00,$00,$00
+

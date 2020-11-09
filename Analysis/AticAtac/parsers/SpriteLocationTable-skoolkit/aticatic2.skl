@@ -1,0 +1,148 @@
+; Sprite Location Table
+;; #TABLE(default)
+; { =h Offset   | =h Field              | =h Description }
+; { $00         | Graphic Type          | Graphic type. }
+; { $01         | Screen Number         | Screen number. }
+; { $02         | Flags                 | ??? }
+; { $03         | X                     | X coordinate (left). }
+; { $04         | Y                     | Y coordinate (bottom). }
+; { $05         | Colour Attribute      | Colour attribute. }
+; { $06         | Flags2                | ??? }
+; { $07         | Flags3                | ??? }
+; TABLE#
+@label=BackgroundItemTable
+b$6025 DEFB $8C,$00,$00,$58,$58,$46,$00,$00 ; ACG Key Left, Screen $00 ($58,$58), Bright Yellow\Black.
+ $602D DEFB $8D,$00,$00,$58,$58,$46,$00,$00 ; ACG Key Middle, Screen $00 ($58,$58), Bright Yellow\Black.
+ $6035 DEFB $8E,$00,$00,$58,$58,$46,$00,$00 ; ACG Key Right, Screen $00 ($58,$58), Bright Yellow\Black.
+ $603D DEFB $81,$05,$00,$70,$60,$44,$00,$00 ; Key, Screen $05 ($60,$70), Bright Green\Black.
+ $6045 DEFB $81,$17,$00,$80,$40,$42,$00,$00 ; Key, Screen $17 ($40,$80), Bright Red\Black.
+ $604D DEFB $81,$53,$00,$58,$58,$45,$00,$00 ; Key, Screen $53 ($58,$58), Bright Cyan\Black.
+ $6055 DEFB $81,$66,$00,$30,$87,$46,$00,$00 ; Key, Screen $66 ($87,$30), Bright Yellow\Black.
+ $605D DEFB $80,$09,$00,$40,$40,$42,$00,$00 ; Leaf, Screen $09 ($40,$40), Bright Red\Black.
+ $6065 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; Unknown, Screen $00 ($00,$00).
+ $606D DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; Unknown, Screen $00 ($00,$00).
+ $6075 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; Unknown, Screen $00 ($00,$00).
+ $607D DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; Unknown, Screen $00 ($00,$00).
+ $6085 DEFB $8A,$05,$00,$40,$70,$46,$00,$00 ; Cross, Screen $05 ($70,$40), Bright Yellow\Black.
+ $608D DEFB $8B,$30,$00,$40,$70,$45,$00,$00 ; Spanner, Screen $30 ($70,$40), Bright Cyan\Black.
+ $6095 DEFB $82,$3B,$00,$60,$60,$44,$00,$00 ; Medicine Bottle, Screen $3B ($60,$60), Bright Green\Black.
+ $609D DEFB $83,$48,$00,$70,$70,$45,$00,$00 ; Gobstopper, Screen $48 ($70,$70), Bright Cyan\Black.
+ $60A5 DEFB $84,$64,$00,$80,$80,$46,$00,$00 ; Broken, Screen $64 ($80,$80), Bright Yellow\Black.
+ $60AD DEFB $85,$6B,$00,$40,$40,$45,$00,$00 ; Rope, Screen $6B ($40,$40), Bright Cyan\Black.
+ $60B5 DEFB $86,$13,$00,$50,$50,$44,$00,$00 ; Arm, Screen $13 ($50,$50), Bright Green\Black.
+ $60BD DEFB $87,$84,$00,$60,$40,$43,$00,$00 ; Amulet, Screen $84 ($40,$60), Bright Magenta\Black.
+ $60C5 DEFB $88,$1F,$00,$70,$70,$42,$00,$00 ; Money Bag, Screen $1F ($70,$70), Bright Red\Black.
+ $60CD DEFB $89,$49,$00,$50,$40,$47,$00,$00 ; Skeleton Head, Screen $49 ($40,$50), Bright White\Black.
+ $60D5 DEFB $50,$27,$00,$57,$67,$43,$00,$00 ; Can, Screen $27 ($67,$57), Bright Magenta\Black.
+ $60DD DEFB $50,$7F,$00,$40,$40,$46,$00,$00 ; Can, Screen $7F ($40,$40), Bright Yellow\Black.
+ $60E5 DEFB $50,$1E,$00,$50,$57,$46,$00,$00 ; Can, Screen $1E ($57,$50), Bright Yellow\Black.
+ $60ED DEFB $50,$0C,$00,$60,$60,$43,$00,$00 ; Can, Screen $0C ($60,$60), Bright Magenta\Black.
+ $60F5 DEFB $50,$67,$00,$57,$40,$42,$00,$00 ; Can, Screen $67 ($40,$57), Bright Red\Black.
+ $60FD DEFB $50,$41,$00,$57,$67,$42,$00,$00 ; Can, Screen $41 ($67,$57), Bright Red\Black.
+ $6105 DEFB $51,$75,$00,$30,$40,$44,$00,$00 ; Candy Bar, Screen $75 ($40,$30), Bright Green\Black.
+ $610D DEFB $51,$83,$00,$30,$40,$46,$00,$00 ; Candy Bar, Screen $83 ($40,$30), Bright Yellow\Black.
+ $6115 DEFB $51,$0C,$00,$60,$70,$42,$00,$00 ; Candy Bar, Screen $0C ($70,$60), Bright Red\Black.
+ $611D DEFB $51,$68,$00,$57,$40,$43,$00,$00 ; Candy Bar, Screen $68 ($40,$57), Bright Magenta\Black.
+ $6125 DEFB $51,$45,$00,$57,$46,$45,$00,$00 ; Candy Bar, Screen $45 ($46,$57), Bright Cyan\Black.
+ $612D DEFB $51,$46,$00,$43,$7B,$45,$00,$00 ; Candy Bar, Screen $46 ($7B,$43), Bright Cyan\Black.
+ $6135 DEFB $52,$86,$00,$47,$60,$43,$00,$00 ; Ham, Screen $86 ($60,$47), Bright Magenta\Black.
+ $613D DEFB $52,$6E,$00,$60,$77,$42,$00,$00 ; Ham, Screen $6E ($77,$60), Bright Red\Black.
+ $6145 DEFB $52,$7D,$00,$57,$67,$43,$00,$00 ; Ham, Screen $7D ($67,$57), Bright Magenta\Black.
+ $614D DEFB $52,$6A,$00,$30,$67,$42,$00,$00 ; Ham, Screen $6A ($67,$30), Bright Red\Black.
+ $6155 DEFB $52,$3E,$00,$43,$7B,$42,$00,$00 ; Ham, Screen $3E ($7B,$43), Bright Red\Black.
+ $615D DEFB $52,$35,$00,$57,$67,$43,$00,$00 ; Ham, Screen $35 ($67,$57), Bright Magenta\Black.
+ $6165 DEFB $53,$2B,$00,$40,$80,$46,$00,$00 ; Lollipop, Screen $2B ($80,$40), Bright Yellow\Black.
+ $616D DEFB $53,$8A,$00,$57,$67,$45,$00,$00 ; Lollipop, Screen $8A ($67,$57), Bright Cyan\Black.
+ $6175 DEFB $53,$09,$00,$80,$90,$44,$00,$00 ; Lollipop, Screen $09 ($90,$80), Bright Green\Black.
+ $617D DEFB $53,$70,$00,$80,$90,$43,$00,$00 ; Lollipop, Screen $70 ($90,$80), Bright Magenta\Black.
+ $6185 DEFB $53,$74,$00,$57,$87,$42,$00,$00 ; Lollipop, Screen $74 ($87,$57), Bright Red\Black.
+ $618D DEFB $53,$33,$00,$57,$67,$45,$00,$00 ; Lollipop, Screen $33 ($67,$57), Bright Cyan\Black.
+ $6195 DEFB $54,$78,$00,$37,$37,$47,$00,$00 ; Ice Cream Cone, Screen $78 ($37,$37), Bright White\Black.
+ $619D DEFB $54,$8A,$00,$7F,$7F,$47,$00,$00 ; Ice Cream Cone, Screen $8A ($7F,$7F), Bright White\Black.
+ $61A5 DEFB $54,$0B,$00,$57,$67,$46,$00,$00 ; Ice Cream Cone, Screen $0B ($67,$57), Bright Yellow\Black.
+ $61AD DEFB $54,$65,$00,$57,$87,$46,$00,$00 ; Ice Cream Cone, Screen $65 ($87,$57), Bright Yellow\Black.
+ $61B5 DEFB $54,$53,$00,$43,$7B,$47,$00,$00 ; Ice Cream Cone, Screen $53 ($7B,$43), Bright White\Black.
+ $61BD DEFB $54,$4C,$00,$6B,$7B,$46,$00,$00 ; Ice Cream Cone, Screen $4C ($7B,$6B), Bright Yellow\Black.
+ $61C5 DEFB $55,$7B,$00,$50,$60,$45,$00,$00 ; Bowl, Screen $7B ($60,$50), Bright Cyan\Black.
+ $61CD DEFB $55,$87,$00,$57,$67,$45,$00,$00 ; Bowl, Screen $87 ($67,$57), Bright Cyan\Black.
+ $61D5 DEFB $55,$0D,$00,$30,$67,$43,$00,$00 ; Bowl, Screen $0D ($67,$30), Bright Magenta\Black.
+ $61DD DEFB $55,$66,$00,$43,$87,$43,$00,$00 ; Bowl, Screen $66 ($87,$43), Bright Magenta\Black.
+ $61E5 DEFB $55,$53,$00,$6B,$7B,$42,$00,$00 ; Bowl, Screen $53 ($7B,$6B), Bright Red\Black.
+ $61ED DEFB $55,$4F,$00,$57,$67,$47,$00,$00 ; Bowl, Screen $4F ($67,$57), Bright White\Black.
+ $61F5 DEFB $56,$7E,$00,$37,$80,$44,$00,$00 ; Apple, Screen $7E ($80,$37), Bright Green\Black.
+ $61FD DEFB $56,$8C,$00,$57,$67,$44,$00,$00 ; Apple, Screen $8C ($67,$57), Bright Green\Black.
+ $6205 DEFB $56,$70,$00,$30,$90,$44,$00,$00 ; Apple, Screen $70 ($90,$30), Bright Green\Black.
+ $620D DEFB $56,$66,$00,$6B,$87,$44,$00,$00 ; Apple, Screen $66 ($87,$6B), Bright Green\Black.
+ $6215 DEFB $56,$3C,$00,$43,$7B,$42,$00,$00 ; Apple, Screen $3C ($7B,$43), Bright Red\Black.
+ $621D DEFB $56,$39,$00,$43,$7B,$42,$00,$00 ; Apple, Screen $39 ($7B,$43), Bright Red\Black.
+ $6225 DEFB $57,$7E,$00,$87,$80,$47,$00,$00 ; Bottle, Screen $7E ($80,$87), Bright White\Black.
+ $622D DEFB $57,$24,$00,$60,$70,$47,$00,$00 ; Bottle, Screen $24 ($70,$60), Bright White\Black.
+ $6235 DEFB $57,$70,$00,$57,$90,$47,$00,$00 ; Bottle, Screen $70 ($90,$57), Bright White\Black.
+ $623D DEFB $57,$12,$00,$57,$40,$47,$00,$00 ; Bottle, Screen $12 ($40,$57), Bright White\Black.
+ $6245 DEFB $57,$5E,$00,$57,$67,$47,$00,$00 ; Bottle, Screen $5E ($67,$57), Bright White\Black.
+ $624D DEFB $57,$1D,$00,$30,$67,$47,$00,$00 ; Bottle, Screen $1D ($67,$30), Bright White\Black.
+ $6255 DEFB $50,$17,$00,$40,$40,$42,$00,$00 ; Can, Screen $17 ($40,$40), Bright Red\Black.
+ $625D DEFB $50,$73,$00,$30,$67,$42,$00,$00 ; Can, Screen $73 ($67,$30), Bright Red\Black.
+ $6265 DEFB $50,$07,$00,$57,$67,$43,$00,$00 ; Can, Screen $07 ($67,$57), Bright Magenta\Black.
+ $626D DEFB $50,$02,$00,$57,$67,$43,$00,$00 ; Can, Screen $02 ($67,$57), Bright Magenta\Black.
+ $6275 DEFB $51,$0F,$00,$57,$67,$43,$00,$00 ; Candy Bar, Screen $0F ($67,$57), Bright Magenta\Black.
+ $627D DEFB $51,$3A,$00,$30,$48,$43,$00,$00 ; Candy Bar, Screen $3A ($48,$30), Bright Magenta\Black.
+ $6285 DEFB $51,$41,$00,$80,$67,$42,$00,$00 ; Candy Bar, Screen $41 ($67,$80), Bright Red\Black.
+ $628D DEFB $51,$85,$00,$43,$7B,$42,$00,$00 ; Candy Bar, Screen $85 ($7B,$43), Bright Red\Black.
+ $6295 DEFB $52,$6C,$00,$57,$47,$43,$00,$00 ; Ham, Screen $6C ($47,$57), Bright Magenta\Black.
+ $629D DEFB $52,$3A,$00,$57,$48,$43,$00,$00 ; Ham, Screen $3A ($48,$57), Bright Magenta\Black.
+ $62A5 DEFB $52,$69,$00,$30,$40,$03,$00,$00 ; Ham, Screen $69 ($40,$30), Magenta\Black.
+ $62AD DEFB $52,$80,$00,$30,$40,$03,$00,$00 ; Ham, Screen $80 ($40,$30), Magenta\Black.
+ $62B5 DEFB $53,$04,$00,$57,$67,$42,$00,$00 ; Lollipop, Screen $04 ($67,$57), Bright Red\Black.
+ $62BD DEFB $53,$4B,$00,$30,$88,$42,$00,$00 ; Lollipop, Screen $4B ($88,$30), Bright Red\Black.
+ $62C5 DEFB $53,$11,$00,$57,$67,$46,$00,$00 ; Lollipop, Screen $11 ($67,$57), Bright Yellow\Black.
+ $62CD DEFB $53,$80,$00,$57,$40,$44,$00,$00 ; Lollipop, Screen $80 ($40,$57), Bright Green\Black.
+ $62D5 DEFB $54,$69,$00,$30,$67,$46,$00,$00 ; Ice Cream Cone, Screen $69 ($67,$30), Bright Yellow\Black.
+ $62DD DEFB $54,$35,$00,$57,$90,$46,$00,$00 ; Ice Cream Cone, Screen $35 ($90,$57), Bright Yellow\Black.
+ $62E5 DEFB $54,$69,$00,$30,$90,$46,$00,$00 ; Ice Cream Cone, Screen $69 ($90,$30), Bright Yellow\Black.
+ $62ED DEFB $54,$80,$00,$80,$80,$44,$00,$00 ; Ice Cream Cone, Screen $80 ($80,$80), Bright Green\Black.
+ $62F5 DEFB $55,$57,$00,$57,$40,$46,$00,$00 ; Bowl, Screen $57 ($40,$57), Bright Yellow\Black.
+ $62FD DEFB $55,$35,$00,$57,$40,$46,$00,$00 ; Bowl, Screen $35 ($40,$57), Bright Yellow\Black.
+ $6305 DEFB $55,$25,$00,$6B,$7B,$43,$00,$00 ; Bowl, Screen $25 ($7B,$6B), Bright Magenta\Black.
+ $630D DEFB $55,$1B,$00,$57,$67,$44,$00,$00 ; Bowl, Screen $1B ($67,$57), Bright Green\Black.
+ $6315 DEFB $56,$58,$00,$57,$40,$44,$00,$00 ; Apple, Screen $58 ($40,$57), Bright Green\Black.
+ $631D DEFB $56,$4E,$00,$67,$40,$42,$00,$00 ; Apple, Screen $4E ($40,$67), Bright Red\Black.
+ $6325 DEFB $56,$37,$00,$57,$67,$46,$00,$00 ; Apple, Screen $37 ($67,$57), Bright Yellow\Black.
+ $632D DEFB $56,$85,$00,$6B,$7B,$44,$00,$00 ; Apple, Screen $85 ($7B,$6B), Bright Green\Black.
+ $6335 DEFB $57,$5B,$00,$57,$67,$47,$00,$00 ; Bottle, Screen $5B ($67,$57), Bright White\Black.
+ $633D DEFB $57,$4E,$00,$40,$67,$47,$00,$00 ; Bottle, Screen $4E ($67,$40), Bright White\Black.
+ $6345 DEFB $57,$49,$00,$57,$67,$47,$00,$00 ; Bottle, Screen $49 ($67,$57), Bright White\Black.
+ $634D DEFB $57,$28,$00,$57,$67,$47,$00,$00 ; Bottle, Screen $28 ($67,$57), Bright White\Black.
+ $6355 DEFB $A1,$50,$00,$57,$40,$42,$00,$00 ; Mushroom, Screen $50 ($40,$57), Bright Red\Black.
+ $635D DEFB $A1,$43,$00,$6B,$54,$42,$01,$00 ; Mushroom, Screen $43 ($54,$6B), Bright Red\Black.
+ $6365 DEFB $A1,$40,$00,$43,$7B,$42,$02,$00 ; Mushroom, Screen $40 ($7B,$43), Bright Red\Black.
+ $636D DEFB $A1,$8F,$00,$57,$8F,$42,$03,$00 ; Mushroom, Screen $8F ($8F,$57), Bright Red\Black.
+ $6375 DEFB $A1,$8F,$00,$43,$7B,$42,$04,$00 ; Mushroom, Screen $8F ($7B,$43), Bright Red\Black.
+ $637D DEFB $A1,$8F,$00,$6B,$7B,$42,$05,$00 ; Mushroom, Screen $8F ($7B,$6B), Bright Red\Black.
+ $6385 DEFB $A1,$45,$00,$80,$67,$42,$06,$00 ; Mushroom, Screen $45 ($67,$80), Bright Red\Black.
+ $638D DEFB $A1,$38,$00,$6B,$54,$42,$07,$00 ; Mushroom, Screen $38 ($54,$6B), Bright Red\Black.
+ $6395 DEFB $A1,$74,$00,$30,$40,$42,$06,$00 ; Mushroom, Screen $74 ($40,$30), Bright Red\Black.
+ $639D DEFB $A1,$74,$00,$30,$88,$42,$05,$00 ; Mushroom, Screen $74 ($88,$30), Bright Red\Black.
+ $63A5 DEFB $A1,$74,$00,$78,$88,$42,$04,$00 ; Mushroom, Screen $74 ($88,$78), Bright Red\Black.
+ $63AD DEFB $A1,$74,$00,$80,$40,$42,$03,$00 ; Mushroom, Screen $74 ($40,$80), Bright Red\Black.
+ $63B5 DEFB $A1,$54,$00,$57,$40,$42,$02,$00 ; Mushroom, Screen $54 ($40,$57), Bright Red\Black.
+ $63BD DEFB $A1,$3B,$00,$43,$7B,$42,$01,$00 ; Mushroom, Screen $3B ($7B,$43), Bright Red\Black.
+ $63C5 DEFB $A1,$3B,$00,$6B,$7B,$42,$00,$00 ; Mushroom, Screen $3B ($7B,$6B), Bright Red\Black.
+ $63CD DEFB $A1,$53,$00,$80,$40,$42,$01,$00 ; Mushroom, Screen $53 ($40,$80), Bright Red\Black.
+ $63D5 DEFB $31,$00,$00,$00,$00,$00,$00,$00 ; Unknown, Screen $00 ($00,$00).
+ $63DD DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; Unknown, Screen $00 ($00,$00).
+ $63E5 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; Unknown, Screen $00 ($00,$00).
+ $63ED DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; Unknown, Screen $00 ($00,$00).
+ $63F5 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; Unknown, Screen $00 ($00,$00).
+ $63FD DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; Unknown, Screen $00 ($00,$00).
+ $6405 DEFB $00,$00,$00,$00,$00,$00,$00,$00 ; Unknown, Screen $00 ($00,$00).
+ $640D DEFB $70,$17,$00,$50,$50,$47,$00,$00 ; Mummy 1, Screen $17 ($50,$50), Bright White\Black.
+ $6415 DEFB $00,$00,$00,$68,$68,$00,$00,$00 ; Unknown, Screen $00 ($68,$68).
+ $641D DEFB $7C,$6D,$00,$50,$50,$44,$00,$00 ; Dracula 1, Screen $6D ($50,$50), Bright Green\Black.
+ $6425 DEFB $00,$00,$00,$72,$72,$00,$00,$00 ; Unknown, Screen $00 ($72,$72).
+ $642D DEFB $78,$43,$00,$50,$50,$43,$00,$00 ; Devil 1, Screen $43 ($50,$50), Bright Magenta\Black.
+ $6435 DEFB $00,$00,$00,$72,$72,$00,$00,$00 ; Unknown, Screen $00 ($72,$72).
+ $643D DEFB $74,$55,$00,$50,$50,$42,$00,$00 ; Frankenstien 1, Screen $55 ($50,$50), Bright Red\Black.
+ $6445 DEFB $00,$00,$00,$50,$60,$00,$00,$00 ; Unknown, Screen $00 ($60,$50).
+ $644D DEFB $9C,$56,$00,$58,$38,$42,$00,$00 ; Hunchback 1, Screen $56 ($38,$58), Bright Red\Black.
+ $6455 DEFB $00,$00,$00,$50,$60,$00,$00,$00 ; Unknown, Screen $00 ($60,$50).

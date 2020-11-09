@@ -404,7 +404,7 @@ void    ParseCharacterSprites (const Utils::DataList    &fileData,
                     Utils::DescribeData (itr->m_spriteData).c_str ());
     } // Endfor.
     #else
-    for (CharacterSpriteList::const_iterator itr = characterSpriteList.begin ();
+    for (CharacterSpriteList::iterator itr = characterSpriteList.begin ();
          itr != characterSpriteList.end ();
          ++itr)
     {           

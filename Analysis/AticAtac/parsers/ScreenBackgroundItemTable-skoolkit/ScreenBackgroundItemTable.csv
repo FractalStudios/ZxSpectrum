@@ -1,0 +1,149 @@
+Screen 000, Address = 0x76a9, BackgroundItems = 645d 646d 647d 754d 705d 706d 728d 729d 72ad 72bd 735d 736d 
+Screen 001, Address = 0x76c3, BackgroundItems = 647d 648d 707d 731d 
+Screen 002, Address = 0x76cd, BackgroundItems = 648d 649d 661d 66ed 
+Screen 003, Address = 0x76d7, BackgroundItems = 649d 64ad 6c4d 6f7d 6fdd 707d 
+Screen 004, Address = 0x76e5, BackgroundItems = 64ad 64bd 64cd 72cd 72dd 
+Screen 005, Address = 0x76f1, BackgroundItems = 64cd 64dd 6c7d 708d 
+Screen 006, Address = 0x76fb, BackgroundItems = 64dd 64ed 64fd 650d 705d 706d 730d 731d 
+Screen 007, Address = 0x770d, BackgroundItems = 645d 650d 708d 730d 
+Screen 008, Address = 0x7717, BackgroundItems = 64fd 651d 726d 753d 
+Screen 009, Address = 0x7721, BackgroundItems = 651d 652d 700d 745d 713d 714d 73ed 73fd 
+Screen 010, Address = 0x7733, BackgroundItems = 652d 653d 74ad 72bd 
+Screen 011, Address = 0x773d, BackgroundItems = 653d 654d 701d 729d 
+Screen 012, Address = 0x7747, BackgroundItems = 654d 655d 701d 73dd 
+Screen 013, Address = 0x7751, BackgroundItems = 655d 656d 6c8d 744d 715d 73cd 
+Screen 014, Address = 0x775f, BackgroundItems = 656d 657d 723d 727d 72fd 
+Screen 015, Address = 0x776b, BackgroundItems = 657d 658d 6c5d 724d 
+Screen 016, Address = 0x7775, BackgroundItems = 658d 659d 725d 
+Screen 017, Address = 0x777d, BackgroundItems = 659d 65ad 6c2d 724d 
+Screen 018, Address = 0x7787, BackgroundItems = 65ad 65bd 723d 
+Screen 019, Address = 0x778f, BackgroundItems = 65bd 65cd 6c1d 715d 744d 70ad 
+Screen 020, Address = 0x779d, BackgroundItems = 65cd 65dd 722d 72dd 
+Screen 021, Address = 0x77a7, BackgroundItems = 65dd 65ed 6fed 72cd 709d 70ad 
+Screen 022, Address = 0x77b5, BackgroundItems = 65ed 65fd 722d 74ad 
+Screen 023, Address = 0x77bf, BackgroundItems = 65fd 660d 745d 732d 709d 
+Screen 024, Address = 0x77cb, BackgroundItems = 660d 661d 726d 717d 719d 732d 
+Screen 025, Address = 0x77d9, BackgroundItems = 646d 64bd 728d 72ad 
+Screen 026, Address = 0x77e3, BackgroundItems = 64ed 662d 
+Screen 027, Address = 0x77e9, BackgroundItems = 662d 663d 6eed 71bd 
+Screen 028, Address = 0x77f3, BackgroundItems = 663d 664d 
+Screen 029, Address = 0x77f9, BackgroundItems = 664d 69ed 
+Screen 030, Address = 0x77ff, BackgroundItems = 665d 66cd 
+Screen 031, Address = 0x7805, BackgroundItems = 665d 666d 703d 
+Screen 032, Address = 0x780d, BackgroundItems = 666d 667d 678d 
+Screen 033, Address = 0x7815, BackgroundItems = 667d 668d 6afd 6fdd 703d 
+Screen 034, Address = 0x7821, BackgroundItems = 668d 669d 748d 
+Screen 035, Address = 0x7829, BackgroundItems = 669d 66ad 6c0d 704d 
+Screen 036, Address = 0x7833, BackgroundItems = 66ad 66bd 66dd 70fd 710d 
+Screen 037, Address = 0x783f, BackgroundItems = 66bd 66cd 704d 
+Screen 038, Address = 0x7847, BackgroundItems = 66dd 66ed 
+Screen 039, Address = 0x784d, BackgroundItems = 66fd 676d 677d 70dd 70ed 740d 741d 
+Screen 040, Address = 0x785d, BackgroundItems = 66fd 670d 
+Screen 041, Address = 0x7863, BackgroundItems = 670d 671d 6aed 700d 742d 743d 
+Screen 042, Address = 0x7871, BackgroundItems = 671d 672d 71ed 71fd 
+Screen 043, Address = 0x787b, BackgroundItems = 672d 673d 70dd 70ed 
+Screen 044, Address = 0x7885, BackgroundItems = 673d 674d 
+Screen 045, Address = 0x788b, BackgroundItems = 674d 675d 6a3d 6f9d 71ed 71fd 
+Screen 046, Address = 0x7899, BackgroundItems = 675d 676d 71cd 71dd 
+Screen 047, Address = 0x78a3, BackgroundItems = 677d 678d 
+Screen 048, Address = 0x78a9, BackgroundItems = 679d 6a2d 6cdd 
+Screen 049, Address = 0x78b1, BackgroundItems = 679d 67ad 
+Screen 050, Address = 0x78b7, BackgroundItems = 67ad 67bd 
+Screen 051, Address = 0x78bd, BackgroundItems = 67bd 67cd 67ed 756d 
+Screen 052, Address = 0x78c7, BackgroundItems = 67cd 67dd 
+Screen 053, Address = 0x78cd, BackgroundItems = 67dd 6ccd 746d 
+Screen 054, Address = 0x78d5, BackgroundItems = 67ed 67fd 
+Screen 055, Address = 0x78db, BackgroundItems = 67fd 680d 
+Screen 056, Address = 0x78e1, BackgroundItems = 680d 681d 682d 751d 
+Screen 057, Address = 0x78eb, BackgroundItems = 681d 683d 
+Screen 058, Address = 0x78f1, BackgroundItems = 682d 684d 6f5d 
+Screen 059, Address = 0x78f9, BackgroundItems = 683d 684d 685d 686d 
+Screen 060, Address = 0x7903, BackgroundItems = 685d 687d 
+Screen 061, Address = 0x7909, BackgroundItems = 686d 688d 689d 74bd 702d 
+Screen 062, Address = 0x7915, BackgroundItems = 687d 688d 74ed 
+Screen 063, Address = 0x791d, BackgroundItems = 689d 68ad 
+Screen 064, Address = 0x7923, BackgroundItems = 68ad 68bd 68cd 6efd 
+Screen 065, Address = 0x792d, BackgroundItems = 68bd 74ed 
+Screen 066, Address = 0x7933, BackgroundItems = 68cd 68dd 
+Screen 067, Address = 0x7939, BackgroundItems = 68dd 68ed 690d 69ed 
+Screen 068, Address = 0x7943, BackgroundItems = 68ed 68fd 
+Screen 069, Address = 0x7949, BackgroundItems = 68fd 74fd 
+Screen 070, Address = 0x794f, BackgroundItems = 690d 691d 69fd 
+Screen 071, Address = 0x7957, BackgroundItems = 691d 692d 
+Screen 072, Address = 0x795d, BackgroundItems = 692d 693d 694d 697d 
+Screen 073, Address = 0x7967, BackgroundItems = 693d 74bd 
+Screen 074, Address = 0x796d, BackgroundItems = 694d 695d 
+Screen 075, Address = 0x7973, BackgroundItems = 695d 696d 6f8d 751d 
+Screen 076, Address = 0x797d, BackgroundItems = 696d 6a0d 750d 
+Screen 077, Address = 0x7985, BackgroundItems = 697d 698d 
+Screen 078, Address = 0x798b, BackgroundItems = 698d 699d 750d 
+Screen 079, Address = 0x7993, BackgroundItems = 699d 69ad 
+Screen 080, Address = 0x7999, BackgroundItems = 69ad 69bd 69cd 
+Screen 081, Address = 0x79a1, BackgroundItems = 69bd 69fd 
+Screen 082, Address = 0x79a7, BackgroundItems = 69cd 69dd 
+Screen 083, Address = 0x79ad, BackgroundItems = 69dd 74fd 755d 
+Screen 084, Address = 0x79b5, BackgroundItems = 6a1d 6a2d 6f0d 
+Screen 085, Address = 0x79bd, BackgroundItems = 6a0d 6a1d 756d 
+Screen 086, Address = 0x79c5, BackgroundItems = 6ced 6dad 6e6d 6e8d 70fd 710d 
+Screen 087, Address = 0x79d3, BackgroundItems = 6ced 6cfd 6ddd 
+Screen 088, Address = 0x79db, BackgroundItems = 6cfd 6d0d 6e0d 
+Screen 089, Address = 0x79e3, BackgroundItems = 6d0d 6e3d 6e7d 
+Screen 090, Address = 0x79eb, BackgroundItems = 6d1d 6dad 6dbd 740d 741d 
+Screen 091, Address = 0x79f7, BackgroundItems = 6d1d 6d2d 6ddd 6ded 6ead 71ad 
+Screen 092, Address = 0x7a05, BackgroundItems = 6d2d 6d3d 6e0d 6e1d 6ebd 71ad 
+Screen 093, Address = 0x7a13, BackgroundItems = 6d3d 6e3d 6e4d 716d 738d 
+Screen 094, Address = 0x7a1f, BackgroundItems = 6d4d 6dbd 6dcd 
+Screen 095, Address = 0x7a27, BackgroundItems = 6d4d 6d5d 6ded 6dfd 6ecd 
+Screen 096, Address = 0x7a33, BackgroundItems = 6d5d 6d6d 6e1d 6e2d 6edd 
+Screen 097, Address = 0x7a3f, BackgroundItems = 6d6d 6e4d 6e5d 6f8d 737d 
+Screen 098, Address = 0x7a4b, BackgroundItems = 6d7d 6dcd 6e9d 73bd 
+Screen 099, Address = 0x7a55, BackgroundItems = 6d7d 6d8d 6dfd 716d 73bd 
+Screen 100, Address = 0x7a61, BackgroundItems = 6d8d 6d9d 6e2d 73ad 
+Screen 101, Address = 0x7a6b, BackgroundItems = 6d9d 6e5d 6eed 6f7d 739d 
+Screen 102, Address = 0x7a77, BackgroundItems = 6ead 6ebd 6ecd 6edd 6fed 737d 738d 739d 73ad 
+Screen 103, Address = 0x7a8b, BackgroundItems = 6e6d 747d 
+Screen 104, Address = 0x7a91, BackgroundItems = 6e7d 747d 
+Screen 105, Address = 0x7a97, BackgroundItems = 6e8d 74cd 
+Screen 106, Address = 0x7a9d, BackgroundItems = 6e9d 74cd 71bd 
+Screen 107, Address = 0x7aa5, BackgroundItems = 6c2d 6c3d 752d 
+Screen 108, Address = 0x7aad, BackgroundItems = 6c3d 6c4d 6fbd 74dd 
+Screen 109, Address = 0x7ab7, BackgroundItems = 6c5d 6c6d 752d 72fd 719d 
+Screen 110, Address = 0x7ac3, BackgroundItems = 6c6d 6c7d 6fcd 74dd 72ed 
+Screen 111, Address = 0x7acf, BackgroundItems = 6c8d 6c9d 727d 
+Screen 112, Address = 0x7ad7, BackgroundItems = 6c9d 6cad 73cd 73dd 
+Screen 113, Address = 0x7ae1, BackgroundItems = 6cad 6cbd 
+Screen 114, Address = 0x7ae7, BackgroundItems = 6cbd 6ccd 
+Screen 115, Address = 0x7aed, BackgroundItems = 6c1d 6f6d 725d 72ed 
+Screen 116, Address = 0x7af7, BackgroundItems = 6cdd 6f6d 
+Screen 117, Address = 0x7afd, BackgroundItems = 6a3d 6a4d 749d 
+Screen 118, Address = 0x7b05, BackgroundItems = 6a4d 6a5d 6acd 6fad 749d 
+Screen 119, Address = 0x7b11, BackgroundItems = 6a5d 6a6d 
+Screen 120, Address = 0x7b17, BackgroundItems = 6a6d 6a7d 6ffd 
+Screen 121, Address = 0x7b1f, BackgroundItems = 6a7d 6a8d 
+Screen 122, Address = 0x7b25, BackgroundItems = 6a8d 6a9d 6add 718d 711d 712d 
+Screen 123, Address = 0x7b33, BackgroundItems = 6a9d 6aad 
+Screen 124, Address = 0x7b39, BackgroundItems = 6aad 6abd 711d 712d 
+Screen 125, Address = 0x7b43, BackgroundItems = 6abd 6acd 71cd 71dd 
+Screen 126, Address = 0x7b4d, BackgroundItems = 6add 6aed 742d 743d 
+Screen 127, Address = 0x7b57, BackgroundItems = 6b0d 6b3d 713d 714d 
+Screen 128, Address = 0x7b61, BackgroundItems = 6b0d 6b1d 
+Screen 129, Address = 0x7b67, BackgroundItems = 6b2d 6b3d 718d 
+Screen 130, Address = 0x7b6f, BackgroundItems = 6b1d 6b2d 6b4d 735d 736d 
+Screen 131, Address = 0x7b7b, BackgroundItems = 6b9d 6bcd 
+Screen 132, Address = 0x7b81, BackgroundItems = 6b9d 6bad 6bdd 6fad 
+Screen 133, Address = 0x7b8b, BackgroundItems = 6bbd 6bcd 
+Screen 134, Address = 0x7b91, BackgroundItems = 6bad 6bbd 
+Screen 135, Address = 0x7b97, BackgroundItems = 6b4d 6b5d 6b6d 733d 734d 
+Screen 136, Address = 0x7ba3, BackgroundItems = 6afd 6b5d 717d 70bd 70cd 
+Screen 137, Address = 0x7baf, BackgroundItems = 6bdd 6bed 6bfd 733d 734d 
+Screen 138, Address = 0x7bbb, BackgroundItems = 6bfd 6c0d 6ffd 753d 70bd 70cd 
+Screen 139, Address = 0x7bc9, BackgroundItems = 6b6d 6b7d 6fbd 721d 
+Screen 140, Address = 0x7bd3, BackgroundItems = 6b7d 6b8d 720d 721d 
+Screen 141, Address = 0x7bdd, BackgroundItems = 6b8d 6bed 6f9d 6fcd 720d 748d 
+Screen 142, Address = 0x7beb, BackgroundItems = 754d 
+Screen 143, Address = 0x7bef, BackgroundItems = 6efd 746d 755d 
+Screen 144, Address = 0x7bf7, BackgroundItems = 6f0d 6f1d 
+Screen 145, Address = 0x7bfd, BackgroundItems = 6f1d 6f2d 702d 
+Screen 146, Address = 0x7c05, BackgroundItems = 6f2d 6f3d 
+Screen 147, Address = 0x7c0b, BackgroundItems = 6f3d 6f4d 
+Screen 148, Address = 0x7c11, BackgroundItems = 6f4d 6f5d 

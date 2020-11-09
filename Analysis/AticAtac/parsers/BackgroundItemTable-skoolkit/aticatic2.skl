@@ -1,0 +1,562 @@
+; Background Item Table
+;
+; #TABLE(default)
+; { =h Offset   | =h Field              | =h Description }
+; { $00         | Graphic Type          | Graphic type. }
+; { $01         | Screen Number         | Screen number. }
+; { $02         | Door Flags            | ??? }
+; { $03         | X                     | X coordinate (left). }
+; { $04         | Y                     | Y coordinate (bottom). }
+; { $05         | Flags                 | ??? }
+; { $06         | Door Timing           | ??? }
+; { $07         | Door Flags            | ??? }
+; TABLE#
+@label=BackgroundItemTable
+b$645D DEFB $02,$07,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $07 ($1F,$50).
+ $6465 DEFB $02,$00,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $00 ($B7,$50).
+ $646D DEFB $02,$19,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $19 ($6F,$A0).
+ $6475 DEFB $02,$00,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $00 ($6F,$08).
+ $647D DEFB $0A,$01,$34,$50,$B7,$80,$04,$06 ; Cyan Locked Normal Door, Screen $01 ($B7,$50).
+ $6485 DEFB $0A,$00,$34,$50,$1F,$00,$04,$56 ; Cyan Locked Normal Door, Screen $00 ($1F,$50).
+ $648D DEFB $02,$02,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $02 ($6F,$A0).
+ $6495 DEFB $02,$01,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $01 ($6F,$08).
+ $649D DEFB $02,$03,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $03 ($6F,$A0).
+ $64A5 DEFB $02,$02,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $02 ($6F,$08).
+ $64AD DEFB $02,$04,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $04 ($1F,$50).
+ $64B5 DEFB $02,$03,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $03 ($B7,$50).
+ $64BD DEFB $02,$19,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $19 ($6F,$08).
+ $64C5 DEFB $02,$04,$34,$80,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $04 ($6F,$80).
+ $64CD DEFB $02,$05,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $05 ($1F,$50).
+ $64D5 DEFB $02,$04,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $04 ($B7,$50).
+ $64DD DEFB $02,$06,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $06 ($6F,$08).
+ $64E5 DEFB $02,$05,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $05 ($6F,$A0).
+ $64ED DEFB $03,$1A,$38,$48,$B6,$80,$16,$08 ; BigDooor Frame, Screen $1A ($B6,$48).
+ $64F5 DEFB $02,$06,$34,$50,$3F,$00,$04,$56 ; Normal Door Frame, Screen $06 ($3F,$50).
+ $64FD DEFB $09,$08,$34,$50,$1F,$00,$04,$56 ; Green Locked Normal Door, Screen $08 ($1F,$50).
+ $6505 DEFB $09,$06,$34,$50,$97,$80,$04,$06 ; Green Locked Normal Door, Screen $06 ($97,$50).
+ $650D DEFB $02,$07,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $07 ($6F,$08).
+ $6515 DEFB $02,$06,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $06 ($6F,$A0).
+ $651D DEFB $02,$09,$34,$50,$1F,$00,$04,$57 ; Normal Door Frame, Screen $09 ($1F,$50).
+ $6525 DEFB $02,$08,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $08 ($B7,$50).
+ $652D DEFB $02,$0A,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $0A ($6F,$A0).
+ $6535 DEFB $02,$09,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $09 ($6F,$08).
+ $653D DEFB $02,$0B,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $0B ($6F,$A0).
+ $6545 DEFB $02,$0A,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $0A ($6F,$08).
+ $654D DEFB $02,$0C,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $0C ($6F,$A0).
+ $6555 DEFB $02,$0B,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $0B ($6F,$08).
+ $655D DEFB $02,$0D,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $0D ($6F,$A0).
+ $6565 DEFB $02,$0C,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $0C ($6F,$08).
+ $656D DEFB $02,$0E,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $0E ($B7,$50).
+ $6575 DEFB $02,$0D,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $0D ($1F,$50).
+ $657D DEFB $02,$0F,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $0F ($B7,$50).
+ $6585 DEFB $02,$0E,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $0E ($1F,$50).
+ $658D DEFB $02,$10,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $10 ($B7,$50).
+ $6595 DEFB $02,$0F,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $0F ($1F,$50).
+ $659D DEFB $08,$11,$34,$50,$B7,$80,$04,$06 ; Red Locked Normal Door, Screen $11 ($B7,$50).
+ $65A5 DEFB $08,$10,$34,$50,$1F,$00,$04,$56 ; Red Locked Normal Door, Screen $10 ($1F,$50).
+ $65AD DEFB $02,$12,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $12 ($B7,$50).
+ $65B5 DEFB $02,$11,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $11 ($1F,$50).
+ $65BD DEFB $02,$13,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $13 ($B7,$50).
+ $65C5 DEFB $02,$12,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $12 ($1F,$50).
+ $65CD DEFB $02,$14,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $14 ($6F,$08).
+ $65D5 DEFB $02,$13,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $13 ($6F,$A0).
+ $65DD DEFB $02,$15,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $15 ($6F,$08).
+ $65E5 DEFB $02,$14,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $14 ($6F,$A0).
+ $65ED DEFB $02,$16,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $16 ($6F,$08).
+ $65F5 DEFB $02,$15,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $15 ($6F,$A0).
+ $65FD DEFB $08,$17,$34,$08,$6F,$E0,$06,$03 ; Red Locked Normal Door, Screen $17 ($6F,$08).
+ $6605 DEFB $08,$16,$34,$A0,$6F,$60,$B7,$03 ; Red Locked Normal Door, Screen $16 ($6F,$A0).
+ $660D DEFB $09,$18,$34,$50,$1F,$00,$04,$56 ; Green Locked Normal Door, Screen $18 ($1F,$50).
+ $6615 DEFB $09,$17,$34,$50,$B7,$80,$04,$06 ; Green Locked Normal Door, Screen $17 ($B7,$50).
+ $661D DEFB $02,$18,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $18 ($B7,$50).
+ $6625 DEFB $02,$02,$34,$50,$3F,$00,$04,$56 ; Normal Door Frame, Screen $02 ($3F,$50).
+ $662D DEFB $02,$1A,$34,$50,$28,$00,$04,$56 ; Normal Door Frame, Screen $1A ($28,$50).
+ $6635 DEFB $02,$1B,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $1B ($B7,$50).
+ $663D DEFB $02,$1B,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $1B ($6F,$A0).
+ $6645 DEFB $03,$1C,$74,$08,$77,$E0,$08,$F5 ; BigDooor Frame, Screen $1C ($77,$08).
+ $664D DEFB $02,$1C,$34,$98,$6F,$60,$AF,$03 ; Normal Door Frame, Screen $1C ($6F,$98).
+ $6655 DEFB $01,$1D,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $1D ($6F,$18).
+ $665D DEFB $02,$1E,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $1E ($1F,$50).
+ $6665 DEFB $02,$1F,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $1F ($B7,$50).
+ $666D DEFB $02,$1F,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $1F ($6F,$08).
+ $6675 DEFB $02,$20,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $20 ($6F,$A0).
+ $667D DEFB $02,$20,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $20 ($6F,$08).
+ $6685 DEFB $02,$21,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $21 ($6F,$A0).
+ $668D DEFB $02,$21,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $21 ($B7,$50).
+ $6695 DEFB $02,$22,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $22 ($1F,$50).
+ $669D DEFB $02,$22,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $22 ($B7,$50).
+ $66A5 DEFB $02,$23,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $23 ($1F,$50).
+ $66AD DEFB $02,$23,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $23 ($6F,$A0).
+ $66B5 DEFB $02,$24,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $24 ($6F,$08).
+ $66BD DEFB $02,$24,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $24 ($6F,$A0).
+ $66C5 DEFB $02,$25,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $25 ($6F,$08).
+ $66CD DEFB $0A,$25,$34,$50,$1F,$00,$04,$56 ; Cyan Locked Normal Door, Screen $25 ($1F,$50).
+ $66D5 DEFB $0A,$1E,$34,$50,$B7,$80,$04,$06 ; Cyan Locked Normal Door, Screen $1E ($B7,$50).
+ $66DD DEFB $02,$24,$34,$50,$3F,$00,$04,$56 ; Normal Door Frame, Screen $24 ($3F,$50).
+ $66E5 DEFB $03,$26,$38,$48,$B6,$80,$16,$08 ; BigDooor Frame, Screen $26 ($B6,$48).
+ $66ED DEFB $02,$02,$34,$50,$97,$80,$04,$06 ; Normal Door Frame, Screen $02 ($97,$50).
+ $66F5 DEFB $02,$26,$34,$50,$28,$00,$04,$56 ; Normal Door Frame, Screen $26 ($28,$50).
+ $66FD DEFB $02,$27,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $27 ($B7,$50).
+ $6705 DEFB $02,$28,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $28 ($1F,$50).
+ $670D DEFB $0A,$28,$34,$50,$B7,$80,$04,$06 ; Cyan Locked Normal Door, Screen $28 ($B7,$50).
+ $6715 DEFB $0A,$29,$34,$50,$1F,$00,$04,$56 ; Cyan Locked Normal Door, Screen $29 ($1F,$50).
+ $671D DEFB $02,$29,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $29 ($6F,$08).
+ $6725 DEFB $02,$2A,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $2A ($6F,$A0).
+ $672D DEFB $02,$2A,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $2A ($6F,$08).
+ $6735 DEFB $02,$2B,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $2B ($6F,$A0).
+ $673D DEFB $02,$2B,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $2B ($1F,$50).
+ $6745 DEFB $02,$2C,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $2C ($B7,$50).
+ $674D DEFB $02,$2C,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $2C ($1F,$50).
+ $6755 DEFB $02,$2D,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $2D ($B7,$50).
+ $675D DEFB $09,$2D,$34,$A0,$6F,$60,$B7,$03 ; Green Locked Normal Door, Screen $2D ($6F,$A0).
+ $6765 DEFB $09,$2E,$34,$08,$6F,$E0,$06,$03 ; Green Locked Normal Door, Screen $2E ($6F,$08).
+ $676D DEFB $02,$2E,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $2E ($6F,$A0).
+ $6775 DEFB $02,$27,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $27 ($6F,$08).
+ $677D DEFB $02,$27,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $27 ($1F,$50).
+ $6785 DEFB $03,$2F,$38,$48,$B6,$80,$16,$08 ; BigDooor Frame, Screen $2F ($B6,$48).
+ $678D DEFB $0B,$20,$34,$50,$97,$80,$04,$06 ; Yellow Locked Normal Door, Screen $20 ($97,$50).
+ $6795 DEFB $0B,$2F,$34,$50,$28,$00,$04,$56 ; Yellow Locked Normal Door, Screen $2F ($28,$50).
+ $679D DEFB $01,$30,$34,$50,$A7,$80,$04,$06 ; Cave Dooor Frame, Screen $30 ($A7,$50).
+ $67A5 DEFB $01,$31,$34,$50,$27,$00,$04,$56 ; Cave Dooor Frame, Screen $31 ($27,$50).
+ $67AD DEFB $01,$31,$34,$50,$AF,$80,$04,$06 ; Cave Dooor Frame, Screen $31 ($AF,$50).
+ $67B5 DEFB $01,$32,$34,$50,$27,$00,$04,$56 ; Cave Dooor Frame, Screen $32 ($27,$50).
+ $67BD DEFB $01,$32,$34,$50,$AF,$80,$04,$06 ; Cave Dooor Frame, Screen $32 ($AF,$50).
+ $67C5 DEFB $01,$33,$34,$50,$2F,$00,$04,$56 ; Cave Dooor Frame, Screen $33 ($2F,$50).
+ $67CD DEFB $01,$33,$34,$50,$A7,$80,$04,$06 ; Cave Dooor Frame, Screen $33 ($A7,$50).
+ $67D5 DEFB $01,$34,$34,$50,$27,$00,$04,$56 ; Cave Dooor Frame, Screen $34 ($27,$50).
+ $67DD DEFB $01,$34,$34,$50,$AF,$80,$04,$06 ; Cave Dooor Frame, Screen $34 ($AF,$50).
+ $67E5 DEFB $01,$35,$34,$50,$2F,$00,$04,$56 ; Cave Dooor Frame, Screen $35 ($2F,$50).
+ $67ED DEFB $01,$33,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $33 ($6F,$90).
+ $67F5 DEFB $01,$36,$34,$10,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $36 ($6F,$10).
+ $67FD DEFB $01,$36,$34,$98,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $36 ($6F,$98).
+ $6805 DEFB $01,$37,$34,$10,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $37 ($6F,$10).
+ $680D DEFB $01,$37,$34,$98,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $37 ($6F,$98).
+ $6815 DEFB $01,$38,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $38 ($6F,$18).
+ $681D DEFB $01,$38,$34,$50,$A7,$80,$04,$06 ; Cave Dooor Frame, Screen $38 ($A7,$50).
+ $6825 DEFB $01,$39,$34,$50,$2F,$00,$04,$56 ; Cave Dooor Frame, Screen $39 ($2F,$50).
+ $682D DEFB $0D,$38,$34,$90,$6F,$60,$B7,$03 ; Green Locked Cave Door, Screen $38 ($6F,$90).
+ $6835 DEFB $0D,$3A,$34,$18,$6F,$E0,$06,$03 ; Green Locked Cave Door, Screen $3A ($6F,$18).
+ $683D DEFB $01,$39,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $39 ($6F,$90).
+ $6845 DEFB $01,$3B,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $3B ($6F,$18).
+ $684D DEFB $01,$3A,$34,$50,$A7,$80,$04,$06 ; Cave Dooor Frame, Screen $3A ($A7,$50).
+ $6855 DEFB $01,$3B,$34,$50,$2F,$00,$04,$56 ; Cave Dooor Frame, Screen $3B ($2F,$50).
+ $685D DEFB $0D,$3B,$34,$50,$A7,$80,$04,$06 ; Green Locked Cave Door, Screen $3B ($A7,$50).
+ $6865 DEFB $0D,$3C,$34,$50,$2F,$00,$04,$56 ; Green Locked Cave Door, Screen $3C ($2F,$50).
+ $686D DEFB $01,$3B,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $3B ($6F,$90).
+ $6875 DEFB $01,$3D,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $3D ($6F,$18).
+ $687D DEFB $01,$3C,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $3C ($6F,$90).
+ $6885 DEFB $01,$3E,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $3E ($6F,$18).
+ $688D DEFB $01,$3D,$34,$50,$A7,$80,$04,$06 ; Cave Dooor Frame, Screen $3D ($A7,$50).
+ $6895 DEFB $01,$3E,$34,$50,$2F,$00,$04,$56 ; Cave Dooor Frame, Screen $3E ($2F,$50).
+ $689D DEFB $0E,$3D,$34,$90,$6F,$60,$B7,$03 ; Cyan Locked Cave Door, Screen $3D ($6F,$90).
+ $68A5 DEFB $0E,$3F,$34,$10,$6F,$E0,$06,$03 ; Cyan Locked Cave Door, Screen $3F ($6F,$10).
+ $68AD DEFB $01,$3F,$34,$98,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $3F ($6F,$98).
+ $68B5 DEFB $01,$40,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $40 ($6F,$18).
+ $68BD DEFB $01,$40,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $40 ($6F,$90).
+ $68C5 DEFB $01,$41,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $41 ($6F,$18).
+ $68CD DEFB $01,$40,$34,$50,$2F,$00,$04,$56 ; Cave Dooor Frame, Screen $40 ($2F,$50).
+ $68D5 DEFB $01,$42,$34,$50,$AF,$80,$04,$06 ; Cave Dooor Frame, Screen $42 ($AF,$50).
+ $68DD DEFB $01,$42,$34,$50,$27,$00,$04,$56 ; Cave Dooor Frame, Screen $42 ($27,$50).
+ $68E5 DEFB $01,$43,$34,$50,$A7,$80,$04,$06 ; Cave Dooor Frame, Screen $43 ($A7,$50).
+ $68ED DEFB $01,$43,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $43 ($6F,$90).
+ $68F5 DEFB $01,$44,$34,$10,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $44 ($6F,$10).
+ $68FD DEFB $0C,$44,$34,$98,$6F,$60,$B7,$03 ; Red Locked Cave Door, Screen $44 ($6F,$98).
+ $6905 DEFB $0C,$45,$34,$18,$6F,$E0,$06,$03 ; Red Locked Cave Door, Screen $45 ($6F,$18).
+ $690D DEFB $01,$43,$34,$50,$2F,$00,$04,$56 ; Cave Dooor Frame, Screen $43 ($2F,$50).
+ $6915 DEFB $01,$46,$34,$50,$A7,$80,$04,$06 ; Cave Dooor Frame, Screen $46 ($A7,$50).
+ $691D DEFB $01,$46,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $46 ($6F,$18).
+ $6925 DEFB $01,$47,$34,$98,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $47 ($6F,$98).
+ $692D DEFB $0C,$47,$34,$10,$6F,$E0,$06,$03 ; Red Locked Cave Door, Screen $47 ($6F,$10).
+ $6935 DEFB $0C,$48,$34,$90,$6F,$60,$B7,$03 ; Red Locked Cave Door, Screen $48 ($6F,$90).
+ $693D DEFB $01,$48,$34,$50,$A7,$80,$04,$06 ; Cave Dooor Frame, Screen $48 ($A7,$50).
+ $6945 DEFB $01,$49,$34,$50,$27,$00,$04,$56 ; Cave Dooor Frame, Screen $49 ($27,$50).
+ $694D DEFB $0E,$48,$34,$18,$6F,$E0,$06,$03 ; Cyan Locked Cave Door, Screen $48 ($6F,$18).
+ $6955 DEFB $0E,$4A,$34,$98,$6F,$60,$B7,$03 ; Cyan Locked Cave Door, Screen $4A ($6F,$98).
+ $695D DEFB $01,$4A,$34,$10,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $4A ($6F,$10).
+ $6965 DEFB $01,$4B,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $4B ($6F,$90).
+ $696D DEFB $01,$4B,$34,$50,$2F,$00,$04,$56 ; Cave Dooor Frame, Screen $4B ($2F,$50).
+ $6975 DEFB $01,$4C,$34,$50,$A7,$80,$04,$06 ; Cave Dooor Frame, Screen $4C ($A7,$50).
+ $697D DEFB $01,$48,$34,$50,$2F,$00,$04,$56 ; Cave Dooor Frame, Screen $48 ($2F,$50).
+ $6985 DEFB $01,$4D,$34,$50,$AF,$80,$04,$06 ; Cave Dooor Frame, Screen $4D ($AF,$50).
+ $698D DEFB $0C,$4D,$34,$50,$27,$00,$04,$56 ; Red Locked Cave Door, Screen $4D ($27,$50).
+ $6995 DEFB $0C,$4E,$34,$50,$A7,$80,$04,$06 ; Red Locked Cave Door, Screen $4E ($A7,$50).
+ $699D DEFB $01,$4E,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $4E ($6F,$90).
+ $69A5 DEFB $01,$4F,$34,$10,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $4F ($6F,$10).
+ $69AD DEFB $01,$4F,$34,$98,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $4F ($6F,$98).
+ $69B5 DEFB $01,$50,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $50 ($6F,$18).
+ $69BD DEFB $01,$50,$34,$50,$A7,$80,$04,$06 ; Cave Dooor Frame, Screen $50 ($A7,$50).
+ $69C5 DEFB $01,$51,$34,$50,$27,$00,$04,$56 ; Cave Dooor Frame, Screen $51 ($27,$50).
+ $69CD DEFB $0D,$50,$34,$90,$6F,$60,$B7,$03 ; Green Locked Cave Door, Screen $50 ($6F,$90).
+ $69D5 DEFB $0D,$52,$34,$10,$6F,$E0,$06,$03 ; Green Locked Cave Door, Screen $52 ($6F,$10).
+ $69DD DEFB $01,$52,$34,$98,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $52 ($6F,$98).
+ $69E5 DEFB $01,$53,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $53 ($6F,$18).
+ $69ED DEFB $01,$1D,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $1D ($6F,$90).
+ $69F5 DEFB $01,$43,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $43 ($6F,$18).
+ $69FD DEFB $01,$46,$34,$50,$2F,$00,$04,$56 ; Cave Dooor Frame, Screen $46 ($2F,$50).
+ $6A05 DEFB $01,$51,$34,$50,$AF,$80,$04,$06 ; Cave Dooor Frame, Screen $51 ($AF,$50).
+ $6A0D DEFB $01,$4C,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $4C ($6F,$18).
+ $6A15 DEFB $01,$55,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $55 ($6F,$90).
+ $6A1D DEFB $01,$54,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $54 ($6F,$90).
+ $6A25 DEFB $01,$55,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $55 ($6F,$18).
+ $6A2D DEFB $01,$54,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $54 ($6F,$18).
+ $6A35 DEFB $01,$30,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $30 ($6F,$90).
+ $6A3D DEFB $02,$2D,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $2D ($6F,$08).
+ $6A45 DEFB $02,$75,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $75 ($6F,$A0).
+ $6A4D DEFB $02,$75,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $75 ($B7,$50).
+ $6A55 DEFB $02,$76,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $76 ($1F,$50).
+ $6A5D DEFB $02,$76,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $76 ($6F,$A0).
+ $6A65 DEFB $02,$77,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $77 ($6F,$08).
+ $6A6D DEFB $02,$77,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $77 ($6F,$A0).
+ $6A75 DEFB $02,$78,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $78 ($6F,$08).
+ $6A7D DEFB $02,$78,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $78 ($B7,$50).
+ $6A85 DEFB $02,$79,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $79 ($1F,$50).
+ $6A8D DEFB $02,$79,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $79 ($B7,$50).
+ $6A95 DEFB $02,$7A,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $7A ($1F,$50).
+ $6A9D DEFB $02,$7A,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $7A ($6F,$08).
+ $6AA5 DEFB $02,$7B,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $7B ($6F,$A0).
+ $6AAD DEFB $0B,$7B,$34,$08,$6F,$E0,$06,$03 ; Yellow Locked Normal Door, Screen $7B ($6F,$08).
+ $6AB5 DEFB $0B,$7C,$34,$A0,$6F,$60,$B7,$03 ; Yellow Locked Normal Door, Screen $7C ($6F,$A0).
+ $6ABD DEFB $0B,$7C,$34,$50,$1F,$00,$04,$56 ; Yellow Locked Normal Door, Screen $7C ($1F,$50).
+ $6AC5 DEFB $0B,$7D,$34,$50,$B7,$80,$04,$06 ; Yellow Locked Normal Door, Screen $7D ($B7,$50).
+ $6ACD DEFB $02,$7D,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $7D ($1F,$50).
+ $6AD5 DEFB $02,$76,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $76 ($B7,$50).
+ $6ADD DEFB $08,$7A,$34,$A0,$6F,$60,$B7,$03 ; Red Locked Normal Door, Screen $7A ($6F,$A0).
+ $6AE5 DEFB $08,$7E,$34,$08,$6F,$E0,$06,$03 ; Red Locked Normal Door, Screen $7E ($6F,$08).
+ $6AED DEFB $02,$7E,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $7E ($1F,$50).
+ $6AF5 DEFB $02,$29,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $29 ($B7,$50).
+ $6AFD DEFB $02,$21,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $21 ($1F,$50).
+ $6B05 DEFB $02,$88,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $88 ($B7,$50).
+ $6B0D DEFB $09,$7F,$34,$A0,$6F,$60,$B7,$03 ; Green Locked Normal Door, Screen $7F ($6F,$A0).
+ $6B15 DEFB $09,$80,$34,$08,$6F,$E0,$06,$03 ; Green Locked Normal Door, Screen $80 ($6F,$08).
+ $6B1D DEFB $02,$80,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $80 ($B7,$50).
+ $6B25 DEFB $02,$82,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $82 ($1F,$50).
+ $6B2D DEFB $02,$82,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $82 ($6F,$08).
+ $6B35 DEFB $02,$81,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $81 ($6F,$A0).
+ $6B3D DEFB $02,$81,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $81 ($1F,$50).
+ $6B45 DEFB $02,$7F,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $7F ($B7,$50).
+ $6B4D DEFB $0A,$82,$34,$A0,$6F,$60,$B7,$03 ; Cyan Locked Normal Door, Screen $82 ($6F,$A0).
+ $6B55 DEFB $0A,$87,$34,$08,$6F,$E0,$06,$03 ; Cyan Locked Normal Door, Screen $87 ($6F,$08).
+ $6B5D DEFB $02,$87,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $87 ($6F,$A0).
+ $6B65 DEFB $02,$88,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $88 ($6F,$08).
+ $6B6D DEFB $02,$87,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $87 ($B7,$50).
+ $6B75 DEFB $02,$8B,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $8B ($1F,$50).
+ $6B7D DEFB $02,$8B,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $8B ($B7,$50).
+ $6B85 DEFB $02,$8C,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $8C ($1F,$50).
+ $6B8D DEFB $09,$8C,$34,$50,$B7,$80,$04,$06 ; Green Locked Normal Door, Screen $8C ($B7,$50).
+ $6B95 DEFB $09,$8D,$34,$50,$1F,$00,$04,$56 ; Green Locked Normal Door, Screen $8D ($1F,$50).
+ $6B9D DEFB $08,$83,$34,$A0,$6F,$60,$B7,$03 ; Red Locked Normal Door, Screen $83 ($6F,$A0).
+ $6BA5 DEFB $08,$84,$34,$08,$6F,$E0,$06,$03 ; Red Locked Normal Door, Screen $84 ($6F,$08).
+ $6BAD DEFB $02,$84,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $84 ($B7,$50).
+ $6BB5 DEFB $02,$86,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $86 ($1F,$50).
+ $6BBD DEFB $02,$86,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $86 ($6F,$08).
+ $6BC5 DEFB $02,$85,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $85 ($6F,$A0).
+ $6BCD DEFB $02,$85,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $85 ($1F,$50).
+ $6BD5 DEFB $02,$83,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $83 ($B7,$50).
+ $6BDD DEFB $0B,$84,$34,$A0,$6F,$60,$B7,$03 ; Yellow Locked Normal Door, Screen $84 ($6F,$A0).
+ $6BE5 DEFB $0B,$89,$34,$08,$6F,$E0,$06,$03 ; Yellow Locked Normal Door, Screen $89 ($6F,$08).
+ $6BED DEFB $02,$89,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $89 ($1F,$50).
+ $6BF5 DEFB $02,$8D,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $8D ($B7,$50).
+ $6BFD DEFB $02,$89,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $89 ($6F,$A0).
+ $6C05 DEFB $02,$8A,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $8A ($6F,$08).
+ $6C0D DEFB $09,$8A,$34,$50,$1F,$00,$04,$56 ; Green Locked Normal Door, Screen $8A ($1F,$50).
+ $6C15 DEFB $09,$23,$34,$50,$B7,$80,$04,$06 ; Green Locked Normal Door, Screen $23 ($B7,$50).
+ $6C1D DEFB $02,$13,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $13 ($6F,$08).
+ $6C25 DEFB $02,$73,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $73 ($6F,$A0).
+ $6C2D DEFB $02,$11,$34,$80,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $11 ($6F,$80).
+ $6C35 DEFB $02,$6B,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $6B ($6F,$08).
+ $6C3D DEFB $02,$6B,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $6B ($6F,$A0).
+ $6C45 DEFB $02,$6C,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $6C ($6F,$08).
+ $6C4D DEFB $0A,$6C,$34,$A0,$6F,$60,$B7,$03 ; Cyan Locked Normal Door, Screen $6C ($6F,$A0).
+ $6C55 DEFB $0A,$03,$34,$08,$6F,$E0,$06,$03 ; Cyan Locked Normal Door, Screen $03 ($6F,$08).
+ $6C5D DEFB $09,$0F,$34,$80,$6F,$60,$B7,$03 ; Green Locked Normal Door, Screen $0F ($6F,$80).
+ $6C65 DEFB $09,$6D,$34,$08,$6F,$E0,$06,$03 ; Green Locked Normal Door, Screen $6D ($6F,$08).
+ $6C6D DEFB $02,$6D,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $6D ($6F,$A0).
+ $6C75 DEFB $02,$6E,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $6E ($6F,$08).
+ $6C7D DEFB $02,$6E,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $6E ($6F,$A0).
+ $6C85 DEFB $02,$05,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $05 ($6F,$08).
+ $6C8D DEFB $0A,$0D,$34,$50,$B7,$80,$04,$06 ; Cyan Locked Normal Door, Screen $0D ($B7,$50).
+ $6C95 DEFB $0A,$6F,$34,$50,$1F,$00,$04,$56 ; Cyan Locked Normal Door, Screen $6F ($1F,$50).
+ $6C9D DEFB $02,$6F,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $6F ($B7,$50).
+ $6CA5 DEFB $02,$70,$34,$70,$1F,$00,$04,$56 ; Normal Door Frame, Screen $70 ($1F,$70).
+ $6CAD DEFB $02,$70,$34,$30,$1F,$00,$04,$56 ; Normal Door Frame, Screen $70 ($1F,$30).
+ $6CB5 DEFB $03,$71,$38,$48,$B6,$80,$16,$08 ; BigDooor Frame, Screen $71 ($B6,$48).
+ $6CBD DEFB $02,$71,$34,$50,$28,$00,$04,$56 ; Normal Door Frame, Screen $71 ($28,$50).
+ $6CC5 DEFB $03,$72,$38,$48,$B6,$80,$16,$08 ; BigDooor Frame, Screen $72 ($B6,$48).
+ $6CCD DEFB $02,$72,$34,$50,$28,$00,$04,$56 ; Normal Door Frame, Screen $72 ($28,$50).
+ $6CD5 DEFB $01,$35,$34,$50,$A7,$80,$04,$06 ; Cave Dooor Frame, Screen $35 ($A7,$50).
+ $6CDD DEFB $01,$30,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $30 ($6F,$18).
+ $6CE5 DEFB $01,$74,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $74 ($6F,$90).
+ $6CED DEFB $02,$56,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $56 ($6F,$A0).
+ $6CF5 DEFB $02,$57,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $57 ($6F,$08).
+ $6CFD DEFB $09,$57,$34,$A0,$6F,$60,$B7,$03 ; Green Locked Normal Door, Screen $57 ($6F,$A0).
+ $6D05 DEFB $09,$58,$34,$08,$6F,$E0,$06,$03 ; Green Locked Normal Door, Screen $58 ($6F,$08).
+ $6D0D DEFB $02,$58,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $58 ($6F,$A0).
+ $6D15 DEFB $02,$59,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $59 ($6F,$08).
+ $6D1D DEFB $02,$5A,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $5A ($6F,$A0).
+ $6D25 DEFB $02,$5B,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $5B ($6F,$08).
+ $6D2D DEFB $08,$5B,$34,$A0,$6F,$60,$B7,$03 ; Red Locked Normal Door, Screen $5B ($6F,$A0).
+ $6D35 DEFB $08,$5C,$34,$08,$6F,$E0,$06,$03 ; Red Locked Normal Door, Screen $5C ($6F,$08).
+ $6D3D DEFB $09,$5C,$34,$A0,$6F,$60,$B7,$03 ; Green Locked Normal Door, Screen $5C ($6F,$A0).
+ $6D45 DEFB $09,$5D,$34,$08,$6F,$E0,$06,$03 ; Green Locked Normal Door, Screen $5D ($6F,$08).
+ $6D4D DEFB $08,$5E,$34,$A0,$6F,$60,$B7,$03 ; Red Locked Normal Door, Screen $5E ($6F,$A0).
+ $6D55 DEFB $08,$5F,$34,$08,$6F,$E0,$06,$03 ; Red Locked Normal Door, Screen $5F ($6F,$08).
+ $6D5D DEFB $08,$5F,$34,$A0,$6F,$60,$B7,$03 ; Red Locked Normal Door, Screen $5F ($6F,$A0).
+ $6D65 DEFB $08,$60,$34,$08,$6F,$E0,$06,$03 ; Red Locked Normal Door, Screen $60 ($6F,$08).
+ $6D6D DEFB $02,$60,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $60 ($6F,$A0).
+ $6D75 DEFB $02,$61,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $61 ($6F,$08).
+ $6D7D DEFB $02,$62,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $62 ($6F,$A0).
+ $6D85 DEFB $02,$63,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $63 ($6F,$08).
+ $6D8D DEFB $02,$63,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $63 ($6F,$A0).
+ $6D95 DEFB $02,$64,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $64 ($6F,$08).
+ $6D9D DEFB $0B,$64,$34,$A0,$6F,$60,$B7,$03 ; Yellow Locked Normal Door, Screen $64 ($6F,$A0).
+ $6DA5 DEFB $0B,$65,$34,$08,$6F,$E0,$06,$03 ; Yellow Locked Normal Door, Screen $65 ($6F,$08).
+ $6DAD DEFB $02,$56,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $56 ($B7,$50).
+ $6DB5 DEFB $02,$5A,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $5A ($1F,$50).
+ $6DBD DEFB $0A,$5A,$34,$50,$B7,$80,$04,$06 ; Cyan Locked Normal Door, Screen $5A ($B7,$50).
+ $6DC5 DEFB $0A,$5E,$34,$50,$1F,$00,$04,$56 ; Cyan Locked Normal Door, Screen $5E ($1F,$50).
+ $6DCD DEFB $02,$5E,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $5E ($B7,$50).
+ $6DD5 DEFB $02,$62,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $62 ($1F,$50).
+ $6DDD DEFB $02,$57,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $57 ($B7,$50).
+ $6DE5 DEFB $02,$5B,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $5B ($1F,$50).
+ $6DED DEFB $09,$5B,$34,$30,$B7,$80,$04,$06 ; Green Locked Normal Door, Screen $5B ($B7,$30).
+ $6DF5 DEFB $09,$5F,$34,$30,$1F,$00,$04,$56 ; Green Locked Normal Door, Screen $5F ($1F,$30).
+ $6DFD DEFB $0A,$5F,$34,$50,$B7,$80,$04,$06 ; Cyan Locked Normal Door, Screen $5F ($B7,$50).
+ $6E05 DEFB $0A,$63,$34,$50,$1F,$00,$04,$56 ; Cyan Locked Normal Door, Screen $63 ($1F,$50).
+ $6E0D DEFB $02,$58,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $58 ($B7,$50).
+ $6E15 DEFB $02,$5C,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $5C ($1F,$50).
+ $6E1D DEFB $08,$5C,$34,$70,$B7,$80,$04,$06 ; Red Locked Normal Door, Screen $5C ($B7,$70).
+ $6E25 DEFB $08,$60,$34,$70,$1F,$00,$04,$56 ; Red Locked Normal Door, Screen $60 ($1F,$70).
+ $6E2D DEFB $0A,$60,$34,$50,$B7,$80,$04,$06 ; Cyan Locked Normal Door, Screen $60 ($B7,$50).
+ $6E35 DEFB $0A,$64,$34,$50,$1F,$00,$04,$56 ; Cyan Locked Normal Door, Screen $64 ($1F,$50).
+ $6E3D DEFB $0B,$59,$34,$50,$B7,$80,$04,$06 ; Yellow Locked Normal Door, Screen $59 ($B7,$50).
+ $6E45 DEFB $0B,$5D,$34,$50,$1F,$00,$04,$56 ; Yellow Locked Normal Door, Screen $5D ($1F,$50).
+ $6E4D DEFB $02,$5D,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $5D ($B7,$50).
+ $6E55 DEFB $02,$61,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $61 ($1F,$50).
+ $6E5D DEFB $02,$61,$34,$50,$B7,$80,$04,$06 ; Normal Door Frame, Screen $61 ($B7,$50).
+ $6E65 DEFB $02,$65,$34,$50,$1F,$00,$04,$56 ; Normal Door Frame, Screen $65 ($1F,$50).
+ $6E6D DEFB $0A,$67,$34,$50,$B7,$80,$04,$06 ; Cyan Locked Normal Door, Screen $67 ($B7,$50).
+ $6E75 DEFB $0A,$56,$34,$50,$1F,$00,$04,$56 ; Cyan Locked Normal Door, Screen $56 ($1F,$50).
+ $6E7D DEFB $08,$68,$34,$50,$B7,$80,$04,$06 ; Red Locked Normal Door, Screen $68 ($B7,$50).
+ $6E85 DEFB $08,$59,$34,$50,$1F,$00,$04,$56 ; Red Locked Normal Door, Screen $59 ($1F,$50).
+ $6E8D DEFB $0B,$69,$34,$A0,$6F,$60,$B7,$03 ; Yellow Locked Normal Door, Screen $69 ($6F,$A0).
+ $6E95 DEFB $0B,$56,$34,$08,$6F,$E0,$06,$03 ; Yellow Locked Normal Door, Screen $56 ($6F,$08).
+ $6E9D DEFB $09,$6A,$34,$A0,$6F,$60,$B7,$03 ; Green Locked Normal Door, Screen $6A ($6F,$A0).
+ $6EA5 DEFB $09,$62,$34,$08,$6F,$E0,$06,$03 ; Green Locked Normal Door, Screen $62 ($6F,$08).
+ $6EAD DEFB $0B,$66,$34,$30,$1F,$00,$04,$56 ; Yellow Locked Normal Door, Screen $66 ($1F,$30).
+ $6EB5 DEFB $0B,$5B,$34,$70,$B7,$80,$04,$06 ; Yellow Locked Normal Door, Screen $5B ($B7,$70).
+ $6EBD DEFB $0B,$66,$34,$70,$1F,$00,$04,$56 ; Yellow Locked Normal Door, Screen $66 ($1F,$70).
+ $6EC5 DEFB $0B,$5C,$34,$30,$B7,$80,$04,$06 ; Yellow Locked Normal Door, Screen $5C ($B7,$30).
+ $6ECD DEFB $0B,$66,$34,$30,$B7,$80,$04,$06 ; Yellow Locked Normal Door, Screen $66 ($B7,$30).
+ $6ED5 DEFB $0B,$5F,$34,$70,$1F,$00,$04,$56 ; Yellow Locked Normal Door, Screen $5F ($1F,$70).
+ $6EDD DEFB $0B,$66,$34,$70,$B7,$80,$04,$06 ; Yellow Locked Normal Door, Screen $66 ($B7,$70).
+ $6EE5 DEFB $0B,$60,$34,$30,$1F,$00,$04,$56 ; Yellow Locked Normal Door, Screen $60 ($1F,$30).
+ $6EED DEFB $02,$65,$34,$A0,$6F,$60,$B7,$03 ; Normal Door Frame, Screen $65 ($6F,$A0).
+ $6EF5 DEFB $02,$1B,$34,$08,$6F,$E0,$06,$03 ; Normal Door Frame, Screen $1B ($6F,$08).
+ $6EFD DEFB $01,$40,$34,$50,$A7,$80,$04,$06 ; Cave Dooor Frame, Screen $40 ($A7,$50).
+ $6F05 DEFB $01,$8F,$34,$50,$2F,$00,$04,$56 ; Cave Dooor Frame, Screen $8F ($2F,$50).
+ $6F0D DEFB $01,$54,$34,$50,$A7,$80,$04,$06 ; Cave Dooor Frame, Screen $54 ($A7,$50).
+ $6F15 DEFB $01,$90,$34,$50,$2F,$00,$04,$56 ; Cave Dooor Frame, Screen $90 ($2F,$50).
+ $6F1D DEFB $01,$90,$34,$50,$A7,$80,$04,$06 ; Cave Dooor Frame, Screen $90 ($A7,$50).
+ $6F25 DEFB $01,$91,$34,$50,$2F,$00,$04,$56 ; Cave Dooor Frame, Screen $91 ($2F,$50).
+ $6F2D DEFB $01,$91,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $91 ($6F,$90).
+ $6F35 DEFB $01,$92,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $92 ($6F,$18).
+ $6F3D DEFB $01,$92,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $92 ($6F,$90).
+ $6F45 DEFB $01,$93,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $93 ($6F,$18).
+ $6F4D DEFB $01,$93,$34,$90,$6F,$60,$B7,$03 ; Cave Dooor Frame, Screen $93 ($6F,$90).
+ $6F55 DEFB $01,$94,$34,$18,$6F,$E0,$06,$03 ; Cave Dooor Frame, Screen $94 ($6F,$18).
+ $6F5D DEFB $01,$3A,$34,$50,$2F,$00,$04,$56 ; Cave Dooor Frame, Screen $3A ($2F,$50).
+ $6F65 DEFB $01,$94,$34,$50,$A7,$80,$04,$06 ; Cave Dooor Frame, Screen $94 ($A7,$50).
+ $6F6D DEFB $19,$73,$34,$50,$70,$03,$24,$E4 ; Open Trap Door, Screen $73 ($70,$50).
+ $6F75 DEFB $1B,$74,$34,$48,$74,$03,$00,$00 ; Rug, Screen $74 ($74,$48).
+ $6F7D DEFB $19,$03,$34,$30,$70,$03,$24,$E4 ; Open Trap Door, Screen $03 ($70,$30).
+ $6F85 DEFB $1B,$65,$34,$38,$74,$03,$00,$00 ; Rug, Screen $65 ($74,$38).
+ $6F8D DEFB $19,$61,$34,$50,$70,$03,$24,$E4 ; Open Trap Door, Screen $61 ($70,$50).
+ $6F95 DEFB $1B,$4B,$34,$48,$74,$03,$00,$00 ; Rug, Screen $4B ($74,$48).
+ $6F9D DEFB $19,$2D,$34,$50,$90,$03,$24,$E4 ; Open Trap Door, Screen $2D ($90,$50).
+ $6FA5 DEFB $1B,$8D,$34,$48,$94,$03,$00,$00 ; Rug, Screen $8D ($94,$48).
+ $6FAD DEFB $19,$76,$34,$50,$70,$03,$24,$E4 ; Open Trap Door, Screen $76 ($70,$50).
+ $6FB5 DEFB $1B,$84,$34,$48,$74,$03,$00,$00 ; Rug, Screen $84 ($74,$48).
+ $6FBD DEFB $19,$8B,$34,$50,$70,$03,$24,$E4 ; Open Trap Door, Screen $8B ($70,$50).
+ $6FC5 DEFB $1B,$6C,$34,$48,$74,$03,$00,$00 ; Rug, Screen $6C ($74,$48).
+ $6FCD DEFB $19,$8D,$34,$50,$50,$03,$24,$E4 ; Open Trap Door, Screen $8D ($50,$50).
+ $6FD5 DEFB $1B,$6E,$34,$48,$54,$03,$00,$00 ; Rug, Screen $6E ($54,$48).
+ $6FDD DEFB $19,$21,$34,$70,$70,$03,$24,$E4 ; Open Trap Door, Screen $21 ($70,$70).
+ $6FE5 DEFB $1B,$03,$34,$68,$74,$03,$00,$00 ; Rug, Screen $03 ($74,$68).
+ $6FED DEFB $19,$15,$34,$50,$80,$03,$24,$E4 ; Open Trap Door, Screen $15 ($80,$50).
+ $6FF5 DEFB $1B,$66,$34,$48,$74,$03,$00,$00 ; Rug, Screen $66 ($74,$48).
+ $6FFD DEFB $19,$78,$34,$70,$70,$03,$24,$E4 ; Open Trap Door, Screen $78 ($70,$70).
+ $7005 DEFB $1B,$8A,$34,$68,$74,$03,$00,$00 ; Rug, Screen $8A ($74,$68).
+ $700D DEFB $19,$29,$34,$50,$80,$03,$24,$E4 ; Open Trap Door, Screen $29 ($80,$50).
+ $7015 DEFB $1B,$09,$34,$48,$74,$03,$00,$00 ; Rug, Screen $09 ($74,$48).
+ $701D DEFB $11,$0B,$00,$50,$97,$81,$00,$00 ; Picture, Screen $0B ($97,$50).
+ $7025 DEFB $11,$0C,$00,$50,$97,$81,$00,$00 ; Picture, Screen $0C ($97,$50).
+ $702D DEFB $27,$91,$00,$50,$8F,$00,$00,$00 ; Barrels, Screen $91 ($8F,$50).
+ $7035 DEFB $27,$3D,$00,$5F,$5F,$00,$00,$00 ; Barrels, Screen $3D ($5F,$5F).
+ $703D DEFB $1E,$1F,$00,$98,$67,$60,$00,$00 ; Knight, Screen $1F ($67,$98).
+ $7045 DEFB $1E,$21,$00,$08,$67,$E0,$00,$00 ; Knight, Screen $21 ($67,$08).
+ $704D DEFB $1E,$25,$00,$98,$67,$60,$00,$00 ; Knight, Screen $25 ($67,$98).
+ $7055 DEFB $1E,$23,$00,$08,$67,$E0,$00,$00 ; Knight, Screen $23 ($67,$08).
+ $705D DEFB $1E,$00,$00,$98,$3F,$60,$00,$00 ; Knight, Screen $00 ($3F,$98).
+ $7065 DEFB $1E,$06,$00,$38,$47,$00,$00,$00 ; Knight, Screen $06 ($47,$38).
+ $706D DEFB $1E,$00,$00,$98,$8F,$60,$00,$00 ; Knight, Screen $00 ($8F,$98).
+ $7075 DEFB $1E,$06,$00,$78,$47,$00,$00,$00 ; Knight, Screen $06 ($47,$78).
+ $707D DEFB $1E,$01,$00,$58,$27,$00,$00,$00 ; Knight, Screen $01 ($27,$58).
+ $7085 DEFB $1E,$03,$00,$58,$27,$00,$00,$00 ; Knight, Screen $03 ($27,$58).
+ $708D DEFB $1E,$05,$00,$58,$B7,$80,$00,$00 ; Knight, Screen $05 ($B7,$58).
+ $7095 DEFB $1E,$07,$00,$58,$B7,$80,$00,$00 ; Knight, Screen $07 ($B7,$58).
+ $709D DEFB $1E,$17,$00,$58,$27,$00,$00,$00 ; Knight, Screen $17 ($27,$58).
+ $70A5 DEFB $1E,$15,$00,$78,$97,$80,$00,$00 ; Knight, Screen $15 ($97,$78).
+ $70AD DEFB $1E,$15,$00,$38,$97,$80,$00,$00 ; Knight, Screen $15 ($97,$38).
+ $70B5 DEFB $1E,$13,$00,$58,$27,$00,$00,$00 ; Knight, Screen $13 ($27,$58).
+ $70BD DEFB $1E,$88,$00,$08,$3F,$E0,$00,$00 ; Knight, Screen $88 ($3F,$08).
+ $70C5 DEFB $1E,$8A,$00,$08,$47,$E0,$00,$00 ; Knight, Screen $8A ($47,$08).
+ $70CD DEFB $1E,$88,$00,$08,$8F,$E0,$00,$00 ; Knight, Screen $88 ($8F,$08).
+ $70D5 DEFB $1E,$8A,$00,$08,$87,$E0,$00,$00 ; Knight, Screen $8A ($87,$08).
+ $70DD DEFB $1E,$27,$00,$38,$27,$00,$00,$00 ; Knight, Screen $27 ($27,$38).
+ $70E5 DEFB $1E,$2B,$00,$38,$27,$00,$00,$00 ; Knight, Screen $2B ($27,$38).
+ $70ED DEFB $1E,$27,$00,$78,$27,$00,$00,$00 ; Knight, Screen $27 ($27,$78).
+ $70F5 DEFB $1E,$2B,$00,$78,$27,$00,$00,$00 ; Knight, Screen $2B ($27,$78).
+ $70FD DEFB $1E,$56,$00,$38,$27,$00,$00,$00 ; Knight, Screen $56 ($27,$38).
+ $7105 DEFB $1E,$24,$00,$38,$47,$00,$00,$00 ; Knight, Screen $24 ($47,$38).
+ $710D DEFB $1E,$56,$00,$78,$27,$00,$00,$00 ; Knight, Screen $56 ($27,$78).
+ $7115 DEFB $1E,$24,$00,$78,$47,$00,$00,$00 ; Knight, Screen $24 ($47,$78).
+ $711D DEFB $1E,$7C,$00,$38,$27,$00,$00,$00 ; Knight, Screen $7C ($27,$38).
+ $7125 DEFB $1E,$7A,$00,$38,$27,$00,$00,$00 ; Knight, Screen $7A ($27,$38).
+ $712D DEFB $1E,$7C,$00,$78,$27,$00,$00,$00 ; Knight, Screen $7C ($27,$78).
+ $7135 DEFB $1E,$7A,$00,$78,$27,$00,$00,$00 ; Knight, Screen $7A ($27,$78).
+ $713D DEFB $1E,$09,$00,$08,$3F,$E0,$00,$00 ; Knight, Screen $09 ($3F,$08).
+ $7145 DEFB $1E,$7F,$00,$38,$B7,$80,$00,$00 ; Knight, Screen $7F ($B7,$38).
+ $714D DEFB $1E,$09,$00,$08,$8F,$E0,$00,$00 ; Knight, Screen $09 ($8F,$08).
+ $7155 DEFB $1E,$7F,$00,$78,$B7,$80,$00,$00 ; Knight, Screen $7F ($B7,$78).
+ $715D DEFB $12,$0D,$00,$38,$50,$04,$CC,$49 ; Table, Screen $0D ($50,$38).
+ $7165 DEFB $12,$13,$00,$70,$90,$04,$CC,$49 ; Table, Screen $13 ($90,$70).
+ $716D DEFB $12,$63,$00,$38,$50,$04,$CC,$49 ; Table, Screen $63 ($50,$38).
+ $7175 DEFB $12,$5D,$00,$70,$50,$04,$CC,$49 ; Table, Screen $5D ($50,$70).
+ $717D DEFB $12,$18,$00,$48,$50,$04,$CC,$49 ; Table, Screen $18 ($50,$48).
+ $7185 DEFB $12,$88,$00,$70,$50,$04,$CC,$49 ; Table, Screen $88 ($50,$70).
+ $718D DEFB $12,$7A,$00,$38,$50,$04,$CC,$49 ; Table, Screen $7A ($50,$38).
+ $7195 DEFB $12,$81,$00,$70,$50,$04,$CC,$49 ; Table, Screen $81 ($50,$70).
+ $719D DEFB $12,$18,$00,$58,$80,$04,$CC,$49 ; Table, Screen $18 ($80,$58).
+ $71A5 DEFB $12,$6D,$00,$30,$90,$04,$CC,$49 ; Table, Screen $6D ($90,$30).
+ $71AD DEFB $12,$5B,$00,$38,$50,$04,$CC,$49 ; Table, Screen $5B ($50,$38).
+ $71B5 DEFB $12,$5C,$00,$70,$50,$04,$CC,$49 ; Table, Screen $5C ($50,$70).
+ $71BD DEFB $12,$6A,$00,$78,$98,$04,$CC,$49 ; Table, Screen $6A ($98,$78).
+ $71C5 DEFB $12,$1B,$00,$70,$50,$04,$CC,$49 ; Table, Screen $1B ($50,$70).
+ $71CD DEFB $12,$2E,$00,$38,$57,$04,$CC,$49 ; Table, Screen $2E ($57,$38).
+ $71D5 DEFB $12,$7D,$00,$48,$50,$04,$CC,$49 ; Table, Screen $7D ($50,$48).
+ $71DD DEFB $12,$2E,$00,$60,$7F,$04,$CC,$49 ; Table, Screen $2E ($7F,$60).
+ $71E5 DEFB $12,$7D,$00,$58,$80,$04,$CC,$49 ; Table, Screen $7D ($80,$58).
+ $71ED DEFB $12,$2A,$00,$38,$57,$04,$CC,$49 ; Table, Screen $2A ($57,$38).
+ $71F5 DEFB $12,$2D,$00,$30,$80,$04,$CC,$49 ; Table, Screen $2D ($80,$30).
+ $71FD DEFB $12,$2A,$00,$60,$7F,$04,$CC,$49 ; Table, Screen $2A ($7F,$60).
+ $7205 DEFB $12,$2D,$00,$70,$80,$04,$CC,$49 ; Table, Screen $2D ($80,$70).
+ $720D DEFB $1C,$8D,$00,$28,$67,$E0,$00,$00 ; Acg Shield, Screen $8D ($67,$28).
+ $7215 DEFB $1D,$8C,$00,$28,$67,$E0,$00,$00 ; Shield, Screen $8C ($67,$28).
+ $721D DEFB $15,$8B,$00,$88,$6F,$40,$00,$00 ; Antler Trophy, Screen $8B ($6F,$88).
+ $7225 DEFB $16,$8C,$00,$88,$67,$40,$00,$00 ; Trophy, Screen $8C ($67,$88).
+ $722D DEFB $1C,$16,$00,$58,$37,$00,$00,$00 ; Acg Shield, Screen $16 ($37,$58).
+ $7235 DEFB $1D,$14,$00,$58,$97,$80,$00,$00 ; Shield, Screen $14 ($97,$58).
+ $723D DEFB $15,$0E,$00,$28,$57,$E0,$00,$00 ; Antler Trophy, Screen $0E ($57,$28).
+ $7245 DEFB $16,$12,$00,$88,$6F,$40,$00,$00 ; Trophy, Screen $12 ($6F,$88).
+ $724D DEFB $1C,$0F,$00,$28,$67,$E0,$00,$00 ; Acg Shield, Screen $0F ($67,$28).
+ $7255 DEFB $1D,$11,$00,$28,$67,$E0,$00,$00 ; Shield, Screen $11 ($67,$28).
+ $725D DEFB $15,$10,$00,$88,$6F,$40,$00,$00 ; Antler Trophy, Screen $10 ($6F,$88).
+ $7265 DEFB $16,$73,$00,$58,$97,$80,$00,$00 ; Trophy, Screen $73 ($97,$58).
+ $726D DEFB $1C,$08,$00,$88,$67,$40,$00,$00 ; Acg Shield, Screen $08 ($67,$88).
+ $7275 DEFB $1D,$18,$00,$88,$67,$40,$00,$00 ; Shield, Screen $18 ($67,$88).
+ $727D DEFB $15,$6F,$00,$28,$67,$E0,$00,$00 ; Antler Trophy, Screen $6F ($67,$28).
+ $7285 DEFB $16,$0E,$00,$28,$77,$E0,$00,$00 ; Trophy, Screen $0E ($77,$28).
+ $728D DEFB $25,$00,$00,$28,$17,$00,$00,$00 ; Picture, Screen $00 ($17,$28).
+ $7295 DEFB $1D,$19,$00,$58,$37,$00,$00,$00 ; Shield, Screen $19 ($37,$58).
+ $729D DEFB $11,$00,$00,$78,$1C,$00,$00,$00 ; Picture, Screen $00 ($1C,$78).
+ $72A5 DEFB $16,$0B,$00,$58,$37,$00,$00,$00 ; Trophy, Screen $0B ($37,$58).
+ $72AD DEFB $1C,$00,$00,$38,$B7,$80,$00,$00 ; Acg Shield, Screen $00 ($B7,$38).
+ $72B5 DEFB $1D,$19,$00,$58,$97,$80,$00,$00 ; Shield, Screen $19 ($97,$58).
+ $72BD DEFB $15,$00,$00,$78,$B7,$80,$00,$00 ; Antler Trophy, Screen $00 ($B7,$78).
+ $72C5 DEFB $16,$0B,$00,$58,$97,$81,$00,$00 ; Trophy, Screen $0B ($97,$58).
+ $72CD DEFB $11,$04,$00,$28,$47,$E1,$00,$00 ; Picture, Screen $04 ($47,$28).
+ $72D5 DEFB $15,$15,$00,$58,$37,$00,$00,$00 ; Antler Trophy, Screen $15 ($37,$58).
+ $72DD DEFB $16,$04,$00,$28,$87,$E0,$00,$00 ; Trophy, Screen $04 ($87,$28).
+ $72E5 DEFB $25,$14,$00,$58,$37,$00,$00,$00 ; Picture, Screen $14 ($37,$58).
+ $72ED DEFB $11,$73,$00,$58,$3C,$00,$00,$00 ; Picture, Screen $73 ($3C,$58).
+ $72F5 DEFB $16,$6E,$00,$58,$B7,$80,$00,$00 ; Trophy, Screen $6E ($B7,$58).
+ $72FD DEFB $1C,$6D,$00,$58,$B7,$80,$00,$00 ; Acg Shield, Screen $6D ($B7,$58).
+ $7305 DEFB $25,$0E,$00,$88,$6F,$40,$00,$00 ; Picture, Screen $0E ($6F,$88).
+ $730D DEFB $25,$07,$00,$A8,$6F,$40,$00,$00 ; Picture, Screen $07 ($6F,$A8).
+ $7315 DEFB $1C,$06,$00,$38,$97,$80,$00,$00 ; Acg Shield, Screen $06 ($97,$38).
+ $731D DEFB $1C,$06,$00,$78,$97,$80,$00,$00 ; Acg Shield, Screen $06 ($97,$78).
+ $7325 DEFB $1D,$01,$00,$A8,$67,$40,$00,$00 ; Shield, Screen $01 ($67,$A8).
+ $732D DEFB $11,$18,$00,$28,$6F,$E1,$00,$00 ; Picture, Screen $18 ($6F,$28).
+ $7335 DEFB $1D,$17,$00,$A8,$67,$40,$00,$00 ; Shield, Screen $17 ($67,$A8).
+ $733D DEFB $15,$87,$00,$38,$17,$00,$00,$00 ; Antler Trophy, Screen $87 ($17,$38).
+ $7345 DEFB $16,$89,$00,$38,$B7,$80,$00,$00 ; Trophy, Screen $89 ($B7,$38).
+ $734D DEFB $16,$87,$00,$78,$17,$00,$00,$00 ; Trophy, Screen $87 ($17,$78).
+ $7355 DEFB $15,$89,$00,$78,$B7,$80,$00,$00 ; Antler Trophy, Screen $89 ($B7,$78).
+ $735D DEFB $1D,$00,$00,$08,$47,$E0,$00,$00 ; Shield, Screen $00 ($47,$08).
+ $7365 DEFB $16,$82,$00,$38,$B7,$80,$00,$00 ; Trophy, Screen $82 ($B7,$38).
+ $736D DEFB $16,$00,$00,$08,$87,$E0,$00,$00 ; Trophy, Screen $00 ($87,$08).
+ $7375 DEFB $15,$82,$00,$78,$B7,$80,$00,$00 ; Antler Trophy, Screen $82 ($B7,$78).
+ $737D DEFB $11,$66,$00,$A0,$47,$61,$00,$00 ; Picture, Screen $66 ($47,$A0).
+ $7385 DEFB $1D,$61,$00,$A8,$6F,$60,$00,$00 ; Shield, Screen $61 ($6F,$A8).
+ $738D DEFB $15,$66,$00,$A8,$87,$60,$00,$00 ; Antler Trophy, Screen $66 ($87,$A8).
+ $7395 DEFB $25,$5D,$00,$A8,$6F,$60,$00,$00 ; Picture, Screen $5D ($6F,$A8).
+ $739D DEFB $16,$66,$00,$08,$47,$E0,$00,$00 ; Trophy, Screen $66 ($47,$08).
+ $73A5 DEFB $1D,$65,$00,$58,$B7,$80,$00,$00 ; Shield, Screen $65 ($B7,$58).
+ $73AD DEFB $1C,$66,$00,$08,$87,$E0,$00,$00 ; Acg Shield, Screen $66 ($87,$08).
+ $73B5 DEFB $16,$64,$00,$58,$B7,$80,$00,$00 ; Trophy, Screen $64 ($B7,$58).
+ $73BD DEFB $11,$63,$00,$58,$B7,$81,$00,$00 ; Picture, Screen $63 ($B7,$58).
+ $73C5 DEFB $15,$62,$00,$50,$B7,$80,$00,$00 ; Antler Trophy, Screen $62 ($B7,$50).
+ $73CD DEFB $16,$70,$00,$38,$B7,$80,$00,$00 ; Trophy, Screen $70 ($B7,$38).
+ $73D5 DEFB $15,$0D,$00,$08,$6F,$E0,$00,$00 ; Antler Trophy, Screen $0D ($6F,$08).
+ $73DD DEFB $1D,$70,$00,$78,$B7,$80,$00,$00 ; Shield, Screen $70 ($B7,$78).
+ $73E5 DEFB $16,$0C,$00,$58,$37,$00,$00,$00 ; Trophy, Screen $0C ($37,$58).
+ $73ED DEFB $16,$09,$00,$A8,$47,$40,$00,$00 ; Trophy, Screen $09 ($47,$A8).
+ $73F5 DEFB $15,$7F,$00,$08,$60,$E0,$00,$00 ; Antler Trophy, Screen $7F ($60,$08).
+ $73FD DEFB $11,$09,$00,$A0,$87,$41,$00,$00 ; Picture, Screen $09 ($87,$A0).
+ $7405 DEFB $1D,$7F,$00,$58,$17,$00,$00,$00 ; Shield, Screen $7F ($17,$58).
+ $740D DEFB $15,$5A,$00,$08,$47,$E0,$00,$00 ; Antler Trophy, Screen $5A ($47,$08).
+ $7415 DEFB $25,$27,$00,$A8,$47,$60,$00,$00 ; Picture, Screen $27 ($47,$A8).
+ $741D DEFB $16,$5A,$00,$08,$87,$E0,$00,$00 ; Trophy, Screen $5A ($87,$08).
+ $7425 DEFB $1D,$27,$00,$A8,$87,$60,$00,$00 ; Shield, Screen $27 ($87,$A8).
+ $742D DEFB $1C,$29,$00,$A8,$47,$60,$00,$00 ; Acg Shield, Screen $29 ($47,$A8).
+ $7435 DEFB $16,$7E,$00,$A8,$60,$60,$00,$00 ; Trophy, Screen $7E ($60,$A8).
+ $743D DEFB $11,$29,$00,$A0,$87,$61,$00,$00 ; Picture, Screen $29 ($87,$A0).
+ $7445 DEFB $15,$7E,$00,$58,$B7,$80,$00,$00 ; Antler Trophy, Screen $7E ($B7,$58).
+ $744D DEFB $10,$0D,$34,$30,$27,$01,$04,$56 ; Clock, Screen $0D ($27,$30).
+ $7455 DEFB $10,$13,$34,$30,$B7,$81,$04,$06 ; Clock, Screen $13 ($B7,$30).
+ $745D DEFB $10,$09,$34,$30,$27,$01,$04,$56 ; Clock, Screen $09 ($27,$30).
+ $7465 DEFB $10,$17,$34,$30,$B7,$81,$04,$06 ; Clock, Screen $17 ($B7,$30).
+ $746D DEFB $10,$35,$34,$88,$6F,$61,$B7,$03 ; Clock, Screen $35 ($6F,$88).
+ $7475 DEFB $10,$8F,$34,$18,$6F,$E1,$06,$03 ; Clock, Screen $8F ($6F,$18).
+ $747D DEFB $10,$67,$34,$98,$6F,$61,$B7,$03 ; Clock, Screen $67 ($6F,$98).
+ $7485 DEFB $10,$68,$34,$08,$6F,$E1,$06,$03 ; Clock, Screen $68 ($6F,$08).
+ $748D DEFB $10,$8D,$34,$78,$4F,$61,$B7,$03 ; Clock, Screen $8D ($4F,$78).
+ $7495 DEFB $10,$22,$34,$28,$6F,$E1,$06,$03 ; Clock, Screen $22 ($6F,$28).
+ $749D DEFB $10,$76,$34,$30,$27,$01,$04,$56 ; Clock, Screen $76 ($27,$30).
+ $74A5 DEFB $10,$75,$34,$30,$B7,$81,$04,$06 ; Clock, Screen $75 ($B7,$30).
+ $74AD DEFB $17,$0A,$34,$40,$47,$00,$04,$56 ; Bookcase, Screen $0A ($47,$40).
+ $74B5 DEFB $17,$16,$34,$40,$97,$80,$04,$06 ; Bookcase, Screen $16 ($97,$40).
+ $74BD DEFB $17,$3D,$34,$48,$37,$00,$04,$56 ; Bookcase, Screen $3D ($37,$48).
+ $74C5 DEFB $17,$49,$34,$50,$AF,$80,$04,$06 ; Bookcase, Screen $49 ($AF,$50).
+ $74CD DEFB $17,$69,$34,$40,$B7,$80,$04,$06 ; Bookcase, Screen $69 ($B7,$40).
+ $74D5 DEFB $17,$6A,$34,$40,$27,$00,$04,$56 ; Bookcase, Screen $6A ($27,$40).
+ $74DD DEFB $17,$6C,$34,$40,$B7,$80,$04,$06 ; Bookcase, Screen $6C ($B7,$40).
+ $74E5 DEFB $17,$6E,$34,$40,$27,$00,$04,$56 ; Bookcase, Screen $6E ($27,$40).
+ $74ED DEFB $17,$3E,$34,$88,$77,$60,$B7,$03 ; Bookcase, Screen $3E ($77,$88).
+ $74F5 DEFB $17,$41,$34,$48,$A7,$80,$04,$06 ; Bookcase, Screen $41 ($A7,$48).
+ $74FD DEFB $1A,$45,$34,$50,$37,$00,$04,$56 ; Barrel, Screen $45 ($37,$50).
+ $7505 DEFB $1A,$53,$34,$50,$A4,$A0,$04,$06 ; Barrel, Screen $53 ($A4,$50).
+ $750D DEFB $1A,$4C,$34,$88,$6F,$40,$B7,$03 ; Barrel, Screen $4C ($6F,$88).
+ $7515 DEFB $1A,$4E,$34,$18,$6F,$E0,$06,$03 ; Barrel, Screen $4E ($6F,$18).
+ $751D DEFB $1A,$38,$34,$50,$37,$00,$04,$56 ; Barrel, Screen $38 ($37,$50).
+ $7525 DEFB $1A,$4B,$34,$50,$A7,$A0,$04,$06 ; Barrel, Screen $4B ($A7,$50).
+ $752D DEFB $1A,$6B,$34,$50,$B7,$A0,$04,$06 ; Barrel, Screen $6B ($B7,$50).
+ $7535 DEFB $1A,$6D,$34,$50,$27,$00,$04,$56 ; Barrel, Screen $6D ($27,$50).
+ $753D DEFB $1A,$8A,$34,$98,$6F,$60,$B7,$03 ; Barrel, Screen $8A ($6F,$98).
+ $7545 DEFB $1A,$08,$34,$28,$6F,$E1,$06,$03 ; Barrel, Screen $08 ($6F,$28).
+ $754D DEFB $24,$00,$C4,$98,$7F,$40,$BA,$D6 ; Acg Exit Door, Screen $00 ($7F,$98).
+ $7555 DEFB $24,$8E,$C4,$00,$7F,$E0,$08,$D6 ; Acg Exit Door, Screen $8E ($7F,$00).
+ $755D DEFB $26,$53,$00,$80,$77,$61,$00,$00 ; Skeleton, Screen $53 ($77,$80).
+ $7565 DEFB $26,$8F,$00,$80,$77,$61,$00,$00 ; Skeleton, Screen $8F ($77,$80).
+ $756D DEFB $26,$33,$00,$18,$6F,$E1,$00,$00 ; Skeleton, Screen $33 ($6F,$18).
+ $7575 DEFB $26,$55,$00,$50,$A7,$81,$00,$00 ; Skeleton, Screen $55 ($A7,$50).

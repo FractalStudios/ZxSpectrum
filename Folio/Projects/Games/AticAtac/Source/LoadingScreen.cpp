@@ -93,6 +93,8 @@ FolioStatus LoadingScreen::BuildScreenItems (FolioHandle    dcHandle,
 
 FolioStatus LoadingScreen::StartDisplayingScreen ()
 {
+    Sleep (10000);
+
     // Start from the beginning of the sound sample sequence.
             
     m_currentSoundSampleIndex = 0;

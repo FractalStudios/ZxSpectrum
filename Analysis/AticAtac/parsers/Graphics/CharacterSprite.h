@@ -64,7 +64,7 @@ struct CharacterSprite
 
     static  const   int X_START = 16;
     static  const   int Y_START = 16;
-    static  const   int SCALE   = 1;
+    static  const   int SCALE   = 4;
 
     void    DisplaySprite () const
     {
@@ -93,7 +93,7 @@ struct CharacterSprite
 
                 for (int nBit = 7; nBit >= 0; --nBit)
                 {
-                    COLORREF    colour = (byByte & static_cast<int> (std::pow (2, nBit))) ? spriteColour : RGB(0x00, 0x00, 0x00);
+                    COLORREF    colour = (byByte & static_cast<int> (std::pow (2, nBit))) ? RGB(0xff, 0xff, 0xff): RGB(0x30, 0x30, 0x30);
 
                     for (int nYScale = 0; nYScale < SCALE; ++nYScale)
                     {
@@ -118,9 +118,34 @@ struct CharacterSprite
         ::ReleaseDC (hConsoleWnd, hConsoleDC);
     } // Endproc.
 
-    void    SaveSprite () const
+    void    SaveSprite ()
     {
         DisplaySprite ();
+
+        //if (m_wAddress == 0xAE0C)
+        //{
+        //    system ("cls");
+
+        //    Utils::DataList data(m_spriteData);
+
+        //    for (int n = 0; n < 8; n++)
+        //    {
+        //        for (Utils::DataList::iterator itr = m_spriteData.begin (); itr != m_spriteData.end (); itr += 2)
+        //        {
+        //            WORD    hl=MAKEWORD(*(itr+1), *itr);
+        //            for (int i = 0; i < n; i++)
+        //            {
+        //                hl += hl;
+        //            }
+        //            *itr        = HIBYTE(hl);
+        //            *(itr + 1)  = LOBYTE(hl);
+        //        }
+
+        //        DisplaySprite ();
+
+        //        m_spriteData = data;
+        //    }
+        //} // Endif.
 
         // Get window handle to console.
 
