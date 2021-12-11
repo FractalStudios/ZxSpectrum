@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source Files", "Source Files", "{7414FC20-82EE-44F5-8E28-012E3F8E7059}"
+	ProjectSection(SolutionItems) = preProject
+		src\game.c = src\game.c
+		src\globals.c = src\globals.c
+		src\main.c = src\main.c
+		makefile = makefile
+		src\spritedata.c = src\spritedata.c
+		src\utils.c = src\utils.c
+		src\zpragma.inc = src\zpragma.inc
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Header Files", "Header Files", "{08EF688C-EB62-4867-B903-76937CA03984}"
+	ProjectSection(SolutionItems) = preProject
+		src\defn.h = src\defn.h
+		src\game.h = src\game.h
+		src\globals.h = src\globals.h
+		src\includes.h = src\includes.h
+		src\speccy.h = src\speccy.h
+		src\spritedata.h = src\spritedata.h
+		src\sprites.h = src\sprites.h
+		src\utils.h = src\utils.h
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

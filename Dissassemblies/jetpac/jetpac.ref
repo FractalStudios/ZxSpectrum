@@ -1,0 +1,41 @@
+[Config]
+GameDir=jetpac
+
+[Game]
+Game=Jetpac
+TitlePrefix=
+TitleSuffix=RAM disassembly
+LogoImage=jetpac.png
+StyleSheet=skoolkit.css;jetpac.css
+Copyright=&#169; 1983 Ashby Computer Graphics Ltd. &#169; 2020 Fractal Studios.
+Created=
+Release=The complete Jetpac RAM disassembly
+LinkInternalOperands=1
+AddressAnchor={address#IF({base}==16)(:04x)}.
+
+[ImageWriter]
+DefaultAnimationFormat=png
+
+[Titles]
+Asm-g=Global at
+GameStatusBuffer=Globals
+
+[PageHeaders]
+Asm-g=Globals
+GameStatusBuffer=Globals
+
+[Index:DataTables:Global data]
+GameStatusBuffer
+
+[Paths]
+CodeFiles={address#IF({base}==16)(:04#S/X/)}.html
+
+[MemoryMap:MemoryMap]
+PageByteColumns=0
+
+[MemoryMap:DataMap]
+PageByteColumns=0
+LengthColumn=1
+
+[MemoryMap:UnusedMap]
+PageByteColumns=0
