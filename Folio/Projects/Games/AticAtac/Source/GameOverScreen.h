@@ -53,7 +53,7 @@ private:
                                           FolioHandle instanceHandle);
     virtual FolioStatus ProcessScreenInput (); 
 
-    void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
+    void    SetItemText (Folio::Core::Game::TextItemPtr::element_type& item);
 
     // Private copy constructor to prevent copying.
     GameOverScreen (const GameOverScreen& rhs);

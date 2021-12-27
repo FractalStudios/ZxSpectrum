@@ -1,9 +1,7 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
-#include    "DrawingElement.h"
 #include    "Globals.h"
 #include    "PlayerSprite.h"
-#include    "ResourceOwnerId.h"
 #include    "SpriteGraphics.h"
 #include    "Ultimate.h"
 
@@ -95,8 +93,8 @@ FolioStatus PlayerSprite::Create (FolioHandle                           dcHandle
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<PLAYER_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                        g_resourceGraphicsCache,
-                                                                                                       OWNER_ID_MAIN_PLAYER_SPRITE,
-                                                                                                       DRAWING_ELEMENT_MAIN_PLAYER_SPRITE,
+                                                                                                       Folio::Core::Game::ResourceGraphicsCache::OWNER_ID_MAIN_PLAYER_SPRITE,
+                                                                                                       Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_MAIN_PLAYER_SPRITE,
                                                                                                        playerSpriteId,
                                                                                                        playerSpriteColour,
                                                                                                        g_playerSpriteGraphicCharacteristics,
@@ -402,7 +400,7 @@ Folio::Core::Game::SpriteStationarySoundSamplesList PlayerSprite::GetPlayerSprit
 
 
 FolioStatus CreatePlayerSprites (FolioHandle        dcHandle,
-                                 PlayerSpritesMap   &playerSpritesMap)
+                                 PlayerSpritesMap&  playerSpritesMap)
 {
     FolioStatus status = ERR_SUCCESS;
 

@@ -23,7 +23,7 @@ namespace AticAtac
 // Weapon sprite identifier enumeration.
 enum WEAPON_SPRITE_ID
 {
-    WEAPON_SPRITE_UNDEFINED = Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED,
+    WEAPON_SPRITE_UNDEFINED = -1,
     WEAPON_SPRITE_KNIGHT_AXE = 0,            
     WEAPON_SPRITE_WIZARD_POTION,             
     WEAPON_SPRITE_SERF_SWORD,
@@ -43,8 +43,8 @@ public:
                         Folio::Core::Game::ZxSpectrum::COLOUR   weaponSpriteColour);
     FolioStatus Start ();
     FolioStatus Stop (bool bPlayTerminatedSound);
-    FolioStatus Move (Gdiplus::Graphics &graphics,
-                      CollisionGrid     &collisionGrid);
+    FolioStatus Move (Gdiplus::Graphics&    graphics,
+                      CollisionGrid&        collisionGrid);
 
     void    PlayWeaponSpriteInitialisedSound () const;
     void    PlayWeaponSpriteTerminatedSound () const;
@@ -58,8 +58,8 @@ private:
 
     WEAPON_SPRITE_ID    m_weaponSpriteId;   // The identifier of the weapon sprite.
 
-    Int32   GetInitialScreenXLeft (const Gdiplus::Rect &mainPlayerRect) const;
-    Int32   GetInitialScreenYTop (const Gdiplus::Rect &mainPlayerRect) const;
+    Int32   GetInitialScreenXLeft (const Gdiplus::Rect& mainPlayerRect) const;
+    Int32   GetInitialScreenYTop (const Gdiplus::Rect& mainPlayerRect) const;
 
     void    SetWeaponSpriteSoundSamples (WEAPON_SPRITE_ID weaponSpriteId);
     void    SetWeaponSpriteInitialisedSoundSample (WEAPON_SPRITE_ID weaponSpriteId);
@@ -102,7 +102,7 @@ typedef std::vector<WeaponSpriteDrawingElement> WeaponSpriteDrawingElementsList;
 // Routines.
 
 FolioStatus CreateWeaponSprites (FolioHandle        dcHandle,
-                                 WeaponSpritesMap   &weaponSpritesMap);
+                                 WeaponSpritesMap&  weaponSpritesMap);
 
 } // Endnamespace.
 

@@ -22,7 +22,7 @@ namespace AticAtac
 // Static sprite identifier enumeration.
 enum STATIC_SPRITE_ID
 {
-    STATIC_SPRITE_UNDEFINED = Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED,
+    STATIC_SPRITE_UNDEFINED             = SPRITE_UNDEFINED,
     STATIC_SPRITE_LEAF                  = SPRITE_LEAF,           
     STATIC_SPRITE_KEY                   = SPRITE_KEY,            
     STATIC_SPRITE_BOTTLE                = SPRITE_BOTTLE,         
@@ -123,11 +123,11 @@ typedef std::vector<StaticSpriteDrawingElement> StaticSpriteDrawingElementsList;
 // Routines.
 
 extern  UInt32  GetMaxStaticSpritesOnScreen (STATIC_SPRITE_ID staticSpriteId);
-extern  FolioStatus CreateStaticSprites (StaticSpritesList &staticSpritesList);
-extern  StaticSpritesList   GetScreenStaticSpritesList (UInt32                  screenNumber,
-                                                        const StaticSpritesList &staticSpritesList);
+extern  FolioStatus CreateStaticSprites (StaticSpritesList& staticSpritesList);
+extern  StaticSpritesList   GetScreenStaticSpritesList (UInt32                      screenNumber,
+                                                        const StaticSpritesList&    staticSpritesList);
 
-extern  void    ScatterStaticSprites (StaticSpritesList &staticSpritesList);
+extern  void    ScatterStaticSprites (StaticSpritesList& staticSpritesList);
 extern  UInt32  GetAcgKeyLeftLocation ();
 extern  bool    IsAcgKeyLeftLocation (UInt32 screenNumber);
 extern  UInt32  GetAcgKeyMiddleLocation ();

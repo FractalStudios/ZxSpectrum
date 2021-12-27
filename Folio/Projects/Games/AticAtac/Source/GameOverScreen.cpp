@@ -1,6 +1,5 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
-#include    "DrawingElement.h"
 #include    "Font.h"
 #include    "GameOverScreen.h"
 #include    "InformationPanel.h"
@@ -93,7 +92,7 @@ FolioStatus GameOverScreen::BuildScreenItems (FolioHandle   dcHandle,
             
                     status = item->Create (dcHandle,
                                            instanceHandle,
-                                           DRAWING_ELEMENT_GAME_OVER_SCREEN_ITEM,
+                                           Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_GAME_OVER_SCREEN_ITEM,
                                            g_gameOverScreenAttributesTable [index].m_bitmapResourceId,
                                            g_gameOverScreenAttributesTable [index].m_itemId,
                                            g_gameOverScreenAttributesTable [index].m_screenXLeft, 
@@ -127,7 +126,7 @@ FolioStatus GameOverScreen::BuildScreenItems (FolioHandle   dcHandle,
                     Folio::Core::Game::TextItemPtr  item(new Folio::Core::Game::TextItemPtr::element_type);
         
                     status = item->Create (dcHandle,
-                                           DRAWING_ELEMENT_GAME_OVER_SCREEN_ITEM,
+                                           Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_GAME_OVER_SCREEN_ITEM,
                                            *GetFont (),
                                            g_gameOverScreenAttributesTable [index].m_itemId,
                                            g_gameOverScreenAttributesTable [index].m_screenXLeft, 
@@ -175,7 +174,7 @@ FolioStatus GameOverScreen::ProcessScreenInput ()
 } // Endproc.
 
 
-void    GameOverScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type &item)
+void    GameOverScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type& item)
 {
     switch (item.GetItemId ())
     {

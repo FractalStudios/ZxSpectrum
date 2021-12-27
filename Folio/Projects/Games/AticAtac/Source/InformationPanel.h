@@ -60,14 +60,14 @@ public:
     InformationPanel ();
     ~InformationPanel ();
 
-    FolioStatus Create (Folio::Core::Applet::Canvas &canvas,
-                        UInt32                      totalNumRooms,
-                        UInt16                      mainPlayerBitmapResourceId);
+    FolioStatus Create (Folio::Core::Applet::Canvas&    canvas,
+                        UInt32                          totalNumRooms,
+                        UInt16                          mainPlayerBitmapResourceId);
     FolioStatus QueryDrawingElements (FolioHandle                               dcHandle,
                                       Folio::Core::Game::ZxSpectrum::COLOUR     roomColour,
-                                      Folio::Core::Game::DrawingElementsList    &drawingElementsList);
-    FolioStatus HandleProcessFrame (bool    &isStarting,
-                                    bool    &mainPlayerIsDead);
+                                      Folio::Core::Game::DrawingElementsList&   drawingElementsList);
+    FolioStatus HandleProcessFrame (bool&   isStarting,
+                                    bool&   mainPlayerIsDead);
 
     // Held item.
     struct HeldItem
@@ -76,7 +76,7 @@ public:
         :   m_itemId(itemId)
         {} // Endproc.
 
-        HeldItem (const StaticSpritePtr &staticSprite) 
+        HeldItem (const StaticSpritePtr& staticSprite) 
         :   m_itemId(INFORMATION_PANEL_ITEM_UNDEFINED),
             m_staticSprite(staticSprite)
         {} // Endproc.
@@ -92,9 +92,9 @@ public:
 
     typedef HeldItem    DroppedItem;    // Dropped item.
 
-    FolioStatus AddCollectedItem (const HeldItem    &heldItem,
-                                  DroppedItem       &droppedItem);
-    FolioStatus CycleCollectedItems (DroppedItem &droppedItem);
+    FolioStatus AddCollectedItem (const HeldItem&   heldItem,
+                                  DroppedItem&      droppedItem);
+    FolioStatus CycleCollectedItems (DroppedItem& droppedItem);
     bool    IsAnyCollectedItem () const;
     bool    IsRedKeyCollected () const;
     bool    IsGreenKeyCollected () const;
@@ -111,9 +111,9 @@ public:
     FolioStatus IncrementMainPlayerHealth (UInt32   healthIncrement,
                                            bool     playSound = true);
     FolioStatus DecrementMainPlayerHealth (UInt32   healthDecrement, 
-                                           bool     &mainPlayerIsDead,
+                                           bool&    mainPlayerIsDead,
                                            bool     playSound = true);
-    FolioStatus DecrementMainPlayerLife (bool &gameOver);
+    FolioStatus DecrementMainPlayerLife (bool& gameOver);
 
     UInt32          GetTimeInSeconds () const;
     UInt32          GetScore () const;
@@ -181,13 +181,13 @@ private:
                             UInt16      mainPlayerBitmapResourceId);
     FolioStatus CheckTime (UInt32   currentTickCount,
                            bool     isStarting,
-                           bool     &mainPlayerIsDead);
+                           bool&    mainPlayerIsDead);
     FolioStatus CheckScore (UInt32  currentTickCount,
-                           bool     &isStarting);
+                           bool&    isStarting);
                                                         
     FolioStatus IncrementTimeInSeconds (UInt32  currentTickCount,
                                         bool    isStarting,
-                                        bool    &mainPlayerIsDead);
+                                        bool&   mainPlayerIsDead);
     FolioStatus ResetMainPlayerHealth ();
     
     Int32   GetLossOfHealth () const;
@@ -210,25 +210,25 @@ private:
     FolioStatus Reset ();
 
     INFORMATION_PANEL_ITEM_ID  GetNextHeldItemId () const;
-    FolioStatus AddHeldItem (const HeldItem &heldItem,
-                             DroppedItem    &droppedItem);
-    FolioStatus CycleHeldItems (DroppedItem &droppedItem);
-    FolioStatus RemoveLastHeldItem (DroppedItem &droppedItem);
+    FolioStatus AddHeldItem (const HeldItem&    heldItem,
+                             DroppedItem&       droppedItem);
+    FolioStatus CycleHeldItems (DroppedItem& droppedItem);
+    FolioStatus RemoveLastHeldItem (DroppedItem& droppedItem);
     FolioStatus ClearHeldItemsRectangle ();
-    FolioStatus UpdateHeldItem (Folio::Core::Game::GraphicItemPtr::element_type &item);
+    FolioStatus UpdateHeldItem (Folio::Core::Game::GraphicItemPtr::element_type& item);
     bool    IsAnyHeldItem () const;
 
     HeldItemsList::iterator FindHeldItem (INFORMATION_PANEL_ITEM_ID itemId);
     HeldItemsList::const_iterator   FindHeldItem (STATIC_SPRITE_ID                      staticSpriteId,
                                                   Folio::Core::Game::ZxSpectrum::COLOUR colour) const;
 
-    FolioStatus UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type    &item,
+    FolioStatus UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type&   item,
                                 bool                                            invertColours,
-                                Gdiplus::Graphics                               &graphics, 
-                                bool                                            &redrawCanvas);
+                                Gdiplus::Graphics&                              graphics, 
+                                bool&                                           redrawCanvas);
 
-    void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
-    bool    SetGraphicItemHeight (Folio::Core::Game::GraphicItemPtr::element_type &item);
+    void    SetItemText (Folio::Core::Game::TextItemPtr::element_type& item);
+    bool    SetGraphicItemHeight (Folio::Core::Game::GraphicItemPtr::element_type& item);
     
     Folio::Core::Game::ItemsList::iterator  FindItem (INFORMATION_PANEL_ITEM_ID itemId);
     

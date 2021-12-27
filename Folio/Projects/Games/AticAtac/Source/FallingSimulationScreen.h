@@ -53,7 +53,7 @@ private:
     virtual FolioStatus BuildScreenItems (FolioHandle dcHandle, 
                                           FolioHandle instanceHandle);
     virtual FolioStatus QueryScreenDrawingElements (FolioHandle                             dcHandle,
-                                                    Folio::Core::Game::DrawingElementsList  &drawingElementsList) const;
+                                                    Folio::Core::Game::DrawingElementsList& drawingElementsList) const;
     virtual FolioStatus StartDisplayingScreen ();
     virtual FolioStatus ProcessScreenFrame ();
 

@@ -22,7 +22,7 @@ namespace AticAtac
 // Player sprite identifier enumeration.
 enum PLAYER_SPRITE_ID
 {
-    PLAYER_SPRITE_UNDEFINED = Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED,
+    PLAYER_SPRITE_UNDEFINED = -1,
     PLAYER_SPRITE_KNIGHT = 0,
     PLAYER_SPRITE_WIZARD,
     PLAYER_SPRITE_SERF,
@@ -113,7 +113,7 @@ typedef std::vector<PlayerSpriteDrawingElement> PlayerSpriteDrawingElementsList;
 // Routines.
 
 extern  FolioStatus CreatePlayerSprites (FolioHandle        dcHandle,
-                                         PlayerSpritesMap   &playerSpritesMap);
+                                         PlayerSpritesMap&  playerSpritesMap);
 
 } // Endnamespace.
 

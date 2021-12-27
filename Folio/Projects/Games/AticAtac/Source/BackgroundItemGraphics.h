@@ -17,7 +17,7 @@ namespace AticAtac
 // Background item identifier enumeration.
 enum BACKGROUND_ITEM_ID
 {
-    BACKGROUND_ITEM_UNDEFINED = Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED,
+    BACKGROUND_ITEM_UNDEFINED                   = Folio::Core::Util::UNDEFINED_BITMAP_RESOURCE_ID,
     BACKGROUND_ITEM_CAVE_DOOR_FRAME             = IDB_BITMAP_CAVE_DOOR_FRAME,             
     BACKGROUND_ITEM_NORMAL_DOOR_FRAME           = IDB_BITMAP_NORMAL_DOOR_FRAME,           
     BACKGROUND_ITEM_BIG_DOOR_FRAME              = IDB_BITMAP_BIG_DOOR_FRAME,              
@@ -59,10 +59,10 @@ typedef Folio::Core::Game::ResourceGraphicPtr   BackgroundItemGraphic;
 // Routines.
 
 extern  FolioStatus CreateBackgroundItemGraphics (FolioHandle instanceHandle);
-extern  FolioStatus QueryBackgroundItemGraphic (Folio::Core::Game::ResourceGraphicsCache::OwnerId   ownerId,
-                                                BACKGROUND_ITEM_ID                                  backgroundItemId, 
-                                                BackgroundItemGraphic                               &backgroundItemGraphic);
-extern  FolioStatus ReleaseBackgroundItemGraphic (const BackgroundItemGraphic &backgroundItemGraphic);
+extern  FolioStatus QueryBackgroundItemGraphic (const Folio::Core::Game::ResourceGraphicsCache::OwnerId&    ownerId,
+                                                BACKGROUND_ITEM_ID                                          backgroundItemId, 
+                                                BackgroundItemGraphic&                                      backgroundItemGraphic);
+extern  FolioStatus ReleaseBackgroundItemGraphic (const BackgroundItemGraphic& backgroundItemGraphic);
 
 } // Endnamespace.
 

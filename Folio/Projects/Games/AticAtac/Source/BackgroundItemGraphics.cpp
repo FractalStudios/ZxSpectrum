@@ -3,7 +3,6 @@
 #include    "BackgroundItem.h"
 #include    "BackgroundItemGraphics.h"
 #include    "CollisionGrid.h"
-#include    "DrawingElement.h"
 #include    "Globals.h"
 
 namespace Folio
@@ -92,7 +91,7 @@ FolioStatus CreateBackgroundItemGraphics (FolioHandle instanceHandle)
                 // Yes.
 
                 status = backgroundItemGraphic->Create (instanceHandle,
-                                                        DRAWING_ELEMENT_BACKGROUND_ITEM,
+                                                        Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_BACKGROUND_ITEM,
                                                         g_backgroundItemGraphicAttributesTable [index].m_backgroundItemId,
                                                         Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour (),
                                                         g_backgroundItemGraphicAttributesTable [index].m_maskRqd,
@@ -104,7 +103,7 @@ FolioStatus CreateBackgroundItemGraphics (FolioHandle instanceHandle)
                 // No.
 
                 status = backgroundItemGraphic->Create (instanceHandle,
-                                                        DRAWING_ELEMENT_BACKGROUND_ITEM,
+                                                        Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_BACKGROUND_ITEM,
                                                         g_backgroundItemGraphicAttributesTable [index].m_backgroundItemId,
                                                         g_backgroundItemGraphicAttributesTable [index].m_maskRqd,
                                                         g_backgroundItemGraphicAttributesTable [index].m_collisionGridCellValue);
@@ -114,7 +113,7 @@ FolioStatus CreateBackgroundItemGraphics (FolioHandle instanceHandle)
             {
                 // Store the background item graphic in the resource graphics cache.
 
-                g_resourceGraphicsCache.Add (DRAWING_ELEMENT_BACKGROUND_ITEM, backgroundItemGraphic);
+                g_resourceGraphicsCache.Add (backgroundItemGraphic);
             } // Endif.
        
         } // Endfor.
@@ -125,18 +124,18 @@ FolioStatus CreateBackgroundItemGraphics (FolioHandle instanceHandle)
 } // Endproc.
 
 
-FolioStatus QueryBackgroundItemGraphic (Folio::Core::Game::ResourceGraphicsCache::OwnerId   ownerId,    
-                                        BACKGROUND_ITEM_ID                                  backgroundItemId, 
-                                        BackgroundItemGraphic                               &backgroundItemGraphic)
+FolioStatus QueryBackgroundItemGraphic (const Folio::Core::Game::ResourceGraphicsCache::OwnerId&    ownerId,    
+                                        BACKGROUND_ITEM_ID                                          backgroundItemId, 
+                                        BackgroundItemGraphic&                                      backgroundItemGraphic)
 {
     return (g_resourceGraphicsCache.GainResourceGraphic (ownerId,
-                                                         DRAWING_ELEMENT_BACKGROUND_ITEM, 
+                                                         Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_BACKGROUND_ITEM, 
                                                          backgroundItemId, 
                                                          backgroundItemGraphic));
 } // Endproc.
 
 
-FolioStatus ReleaseBackgroundItemGraphic (const BackgroundItemGraphic &backgroundItemGraphic)
+FolioStatus ReleaseBackgroundItemGraphic (const BackgroundItemGraphic& backgroundItemGraphic)
 {
     return (g_resourceGraphicsCache.ReleaseResourceGraphic (backgroundItemGraphic));
 } // Endproc.

@@ -26,7 +26,7 @@ namespace AticAtac
 // Boss sprite identifier enumeration.
 enum BOSS_SPRITE_ID
 {
-    BOSS_SPRITE_UNDEFINED = Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED,
+    BOSS_SPRITE_UNDEFINED = -1,
     BOSS_SPRITE_MUMMY = 0,            
     BOSS_SPRITE_HUNCHBACK,             
     BOSS_SPRITE_DRACULA,             
@@ -51,16 +51,16 @@ public:
                         BOSS_SPRITE_ID                          bossSpriteId,
                         Folio::Core::Game::ZxSpectrum::COLOUR   bossSpriteColour,
                         UInt32                                  bossSpriteFlags = FLAGS_NONE);
-    FolioStatus Start (const InformationPanel   &informationPanel,
-                       const CollisionGrid      &collisionGrid);
-    FolioStatus Move (Gdiplus::Graphics         &graphics,
-                      const InformationPanel    &informationPanel,
-                      CollisionGrid             &collisionGrid);
+    FolioStatus Start (const InformationPanel&  informationPanel,
+                       const CollisionGrid&     collisionGrid);
+    FolioStatus Move (Gdiplus::Graphics&        graphics,
+                      const InformationPanel&   informationPanel,
+                      CollisionGrid&            collisionGrid);
 
     BOSS_SPRITE_ID  GetBossSpriteId () const;
     UInt32          GetBossSpriteFlags () const;
 
-    bool    CanBeKilled (const InformationPanel &informationPanel) const;
+    bool    CanBeKilled (const InformationPanel& informationPanel) const;
 
     static  BOSS_SPRITE_ID  GetScreenBossSpriteId (UInt32   screenNumber, 
                                                    UInt32   totalNumRooms);
@@ -83,26 +83,26 @@ private:
     void    SetBossSpriteSoundSamples (BOSS_SPRITE_ID bossSpriteId);
     void    SetBossSpriteTerminatedSoundSample (BOSS_SPRITE_ID bossSpriteId);
 
-    bool    IsUpdateDirectionRqd (const CollisionGrid &collisionGrid) const;
-    Folio::Core::Game::Direction    GetDirection (const InformationPanel    &informationPanel,
-                                                  const CollisionGrid       &collisionGrid) const;
-    Folio::Core::Game::Direction    GetDirectionToAttractedStaticSprite (const CollisionGrid    &collisionGrid,
-                                                                         bool                   &staticSpriteFound) const;
+    bool    IsUpdateDirectionRqd (const CollisionGrid& collisionGrid) const;
+    Folio::Core::Game::Direction    GetDirection (const InformationPanel&   informationPanel,
+                                                  const CollisionGrid&      collisionGrid) const;
+    Folio::Core::Game::Direction    GetDirectionToAttractedStaticSprite (const CollisionGrid&   collisionGrid,
+                                                                         bool&                  staticSpriteFound) const;
     
-    UInt32  GetSpeed (const InformationPanel    &informationPanel,
-                      const CollisionGrid       &collisionGrid) const;
+    UInt32  GetSpeed (const InformationPanel&   informationPanel,
+                      const CollisionGrid&      collisionGrid) const;
     
-    UInt32  GetSpeedToAttractedStaticSprite (const CollisionGrid    &collisionGrid,
-                                             bool                   &staticSpriteFound) const;
-    bool    IsAnyAttractedStaticSprite (const CollisionGrid &collisionGrid) const;
+    UInt32  GetSpeedToAttractedStaticSprite (const CollisionGrid&   collisionGrid,
+                                             bool&                  staticSpriteFound) const;
+    bool    IsAnyAttractedStaticSprite (const CollisionGrid& collisionGrid) const;
 
     static  Int32   GetInitialScreenXLeft (BOSS_SPRITE_ID       bossSpriteId,
-                                           const CollisionGrid  &collisionGrid);
+                                           const CollisionGrid& collisionGrid);
     static  Int32   GetInitialScreenYTop (BOSS_SPRITE_ID        bossSpriteId,
-                                          const CollisionGrid   &collisionGrid);
+                                          const CollisionGrid&  collisionGrid);
     
     static  bool    IsAttractedToStaticSprite (BOSS_SPRITE_ID       bossSpriteId,
-                                               const StaticSprite   &staticSprite);
+                                               const StaticSprite&  staticSprite);
 
     static  void    CreateBossSpriteSoundSamples (BOSS_SPRITE_ID bossSpriteId);
     static  void    CreateBossSpriteTerminatedSoundSample ();
@@ -130,8 +130,8 @@ typedef std::vector<BossSpriteDrawingElement> BossSpriteDrawingElementsList;
 // Routines.
 
 FolioStatus CreateBossSprites (FolioHandle      dcHandle,
-                               BossSpritesMap   &bossSpritesMap);
-void    SetBossSpritesAlive (BossSpritesMap &bossSpritesMap);
+                               BossSpritesMap&  bossSpritesMap);
+void    SetBossSpritesAlive (BossSpritesMap& bossSpritesMap);
 
 } // Endnamespace.
 

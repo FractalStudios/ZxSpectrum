@@ -1,6 +1,6 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
-#include    "DrawingElement.h"
+#include    "DrawingElementIds.h"
 #include    "FallingSimulationScreen.h"
 #include    "Ultimate.h"
 
@@ -108,8 +108,8 @@ FolioStatus FallingSimulationScreen::BuildScreenItems (FolioHandle  dcHandle,
 } // Endproc.
 
 
-FolioStatus FallingSimulationScreen::QueryScreenDrawingElements (FolioHandle                            dcHandle,
-                                                                 Folio::Core::Game::DrawingElementsList &drawingElementsList) const
+FolioStatus FallingSimulationScreen::QueryScreenDrawingElements (FolioHandle                                dcHandle,
+                                                                 Folio::Core::Game::DrawingElementsList&    drawingElementsList) const
 {
     FolioStatus status = ERR_SUCCESS;
 

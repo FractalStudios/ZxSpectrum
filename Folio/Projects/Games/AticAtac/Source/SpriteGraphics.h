@@ -17,7 +17,7 @@ namespace AticAtac
 // Sprite identifier enumeration.
 enum SPRITE_ID
 {
-    SPRITE_UNDEFINED = Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED,
+    SPRITE_UNDEFINED                = Folio::Core::Util::UNDEFINED_BITMAP_RESOURCE_ID,
     SPRITE_LEAF                     = IDB_BITMAP_LEAF,                    
     SPRITE_KEY                      = IDB_BITMAP_KEY,                     
     SPRITE_BOTTLE                   = IDB_BITMAP_BOTTLE,                  

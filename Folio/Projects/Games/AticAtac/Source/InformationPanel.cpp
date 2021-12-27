@@ -1,10 +1,8 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
-#include    "DrawingElement.h"
 #include    "Font.h"
 #include    "Globals.h"
 #include    "InformationPanel.h"
-#include    "ResourceOwnerId.h"
 #include    "Ultimate.h"
 
 namespace Folio
@@ -74,7 +72,7 @@ InformationPanel::~InformationPanel ()
 } // Endproc.
 
 
-FolioStatus InformationPanel::Create (Folio::Core::Applet::Canvas   &canvas,
+FolioStatus InformationPanel::Create (Folio::Core::Applet::Canvas&  canvas,
                                       UInt32                        totalNumRooms,
                                       UInt16                        mainPlayerBitmapResourceId)
 {
@@ -112,7 +110,7 @@ FolioStatus InformationPanel::Create (Folio::Core::Applet::Canvas   &canvas,
 
 FolioStatus InformationPanel::QueryDrawingElements (FolioHandle                             dcHandle,
                                                     Folio::Core::Game::ZxSpectrum::COLOUR   roomColour,
-                                                    Folio::Core::Game::DrawingElementsList  &drawingElementsList)
+                                                    Folio::Core::Game::DrawingElementsList& drawingElementsList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -211,8 +209,8 @@ FolioStatus InformationPanel::QueryDrawingElements (FolioHandle                 
 } // Endproc.
 
 
-FolioStatus InformationPanel::HandleProcessFrame (bool  &isStarting,
-                                                  bool  &mainPlayerIsDead)
+FolioStatus InformationPanel::HandleProcessFrame (bool& isStarting,
+                                                  bool& mainPlayerIsDead)
 {
     // Play the information panel sounds.
 
@@ -243,8 +241,8 @@ FolioStatus InformationPanel::HandleProcessFrame (bool  &isStarting,
 } // Endproc.
 
 
-FolioStatus InformationPanel::AddCollectedItem (const HeldItem  &heldItem,
-                                                DroppedItem     &droppedItem)
+FolioStatus InformationPanel::AddCollectedItem (const HeldItem& heldItem,
+                                                DroppedItem&    droppedItem)
 {
     // Add the collected (held) item to the information panel.
 
@@ -271,7 +269,7 @@ FolioStatus InformationPanel::AddCollectedItem (const HeldItem  &heldItem,
 } // Endproc.
 
 
-FolioStatus InformationPanel::CycleCollectedItems (DroppedItem &droppedItem)
+FolioStatus InformationPanel::CycleCollectedItems (DroppedItem& droppedItem)
 {
     // Cycle the collected (held) items in the information panel.
 
@@ -420,7 +418,7 @@ FolioStatus InformationPanel::IncrementMainPlayerHealth (UInt32 healthIncrement,
     
 
 FolioStatus InformationPanel::DecrementMainPlayerHealth (UInt32 healthDecrement, 
-                                                         bool   &mainPlayerIsDead,
+                                                         bool&  mainPlayerIsDead,
                                                          bool   playSound)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -480,7 +478,7 @@ FolioStatus InformationPanel::DecrementMainPlayerHealth (UInt32 healthDecrement,
 } // Endproc.
     
 
-FolioStatus InformationPanel::DecrementMainPlayerLife (bool &gameOver)
+FolioStatus InformationPanel::DecrementMainPlayerLife (bool& gameOver)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -603,7 +601,7 @@ FolioStatus InformationPanel::BuildItems (FolioHandle   dcHandle,
             
                 status = item->Create (dcHandle,
                                        instanceHandle,
-                                       DRAWING_ELEMENT_INFORMATION_PANEL_ITEM,
+                                       Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_INFORMATION_PANEL_ITEM,
                                        g_informationPanelAttributesTable [index].m_bitmapResourceId,
                                        g_informationPanelAttributesTable [index].m_itemId,
                                        g_informationPanelAttributesTable [index].m_screenXLeft + ORIGIN_X_LEFT, 
@@ -634,7 +632,7 @@ FolioStatus InformationPanel::BuildItems (FolioHandle   dcHandle,
                 Folio::Core::Game::TextItemPtr   item(new Folio::Core::Game::TextItemPtr::element_type);
                 
                 status = item->Create (dcHandle,
-                                       DRAWING_ELEMENT_INFORMATION_PANEL_ITEM,
+                                       Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_INFORMATION_PANEL_ITEM,
                                        *GetFont (),
                                        g_informationPanelAttributesTable [index].m_itemId,
                                        g_informationPanelAttributesTable [index].m_screenXLeft + ORIGIN_X_LEFT, 
@@ -679,7 +677,7 @@ FolioStatus InformationPanel::BuildItems (FolioHandle   dcHandle,
             
                 status = item->Create (dcHandle,
                                        instanceHandle,
-                                       DRAWING_ELEMENT_INFORMATION_PANEL_ITEM,
+                                       Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_INFORMATION_PANEL_ITEM,
                                        bitmapResourceId,
                                        g_informationPanelAttributesTable [index].m_itemId,
                                        g_informationPanelAttributesTable [index].m_screenXLeft + ORIGIN_X_LEFT, 
@@ -710,7 +708,7 @@ FolioStatus InformationPanel::BuildItems (FolioHandle   dcHandle,
 
 FolioStatus InformationPanel::CheckTime (UInt32 currentTickCount,
                                          bool   isStarting,
-                                         bool   &mainPlayerIsDead)
+                                         bool&  mainPlayerIsDead)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -809,7 +807,7 @@ FolioStatus InformationPanel::CheckScore (UInt32    currentTickCount,
 
 FolioStatus InformationPanel::IncrementTimeInSeconds (UInt32    currentTickCount,
                                                       bool      isStarting,
-                                                      bool      &mainPlayerIsDead)
+                                                      bool&     mainPlayerIsDead)
 {
     // Increment the time in seconds.
 
@@ -1123,8 +1121,8 @@ INFORMATION_PANEL_ITEM_ID   InformationPanel::GetNextHeldItemId () const
 } // Endproc.
 
 
-FolioStatus InformationPanel::AddHeldItem  (const HeldItem  &heldItem,
-                                            DroppedItem     &droppedItem)
+FolioStatus InformationPanel::AddHeldItem  (const HeldItem& heldItem,
+                                            DroppedItem&    droppedItem)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -1150,7 +1148,7 @@ FolioStatus InformationPanel::AddHeldItem  (const HeldItem  &heldItem,
 
         // Gain the sprite's graphic resource.
 
-        status = heldItem.m_staticSprite->GainResourceGraphics (OWNER_ID_INFORMATION_PANEL);
+        status = heldItem.m_staticSprite->GainResourceGraphics (Folio::Core::Game::ResourceGraphicsCache::OWNER_ID_INFORMATION_PANEL);
 
         if (status == ERR_SUCCESS)
         {
@@ -1160,7 +1158,6 @@ FolioStatus InformationPanel::AddHeldItem  (const HeldItem  &heldItem,
 
             status = item->Create (m_canvas->GetCanvasDcHandle (),
                                    heldItem.m_staticSprite->GetCurrentSpriteGraphic (),
-                                   DRAWING_ELEMENT_INFORMATION_PANEL_ITEM,
                                    itemId,
                                    HELD_ITEM_ORIGIN_X_LEFT, 
                                    HELD_ITEM_ORIGIN_Y_TOP,
@@ -1193,7 +1190,7 @@ FolioStatus InformationPanel::AddHeldItem  (const HeldItem  &heldItem,
 } // Endproc.
 
 
-FolioStatus InformationPanel::CycleHeldItems  (DroppedItem &droppedItem)
+FolioStatus InformationPanel::CycleHeldItems (DroppedItem& droppedItem)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -1231,7 +1228,7 @@ FolioStatus InformationPanel::CycleHeldItems  (DroppedItem &droppedItem)
 } // Endproc.
 
 
-FolioStatus InformationPanel::RemoveLastHeldItem (DroppedItem &droppedItem)
+FolioStatus InformationPanel::RemoveLastHeldItem (DroppedItem& droppedItem)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -1293,7 +1290,7 @@ FolioStatus InformationPanel::ClearHeldItemsRectangle ()
 } // Endproc.
 
 
-FolioStatus InformationPanel::UpdateHeldItem (Folio::Core::Game::GraphicItemPtr::element_type &item)
+FolioStatus InformationPanel::UpdateHeldItem (Folio::Core::Game::GraphicItemPtr::element_type& item)
 {
     FolioStatus status = ERR_NOT_FOUND;
 
@@ -1348,10 +1345,10 @@ InformationPanel::HeldItemsList::const_iterator InformationPanel::FindHeldItem (
 } // Endproc.
 
 
-FolioStatus InformationPanel::UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type  &item,
+FolioStatus InformationPanel::UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type& item,
                                               bool                                          invertColours,
-                                              Gdiplus::Graphics                             &graphics, 
-                                              bool                                          &redrawCanvas)
+                                              Gdiplus::Graphics&                            graphics, 
+                                              bool&                                         redrawCanvas)
 {                   
     FolioStatus status = ERR_SUCCESS;
 
@@ -1406,7 +1403,7 @@ FolioStatus InformationPanel::UpdateTextItem (Folio::Core::Game::TextItemPtr::el
 } // Endproc.
 
 
-void    InformationPanel::SetItemText (Folio::Core::Game::TextItemPtr::element_type &item)
+void    InformationPanel::SetItemText (Folio::Core::Game::TextItemPtr::element_type& item)
 {
     switch (item.GetItemId ())
     {
@@ -1441,7 +1438,7 @@ void    InformationPanel::SetItemText (Folio::Core::Game::TextItemPtr::element_t
 } // Endproc.
 
 
-bool    InformationPanel::SetGraphicItemHeight (Folio::Core::Game::GraphicItemPtr::element_type &item)
+bool    InformationPanel::SetGraphicItemHeight (Folio::Core::Game::GraphicItemPtr::element_type& item)
 {
     // Set the drawing height of the full chicken's GDI bitmap.
 
@@ -1508,7 +1505,7 @@ FolioStatus InformationPanel::ReleaseResourceGraphics ()
 {
     // Release the information panel's resource graphics.
 
-    return (g_resourceGraphicsCache.ReleaseResourceGraphics (OWNER_ID_INFORMATION_PANEL));
+    return (g_resourceGraphicsCache.ReleaseResourceGraphics (Folio::Core::Game::ResourceGraphicsCache::OWNER_ID_INFORMATION_PANEL));
 } // Endproc.
 
 

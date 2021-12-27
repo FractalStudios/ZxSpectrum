@@ -66,7 +66,7 @@ public:
 
     FolioStatus QueryDrawingElements (FolioHandle                               dcHandle,
                                       Folio::Core::Game::ZxSpectrum::COLOUR     roomColour,
-                                      Folio::Core::Game::DrawingElementsList    &drawingElementsList,
+                                      Folio::Core::Game::DrawingElementsList&   drawingElementsList,
                                       bool                                      maskedDrawingElementRqd = true) const;
 
     CollisionGrid::ScreenExit::ORIENTATION  GetDoorOrientation () const;
@@ -79,7 +79,7 @@ public:
     FolioStatus SetDoorClosed (bool setBackgroundItemGraphic = false);
     FolioStatus SetDoorUnlocked (bool setBackgroundItemGraphic = false);
 
-    bool    operator == (const BackgroundItem &rhs) const;
+    bool    operator == (const BackgroundItem& rhs) const;
 
     static  bool    IsDoor (UInt32 backgroundItemflags);
     static  bool    IsOpenDoor (UInt32 backgroundItemflags);
@@ -125,14 +125,14 @@ typedef std::vector<BackgroundItemPtr>  BackgroundItemsList;
 // Routines.
 
 extern  UInt32  GetMaxBackgroundItemsOnScreen (BACKGROUND_ITEM_ID backgroundItemId);
-extern  FolioStatus CreateBackgroundItems (BackgroundItemsList &backgroundItemsList);
-extern  BackgroundItemsList GetScreenBackgroundItemsList (UInt32                    screenNumber,
-                                                          const BackgroundItemsList &backgroundItemsList);
-extern  BackgroundItemPtr   GetOppositeDoor (const BackgroundItem       *currentDoorBackgroundItem,
-                                             const BackgroundItemsList  &backgroundItemsList,
+extern  FolioStatus CreateBackgroundItems (BackgroundItemsList& backgroundItemsList);
+extern  BackgroundItemsList GetScreenBackgroundItemsList (UInt32                        screenNumber,
+                                                          const BackgroundItemsList&    backgroundItemsList);
+extern  BackgroundItemPtr   GetOppositeDoor (const BackgroundItem*      currentDoorBackgroundItem,
+                                             const BackgroundItemsList& backgroundItemsList,
                                              bool                       setBackgroundItemGraphic = false);
-extern  UInt32  GetNewScreenNumber (const BackgroundItem        *currentDoorBackgroundItem,
-                                    const BackgroundItemsList   &backgroundItemsList);
+extern  UInt32  GetNewScreenNumber (const BackgroundItem*       currentDoorBackgroundItem,
+                                    const BackgroundItemsList&  backgroundItemsList);
 
 } // Endnamespace.
 

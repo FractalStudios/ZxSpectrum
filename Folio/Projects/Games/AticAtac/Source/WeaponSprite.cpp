@@ -1,9 +1,7 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
-#include    "DrawingElement.h"
 #include    "Globals.h"
 #include    "PlayerSprite.h"
-#include    "ResourceOwnerId.h"
 #include    "SpriteGraphics.h"
 #include    "Ultimate.h"
 #include    "WeaponSprite.h"
@@ -83,8 +81,8 @@ FolioStatus WeaponSprite::Create (FolioHandle                           dcHandle
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<WEAPON_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                        g_resourceGraphicsCache,
-                                                                                                       OWNER_ID_WEAPON_SPRITE,
-                                                                                                       DRAWING_ELEMENT_WEAPON_SPRITE,
+                                                                                                       Folio::Core::Game::ResourceGraphicsCache::OWNER_ID_WEAPON_SPRITE,
+                                                                                                       Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_WEAPON_SPRITE,
                                                                                                        weaponSpriteId,
                                                                                                        weaponSpriteColour,
                                                                                                        g_weaponSpriteGraphicCharacteristics,
@@ -154,8 +152,8 @@ FolioStatus WeaponSprite::Stop (bool bPlayTerminatedSound)
 } // Endproc.
 
 
-FolioStatus WeaponSprite::Move (Gdiplus::Graphics   &graphics,
-                                CollisionGrid       &collisionGrid)
+FolioStatus WeaponSprite::Move (Gdiplus::Graphics&  graphics,
+                                CollisionGrid&      collisionGrid)
 {
     // Move the weapon sprite.
 
@@ -205,13 +203,13 @@ WEAPON_SPRITE_ID    WeaponSprite::GetMainPlayerWeaponSpriteId ()
 } // Endproc.
 
 
-Int32   WeaponSprite::GetInitialScreenXLeft (const Gdiplus::Rect &mainPlayerRect) const
+Int32   WeaponSprite::GetInitialScreenXLeft (const Gdiplus::Rect& mainPlayerRect) const
 {
     return (mainPlayerRect.X + (mainPlayerRect.Width - GetCurrentSpriteGraphicWidth ()) / 2);
 } // Endproc.
 
 
-Int32   WeaponSprite::GetInitialScreenYTop (const Gdiplus::Rect &mainPlayerRect) const
+Int32   WeaponSprite::GetInitialScreenYTop (const Gdiplus::Rect& mainPlayerRect) const
 {
     return (mainPlayerRect.Y + (mainPlayerRect.Height - GetCurrentSpriteGraphicHeight ()) / 2);
 } // Endproc.
@@ -432,7 +430,7 @@ void    WeaponSprite::CreateWeaponSpriteReboundSoundSample ()
 
 
 FolioStatus CreateWeaponSprites (FolioHandle        dcHandle,
-                                 WeaponSpritesMap   &weaponSpritesMap)
+                                 WeaponSpritesMap&  weaponSpritesMap)
 {
     FolioStatus status = ERR_SUCCESS;
 

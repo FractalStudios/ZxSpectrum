@@ -22,7 +22,7 @@ namespace AticAtac
 // Nasty sprite identifier enumeration.
 enum NASTY_SPRITE_ID
 {
-    NASTY_SPRITE_UNDEFINED = Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED,
+    NASTY_SPRITE_UNDEFINED = -1,
     NASTY_SPRITE_PUMPKIN = 0,            
     NASTY_SPRITE_SPIDER,             
     NASTY_SPRITE_GHOST,              
@@ -50,13 +50,13 @@ public:
     NastySprite ();
     ~NastySprite ();
 
-    FolioStatus Create (FolioHandle         dcHandle,
-                        NASTY_SPRITE_ID     nastySpriteId,
-                        UInt32              screenNumber,
-                        const CollisionGrid &collisionGrid,
-                        UInt32              nastySpriteFlags = FLAGS_INITIALISED_BY_GRAPHIC | FLAGS_TERMINATED_BY_GRAPHIC);
-    FolioStatus Move (Gdiplus::Graphics &graphics,
-                      CollisionGrid     &collisionGrid);
+    FolioStatus Create (FolioHandle             dcHandle,
+                        NASTY_SPRITE_ID         nastySpriteId,
+                        UInt32                  screenNumber,
+                        const CollisionGrid&    collisionGrid,
+                        UInt32                  nastySpriteFlags = FLAGS_INITIALISED_BY_GRAPHIC | FLAGS_TERMINATED_BY_GRAPHIC);
+    FolioStatus Move (Gdiplus::Graphics&    graphics,
+                      CollisionGrid&        collisionGrid);
 
     NASTY_SPRITE_ID GetNastySpriteId () const;
     UInt32          GetNastySpriteFlags () const;
@@ -65,14 +65,14 @@ public:
     static  bool    IsInitialisedByGraphic (UInt32 nastySpriteFlags);
     static  bool    IsTerminatedByGraphic (UInt32 nastySpriteFlags);
 
-    static  FolioStatus QueryInitialisingGraphics (FolioHandle                                          dcHandle,
-                                                   Folio::Core::Game::ResourceGraphicsCache::OwnerId    ownerId,
-                                                   Folio::Core::Game::ZxSpectrum::COLOUR                spriteColour,
-                                                   Folio::Core::Game::SpriteGraphicAttributesList       &spriteGraphicAttributesList);
-    static  FolioStatus QueryTerminatingGraphics (FolioHandle                                       dcHandle,
-                                                  Folio::Core::Game::ResourceGraphicsCache::OwnerId ownerId,
-                                                  Folio::Core::Game::ZxSpectrum::COLOUR             spriteColour,
-                                                  Folio::Core::Game::SpriteGraphicAttributesList    &spriteGraphicAttributesList);
+    static  FolioStatus QueryInitialisingGraphics (FolioHandle                                              dcHandle,
+                                                   const Folio::Core::Game::ResourceGraphicsCache::OwnerId& ownerId,
+                                                   Folio::Core::Game::ZxSpectrum::COLOUR                    spriteColour,
+                                                   Folio::Core::Game::SpriteGraphicAttributesList&          spriteGraphicAttributesList);
+    static  FolioStatus QueryTerminatingGraphics (FolioHandle                                               dcHandle,
+                                                  const Folio::Core::Game::ResourceGraphicsCache::OwnerId&  ownerId,
+                                                  Folio::Core::Game::ZxSpectrum::COLOUR                     spriteColour,
+                                                  Folio::Core::Game::SpriteGraphicAttributesList&           spriteGraphicAttributesList);
 
 private:
     NASTY_SPRITE_ID m_nastySpriteId;            // The identifier of the nasty sprite.
@@ -92,8 +92,8 @@ private:
     void    SetNastySpriteSoundSamples (NASTY_SPRITE_ID nastySpriteId);
     void    SetNastySpriteTerminatedSoundSample (NASTY_SPRITE_ID nastySpriteId);
 
-    static  Int32   GetInitialScreenXLeft (const CollisionGrid &collisionGrid);
-    static  Int32   GetInitialScreenYTop (const CollisionGrid &collisionGrid);
+    static  Int32   GetInitialScreenXLeft (const CollisionGrid& collisionGrid);
+    static  Int32   GetInitialScreenYTop (const CollisionGrid& collisionGrid);
     
     static  Folio::Core::Game::ZxSpectrum::COLOUR   GetColour (NASTY_SPRITE_ID nastySpriteId);
     
@@ -127,11 +127,11 @@ typedef std::vector<NastySpriteDrawingElement> NastySpriteDrawingElementsList;
 
 // Routines.
 
-extern  FolioStatus AddNastySpriteDrawingElement (const NastySpriteDrawingElement   &nastySpriteDrawingElement,
-                                                  NastySpriteDrawingElementsList    &nastySpriteDrawingElementsList);
-extern  FolioStatus RemoveNastySpriteDrawingElement (UInt32                         screenNumber,  
-                                                     UInt32                         maxNastySpriteDrawingElements,
-                                                     NastySpriteDrawingElementsList &nastySpriteDrawingElementsList);
+extern  FolioStatus AddNastySpriteDrawingElement (const NastySpriteDrawingElement&  nastySpriteDrawingElement,
+                                                  NastySpriteDrawingElementsList&   nastySpriteDrawingElementsList);
+extern  FolioStatus RemoveNastySpriteDrawingElement (UInt32                             screenNumber,  
+                                                     UInt32                             maxNastySpriteDrawingElements,
+                                                     NastySpriteDrawingElementsList&    nastySpriteDrawingElementsList);
 
 } // Endnamespace.
 

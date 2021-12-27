@@ -16,6 +16,7 @@
     <ClCompile Include="Source\BossSprite.cpp" />
     <ClCompile Include="Source\CollisionGrid.cpp" />
     <ClCompile Include="Source\Globals.cpp" />
+    <ClCompile Include="Source\BitmapResourceId.cpp" />
     <ClCompile Include="Source\LoadingScreen.cpp" />
     <ClCompile Include="Source\PlayerSprite.cpp" />
     <ClCompile Include="Source\FallingSimulationScreen.cpp" />
@@ -23,11 +24,11 @@
     <ClCompile Include="Source\GameOverScreen.cpp" />
     <ClCompile Include="Source\InformationPanel.cpp" />
     <ClCompile Include="Source\MainCanvasMsgHandler.cpp" />
-    <ClCompile Include="Source\ResourceOwnerId.cpp" />
+    <ClCompile Include="Source\ResourceOwnerIds.cpp" />
     <ClCompile Include="Source\SpriteGraphics.cpp" />
     <ClCompile Include="Source\NastySprite.cpp" />
     <ClCompile Include="Source\RoomGraphics.cpp" />
-    <ClCompile Include="Source\DrawingElement.cpp" />
+    <ClCompile Include="Source\DrawingElementIds.cpp" />
     <ClCompile Include="Source\Screen.cpp" />
     <ClCompile Include="Source\SelectionScreen.cpp" />
     <ClCompile Include="Source\StaticSprite.cpp" />
@@ -51,12 +52,12 @@
     <ClInclude Include="Source\GameOverScreen.h" />
     <ClInclude Include="Source\InformationPanel.h" />
     <ClInclude Include="Source\MainCanvasMsgHandler.h" />
-    <ClInclude Include="Source\ResourceOwnerId.h" />
+    <ClInclude Include="Source\ResourceOwnerIds.h" />
     <ClInclude Include="Source\SpriteGraphics.h" />
     <ClInclude Include="Source\NastySprite.h" />
     <ClInclude Include="Source\resource.h" />
     <ClInclude Include="Source\RoomGraphics.h" />
-    <ClInclude Include="Source\DrawingElement.h" />
+    <ClInclude Include="Source\DrawingElementIds.h" />
     <ClInclude Include="Source\Screen.h" />
     <ClInclude Include="Source\SelectionScreen.h" />
     <ClInclude Include="Source\StaticSprite.h" />

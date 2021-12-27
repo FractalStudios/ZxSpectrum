@@ -83,7 +83,7 @@ public:
     bool    IsPauseGameKeyDown () const;
     bool    IsMainPlayerFireWeaponKeyDown () const;
     bool    IsMainPlayerCollectItemsKeyDown () const;
-    bool    IsMainPlayerDirectionKeyDown (Folio::Core::Game::Direction &direction) const;
+    bool    IsMainPlayerDirectionKeyDown (Folio::Core::Game::Direction& direction) const;
 
 private:
     GAME_CONTROL    m_gameControl;  // The game control.
@@ -98,12 +98,12 @@ private:
 
     FolioStatus UpdateScreen ();
     FolioStatus ResetScreen ();
-    FolioStatus UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type    &item,
+    FolioStatus UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type&   item,
                                 bool                                            invertColours,
-                                Gdiplus::Graphics                               &graphics, 
-                                bool                                            &redrawCanvas);
+                                Gdiplus::Graphics&                              graphics, 
+                                bool&                                           redrawCanvas);
 
-    void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
+    void    SetItemText (Folio::Core::Game::TextItemPtr::element_type& item);
 
     FolioStatus StartGame ();
 

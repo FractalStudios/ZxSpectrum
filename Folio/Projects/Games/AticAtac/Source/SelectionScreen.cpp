@@ -1,6 +1,5 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
-#include    "DrawingElement.h"
 #include    "Font.h"
 #include    "SelectionScreen.h"
 
@@ -197,7 +196,7 @@ bool    SelectionScreen::IsMainPlayerCollectItemsKeyDown() const
 } // Endproc.
 
 
-bool    SelectionScreen::IsMainPlayerDirectionKeyDown (Folio::Core::Game::Direction &direction) const
+bool    SelectionScreen::IsMainPlayerDirectionKeyDown (Folio::Core::Game::Direction& direction) const
 {
     direction = Folio::Core::Game::NO_DIRECTION; // Initialise!
 
@@ -318,7 +317,7 @@ FolioStatus SelectionScreen::BuildScreenItems (FolioHandle  dcHandle,
                 Folio::Core::Game::TextItemPtr  item(new Folio::Core::Game::TextItemPtr::element_type);
                 
                 status = item->Create (dcHandle,
-                                       DRAWING_ELEMENT_SELECTION_SCREEN_ITEM,
+                                       Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_SELECTION_SCREEN_ITEM,
                                        *GetFont (),
                                        g_selectionScreenAttributesTable [index].m_itemId,
                                        g_selectionScreenAttributesTable [index].m_screenXLeft, 
@@ -356,7 +355,7 @@ FolioStatus SelectionScreen::BuildScreenItems (FolioHandle  dcHandle,
             
                 status = item->Create (dcHandle,
                                        instanceHandle,
-                                       DRAWING_ELEMENT_SELECTION_SCREEN_ITEM,
+                                       Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_SELECTION_SCREEN_ITEM,
                                        g_selectionScreenAttributesTable [index].m_bitmapResourceId,
                                        g_selectionScreenAttributesTable [index].m_itemId,
                                        g_selectionScreenAttributesTable [index].m_screenXLeft, 
@@ -651,10 +650,10 @@ FolioStatus SelectionScreen::ResetScreen ()
 } // Endproc.
 
 
-FolioStatus SelectionScreen::UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type   &item,
+FolioStatus SelectionScreen::UpdateTextItem (Folio::Core::Game::TextItemPtr::element_type&  item,
                                              bool                                           invertColours,
-                                             Gdiplus::Graphics                              &graphics, 
-                                             bool                                           &redrawCanvas)
+                                             Gdiplus::Graphics&                             graphics, 
+                                             bool&                                          redrawCanvas)
 {                   
     FolioStatus status = ERR_SUCCESS;
 
@@ -709,7 +708,7 @@ FolioStatus SelectionScreen::UpdateTextItem (Folio::Core::Game::TextItemPtr::ele
 } // Endproc.
 
 
-void    SelectionScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type &item)
+void    SelectionScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type& item)
 {
     switch (item.GetItemId ())
     {

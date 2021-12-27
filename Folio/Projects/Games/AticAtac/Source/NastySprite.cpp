@@ -1,9 +1,7 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
-#include    "DrawingElement.h"
 #include    "Globals.h"
 #include    "NastySprite.h"
-#include    "ResourceOwnerId.h"
 #include    "Screen.h"
 #include    "SpriteGraphics.h"
 #include    "Ultimate.h"
@@ -61,7 +59,7 @@ NastySprite::~NastySprite ()
 FolioStatus NastySprite::Create (FolioHandle            dcHandle,
                                  NASTY_SPRITE_ID        nastySpriteId,
                                  UInt32                 screenNumber,
-                                 const CollisionGrid    &collisionGrid,
+                                 const CollisionGrid&   collisionGrid,
                                  UInt32                 nastySpriteFlags)
 {
     // Get the nasty sprite's colour.
@@ -74,8 +72,8 @@ FolioStatus NastySprite::Create (FolioHandle            dcHandle,
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<NASTY_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                       g_resourceGraphicsCache,
-                                                                                                      OWNER_ID_NASTY_SPRITE,
-                                                                                                      DRAWING_ELEMENT_NASTY_SPRITE,
+                                                                                                      Folio::Core::Game::ResourceGraphicsCache::OWNER_ID_NASTY_SPRITE,
+                                                                                                      Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_NASTY_SPRITE,
                                                                                                       nastySpriteId,
                                                                                                       nastySpriteColour,
                                                                                                       g_nastySpriteGraphicCharacteristics,
@@ -138,8 +136,8 @@ FolioStatus NastySprite::Create (FolioHandle            dcHandle,
 } // Endproc.
 
 
-FolioStatus NastySprite::Move (Gdiplus::Graphics    &graphics,
-                               CollisionGrid        &collisionGrid)
+FolioStatus NastySprite::Move (Gdiplus::Graphics&   graphics,
+                               CollisionGrid&       collisionGrid)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -193,10 +191,10 @@ bool    NastySprite::IsTerminatedByGraphic (UInt32 nastySpriteflags)
 } // Endproc.
       
 
-FolioStatus NastySprite::QueryInitialisingGraphics (FolioHandle                                         dcHandle,
-                                                    Folio::Core::Game::ResourceGraphicsCache::OwnerId   ownerId,
-                                                    Folio::Core::Game::ZxSpectrum::COLOUR               spriteColour,
-                                                    Folio::Core::Game::SpriteGraphicAttributesList      &spriteGraphicAttributesList)
+FolioStatus NastySprite::QueryInitialisingGraphics (FolioHandle                                                 dcHandle,
+                                                    const Folio::Core::Game::ResourceGraphicsCache::OwnerId&    ownerId,
+                                                    Folio::Core::Game::ZxSpectrum::COLOUR                       spriteColour,
+                                                    Folio::Core::Game::SpriteGraphicAttributesList&             spriteGraphicAttributesList)
 {
     // Nasty sprite initialising sprite characteristics.
     static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<NASTY_SPRITE_ID, SPRITE_ID> s_initialisingSpriteGraphicCharacteristics = 
@@ -210,17 +208,17 @@ FolioStatus NastySprite::QueryInitialisingGraphics (FolioHandle                 
     return (Folio::Core::Game::QuerySpriteGraphicAttributes<NASTY_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                          g_resourceGraphicsCache,
                                                                                          ownerId,
-                                                                                         DRAWING_ELEMENT_NASTY_SPRITE,
+                                                                                         Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_NASTY_SPRITE,
                                                                                          spriteColour,
                                                                                          s_initialisingSpriteGraphicCharacteristics,
                                                                                          spriteGraphicAttributesList));
 } // Endproc.
 
 
-FolioStatus NastySprite::QueryTerminatingGraphics (FolioHandle                                          dcHandle,
-                                                   Folio::Core::Game::ResourceGraphicsCache::OwnerId    ownerId,
-                                                   Folio::Core::Game::ZxSpectrum::COLOUR                spriteColour,
-                                                   Folio::Core::Game::SpriteGraphicAttributesList       &spriteGraphicAttributesList)
+FolioStatus NastySprite::QueryTerminatingGraphics (FolioHandle                                              dcHandle,
+                                                   const Folio::Core::Game::ResourceGraphicsCache::OwnerId& ownerId,
+                                                   Folio::Core::Game::ZxSpectrum::COLOUR                    spriteColour,
+                                                   Folio::Core::Game::SpriteGraphicAttributesList&          spriteGraphicAttributesList)
 {
     // Nasty sprite terminating sprite characteristics.
     static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<NASTY_SPRITE_ID, SPRITE_ID> s_terminatingSpriteGraphicCharacteristics = 
@@ -234,7 +232,7 @@ FolioStatus NastySprite::QueryTerminatingGraphics (FolioHandle                  
     return (Folio::Core::Game::QuerySpriteGraphicAttributes<NASTY_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                          g_resourceGraphicsCache,
                                                                                          ownerId,
-                                                                                         DRAWING_ELEMENT_NASTY_SPRITE,
+                                                                                         Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_NASTY_SPRITE,
                                                                                          spriteColour,
                                                                                          s_terminatingSpriteGraphicCharacteristics,
                                                                                          spriteGraphicAttributesList));
@@ -258,7 +256,7 @@ FolioStatus NastySprite::SetInitialisingMode (FolioHandle                       
         Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
         status = QueryInitialisingGraphics (dcHandle,
-                                            OWNER_ID_NASTY_SPRITE,
+                                            Folio::Core::Game::ResourceGraphicsCache::OWNER_ID_NASTY_SPRITE,
                                             nastySpriteColour, 
                                             spriteGraphicAttributesList);
 
@@ -294,7 +292,7 @@ FolioStatus NastySprite::SetTerminatingMode (FolioHandle                        
         Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
         status = QueryTerminatingGraphics (dcHandle,
-                                           OWNER_ID_NASTY_SPRITE,
+                                           Folio::Core::Game::ResourceGraphicsCache::OWNER_ID_NASTY_SPRITE,
                                            nastySpriteColour, 
                                            spriteGraphicAttributesList);
         
@@ -331,7 +329,7 @@ void    NastySprite::SetNastySpriteTerminatedSoundSample (NASTY_SPRITE_ID nastyS
 } // Endproc.
 
 
-Int32   NastySprite::GetInitialScreenXLeft (const CollisionGrid &collisionGrid)
+Int32   NastySprite::GetInitialScreenXLeft (const CollisionGrid& collisionGrid)
 {
     static  const   Int32   MAX_NASTY_SPRITE_WIDTH = 16;
 
@@ -342,7 +340,7 @@ Int32   NastySprite::GetInitialScreenXLeft (const CollisionGrid &collisionGrid)
 } // Endproc.
 
 
-Int32   NastySprite::GetInitialScreenYTop (const CollisionGrid &collisionGrid)
+Int32   NastySprite::GetInitialScreenYTop (const CollisionGrid& collisionGrid)
 {
     static  const   Int32   MAX_NASTY_SPRITE_HEIGHT = 22;
 
@@ -545,8 +543,8 @@ void    NastySprite::CreateNastySpriteTerminatedSoundSample ()
 } // Endproc.
 
 
-FolioStatus AddNastySpriteDrawingElement (const NastySpriteDrawingElement   &nastySpriteDrawingElement,
-                                          NastySpriteDrawingElementsList    &nastySpriteDrawingElementsList)
+FolioStatus AddNastySpriteDrawingElement (const NastySpriteDrawingElement&  nastySpriteDrawingElement,
+                                          NastySpriteDrawingElementsList&   nastySpriteDrawingElementsList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -559,9 +557,9 @@ FolioStatus AddNastySpriteDrawingElement (const NastySpriteDrawingElement   &nas
 } // Endproc.
 
 
-FolioStatus RemoveNastySpriteDrawingElement (UInt32                         screenNumber,
-                                             UInt32                         maxNastySpriteDrawingElements,
-                                             NastySpriteDrawingElementsList &nastySpriteDrawingElementsList)
+FolioStatus RemoveNastySpriteDrawingElement (UInt32                             screenNumber,
+                                             UInt32                             maxNastySpriteDrawingElements,
+                                             NastySpriteDrawingElementsList&    nastySpriteDrawingElementsList)
 {
     FolioStatus status = ERR_SUCCESS;
 

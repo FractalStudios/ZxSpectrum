@@ -1,9 +1,7 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
 #include    "BossSprite.h"
-#include    "DrawingElement.h"
 #include    "Globals.h"
-#include    "ResourceOwnerId.h"
 #include    "SpriteGraphics.h"
 #include    "Ultimate.h"
 
@@ -74,8 +72,8 @@ FolioStatus BossSprite::Create (FolioHandle                             dcHandle
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<BOSS_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                      g_resourceGraphicsCache,
-                                                                                                     OWNER_ID_BOSS_SPRITE,
-                                                                                                     DRAWING_ELEMENT_BOSS_SPRITE,
+                                                                                                     Folio::Core::Game::ResourceGraphicsCache::OWNER_ID_BOSS_SPRITE,
+                                                                                                     Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_BOSS_SPRITE,
                                                                                                      bossSpriteId,
                                                                                                      bossSpriteColour,
                                                                                                      g_bossSpriteGraphicCharacteristics,
@@ -132,8 +130,8 @@ FolioStatus BossSprite::Create (FolioHandle                             dcHandle
 } // Endproc.
 
 
-FolioStatus BossSprite::Start (const InformationPanel   &informationPanel,
-                               const CollisionGrid      &collisionGrid)
+FolioStatus BossSprite::Start (const InformationPanel&  informationPanel,
+                               const CollisionGrid&     collisionGrid)
 {
     // Recreate the boss sprite.
 
@@ -152,9 +150,9 @@ FolioStatus BossSprite::Start (const InformationPanel   &informationPanel,
 } // Endproc.
 
 
-FolioStatus BossSprite::Move (Gdiplus::Graphics         &graphics,
-                              const InformationPanel    &informationPanel,
-                              CollisionGrid             &collisionGrid)
+FolioStatus BossSprite::Move (Gdiplus::Graphics&        graphics,
+                              const InformationPanel&   informationPanel,
+                              CollisionGrid&            collisionGrid)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -207,7 +205,7 @@ UInt32  BossSprite::GetBossSpriteFlags () const
 } // Endproc.
 
 
-bool    BossSprite::CanBeKilled (const InformationPanel &informationPanel) const
+bool    BossSprite::CanBeKilled (const InformationPanel& informationPanel) const
 {
     switch (m_bossSpriteId)
     {
@@ -277,7 +275,7 @@ FolioStatus BossSprite::SetInitialisingMode (FolioHandle                        
         Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
         status = NastySprite::QueryInitialisingGraphics (dcHandle,
-                                                         OWNER_ID_BOSS_SPRITE,
+                                                         Folio::Core::Game::ResourceGraphicsCache::OWNER_ID_BOSS_SPRITE,
                                                          bossSpriteColour, 
                                                          spriteGraphicAttributesList);
 
@@ -313,7 +311,7 @@ FolioStatus BossSprite::SetTerminatingMode (FolioHandle                         
         Folio::Core::Game::SpriteGraphicAttributesList  spriteGraphicAttributesList;
 
         status = NastySprite::QueryTerminatingGraphics (dcHandle,
-                                                        OWNER_ID_BOSS_SPRITE,
+                                                        Folio::Core::Game::ResourceGraphicsCache::OWNER_ID_BOSS_SPRITE,
                                                         bossSpriteColour, 
                                                         spriteGraphicAttributesList);
         
@@ -376,7 +374,7 @@ void    BossSprite::SetBossSpriteTerminatedSoundSample (BOSS_SPRITE_ID bossSprit
 } // Endproc.
 
 
-bool    BossSprite::IsUpdateDirectionRqd (const CollisionGrid &collisionGrid) const
+bool    BossSprite::IsUpdateDirectionRqd (const CollisionGrid& collisionGrid) const
 {
     bool    isUpdateDirectionRqd = true;    // Initialise!
 
@@ -421,8 +419,8 @@ bool    BossSprite::IsUpdateDirectionRqd (const CollisionGrid &collisionGrid) co
 } // Endproc.
 
 
-Folio::Core::Game::Direction    BossSprite::GetDirection (const InformationPanel    &informationPanel,
-                                                          const CollisionGrid       &collisionGrid) const
+Folio::Core::Game::Direction    BossSprite::GetDirection (const InformationPanel&   informationPanel,
+                                                          const CollisionGrid&      collisionGrid) const
 {
     Folio::Core::Game::Direction    direction = Folio::Core::Game::NO_DIRECTION;    // Initialise!
 
@@ -509,8 +507,8 @@ Folio::Core::Game::Direction    BossSprite::GetDirection (const InformationPanel
 } // Endproc.
 
 
-Folio::Core::Game::Direction    BossSprite::GetDirectionToAttractedStaticSprite (const CollisionGrid    &collisionGrid,
-                                                                                 bool                   &staticSpriteFound) const
+Folio::Core::Game::Direction    BossSprite::GetDirectionToAttractedStaticSprite (const CollisionGrid&   collisionGrid,
+                                                                                 bool&                  staticSpriteFound) const
 {
     staticSpriteFound = false;  // Initialise!
 
@@ -520,7 +518,7 @@ Folio::Core::Game::Direction    BossSprite::GetDirectionToAttractedStaticSprite 
 
     CollisionGrid::CellElements cellElementsList;
 
-    if (collisionGrid.FindCellElements (DRAWING_ELEMENT_STATIC_SPRITE, cellElementsList))
+    if (collisionGrid.FindCellElements (Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_STATIC_SPRITE, cellElementsList))
     {
         // Are any of the static sprites one that the boss sprite is attracted to?
 
@@ -569,8 +567,8 @@ Folio::Core::Game::Direction    BossSprite::GetDirectionToAttractedStaticSprite 
 } // Endproc.
 
 
-UInt32  BossSprite::GetSpeed (const InformationPanel    &informationPanel,
-                              const CollisionGrid       &collisionGrid) const
+UInt32  BossSprite::GetSpeed (const InformationPanel&   informationPanel,
+                              const CollisionGrid&      collisionGrid) const
 {
     UInt32  speed = STATIC_SPEED;  // Initialise!
 
@@ -637,8 +635,8 @@ UInt32  BossSprite::GetSpeed (const InformationPanel    &informationPanel,
 } // Endproc.
 
 
-UInt32  BossSprite::GetSpeedToAttractedStaticSprite (const CollisionGrid    &collisionGrid, 
-                                                     bool                   &staticSpriteFound) const
+UInt32  BossSprite::GetSpeedToAttractedStaticSprite (const CollisionGrid&   collisionGrid, 
+                                                     bool&                  staticSpriteFound) const
 {
     staticSpriteFound = false;  // Initialise!
 
@@ -648,7 +646,7 @@ UInt32  BossSprite::GetSpeedToAttractedStaticSprite (const CollisionGrid    &col
 
     CollisionGrid::CellElements cellElementsList;
 
-    if (collisionGrid.FindCellElements (DRAWING_ELEMENT_STATIC_SPRITE, cellElementsList))
+    if (collisionGrid.FindCellElements (Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_STATIC_SPRITE, cellElementsList))
     {
         // Are any of the static sprites one that the boss sprite is attracted to?
 
@@ -698,7 +696,7 @@ UInt32  BossSprite::GetSpeedToAttractedStaticSprite (const CollisionGrid    &col
 } // Endproc.
 
 
-bool    BossSprite::IsAnyAttractedStaticSprite (const CollisionGrid &collisionGrid) const
+bool    BossSprite::IsAnyAttractedStaticSprite (const CollisionGrid& collisionGrid) const
 {
     bool    isAnyAttractedStaticSprite = false; // Initialise!
 
@@ -706,7 +704,7 @@ bool    BossSprite::IsAnyAttractedStaticSprite (const CollisionGrid &collisionGr
 
     CollisionGrid::CellElements cellElementsList;
 
-    if (collisionGrid.FindCellElements (DRAWING_ELEMENT_STATIC_SPRITE, cellElementsList))
+    if (collisionGrid.FindCellElements (Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_STATIC_SPRITE, cellElementsList))
     {
         // Are any of the static sprites one that the boss sprite is attracted to?
 
@@ -730,7 +728,7 @@ bool    BossSprite::IsAnyAttractedStaticSprite (const CollisionGrid &collisionGr
 
 
 Int32   BossSprite::GetInitialScreenXLeft (BOSS_SPRITE_ID       bossSpriteId,
-                                           const CollisionGrid  &collisionGrid)
+                                           const CollisionGrid& collisionGrid)
 {
     static  const   Int32   MAX_BOSS_SPRITE_WIDTH = 16;
 
@@ -793,7 +791,7 @@ Int32   BossSprite::GetInitialScreenXLeft (BOSS_SPRITE_ID       bossSpriteId,
 
 
 Int32   BossSprite::GetInitialScreenYTop (BOSS_SPRITE_ID        bossSpriteId,
-                                          const CollisionGrid   &collisionGrid)
+                                          const CollisionGrid&  collisionGrid)
 {
     static  const   Int32   MAX_BOSS_SPRITE_HEIGHT = 24;
 
@@ -856,7 +854,7 @@ Int32   BossSprite::GetInitialScreenYTop (BOSS_SPRITE_ID        bossSpriteId,
 
 
 bool    BossSprite::IsAttractedToStaticSprite (BOSS_SPRITE_ID       bossSpriteId,
-                                               const StaticSprite   &staticSprite)
+                                               const StaticSprite&  staticSprite)
 {
     bool    isAttractedToStaticSprite = false;  // Initialise!
 
@@ -943,7 +941,7 @@ void    BossSprite::CreateBossSpriteTerminatedSoundSample ()
 
 
 FolioStatus CreateBossSprites (FolioHandle      dcHandle,
-                               BossSpritesMap   &bossSpritesMap)
+                               BossSpritesMap&  bossSpritesMap)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -983,7 +981,7 @@ FolioStatus CreateBossSprites (FolioHandle      dcHandle,
 } // Endproc.
 
 
-void    SetBossSpritesAlive (BossSpritesMap &bossSpritesMap)
+void    SetBossSpritesAlive (BossSpritesMap& bossSpritesMap)
 {
     // All the boss sprite's are alive.
 

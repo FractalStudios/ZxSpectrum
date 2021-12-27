@@ -1,6 +1,5 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
-#include    "DrawingElement.h"
 #include    "LoadingScreen.h"
 
 namespace Folio
@@ -63,7 +62,7 @@ FolioStatus LoadingScreen::BuildScreenItems (FolioHandle    dcHandle,
             
                 status = item->Create (dcHandle,
                                        instanceHandle,
-                                       DRAWING_ELEMENT_LOADING_SCREEN_ITEM,
+                                       Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_LOADING_SCREEN_ITEM,
                                        g_loadingScreenAttributesTable [index].m_bitmapResourceId,
                                        g_loadingScreenAttributesTable [index].m_itemId,
                                        g_loadingScreenAttributesTable [index].m_screenXLeft, 
@@ -93,8 +92,6 @@ FolioStatus LoadingScreen::BuildScreenItems (FolioHandle    dcHandle,
 
 FolioStatus LoadingScreen::StartDisplayingScreen ()
 {
-    Sleep (10000);
-
     // Start from the beginning of the sound sample sequence.
             
     m_currentSoundSampleIndex = 0;

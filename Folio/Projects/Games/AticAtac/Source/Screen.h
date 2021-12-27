@@ -48,22 +48,22 @@ public:
             Folio::Core::Game::ZxSpectrum::COLOUR   roomColour);
     ~Screen ();
 
-    void    SetCanvas (Folio::Core::Applet::Canvas &canvas);
-    void    SetBackgroundItemsList (const BackgroundItemsList &backgroundItemsList);
-    void    SetStaticSpritesList (const StaticSpritesList &staticSpritesList);
-    void    SetInformationPanel (const InformationPanel &informationPanel);
+    void    SetCanvas (Folio::Core::Applet::Canvas& canvas);
+    void    SetBackgroundItemsList (const BackgroundItemsList& backgroundItemsList);
+    void    SetStaticSpritesList (const StaticSpritesList& staticSpritesList);
+    void    SetInformationPanel (const InformationPanel& informationPanel);
 
     UInt32                                  GetScreenNumber () const;
     ROOM_ID                                 GetRoomId () const;
     Folio::Core::Game::ZxSpectrum::COLOUR   GetRoomColour () const;
 
-    FolioStatus QueryDrawingElements (Folio::Core::Game::DrawingElementsList &drawingElementsList);
-    FolioStatus HandleProcessFrame (bool &isStarting);
-    FolioStatus QueryNewScreen (UInt32 &newScreenNumber);
+    FolioStatus QueryDrawingElements (Folio::Core::Game::DrawingElementsList& drawingElementsList);
+    FolioStatus HandleProcessFrame (bool& isStarting);
+    FolioStatus QueryNewScreen (UInt32& newScreenNumber);
 
-    FolioStatus StoreSpriteBackgrounds (Gdiplus::Graphics &graphics);
-    FolioStatus RestoreSpriteBackgrounds (Gdiplus::Graphics &graphics);
-    FolioStatus DrawSprites (Gdiplus::Graphics &graphics);
+    FolioStatus StoreSpriteBackgrounds (Gdiplus::Graphics& graphics);
+    FolioStatus RestoreSpriteBackgrounds (Gdiplus::Graphics& graphics);
+    FolioStatus DrawSprites (Gdiplus::Graphics& graphics);
 
     FolioStatus AddGravestone ();
 
@@ -87,7 +87,7 @@ private:
     StaticSpritesList   m_staticSpritesList;    // The screen's static sprites list.
     CollisionGrid       m_collisionGrid;        // The screen's collision grid.
 
-    Folio::Core::Game::DrawingElementsSet   m_drawingElementsSet;               // The screen's drawing elements set (room, background items and information panel).
+    Folio::Core::Game::DrawingElementsList  m_drawingElementsList;              // The screen's drawing elements list (room, background items and information panel).
     StaticSpriteDrawingElementsList         m_staticSpriteDrawingElementsList;  // The screen's static sprite drawing elements list.
 
     static  bool    m_playEnteredScreenSound;               // Indicates if the entered screen sound should be played.
@@ -105,75 +105,75 @@ private:
 
     FolioStatus InitialiseDoors ();
     FolioStatus CheckDoors (bool enteringScreen = false);
-    FolioStatus OpenDoor (BackgroundItem    &backgroundItem,
+    FolioStatus OpenDoor (BackgroundItem&   backgroundItem,
                           bool              enteringScreen = false);
-    FolioStatus CloseDoor (BackgroundItem   &backgroundItem,
+    FolioStatus CloseDoor (BackgroundItem&  backgroundItem,
                            bool             enteringScreen = false);
-    FolioStatus UpdateDoor (BackgroundItem  &backgroundItem,
+    FolioStatus UpdateDoor (BackgroundItem& backgroundItem,
                             bool            openDoor,
                             bool            enteringScreen = false);
-    bool    Screen::IsDoor (const BackgroundItem &backgroundItem) const;
-    CollisionGrid::ScreenExit::STATE    GetDoorState (const BackgroundItem &backgroundItem) const;
-    bool    CanDoorBeUnlocked (const BackgroundItem &backgroundItem) const;
+    bool    Screen::IsDoor (const BackgroundItem& backgroundItem) const;
+    CollisionGrid::ScreenExit::STATE    GetDoorState (const BackgroundItem& backgroundItem) const;
+    bool    CanDoorBeUnlocked (const BackgroundItem& backgroundItem) const;
 
-    FolioStatus CheckSprites (Gdiplus::Graphics &graphics);
+    FolioStatus CheckSprites (Gdiplus::Graphics& graphics);
 
     FolioStatus BuildStaticSprites (bool initialise);
-    FolioStatus CheckStaticSprites (Gdiplus::Graphics &graphics);
-    FolioStatus AddStaticSprite (const StaticSpritePtr  &staticSprite,
+    FolioStatus CheckStaticSprites (Gdiplus::Graphics& graphics);
+    FolioStatus AddStaticSprite (const StaticSpritePtr& staticSprite,
                                  bool                   addToStaticSpritesList = true);
     FolioStatus AddStaticSprite (STATIC_SPRITE_ID       staticSpriteId,
-                                 const Gdiplus::Rect    &screenRect);
-    FolioStatus RemoveStaticSprite (const StaticSpritePtr &staticSprite);
-    StaticSpriteDrawingElementsList::iterator   FindStaticSprite (const StaticSpritePtr &staticSprite);
+                                 const Gdiplus::Rect&   screenRect);
+    FolioStatus RemoveStaticSprite (const StaticSpritePtr& staticSprite);
+    StaticSpriteDrawingElementsList::iterator   FindStaticSprite (const StaticSpritePtr& staticSprite);
 
-    FolioStatus CheckNastySprites (Gdiplus::Graphics &graphics);
-    FolioStatus StartNastySprites (Gdiplus::Graphics    &graphics, 
+    FolioStatus CheckNastySprites (Gdiplus::Graphics& graphics);
+    FolioStatus StartNastySprites (Gdiplus::Graphics&   graphics, 
                                    UInt32               numNastySpritesOnScreen);
     FolioStatus AddNastySprite (NASTY_SPRITE_ID nastySpriteId);
     FolioStatus RemoveNastySprites (bool onScreenEntry = true);
-    FolioStatus StoreNastySpriteBackgrounds (Gdiplus::Graphics &graphics);
-    FolioStatus RestoreNastySpriteBackgrounds (Gdiplus::Graphics &graphics);
-    FolioStatus DrawNastySprites (Gdiplus::Graphics &graphics);
+    FolioStatus StoreNastySpriteBackgrounds (Gdiplus::Graphics& graphics);
+    FolioStatus RestoreNastySpriteBackgrounds (Gdiplus::Graphics& graphics);
+    FolioStatus DrawNastySprites (Gdiplus::Graphics& graphics);
     UInt32  GetNumNastySpritesOnScreen () const;
     
     void    SetCreateNastySpriteTickCount (UInt32   currentTickCount, 
                                            UInt32   minNumSeconds, 
                                            UInt32   maxNumSeconds);
 
-    FolioStatus CheckBossSprite (Gdiplus::Graphics &graphics);
+    FolioStatus CheckBossSprite (Gdiplus::Graphics& graphics);
     FolioStatus StartBossSprite ();
     FolioStatus AddBossSprite ();
     FolioStatus RemoveBossSprite (bool onScreenExit = true);
 
-    FolioStatus CheckWeaponSprite (Gdiplus::Graphics &graphics);
+    FolioStatus CheckWeaponSprite (Gdiplus::Graphics& graphics);
     FolioStatus StartWeaponSprite ();
     FolioStatus AddWeaponSprite ();
     FolioStatus RemoveWeaponSprite (bool bPlayTerminatedSound = true);
 
-    FolioStatus CheckMainPlayer (Gdiplus::Graphics &graphics);
-    FolioStatus ProcessMainPlayer (Gdiplus::Graphics &graphics);
+    FolioStatus CheckMainPlayer (Gdiplus::Graphics& graphics);
+    FolioStatus ProcessMainPlayer (Gdiplus::Graphics& graphics);
 
-    FolioStatus HandleCollision (const CollisionGrid::CellElements  &cellElements,
+    FolioStatus HandleCollision (const CollisionGrid::CellElements& cellElements,
                                  bool                               mainPlayer = true);
-    FolioStatus HandleSolidItemCollision (const CollisionGrid::CellElement  &cellElement,
+    FolioStatus HandleSolidItemCollision (const CollisionGrid::CellElement& cellElement,
                                            bool                             mainPlayer = true);
-    FolioStatus HandleCollectableItemCollision (const CollisionGrid::CellElement    &cellElement,
+    FolioStatus HandleCollectableItemCollision (const CollisionGrid::CellElement&   cellElement,
                                                 bool                                mainPlayer = true);
-    FolioStatus HandleHealthItemCollision (const CollisionGrid::CellElement &cellElement,
-                                           bool                             mainPlayer = true);
-    FolioStatus HandleHarmfulItemCollision (const CollisionGrid::CellElement    &cellElement,
+    FolioStatus HandleHealthItemCollision (const CollisionGrid::CellElement&    cellElement,
+                                           bool                                 mainPlayer = true);
+    FolioStatus HandleHarmfulItemCollision (const CollisionGrid::CellElement&   cellElement,
                                             bool                                mainPlayer = true);
-    FolioStatus HandleNastySpriteCollision (const CollisionGrid::CellElement    &cellElement,
+    FolioStatus HandleNastySpriteCollision (const CollisionGrid::CellElement&   cellElement,
                                             bool                                mainPlayer = true);
-    FolioStatus HandleBossSpriteCollision (const CollisionGrid::CellElement &cellElement,
-                                           bool                             mainPlayer = true);
+    FolioStatus HandleBossSpriteCollision (const CollisionGrid::CellElement&    cellElement,
+                                           bool                                 mainPlayer = true);
 
     FolioStatus DecrementMainPlayerHealth (UInt32 healthDecrement);
     FolioStatus IncrementMainPlayerHealth (UInt32 healthIncrement);
     FolioStatus HandleMainPlayerDead ();
 
-    FolioStatus AddDroppedItem (InformationPanel::DroppedItem &droppedItem);
+    FolioStatus AddDroppedItem (InformationPanel::DroppedItem& droppedItem);
 
     FolioStatus BuildScreenDrawingElements (bool initialise);
     FolioStatus BuildRoomDrawingElements (FolioHandle   dcHandle, 
@@ -183,22 +183,22 @@ private:
     FolioStatus BuildInformationPanelDrawingElements (FolioHandle   dcHandle,
                                                       bool          initialise);
 
-    FolioStatus AddBackgroundItemDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList);
-    FolioStatus RemoveBackgroundItemDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList);
+    FolioStatus AddBackgroundItemDrawingElements (const Folio::Core::Game::DrawingElementsList& drawingElementsList);
+    FolioStatus RemoveBackgroundItemDrawingElements (const Folio::Core::Game::DrawingElementsList& drawingElementsList);
 
-    FolioStatus AddScreenDrawingElements (const Folio::Core::Game::DrawingElementsList  &drawingElementsList, 
+    FolioStatus AddScreenDrawingElements (const Folio::Core::Game::DrawingElementsList& drawingElementsList, 
                                           bool                                          addToCollisionGrid = true);
-    FolioStatus RemoveScreenDrawingElements (const Folio::Core::Game::DrawingElementsList   &drawingElementsList,
+    FolioStatus RemoveScreenDrawingElements (const Folio::Core::Game::DrawingElementsList&  drawingElementsList,
                                              bool                                           removeFromCollisionGrid = true);
     FolioStatus RemoveScreenDrawingElements (Folio::Core::Game::DrawingElement::UserData userData);
     Folio::Core::Game::DrawingElementsList  FindScreenDrawingElements (Folio::Core::Game::DrawingElement::UserData userData) const;
 
     FolioStatus InitialiseCollisionGrid ();
-    FolioStatus AddCollisionGridDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList);
-    FolioStatus AddCollisionGridDrawingElement (const Folio::Core::Game::DrawingElement &drawingElement);
-    FolioStatus RemoveCollisionGridDrawingElements (const Folio::Core::Game::DrawingElementsList &drawingElementsList);
-    FolioStatus RemoveCollisionGridDrawingElement (const Folio::Core::Game::DrawingElement &drawingElement);
-    FolioStatus UpdateCollisionGridDrawingElement (const Folio::Core::Game::DrawingElement &drawingElement);
+    FolioStatus AddCollisionGridDrawingElements (const Folio::Core::Game::DrawingElementsList& drawingElementsList);
+    FolioStatus AddCollisionGridDrawingElement (const Folio::Core::Game::DrawingElement& drawingElement);
+    FolioStatus RemoveCollisionGridDrawingElements (const Folio::Core::Game::DrawingElementsList& drawingElementsList);
+    FolioStatus RemoveCollisionGridDrawingElement (const Folio::Core::Game::DrawingElement& drawingElement);
+    FolioStatus UpdateCollisionGridDrawingElement (const Folio::Core::Game::DrawingElement& drawingElement);
 
     FolioStatus ReleaseResourceGraphics ();
 
@@ -215,11 +215,11 @@ typedef std::vector<Screen> ScreensList;
 
 // Routines.
 
-extern  FolioStatus BuildScreens (Folio::Core::Applet::Canvas   &canvas,
-                                  const BackgroundItemsList     &backgroundItemsList,
-                                  const StaticSpritesList       &staticSpritesList,
-                                  const InformationPanel        &informationPanel,
-                                  ScreensList                   &screensList);
+extern  FolioStatus BuildScreens (Folio::Core::Applet::Canvas&  canvas,
+                                  const BackgroundItemsList&    backgroundItemsList,
+                                  const StaticSpritesList&      staticSpritesList,
+                                  const InformationPanel&       informationPanel,
+                                  ScreensList&                  screensList);
 
 } // Endnamespace.
 

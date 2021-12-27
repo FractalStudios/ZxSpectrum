@@ -616,7 +616,7 @@ FolioStatus BackgroundItem::SetBackgroundItemGraphic ()
     {
         // Query the background item's graphic.
 
-        status = QueryBackgroundItemGraphic (m_screenNumber,
+        status = QueryBackgroundItemGraphic (Folio::Core::Game::ResourceGraphicsCache::MakeOwnerId (m_screenNumber),
                                              m_backgroundItemId,
                                              m_backgroundItemGraphic);
     } // Endif.
@@ -953,7 +953,7 @@ FolioStatus BackgroundItem::SetDoorUnlocked (bool setBackgroundItemGraphic)
 } // Endproc.
 
 
-bool    BackgroundItem::operator == (const BackgroundItem &rhs) const
+bool    BackgroundItem::operator == (const BackgroundItem& rhs) const
 {
     return ((m_screenNumber     == rhs.m_screenNumber)      &&
             (m_backgroundItemId == rhs.m_backgroundItemId)  &&
@@ -1393,7 +1393,7 @@ UInt32  GetMaxBackgroundItemsOnScreen (BACKGROUND_ITEM_ID backgroundItemId)
 } // Endproc.
 
 
-FolioStatus CreateBackgroundItems (BackgroundItemsList &backgroundItemsList)
+FolioStatus CreateBackgroundItems (BackgroundItemsList& backgroundItemsList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -1419,8 +1419,8 @@ FolioStatus CreateBackgroundItems (BackgroundItemsList &backgroundItemsList)
 } // Endproc.
 
 
-BackgroundItemsList GetScreenBackgroundItemsList (UInt32                    screenNumber,
-                                                  const BackgroundItemsList &backgroundItemsList)
+BackgroundItemsList GetScreenBackgroundItemsList (UInt32                        screenNumber,
+                                                  const BackgroundItemsList&    backgroundItemsList)
 {
     BackgroundItemsList screenBackgroundItemsList;
 
@@ -1444,8 +1444,8 @@ BackgroundItemsList GetScreenBackgroundItemsList (UInt32                    scre
 } // Endproc.
 
 
-BackgroundItemPtr   GetOppositeDoor (const BackgroundItem       *currentDoorBackgroundItem,
-                                     const BackgroundItemsList  &backgroundItemsList,
+BackgroundItemPtr   GetOppositeDoor (const BackgroundItem*      currentDoorBackgroundItem,
+                                     const BackgroundItemsList& backgroundItemsList,
                                      bool                       setBackgroundItemGraphic)
 {
     BackgroundItemPtr   oppositeDoorBackgroundItem;
@@ -1487,8 +1487,8 @@ BackgroundItemPtr   GetOppositeDoor (const BackgroundItem       *currentDoorBack
 } // Endproc.
 
 
-UInt32  GetNewScreenNumber (const BackgroundItem        *currentDoorBackgroundItem,
-                            const BackgroundItemsList   &backgroundItemsList)
+UInt32  GetNewScreenNumber (const BackgroundItem*       currentDoorBackgroundItem,
+                            const BackgroundItemsList&  backgroundItemsList)
 {
     // Get the door opposite to the specified current door.
 

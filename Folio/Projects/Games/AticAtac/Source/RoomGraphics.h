@@ -24,7 +24,7 @@ static  const   Int32   MAX_ROOM_HEIGHT = 192;  // Maximum height of a room.
 // Room identifier enumeration.
 enum ROOM_ID
 {
-    ROOM_UNDEFINED = Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED,
+    ROOM_UNDEFINED = Folio::Core::Util::UNDEFINED_BITMAP_RESOURCE_ID,
     ROOM_0  = IDB_BITMAP_ROOM_0,
     ROOM_1  = IDB_BITMAP_ROOM_1,
     ROOM_2  = IDB_BITMAP_ROOM_2,
@@ -55,7 +55,7 @@ public:
                         Int32       floorHeight);
     FolioStatus QueryDrawingElements (FolioHandle                               dcHandle,
                                       Folio::Core::Game::ZxSpectrum::COLOUR     roomColour,
-                                      Folio::Core::Game::DrawingElementsList    &drawingElementsList);
+                                      Folio::Core::Game::DrawingElementsList&   drawingElementsList);
 
     Gdiplus::Rect   GetFloorRect () const;
     Int32           GetFloorXLeft () const;
@@ -78,10 +78,10 @@ typedef std::shared_ptr<RoomGraphic>    RoomGraphicPtr;
 // Routines.
 
 extern  FolioStatus CreateRoomGraphics (FolioHandle instanceHandle);
-extern  FolioStatus QueryRoomGraphic (Folio::Core::Game::ResourceGraphicsCache::OwnerId ownerId,
-                                      ROOM_ID                                           roomId, 
-                                      RoomGraphicPtr                                    &roomGraphic);
-extern  FolioStatus ReleaseRoomGraphic (const RoomGraphic &roomGraphic);
+extern  FolioStatus QueryRoomGraphic (const Folio::Core::Game::ResourceGraphicsCache::OwnerId&  ownerId,
+                                      ROOM_ID                                                   roomId, 
+                                      RoomGraphicPtr&                                           roomGraphic);
+extern  FolioStatus ReleaseRoomGraphic (const RoomGraphic& roomGraphic);
 
 } // Endnamespace.
 

@@ -19,9 +19,6 @@
     <ClCompile Include="Source\MainCanvasMsgHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DrawingElement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GameOverScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -64,10 +61,16 @@
     <ClCompile Include="Source\Globals.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ResourceOwnerId.cpp">
+    <ClCompile Include="Source\Ultimate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Ultimate.cpp">
+    <ClCompile Include="Source\BitmapResourceId.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ResourceOwnerIds.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DrawingElementIds.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -91,9 +94,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\MainCanvasMsgHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\DrawingElement.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\GameOverScreen.h">
@@ -138,10 +138,13 @@
     <ClInclude Include="Source\Globals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ResourceOwnerId.h">
+    <ClInclude Include="Source\Ultimate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Ultimate.h">
+    <ClInclude Include="Source\ResourceOwnerIds.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DrawingElementIds.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

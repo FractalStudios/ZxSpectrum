@@ -1,6 +1,5 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
-#include    "DrawingElement.h"
 #include    "Globals.h"
 #include    "Screen.h"
 #include    "StaticSprite.h"
@@ -265,8 +264,8 @@ FolioStatus StaticSprite::Create (FolioHandle                           dcHandle
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<STATIC_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                        g_resourceGraphicsCache,
-                                                                                                       initialScreenNumber,
-                                                                                                       DRAWING_ELEMENT_STATIC_SPRITE,
+                                                                                                       Folio::Core::Game::ResourceGraphicsCache::MakeOwnerId (initialScreenNumber),
+                                                                                                       Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_STATIC_SPRITE,
                                                                                                        staticSpriteId,
                                                                                                        staticSpriteColour,
                                                                                                        g_staticSpriteGraphicCharacteristics,
@@ -327,7 +326,7 @@ FolioStatus StaticSprite::Create (FolioHandle dcHandle)
     {
         // Yes. Gain the static sprite's graphic from the resource cache.
 
-        status = GainResourceGraphics (m_screenNumber);
+        status = GainResourceGraphics (Folio::Core::Game::ResourceGraphicsCache::MakeOwnerId (m_screenNumber));
 
         if (status == ERR_SUCCESS)
         {
@@ -536,7 +535,7 @@ UInt32  GetMaxStaticSpritesOnScreen (STATIC_SPRITE_ID staticSpriteId)
 } // Endproc.
 
 
-FolioStatus CreateStaticSprites (StaticSpritesList &staticSpritesList)
+FolioStatus CreateStaticSprites (StaticSpritesList& staticSpritesList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -567,8 +566,8 @@ FolioStatus CreateStaticSprites (StaticSpritesList &staticSpritesList)
 } // Endproc.
 
 
-StaticSpritesList   GetScreenStaticSpritesList (UInt32                  screenNumber,
-                                                const StaticSpritesList &staticSpritesList)
+StaticSpritesList   GetScreenStaticSpritesList (UInt32                      screenNumber,
+                                                const StaticSpritesList&    staticSpritesList)
 {
     StaticSpritesList   screenStaticSpritesList;
 
@@ -591,7 +590,7 @@ StaticSpritesList   GetScreenStaticSpritesList (UInt32                  screenNu
 } // Endproc.
 
 
-void    ScatterStaticSprites (StaticSpritesList &staticSpritesList)
+void    ScatterStaticSprites (StaticSpritesList& staticSpritesList)
 {
     // Calculate the static sprite location table index.
 

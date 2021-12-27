@@ -1,6 +1,5 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
-#include    "DrawingElement.h"
 #include    "Globals.h"
 #include    "RoomGraphics.h"
 
@@ -60,7 +59,7 @@ FolioStatus RoomGraphic::Create (FolioHandle    instanceHandle,
                                  Int32          floorHeight)
 {
     FolioStatus status = ResourceGraphic::Create (instanceHandle, 
-                                                  DRAWING_ELEMENT_ROOM, 
+                                                  Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_ROOM, 
                                                   bitmapResourceId,
                                                   Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour ());
     
@@ -88,7 +87,7 @@ FolioStatus RoomGraphic::Create (FolioHandle    instanceHandle,
 
 FolioStatus RoomGraphic::QueryDrawingElements (FolioHandle                              dcHandle,
                                                Folio::Core::Game::ZxSpectrum::COLOUR    roomColour,
-                                               Folio::Core::Game::DrawingElementsList   &drawingElementsList)
+                                               Folio::Core::Game::DrawingElementsList&  drawingElementsList)
 {
     return (Folio::Core::Game::ResourceGraphic::QueryDrawingElements (dcHandle, 
                                                                       0,    // Screen X left.
@@ -162,7 +161,7 @@ FolioStatus CreateRoomGraphics (FolioHandle instanceHandle)
         {
             // Store the room graphic in the resource graphics cache.
 
-            g_resourceGraphicsCache.Add (DRAWING_ELEMENT_ROOM, roomGraphic);
+            g_resourceGraphicsCache.Add (roomGraphic);
         } // Endif.
        
     } // Endfor.
@@ -171,14 +170,14 @@ FolioStatus CreateRoomGraphics (FolioHandle instanceHandle)
 } // Endproc.
 
 
-FolioStatus QueryRoomGraphic (Folio::Core::Game::ResourceGraphicsCache::OwnerId ownerId,
-                              ROOM_ID                                           roomId, 
-                              RoomGraphicPtr                                    &roomGraphic)
+FolioStatus QueryRoomGraphic (const Folio::Core::Game::ResourceGraphicsCache::OwnerId&  ownerId,
+                              ROOM_ID                                                   roomId, 
+                              RoomGraphicPtr&                                           roomGraphic)
 {
     Folio::Core::Game::ResourceGraphicPtr   resourceGraphic;
 
     FolioStatus status = g_resourceGraphicsCache.GainResourceGraphic (ownerId,
-                                                                      DRAWING_ELEMENT_ROOM, 
+                                                                      Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_ROOM, 
                                                                       roomId, 
                                                                       resourceGraphic);
 
@@ -191,7 +190,7 @@ FolioStatus QueryRoomGraphic (Folio::Core::Game::ResourceGraphicsCache::OwnerId 
 } // Endproc.
 
 
-FolioStatus ReleaseRoomGraphic (const RoomGraphic &roomGraphic)
+FolioStatus ReleaseRoomGraphic (const RoomGraphic& roomGraphic)
 {
     Folio::Core::Game::ResourceGraphicPtr   resourceGraphic = std::make_shared<Folio::Core::Game::ResourceGraphic> (roomGraphic);
 
