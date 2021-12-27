@@ -12,6 +12,13 @@ namespace Core
 namespace Game
 {
 
+// Owner identifiers.
+const   ResourceGraphicsCache::OwnerId  ResourceGraphicsCache::OWNER_ID_MAIN_PLAYER_SPRITE = TXT("Main Player Sprite"); // Main player sprite owner.   
+const   ResourceGraphicsCache::OwnerId  ResourceGraphicsCache::OWNER_ID_BOSS_SPRITE        = TXT("Boss Sprite");        // Boss sprite owner.
+const   ResourceGraphicsCache::OwnerId  ResourceGraphicsCache::OWNER_ID_NASTY_SPRITE       = TXT("Nasty Sprite");       // Nasty sprite owner.
+const   ResourceGraphicsCache::OwnerId  ResourceGraphicsCache::OWNER_ID_WEAPON_SPRITE      = TXT("Weapon Sprite");      // Weapon sprite owner.
+const   ResourceGraphicsCache::OwnerId  ResourceGraphicsCache::OWNER_ID_INFORMATION_PANEL  = TXT("Information Panel");  // Information panel owner.
+
 ResourceGraphicsCache::ResourceGraphicsCache ()
 {
 } // Endproc.
@@ -22,8 +29,7 @@ ResourceGraphicsCache::~ResourceGraphicsCache ()
 } // Endproc.
 
 
-FolioStatus ResourceGraphicsCache::Add (DrawingElement::Id          drawingElementId,
-                                        const ResourceGraphicPtr    &resourceGraphicPtr)
+FolioStatus ResourceGraphicsCache::Add (const ResourceGraphicPtr& resourceGraphicPtr)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -40,11 +46,12 @@ FolioStatus ResourceGraphicsCache::Add (DrawingElement::Id          drawingEleme
     {
         // No. Add the resource graphic to the resource graphics list.
 
-        m_resourceGraphicsList.push_back (Cache(drawingElementId, resourceGraphicPtr));
+        m_resourceGraphicsList.push_back (Cache(resourceGraphicPtr));
 
         #ifdef _OUTPUT_RESOURCE_GRAPHICS_CACHE_
         FolioOStringStream  str;
-        str << TXT("ResourceGraphicsCache::Add ") << m_resourceGraphicsList.back ().Describe ()
+        str << TXT("ResourceGraphicsCache::Add:") 
+            << TXT(' ') << m_resourceGraphicsList.back ().Describe ()
             << std::endl;
         ::OutputDebugString (str.str ().c_str ());
         #endif
@@ -54,7 +61,7 @@ FolioStatus ResourceGraphicsCache::Add (DrawingElement::Id          drawingEleme
 } // Endproc.
 
 
-FolioStatus ResourceGraphicsCache::Remove (const ResourceGraphicPtr &resourceGraphicPtr)
+FolioStatus ResourceGraphicsCache::Remove (const ResourceGraphicPtr& resourceGraphicPtr)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -66,7 +73,8 @@ FolioStatus ResourceGraphicsCache::Remove (const ResourceGraphicPtr &resourceGra
     {
         #ifdef _OUTPUT_RESOURCE_GRAPHICS_CACHE_
         FolioOStringStream  str;
-        str << TXT("ResourceGraphicsCache::Remove ") << itr->Describe ()
+        str << TXT("ResourceGraphicsCache::Remove:") 
+            << TXT(' ') << itr->Describe ()
             << std::endl;
         ::OutputDebugString (str.str ().c_str ());
         #endif
@@ -87,10 +95,10 @@ FolioStatus ResourceGraphicsCache::Remove (const ResourceGraphicPtr &resourceGra
 } // Endproc.
 
 
-FolioStatus ResourceGraphicsCache::GainResourceGraphic (OwnerId             ownerId,
-                                                        DrawingElement::Id  drawingElementId,
-                                                        UInt16              bitmapResourceId,
-                                                        ResourceGraphicPtr  &resourceGraphicPtr)
+FolioStatus ResourceGraphicsCache::GainResourceGraphic (const OwnerId&                          ownerId,
+                                                        const DrawingElement::DrawingElementId& drawingElementId,
+                                                        UInt16                                  bitmapResourceId,
+                                                        ResourceGraphicPtr&                     resourceGraphicPtr)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -110,7 +118,8 @@ FolioStatus ResourceGraphicsCache::GainResourceGraphic (OwnerId             owne
 
         #ifdef _OUTPUT_RESOURCE_GRAPHICS_CACHE_
         FolioOStringStream  str;
-        str << TXT("ResourceGraphicsCache::GainResourceGraphic ") << itr->Describe ()
+        str << TXT("ResourceGraphicsCache::GainResourceGraphic:") 
+            << TXT(' ') << itr->Describe ()
             << std::endl;
         ::OutputDebugString (str.str ().c_str ());
         #endif
@@ -120,6 +129,12 @@ FolioStatus ResourceGraphicsCache::GainResourceGraphic (OwnerId             owne
     {
         // No. 
 
+        FolioOStringStream  str;
+        str << TXT("ResourceGraphicsCache::GainResourceGraphic:") 
+            << TXT(' ') << drawingElementId
+            << TXT(", bitmapResourceId=") << Folio::Core::Util::DescribeBitmapResourceId (bitmapResourceId)
+            << std::endl;
+        ::OutputDebugString (str.str ().c_str ());
         Dump (true);
 
         status = ERR_ALREADY_IN_USE;
@@ -129,8 +144,8 @@ FolioStatus ResourceGraphicsCache::GainResourceGraphic (OwnerId             owne
 } // Endproc.
 
 
-FolioStatus ResourceGraphicsCache::GainResourceGraphic (OwnerId                     ownerId,
-                                                        const ResourceGraphicPtr    &resourceGraphicPtr)
+FolioStatus ResourceGraphicsCache::GainResourceGraphic (const OwnerId&              ownerId,
+                                                        const ResourceGraphicPtr&   resourceGraphicPtr)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -146,7 +161,8 @@ FolioStatus ResourceGraphicsCache::GainResourceGraphic (OwnerId                 
 
         #ifdef _OUTPUT_RESOURCE_GRAPHICS_CACHE_
         FolioOStringStream  str;
-        str << TXT("ResourceGraphicsCache::GainResourceGraphic ") << itr->Describe ()
+        str << TXT("ResourceGraphicsCache::GainResourceGraphic:") 
+            << TXT(' ') << itr->Describe ()
             << std::endl;
         ::OutputDebugString (str.str ().c_str ());
         #endif
@@ -156,6 +172,12 @@ FolioStatus ResourceGraphicsCache::GainResourceGraphic (OwnerId                 
     {
         // No. 
 
+        FolioOStringStream  str;
+        str << TXT("ResourceGraphicsCache::GainResourceGraphic:") 
+            << TXT(' ') << ownerId
+            << TXT(", ") << resourceGraphicPtr->Describe ()
+            << std::endl;
+        ::OutputDebugString (str.str ().c_str ());
         Dump (true);
 
         status = ERR_ALREADY_IN_USE;
@@ -165,7 +187,7 @@ FolioStatus ResourceGraphicsCache::GainResourceGraphic (OwnerId                 
 } // Endproc.
 
 
-FolioStatus ResourceGraphicsCache::ReleaseResourceGraphic (const ResourceGraphicPtr &resourceGraphicPtr)
+FolioStatus ResourceGraphicsCache::ReleaseResourceGraphic (const ResourceGraphicPtr& resourceGraphicPtr)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -177,21 +199,22 @@ FolioStatus ResourceGraphicsCache::ReleaseResourceGraphic (const ResourceGraphic
     {
         #ifdef _OUTPUT_RESOURCE_GRAPHICS_CACHE_
         FolioOStringStream  str;
-        str << TXT("ResourceGraphicsCache::ReleaseResourceGraphic ") << itr->Describe ()
+        str << TXT("ResourceGraphicsCache::ReleaseResourceGraphic:") 
+            << TXT(' ') << itr->Describe ()
             << std::endl;
         ::OutputDebugString (str.str ().c_str ());
         #endif
 
         // The resource graphic is now unowned.
 
-        itr->m_ownerId = OWNER_ID_UNDEFINED;
+        itr->m_ownerId.clear ();
     } // Endif.
 
     return (status);
 } // Endproc.
 
 
-FolioStatus ResourceGraphicsCache::ReleaseResourceGraphics (OwnerId ownerId)
+FolioStatus ResourceGraphicsCache::ReleaseResourceGraphics (const OwnerId& ownerId)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -203,14 +226,15 @@ FolioStatus ResourceGraphicsCache::ReleaseResourceGraphics (OwnerId ownerId)
         {
             #ifdef _OUTPUT_RESOURCE_GRAPHICS_CACHE_
             FolioOStringStream  str;
-            str << TXT("ResourceGraphicsCache::ReleaseResourceGraphics ") << itr->Describe ()
+            str << TXT("ResourceGraphicsCache::ReleaseResourceGraphics:") 
+                << TXT(' ') << itr->Describe ()
                 << std::endl;
             ::OutputDebugString (str.str ().c_str ());
             #endif
 
             // The resource graphic is now unowned.
 
-            itr->m_ownerId = OWNER_ID_UNDEFINED;
+            itr->m_ownerId.clear ();
         } // Endif.
 
     } // Endfor.
@@ -228,8 +252,8 @@ void    ResourceGraphicsCache::Dump (bool ownedOnly) const
         if (!ownedOnly || itr->IsOwned ())
         {
             FolioOStringStream  str;
-            str << std::setw(8) << std::setfill(TXT('0')) << std::distance(m_resourceGraphicsList.begin (), itr) << TXT(": ")  
-                << itr->Describe ()
+            str << Folio::Core::Util::DescribeDecimal (std::distance(m_resourceGraphicsList.begin (), itr), 8) << TXT(":")  
+                << TXT(' ') << itr->Describe ()
                 << std::endl;
             ::OutputDebugString (str.str ().c_str ());
         } // Endif.
@@ -272,18 +296,28 @@ void    ResourceGraphicsCache::DumpNumUsedBitmaps (bool ownedOnly) const
 } // Endproc.
 
 
-ResourceGraphicsCache::ResourceGraphicsList::iterator   ResourceGraphicsCache::Find (DrawingElement::Id drawingElementId,
-                                                                                     UInt16             bitmapResourceId)
+ResourceGraphicsCache::OwnerId  ResourceGraphicsCache::MakeOwnerId (UInt32 ownerId)
+{
+    FolioOStringStream  str;
+
+    str << std::dec << ownerId;
+
+    return (str.str ());
+} // Endproc.
+
+
+ResourceGraphicsCache::ResourceGraphicsList::iterator   ResourceGraphicsCache::Find (const DrawingElement::DrawingElementId&    drawingElementId,
+                                                                                     UInt16                                     bitmapResourceId)
 {
     return (std::find_if (m_resourceGraphicsList.begin (), m_resourceGraphicsList.end (), 
                           [drawingElementId, bitmapResourceId](const Cache& arg) 
-                          {return (!arg.IsOwned ()                              &&
-                                   (arg.m_drawingElementId == drawingElementId) &&
+                          {return (!arg.IsOwned ()                                                          &&
+                                   (arg.m_resourceGraphicPtr->GetDrawingElementId () == drawingElementId)   &&
                                    (arg.m_resourceGraphicPtr->GetBitmapResourceId () == bitmapResourceId));}));
 } // Endproc.
 
 
-ResourceGraphicsCache::ResourceGraphicsList::iterator   ResourceGraphicsCache::Find (const ResourceGraphicPtr &resourceGraphicPtr)
+ResourceGraphicsCache::ResourceGraphicsList::iterator   ResourceGraphicsCache::Find (const ResourceGraphicPtr& resourceGraphicPtr)
 {
     return (std::find_if (m_resourceGraphicsList.begin (), m_resourceGraphicsList.end (), 
                           [resourceGraphicPtr](const Cache& arg) 
@@ -291,7 +325,7 @@ ResourceGraphicsCache::ResourceGraphicsList::iterator   ResourceGraphicsCache::F
 } // Endproc.
 
 
-ResourceGraphicsCache::ResourceGraphicsList::iterator   ResourceGraphicsCache::Find (const ResourceGraphicPtr   &resourceGraphicPtr,
+ResourceGraphicsCache::ResourceGraphicsList::iterator   ResourceGraphicsCache::Find (const ResourceGraphicPtr&  resourceGraphicPtr,
                                                                                      bool                       findOwnedResourceGraphic)
 {
     return (std::find_if (m_resourceGraphicsList.begin (), m_resourceGraphicsList.end (), 

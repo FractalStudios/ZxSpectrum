@@ -221,8 +221,8 @@ bool    ACollisionGrid::FindCellElement (CellElement::UserData  userData,
 } // Endproc.
 
 
-bool    ACollisionGrid::FindCellElements (CellElement::Id   cellElementId,
-                                          CellElements&     cellElements) const
+bool    ACollisionGrid::FindCellElements (const CellElement::CellElementId& cellElementId,
+                                          CellElements&                     cellElements) const
 {
     cellElements.clear ();  // Initialise!
 
@@ -232,7 +232,7 @@ bool    ACollisionGrid::FindCellElements (CellElement::Id   cellElementId,
          itr != m_grid.end ();
          ++itr)
     {
-        if (itr->m_id == cellElementId)
+        if (itr->m_cellElementId == cellElementId)
         {
             // Add the cell element to the list of cell elements.
 

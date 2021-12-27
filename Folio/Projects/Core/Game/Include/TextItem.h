@@ -25,7 +25,7 @@ public:
     ~TextItem ();
 
     FolioStatus Create (FolioHandle                             dcHandle,
-                        DrawingElement::Id                      drawingElementId,
+                        const DrawingElement::DrawingElementId& drawingElementId,
                         Folio::Core::Graphic::GdiRasterFont&    gdiRasterFont,
                         Id                                      itemId,
                         Int32                                   screenXLeft,
@@ -34,9 +34,9 @@ public:
                         Gdiplus::ARGB                           textColour = Folio::Core::Graphic::DEFAULT_TEXT_COLOUR,
                         Gdiplus::ARGB                           backgroundColour = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR,
                         bool                                    gdiBitmapCacheRqd = false);
-   FolioStatus SetInvert (bool              invert,
-                          Gdiplus::Graphics &graphics, 
-                          bool              &redrawCanvas);
+   FolioStatus SetInvert (bool                  invert,
+                          Gdiplus::Graphics&    graphics, 
+                          bool&                 redrawCanvas);
 
     Folio::Core::Graphic::GdiRasterTextPtr  GetGdiRasterText () const;
 

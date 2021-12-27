@@ -38,7 +38,7 @@ public:
                         FolioHandle instanceHandle,
                         UInt16      resourceId);
     FolioStatus Create (FolioHandle         dcHandle,
-                        const FolioString   &fileName);
+                        const FolioString&  fileName);
     FolioStatus Create (FolioHandle         dcHandle,
                         const GdiBitmap&    gdiBitmap);
     FolioStatus Create (FolioHandle             dcHandle,
@@ -139,11 +139,11 @@ private:
     FolioStatus DrawPartialBitmap (HDC              graphicsDcHandle,
                                    Int32            screenXLeft,
                                    Int32            screenYTop,
-                                   Gdiplus::Rect    &drawingRect) const;
+                                   Gdiplus::Rect&   drawingRect) const;
     FolioStatus DrawFullBitmap (HDC             graphicsDcHandle,
                                 Int32           screenXLeft,
                                 Int32           screenYTop,
-                                Gdiplus::Rect   &drawingRect) const;
+                                Gdiplus::Rect&  drawingRect) const;
 
     void    Destroy ();
     bool    IsCreated () const;

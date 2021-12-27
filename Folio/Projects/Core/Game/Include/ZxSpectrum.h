@@ -94,7 +94,7 @@ extern  Int32   CalculateScreenYBottom (Int32   screenYTop,
                                         Int32   screenHeight,
                                         UInt32  drawingFlags = ResourceGraphic::NO_DRAWING_FLAGS);
 
-extern  UInt32  BeepDurationToMilliseconds (const float &beepDuration);
+extern  UInt32  BeepDurationToMilliseconds (const float& beepDuration);
 extern  float   BeepPitchToFrequency (Int32 beepPitch);
 extern  UInt32  CalculateDuration (UInt32 numTStates);
 extern  float   CalculateFrequency (UInt32 numTStates);

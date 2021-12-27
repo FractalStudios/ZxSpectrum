@@ -48,7 +48,7 @@ GdiDiBitmap::GdiDiBitmap (const GdiDiBitmap& rhs)
 /**
  * The class assignment operator.
  */
-GdiDiBitmap&    GdiDiBitmap::operator = (const GdiDiBitmap &rhs)
+GdiDiBitmap&    GdiDiBitmap::operator = (const GdiDiBitmap& rhs)
 {
     if (this != &(rhs))
     {
@@ -123,7 +123,7 @@ FolioStatus GdiDiBitmap::Create (FolioHandle    instanceHandle,
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus GdiDiBitmap::Create (const FolioString &fileName)
+FolioStatus GdiDiBitmap::Create (const FolioString& fileName)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -243,7 +243,7 @@ FolioStatus GdiDiBitmap::Create (const GdiDiBitmap& gdiDiBitmap)
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus GdiDiBitmap::Create (const GdiDiBitmap      &gdiDiBitmap,
+FolioStatus GdiDiBitmap::Create (const GdiDiBitmap&     gdiDiBitmap,
                                  const double&          radians, 
                                  const Gdiplus::Color&  backgroundColour)
 {

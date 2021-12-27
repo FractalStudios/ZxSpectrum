@@ -25,32 +25,31 @@ public:
     GraphicItem ();
     ~GraphicItem ();
 
-    FolioStatus Create (FolioHandle         dcHandle,
-                        FolioHandle         instanceHandle,
-                        DrawingElement::Id  drawingElementId,
-                        UInt16              bitmapResourceId,
-                        Id                  itemId,
-                        Int32               screenXLeft,
-                        Int32               screenYTop,
-                        UInt32              screenScale,
-                        bool                maskedBitmapDrawingElementRqd = false,
-                        Gdiplus::ARGB       maskColour = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR);
-    FolioStatus Create (FolioHandle         dcHandle,
-                        FolioHandle         instanceHandle,
-                        DrawingElement::Id  drawingElementId,
-                        UInt16              bitmapResourceId,
-                        Id                  itemId,
-                        Int32               screenXLeft,
-                        Int32               screenYTop,
-                        UInt32              screenScale,
-                        Gdiplus::ARGB       changeColour, 
-                        Gdiplus::ARGB       foregroundColour = Folio::Core::Graphic::DEFAULT_FOREGROUND_COLOUR,
-                        Gdiplus::ARGB       backgroundColour = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR,
-                        bool                maskedBitmapDrawingElementRqd = false,
-                        Gdiplus::ARGB       maskColour = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR);
+    FolioStatus Create (FolioHandle                             dcHandle,
+                        FolioHandle                             instanceHandle,
+                        const DrawingElement::DrawingElementId& drawingElementId,
+                        UInt16                                  bitmapResourceId,
+                        Id                                      itemId,
+                        Int32                                   screenXLeft,
+                        Int32                                   screenYTop,
+                        UInt32                                  screenScale,
+                        bool                                    maskedBitmapDrawingElementRqd = false,
+                        Gdiplus::ARGB                           maskColour = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR);
+    FolioStatus Create (FolioHandle                             dcHandle,
+                        FolioHandle                             instanceHandle,
+                        const DrawingElement::DrawingElementId& drawingElementId,
+                        UInt16                                  bitmapResourceId,
+                        Id                                      itemId,
+                        Int32                                   screenXLeft,
+                        Int32                                   screenYTop,
+                        UInt32                                  screenScale,
+                        Gdiplus::ARGB                           changeColour, 
+                        Gdiplus::ARGB                           foregroundColour = Folio::Core::Graphic::DEFAULT_FOREGROUND_COLOUR,
+                        Gdiplus::ARGB                           backgroundColour = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR,
+                        bool                                    maskedBitmapDrawingElementRqd = false,
+                        Gdiplus::ARGB                           maskColour = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR);
     FolioStatus Create (FolioHandle                 dcHandle,
                         const ResourceGraphicPtr&   resourceGraphic,
-                        DrawingElement::Id          drawingElementId,
                         Id                          itemId,
                         Int32                       screenXLeft,
                         Int32                       screenYTop,
@@ -64,17 +63,17 @@ public:
 private:
     ResourceGraphicPtr  m_resourceGraphic;  // The resource graphic of the graphic item.
 
-    FolioStatus CreateDrawingElements (FolioHandle          dcHandle,
-                                       DrawingElement::Id   drawingElementId,
-                                       Int32                screenXLeft,
-                                       Int32                screenYTop,
-                                       UInt32               screenScale);
-    FolioStatus CreateDrawingElements (FolioHandle          dcHandle,
-                                       DrawingElement::Id   drawingElementId,
-                                       Int32                screenXLeft,
-                                       Int32                screenYTop,
-                                       UInt32               screenScale,
-                                       Gdiplus::ARGB        foregroundColour);
+    FolioStatus CreateDrawingElements (FolioHandle                              dcHandle,
+                                       const DrawingElement::DrawingElementId&  drawingElementId,
+                                       Int32                                    screenXLeft,
+                                       Int32                                    screenYTop,
+                                       UInt32                                   screenScale);
+    FolioStatus CreateDrawingElements (FolioHandle                              dcHandle,
+                                       const DrawingElement::DrawingElementId&  drawingElementId,
+                                       Int32                                    screenXLeft,
+                                       Int32                                    screenYTop,
+                                       UInt32                                   screenScale,
+                                       Gdiplus::ARGB                            foregroundColour);
 
     bool    IsCreated () const;
 }; // Endclass.

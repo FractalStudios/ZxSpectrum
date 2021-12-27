@@ -53,23 +53,23 @@ public:
     struct CellElement
     {
         // Cell element identifier.
-        typedef DrawingElement::Id  Id;
+        typedef DrawingElement::DrawingElementId    CellElementId;
 
         // User data.
         typedef DrawingElement::UserData    UserData;
 
-        CellElement (Id                     id,
+        CellElement (const CellElementId&   cellElementId,
                      const Gdiplus::Rect&   screenRect,
                      CellValue              cellValue = CELL_VALUE_EMPTY,
                      UserData               userData = 0)
-        :   m_id(id),                   
+        :   m_cellElementId(cellElementId),                   
             m_screenRect(screenRect),           
             m_cellValue(cellValue),
             m_userData(userData)             
         {} // Endproc.
 
         CellElement (const DrawingElement& drawingElement)
-        :   m_id(drawingElement.GetDrawingElementId ()),                   
+        :   m_cellElementId(drawingElement.GetDrawingElementId ()),                   
             m_screenRect(drawingElement.GetScreenRect ()),           
             m_cellValue(drawingElement.GetCollisionGridCellValue ()),
             m_userData(drawingElement.GetUserData ())             
@@ -85,13 +85,13 @@ public:
 
         bool    operator == (const CellElement& rhs) const
         {
-            return ((m_id == rhs.m_id) && (m_userData == rhs.m_userData));
+            return ((m_cellElementId == rhs.m_cellElementId) && (m_userData == rhs.m_userData));
         } // Endproc.
 
-        Id              m_id;           // The identifier of the cell element.
-        Gdiplus::Rect   m_screenRect;   // The screen rect of the cell element.
-        CellValue       m_cellValue;    // The collision grid cell value of the cell element.
-        UserData        m_userData;     // User defined data applicable to the cell element.
+        CellElementId       m_cellElementId;    // The identifier of the cell element.
+        Gdiplus::Rect       m_screenRect;       // The screen rect of the cell element.
+        CellValue           m_cellValue;        // The collision grid cell value of the cell element.
+        UserData            m_userData;         // User defined data applicable to the cell element.
     }; // Endstruct.
 
     // Cell elements.
@@ -103,8 +103,8 @@ public:
 
     bool    FindCellElement (CellElement::UserData  userData,
                              CellElement&           cellElement) const;
-    bool    FindCellElements (CellElement::Id   cellElementId,
-                              CellElements&     cellElements) const;
+    bool    FindCellElements (const CellElement::CellElementId& cellElementId,
+                              CellElements&                     cellElements) const;
 
     bool    IsCollision (const Gdiplus::Rect&   spriteScreenRect,
                          CellElements&          cellElements) const;

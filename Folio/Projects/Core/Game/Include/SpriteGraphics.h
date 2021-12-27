@@ -94,7 +94,7 @@ public:
     {} // Endproc.
 
     SpriteGraphicAttributes (Direction                  direction,
-                             const SpriteGraphicsList   &spriteGraphicsList,
+                             const SpriteGraphicsList&  spriteGraphicsList,
                              Action                     action = NO_ACTION)
     :   m_direction(direction),
         m_spriteGraphicsList(spriteGraphicsList),
@@ -179,13 +179,13 @@ FolioStatus QuerySpriteGraphics (FolioHandle                            dcHandle
 
 
 template <typename T, typename U>
-FolioStatus QuerySpriteGraphics (FolioHandle                                        dcHandle,
-                                 Folio::Core::Game::ResourceGraphicsCache&          resourceGraphicsCache,
-                                 Folio::Core::Game::ResourceGraphicsCache::OwnerId  ownerId,
-                                 Folio::Core::Game::DrawingElement::Id              drawingElementId,
-                                 const SpriteGraphicIdsList<U>&                     spriteGraphicIdsList,
-                                 Folio::Core::Game::ZxSpectrum::COLOUR              spriteColour,
-                                 SpriteGraphicsList&                                spriteGraphicsList)
+FolioStatus QuerySpriteGraphics (FolioHandle                                                dcHandle,
+                                 Folio::Core::Game::ResourceGraphicsCache&                  resourceGraphicsCache,
+                                 const Folio::Core::Game::ResourceGraphicsCache::OwnerId&   ownerId,
+                                 const Folio::Core::Game::DrawingElement::DrawingElementId& drawingElementId,
+                                 const SpriteGraphicIdsList<U>&                             spriteGraphicIdsList,
+                                 Folio::Core::Game::ZxSpectrum::COLOUR                      spriteColour,
+                                 SpriteGraphicsList&                                        spriteGraphicsList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -288,13 +288,13 @@ FolioStatus QuerySpriteGraphicAttributes (FolioHandle                           
 
 
 template <typename T, typename U>
-FolioStatus QuerySpriteGraphicAttributes (FolioHandle                                       dcHandle,
-                                          Folio::Core::Game::ResourceGraphicsCache&         resourceGraphicsCache,
-                                          Folio::Core::Game::ResourceGraphicsCache::OwnerId ownerId,
-                                          Folio::Core::Game::DrawingElement::Id             drawingElementId,
-                                          Folio::Core::Game::ZxSpectrum::COLOUR             spriteColour,
-                                          const SpriteGraphicCharacteristicsList<T, U>&     spriteGraphicCharacteristicsList,
-                                          SpriteGraphicAttributesList&                      spriteGraphicAttributesList)
+FolioStatus QuerySpriteGraphicAttributes (FolioHandle                                                   dcHandle,
+                                          Folio::Core::Game::ResourceGraphicsCache&                     resourceGraphicsCache,
+                                          const Folio::Core::Game::ResourceGraphicsCache::OwnerId&      ownerId,
+                                          const Folio::Core::Game::DrawingElement::DrawingElementId&    drawingElementId,
+                                          Folio::Core::Game::ZxSpectrum::COLOUR                         spriteColour,
+                                          const SpriteGraphicCharacteristicsList<T, U>&                 spriteGraphicCharacteristicsList,
+                                          SpriteGraphicAttributesList&                                  spriteGraphicAttributesList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -406,14 +406,14 @@ FolioStatus QuerySpriteGraphicAttributes (FolioHandle                           
 
 
 template <typename T, typename U>
-FolioStatus QuerySpriteGraphicAttributes (FolioHandle                                       dcHandle,
-                                          Folio::Core::Game::ResourceGraphicsCache&         resourceGraphicsCache,
-                                          Folio::Core::Game::ResourceGraphicsCache::OwnerId ownerId,
-                                          Folio::Core::Game::DrawingElement::Id             drawingElementId,
-                                          T                                                 spriteId,
-                                          Folio::Core::Game::ZxSpectrum::COLOUR             spriteColour,
-                                          const SpriteGraphicCharacteristicsList<T, U>&     spriteGraphicCharacteristicsList,
-                                          SpriteGraphicAttributesList&                      spriteGraphicAttributesList)
+FolioStatus QuerySpriteGraphicAttributes (FolioHandle                                                   dcHandle,
+                                          Folio::Core::Game::ResourceGraphicsCache&                     resourceGraphicsCache,
+                                          const Folio::Core::Game::ResourceGraphicsCache::OwnerId&      ownerId,
+                                          const Folio::Core::Game::DrawingElement::DrawingElementId&    drawingElementId,
+                                          T                                                             spriteId,
+                                          Folio::Core::Game::ZxSpectrum::COLOUR                         spriteColour,
+                                          const SpriteGraphicCharacteristicsList<T, U>&                 spriteGraphicCharacteristicsList,
+                                          SpriteGraphicAttributesList&                                  spriteGraphicAttributesList)
 {
     FolioStatus status = ERR_SUCCESS;
 

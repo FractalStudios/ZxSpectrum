@@ -20,16 +20,16 @@ TextItem::~TextItem ()
 } // Endproc.
 
 
-FolioStatus TextItem::Create (FolioHandle                           dcHandle,
-                              DrawingElement::Id                    drawingElementId,
-                              Folio::Core::Graphic::GdiRasterFont&  gdiRasterFont,
-                              Id                                    itemId,
-                              Int32                                 screenXLeft,
-                              Int32                                 screenYTop,
-                              UInt32                                screenScale,
-                              Gdiplus::ARGB                         textColour,
-                              Gdiplus::ARGB                         backgroundColour,
-                              bool                                  gdiBitmapCacheRqd)
+FolioStatus TextItem::Create (FolioHandle                               dcHandle,
+                              const DrawingElement::DrawingElementId&   drawingElementId,
+                              Folio::Core::Graphic::GdiRasterFont&      gdiRasterFont,
+                              Id                                        itemId,
+                              Int32                                     screenXLeft,
+                              Int32                                     screenYTop,
+                              UInt32                                    screenScale,
+                              Gdiplus::ARGB                             textColour,
+                              Gdiplus::ARGB                             backgroundColour,
+                              bool                                      gdiBitmapCacheRqd)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -81,9 +81,9 @@ FolioStatus TextItem::Create (FolioHandle                           dcHandle,
 } // Endproc.
 
 
-FolioStatus TextItem::SetInvert (bool                 invert,
-                                 Gdiplus::Graphics    &graphics, 
-                                 bool                 &redrawCanvas)
+FolioStatus TextItem::SetInvert (bool               invert,
+                                 Gdiplus::Graphics& graphics, 
+                                 bool&              redrawCanvas)
 {                   
     FolioStatus status = ERR_SUCCESS;
 

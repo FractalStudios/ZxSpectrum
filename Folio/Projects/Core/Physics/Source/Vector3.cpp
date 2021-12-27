@@ -49,7 +49,7 @@ Vector3::~Vector3 ()
  * @param [in] rhs
  * The vector to copy to this one.
  */
-Vector3::Vector3 (const Vector3 &rhs)
+Vector3::Vector3 (const Vector3& rhs)
 :   m_x(rhs.m_x),
 	m_y(rhs.m_y),
 	m_z(rhs.m_z)

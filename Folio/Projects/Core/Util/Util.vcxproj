@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Include\BitmapResource.h" />
     <ClInclude Include="Include\CriticalSection.h" />
     <ClInclude Include="Include\DateTime.h" />
     <ClInclude Include="Include\Descriptions.h" />

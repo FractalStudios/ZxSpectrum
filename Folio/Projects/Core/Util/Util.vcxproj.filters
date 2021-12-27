@@ -152,6 +152,9 @@
     <ClInclude Include="Include\WaveOutDevice.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
+    <ClInclude Include="Include\BitmapResource.h">
+      <Filter>Header Files\SDK</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\CriticalSection.cpp">

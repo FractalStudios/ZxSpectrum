@@ -5,6 +5,8 @@
 
 // "Home-made" includes.
 #include    <Base.h>
+#include    "BitmapResource.h"
+#include    "Descriptions.h"
 
 #pragma pack(push, 1)
 
@@ -16,10 +18,6 @@ namespace Core
 
 namespace Util
 {
-
-// Routines.
-
-extern  FolioString DescribeId (UInt16 id);
 
 /// The handle monitor class.
 class HandleMonitor
@@ -53,9 +51,9 @@ private:
         FolioString Describe () const
         {
             FolioOStringStream  str;
-            str << TXT("0x") << std::setw(8) << std::setfill(TXT('0')) << std::hex << m_handle
-                << (' ') << DescribeId (m_id)
-                << TXT(' ') << m_name;
+            str << DescribeHexadecimal (reinterpret_cast<UInt32> (m_handle))
+                << TXT(", btimapResourceId=") << DescribeBitmapResourceId (m_id)
+                << TXT(", ") << m_name;
 
             return (str.str ());
         } // Endproc.

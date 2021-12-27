@@ -51,27 +51,27 @@ public:
 
     bool    IsCreated () const;
 
-    FolioStatus Create (FolioHandle                 instanceHandle,
-                        DrawingElement::Id          drawingElementId,
-                        UInt16                      bitmapResourceId,
-                        bool                        maskedGdiBitmapRqd = false,
-                        ACollisionGrid::CellValue   collisionGridCellValue = ACollisionGrid::CELL_VALUE_EMPTY,
-                        Gdiplus::ARGB               maskColour = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR);
-    FolioStatus Create (FolioHandle                 instanceHandle,
-                        DrawingElement::Id          drawingElementId,
-                        UInt16                      bitmapResourceId,
-                        Gdiplus::ARGB               changeColour, 
-                        bool                        maskedGdiBitmapRqd = false,
-                        ACollisionGrid::CellValue   collisionGridCellValue = ACollisionGrid::CELL_VALUE_EMPTY,
-                        Gdiplus::ARGB               maskColour = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR);
-    FolioStatus Create (FolioHandle                 instanceHandle,
-                        DrawingElement::Id          drawingElementId,
-                        UInt16                      bitmapResourceId,
-                        Gdiplus::ARGB               changeColour, 
-                        Gdiplus::ARGB               newColour, 
-                        bool                        maskedGdiBitmapRqd = false,
-                        ACollisionGrid::CellValue   collisionGridCellValue = ACollisionGrid::CELL_VALUE_EMPTY,
-                        Gdiplus::ARGB               maskColour = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR);
+    FolioStatus Create (FolioHandle                             instanceHandle,
+                        const DrawingElement::DrawingElementId& drawingElementId,
+                        UInt16                                  bitmapResourceId,
+                        bool                                    maskedGdiBitmapRqd = false,
+                        ACollisionGrid::CellValue               collisionGridCellValue = ACollisionGrid::CELL_VALUE_EMPTY,
+                        Gdiplus::ARGB                           maskColour = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR);
+    FolioStatus Create (FolioHandle                             instanceHandle,
+                        const DrawingElement::DrawingElementId& drawingElementId,
+                        UInt16                                  bitmapResourceId,
+                        Gdiplus::ARGB                           changeColour, 
+                        bool                                    maskedGdiBitmapRqd = false,
+                        ACollisionGrid::CellValue               collisionGridCellValue = ACollisionGrid::CELL_VALUE_EMPTY,
+                        Gdiplus::ARGB                           maskColour = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR);
+    FolioStatus Create (FolioHandle                             instanceHandle,
+                        const DrawingElement::DrawingElementId& drawingElementId,
+                        UInt16                                  bitmapResourceId,
+                        Gdiplus::ARGB                           changeColour, 
+                        Gdiplus::ARGB                           newColour, 
+                        bool                                    maskedGdiBitmapRqd = false,
+                        ACollisionGrid::CellValue               collisionGridCellValue = ACollisionGrid::CELL_VALUE_EMPTY,
+                        Gdiplus::ARGB                           maskColour = Folio::Core::Graphic::DEFAULT_BACKGROUND_COLOUR);
 
     FolioStatus CreateGdiBitmap (FolioHandle    dcHandle,
                                  UInt32         screenScale,
@@ -98,13 +98,13 @@ public:
                                       DrawingElementsList&              drawingElementsList,
                                       bool                              maskedDrawingElementRqd = true);
 
-    DrawingElement::Id          GetDrawingElementId () const;
-    UInt16                      GetBitmapResourceId () const;
-    UInt32                      GetChangeableColourTableIndex () const;
-    Gdiplus::ARGB               GetCurrentChangeableColour () const;
-    ACollisionGrid::CellValue   GetCollisionGridCellValue () const;
-    bool                        IsMaskedBitmapDrawingElementRqd () const;
-    Gdiplus::ARGB               GetMaskColour () const;
+    DrawingElement::DrawingElementId    GetDrawingElementId () const;
+    UInt16                              GetBitmapResourceId () const;
+    UInt32                              GetChangeableColourTableIndex () const;
+    Gdiplus::ARGB                       GetCurrentChangeableColour () const;
+    ACollisionGrid::CellValue           GetCollisionGridCellValue () const;
+    bool                                IsMaskedBitmapDrawingElementRqd () const;
+    Gdiplus::ARGB                       GetMaskColour () const;
 
     bool    IsGdiDiBitmap () const;
     bool    IsGdiBitmap () const;
@@ -116,6 +116,8 @@ public:
 
     UInt32  GetGraphicWidth () const;
     UInt32  GetGraphicHeight () const;
+
+    FolioString Describe () const;
 
     static   UInt32  GetOrientation (UInt32 drawingFlags);
     static   bool    IsOrientationTop (UInt32 drawingFlags);
@@ -135,15 +137,15 @@ public:
     static   bool    IsFlipVertical (UInt32 drawingFlags);
 
 private:
-    DrawingElement::Id          m_drawingElementId;             // The drawing element identifier of the resource graphic.
-    UInt16                      m_bitmapResourceId;             // The bitmap resource identifier of the resource graphic.
-    UInt32                      m_changeableColourTableIndex;   // The colour table index of the changeable colour within the resource graphic's GDI device-independent bitmap.
-    Gdiplus::ARGB               m_currentChangeableColour;      // The current changeable colour of the resource graphic.
-    ACollisionGrid::CellValue   m_collisionGridCellValue;       // The collision grid cell value of the resource graphic.
-    UInt32                      m_screenScale;                  // The screen scale of the GDI bitmap.
-    UInt32                      m_drawingFlags;                 // The drawing flags of the GDI bitmap.
-    bool                        m_maskedGdiBitmapRqd;           // Indicates if a masked GDI bitmap is required.
-    Gdiplus::ARGB               m_maskColour;                   // The mask colour of the masked GDI bitmap.
+    DrawingElement::DrawingElementId    m_drawingElementId;             // The drawing element identifier of the resource graphic.
+    UInt16                              m_bitmapResourceId;             // The bitmap resource identifier of the resource graphic.
+    UInt32                              m_changeableColourTableIndex;   // The colour table index of the changeable colour within the resource graphic's GDI device-independent bitmap.
+    Gdiplus::ARGB                       m_currentChangeableColour;      // The current changeable colour of the resource graphic.
+    ACollisionGrid::CellValue           m_collisionGridCellValue;       // The collision grid cell value of the resource graphic.
+    UInt32                              m_screenScale;                  // The screen scale of the GDI bitmap.
+    UInt32                              m_drawingFlags;                 // The drawing flags of the GDI bitmap.
+    bool                                m_maskedGdiBitmapRqd;           // Indicates if a masked GDI bitmap is required.
+    Gdiplus::ARGB                       m_maskColour;                   // The mask colour of the masked GDI bitmap.
 
     Folio::Core::Graphic::GdiDiBitmapPtr    m_gdiDiBitmap;      // The GDI device-independent bitmap of the resource graphic.
     Folio::Core::Graphic::GdiBitmapPtr      m_gdiBitmap;        // The GDI bitmap of the resource graphic.
@@ -152,7 +154,7 @@ private:
     bool    IsGdiBitmapMatch (FolioHandle                               dcHandle,
                               UInt32                                    screenScale,
                               UInt32                                    drawingFlags,
-                              const Folio::Core::Graphic::GdiBitmapPtr  &gdiBitmap) const;
+                              const Folio::Core::Graphic::GdiBitmapPtr& gdiBitmap) const;
 
     static  FolioStatus CreateGdiBitmap (FolioHandle                                    dcHandle,
                                          UInt32                                         screenScale,

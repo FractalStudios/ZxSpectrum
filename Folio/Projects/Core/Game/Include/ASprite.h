@@ -33,7 +33,7 @@ public:
 
     virtual ~ASprite ();
 
-    FolioStatus GainResourceGraphics (Folio::Core::Game::ResourceGraphicsCache::OwnerId ownerId);
+    FolioStatus GainResourceGraphics (const Folio::Core::Game::ResourceGraphicsCache::OwnerId& ownerId);
     FolioStatus ReleaseResourceGraphics ();
 
     FolioStatus ChangeSpriteInkColour (Gdiplus::ARGB    spriteInkColour, 
@@ -263,8 +263,8 @@ protected:
             return (status);
         } // Endproc.
 
-        FolioStatus GainResourceGraphics (Folio::Core::Game::ResourceGraphicsCache::OwnerId ownerId,
-                                          Folio::Core::Game::ResourceGraphicsCache&         resourceGraphicsCache) const
+        FolioStatus GainResourceGraphics (const Folio::Core::Game::ResourceGraphicsCache::OwnerId&  ownerId,
+                                          Folio::Core::Game::ResourceGraphicsCache&                 resourceGraphicsCache) const
         {
             FolioStatus status = ERR_SUCCESS;
 
@@ -398,7 +398,7 @@ protected:
                                           bool                  toScreenRect = true) const;
     bool    IsAtScreenRect (const Gdiplus::Rect& screenRect) const;
     
-    Direction   GetDirectionToNearestCorner (const ACollisionGrid &collisionGrid) const;
+    Direction   GetDirectionToNearestCorner (const ACollisionGrid& collisionGrid) const;
 
     FolioStatus SetCurrentSpriteBitmaps (Direction          direction,
                                          SpriteDrawingList& spriteDrawingList,
@@ -439,9 +439,9 @@ protected:
 private:
     Folio::Core::Game::ResourceGraphicsCache    *m_resourceGraphicsCache;   //  The resource graphics cache.
 
-    FolioHandle                 m_dcHandle;                 // Handle to the DC.
-    DrawingElement::Id          m_drawingElementId;         // The drawing element identifier of the sprite.
-    ACollisionGrid::CellValue   m_collisionGridCellValue;   // The collision grid cell value of the sprite.
+    FolioHandle                         m_dcHandle;                 // Handle to the DC.
+    DrawingElement::DrawingElementId    m_drawingElementId;         // The drawing element identifier of the sprite.
+    ACollisionGrid::CellValue           m_collisionGridCellValue;   // The collision grid cell value of the sprite.
 
     // Drawing mode enumeration.
     enum DRAWING_MODE

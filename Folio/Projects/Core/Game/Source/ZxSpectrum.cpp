@@ -147,7 +147,7 @@ Int32   CalculateScreenYBottom (Int32   screenYTop,
 } // Endproc.
 
 
-UInt32  BeepDurationToMilliseconds (const float &beepDuration)
+UInt32  BeepDurationToMilliseconds (const float& beepDuration)
 {
     // Beep duration is in seconds, convert to milliseconds.
 
@@ -161,7 +161,7 @@ float   BeepPitchToFrequency (Int32 beepPitch)
 } // Endproc.
 
 
-Folio::Core::Util::Sound::SoundSample   MapBeep (const float    &beepDuration,
+Folio::Core::Util::Sound::SoundSample   MapBeep (const float&   beepDuration,
                                                  Int32          beepPitch)
 {
     return (Folio::Core::Util::Sound::SoundSample(BeepDurationToMilliseconds (beepDuration),

@@ -58,7 +58,7 @@ GdiBitmap::GdiBitmap (const GdiBitmap& rhs)
 /**
  * The class assignment operator.
  */
-GdiBitmap&  GdiBitmap::operator = (const GdiBitmap &rhs)
+GdiBitmap&  GdiBitmap::operator = (const GdiBitmap& rhs)
 {
     if (this != &(rhs))
     {
@@ -200,7 +200,7 @@ FolioStatus GdiBitmap::Create (FolioHandle  dcHandle,
  * </ul>
  */
 FolioStatus GdiBitmap::Create (FolioHandle          dcHandle,
-                               const FolioString    &fileName)
+                               const FolioString&   fileName)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -1429,10 +1429,10 @@ FolioStatus GdiBitmap::InitialiseBitmap (FolioHandle    dcHandle,
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus GdiBitmap::DrawPartialBitmap (HDC           graphicsDcHandle,
-                                          Int32         screenXLeft,
-                                          Int32         screenYTop,
-                                          Gdiplus::Rect &drawingRect) const
+FolioStatus GdiBitmap::DrawPartialBitmap (HDC               graphicsDcHandle,
+                                          Int32             screenXLeft,
+                                          Int32             screenYTop,
+                                          Gdiplus::Rect&    drawingRect) const
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -1610,7 +1610,7 @@ FolioStatus GdiBitmap::DrawPartialBitmap (HDC           graphicsDcHandle,
 FolioStatus GdiBitmap::DrawFullBitmap (HDC              graphicsDcHandle,
                                        Int32            screenXLeft,
                                        Int32            screenYTop,
-                                       Gdiplus::Rect    &drawingRect) const
+                                       Gdiplus::Rect&   drawingRect) const
 {
     FolioStatus status = ERR_SUCCESS;
 

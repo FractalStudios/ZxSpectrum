@@ -23,42 +23,43 @@ class ResourceGraphicsCache
 {
 public:
     // Owner identifier.
-    typedef UInt32  OwnerId;
+    typedef FolioString OwnerId;
 
-    static  const   OwnerId OWNER_ID_UNDEFINED  = -1;  // Undefined owner identifier.
+    // Owner identifiers.
+    static  const   OwnerId OWNER_ID_MAIN_PLAYER_SPRITE;    // Main player sprite owner identifier.   
+    static  const   OwnerId OWNER_ID_BOSS_SPRITE;           // Boss sprite owner identifier.
+    static  const   OwnerId OWNER_ID_NASTY_SPRITE;          // Nasty sprite owner identifier.
+    static  const   OwnerId OWNER_ID_WEAPON_SPRITE;         // Weapon sprite owner identifier.
+    static  const   OwnerId OWNER_ID_INFORMATION_PANEL;     // Information panel owner identifier.
 
     ResourceGraphicsCache ();
     ~ResourceGraphicsCache ();
 
-    FolioStatus Add (DrawingElement::Id         drawingElementId,
-                     const ResourceGraphicPtr   &resourceGraphicPtr);
-    FolioStatus Remove (const ResourceGraphicPtr &resourceGraphicPtr);
+    FolioStatus Add (const ResourceGraphicPtr& resourceGraphicPtr);
+    FolioStatus Remove (const ResourceGraphicPtr& resourceGraphicPtr);
 
-    FolioStatus GainResourceGraphic (OwnerId            ownerId,
-                                     DrawingElement::Id drawingElementId,
-                                     UInt16             bitmapResourceId,
-                                     ResourceGraphicPtr &resourceGraphicPtr);
-    FolioStatus GainResourceGraphic (OwnerId                    ownerId,
-                                     const ResourceGraphicPtr   &resourceGraphicPtr);
-    FolioStatus ReleaseResourceGraphic (const ResourceGraphicPtr &resourceGraphicPtr);
-    FolioStatus ReleaseResourceGraphics (OwnerId ownerId);
+    FolioStatus GainResourceGraphic (const OwnerId&                             ownerId,
+                                     const DrawingElement::DrawingElementId&    drawingElementId,
+                                     UInt16                                     bitmapResourceId,
+                                     ResourceGraphicPtr&                        resourceGraphicPtr);
+    FolioStatus GainResourceGraphic (const OwnerId&             ownerId,
+                                     const ResourceGraphicPtr&  resourceGraphicPtr);
+    FolioStatus ReleaseResourceGraphic (const ResourceGraphicPtr& resourceGraphicPtr);
+    FolioStatus ReleaseResourceGraphics (const OwnerId& ownerId);
 
     void    Dump (bool ownedOnly = true) const;
     void    DumpNumUsedBitmaps (bool ownedOnly = true) const;
+
+    static  OwnerId MakeOwnerId (UInt32 ownerId);
 
 private:
     struct Cache
     {
         Cache ()
-        :   m_ownerId(OWNER_ID_UNDEFINED),
-            m_drawingElementId(DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED)
         {} // Endproc.
 
-        Cache (DrawingElement::Id       drawingElementId,
-               const ResourceGraphicPtr &resourceGraphicPtr)
-        :   m_ownerId(OWNER_ID_UNDEFINED),
-            m_drawingElementId(drawingElementId),
-            m_resourceGraphicPtr(resourceGraphicPtr)
+        Cache (const ResourceGraphicPtr& resourceGraphicPtr)
+        :   m_resourceGraphicPtr(resourceGraphicPtr)
         {} // Endproc.
 
         ~Cache ()
@@ -66,35 +67,35 @@ private:
 
         bool    IsOwned () const
         {
-            return (m_ownerId != OWNER_ID_UNDEFINED);
+            return (!m_ownerId.empty ());
         } // Endproc.
 
         FolioString Describe () const
         {
             FolioOStringStream  str;
-            str << std::setw(2) << std::dec << static_cast<int> (m_ownerId)
-                << TXT(' ') << std::dec << m_drawingElementId
-                << TXT(' ') << std::dec << Folio::Core::Util::DescribeId (m_resourceGraphicPtr->GetBitmapResourceId ())
-                << TXT(" 0x") << std::setw(8) << std::setfill(TXT('0')) << std::hex << m_resourceGraphicPtr
-                << TXT(" 0x") << std::setw(8) << std::setfill(TXT('0')) << std::hex << m_resourceGraphicPtr->GetGdiBitmap ()
-                << TXT(" 0x") << std::setw(8) << std::setfill(TXT('0')) << std::hex << m_resourceGraphicPtr->GetMaskedGdiBitmap ();
+
+            if (IsOwned ())
+            {
+                str << TXT('\'') <<m_ownerId << TXT("' ");
+            } // Endif.
+
+            str << m_resourceGraphicPtr->Describe ();
 
             return (str.str ());
         } // Endproc.
 
-        OwnerId             m_ownerId;              // The identifier of the owner that owns the resource graphic.
-        DrawingElement::Id  m_drawingElementId;     // The drawing element identifier of the resource graphic.
-        ResourceGraphicPtr  m_resourceGraphicPtr;   // The resource graphic.
+        OwnerId             m_ownerId;                  // The identifier of the owner that owns the resource graphic.
+        ResourceGraphicPtr  m_resourceGraphicPtr;       // The resource graphic.
     }; // Endstruct.
     
     // Resource graphics list.
     typedef std::vector<Cache>  ResourceGraphicsList;
     ResourceGraphicsList    m_resourceGraphicsList;
 
-    ResourceGraphicsList::iterator  Find (DrawingElement::Id    drawingElementId,
-                                          UInt16                bitmapResourceId);
-    ResourceGraphicsList::iterator  Find (const ResourceGraphicPtr &resourceGraphicPtr);
-    ResourceGraphicsList::iterator  Find (const ResourceGraphicPtr  &resourceGraphicPtr, 
+    ResourceGraphicsList::iterator  Find (const DrawingElement::DrawingElementId&   drawingElementId,
+                                          UInt16                                    bitmapResourceId);
+    ResourceGraphicsList::iterator  Find (const ResourceGraphicPtr& resourceGraphicPtr);
+    ResourceGraphicsList::iterator  Find (const ResourceGraphicPtr& resourceGraphicPtr, 
                                           bool                      findOwnedResourceGraphic);
 }; // Endclass.
 

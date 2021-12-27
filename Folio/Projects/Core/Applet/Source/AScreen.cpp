@@ -145,8 +145,8 @@ FolioStatus AScreen::StopDisplaying ()
 } // Endproc.
 
 
-FolioStatus AScreen::QueryScreenDrawingElements (FolioHandle                            dcHandle,
-                                                 Folio::Core::Game::DrawingElementsList &drawingElementsList) const
+FolioStatus AScreen::QueryScreenDrawingElements (FolioHandle                                dcHandle,
+                                                 Folio::Core::Game::DrawingElementsList&    drawingElementsList) const
 {
     FolioStatus status = ERR_SUCCESS;
 

@@ -133,7 +133,7 @@ FolioStatus AItem::Draw (Int32                                                  
 
 
 ItemsList::const_iterator   FindItem (AItem::Id         itemId, 
-                                      const ItemsList   &itemsList)
+                                      const ItemsList&  itemsList)
 {
     return (std::find_if (itemsList.begin (), itemsList.end (), 
                           [itemId](const ItemsList::value_type& arg) 
@@ -141,8 +141,8 @@ ItemsList::const_iterator   FindItem (AItem::Id         itemId,
 } // Endproc.
 
 
-ItemsList::iterator FindItem (AItem::Id itemId, 
-                              ItemsList &itemsList)
+ItemsList::iterator FindItem (AItem::Id     itemId, 
+                              ItemsList&    itemsList)
 {
     return (std::find_if (itemsList.begin (), itemsList.end (), 
                           [itemId](const ItemsList::value_type& arg) 

@@ -39,7 +39,6 @@ ASprite::ASprite ()
     m_isAtWall(false),
     m_resourceGraphicsCache(0),
     m_dcHandle(FOLIO_INVALID_HANDLE),
-    m_drawingElementId(DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED),
     m_collisionGridCellValue(ACollisionGrid::CELL_VALUE_EMPTY),
     m_spriteMovementAudioCount(0),
     m_currentMovementSoundSamplesListIndex(FOLIO_INVALID_INDEX),
@@ -58,7 +57,7 @@ ASprite::~ASprite ()
 } // Endproc.
 
 
-FolioStatus ASprite::GainResourceGraphics (Folio::Core::Game::ResourceGraphicsCache::OwnerId ownerId)
+FolioStatus ASprite::GainResourceGraphics (const Folio::Core::Game::ResourceGraphicsCache::OwnerId& ownerId)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -1977,7 +1976,7 @@ FolioStatus ASprite::CreateSpriteDrawingList (FolioHandle                       
             
             spriteDrawingList.push_back (spriteDrawing);
 
-            if (m_drawingElementId == DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED)
+            if (m_drawingElementId.empty ())
             {
                 // Get the sprite graphic.
 

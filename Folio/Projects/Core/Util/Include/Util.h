@@ -1,6 +1,7 @@
 #pragma once
 
 // "Home-made" includes.
+#include    "BitmapResource.h"
 #include    "CriticalSection.h"
 #include    "DateTime.h"
 #include    "Descriptions.h"

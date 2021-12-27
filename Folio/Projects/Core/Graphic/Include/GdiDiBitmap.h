@@ -32,7 +32,7 @@ public:
 
     FolioStatus Create (FolioHandle instanceHandle,
                         UInt16      resourceId);
-    FolioStatus Create (const FolioString &fileName);
+    FolioStatus Create (const FolioString& fileName);
     FolioStatus Create (const GdiDiBitmap& gdiDiBitmap);
     FolioStatus Create (const GdiDiBitmap&      gdiDiBitmap,
                         const double&           radians, 

@@ -117,13 +117,13 @@
     <ClInclude Include="Include\ACollisionGrid.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Include\ResourceGraphicsCache.h">
-      <Filter>Header Files\SDK</Filter>
-    </ClInclude>
     <ClInclude Include="Include\SpriteSound.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
     <ClInclude Include="Include\SpriteGraphics.h">
+      <Filter>Header Files\SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\ResourceGraphicsCache.h">
       <Filter>Header Files\SDK</Filter>
     </ClInclude>
   </ItemGroup>

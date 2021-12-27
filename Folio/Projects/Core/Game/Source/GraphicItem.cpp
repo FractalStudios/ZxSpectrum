@@ -20,16 +20,16 @@ GraphicItem::~GraphicItem ()
 } // Endproc.
 
 
-FolioStatus GraphicItem::Create (FolioHandle        dcHandle,
-                                 FolioHandle        instanceHandle,
-                                 DrawingElement::Id drawingElementId,
-                                 UInt16             bitmapResourceId,
-                                 Id                 itemId,
-                                 Int32              screenXLeft,
-                                 Int32              screenYTop,
-                                 UInt32             screenScale,
-                                 bool               maskedBitmapDrawingElementRqd,
-                                 Gdiplus::ARGB      maskColour)
+FolioStatus GraphicItem::Create (FolioHandle                                dcHandle,
+                                 FolioHandle                                instanceHandle,
+                                 const DrawingElement::DrawingElementId&    drawingElementId,
+                                 UInt16                                     bitmapResourceId,
+                                 Id                                         itemId,
+                                 Int32                                      screenXLeft,
+                                 Int32                                      screenYTop,
+                                 UInt32                                     screenScale,
+                                 bool                                       maskedBitmapDrawingElementRqd,
+                                 Gdiplus::ARGB                              maskColour)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -79,19 +79,19 @@ FolioStatus GraphicItem::Create (FolioHandle        dcHandle,
 } // Endproc.
 
 
-FolioStatus GraphicItem::Create (FolioHandle        dcHandle,
-                                 FolioHandle        instanceHandle,
-                                 DrawingElement::Id drawingElementId,
-                                 UInt16             bitmapResourceId,
-                                 Id                 itemId,
-                                 Int32              screenXLeft,
-                                 Int32              screenYTop,
-                                 UInt32             screenScale,
-                                 Gdiplus::ARGB      changeColour,
-                                 Gdiplus::ARGB      foregroundColour,
-                                 Gdiplus::ARGB      backgroundColour,
-                                 bool               maskedBitmapDrawingElementRqd,
-                                 Gdiplus::ARGB      maskColour)
+FolioStatus GraphicItem::Create (FolioHandle                                dcHandle,
+                                 FolioHandle                                instanceHandle,
+                                 const DrawingElement::DrawingElementId&    drawingElementId,
+                                 UInt16                                     bitmapResourceId,
+                                 Id                                         itemId,
+                                 Int32                                      screenXLeft,
+                                 Int32                                      screenYTop,
+                                 UInt32                                     screenScale,
+                                 Gdiplus::ARGB                              changeColour,
+                                 Gdiplus::ARGB                              foregroundColour,
+                                 Gdiplus::ARGB                              backgroundColour,
+                                 bool                                       maskedBitmapDrawingElementRqd,
+                                 Gdiplus::ARGB                              maskColour)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -147,7 +147,6 @@ FolioStatus GraphicItem::Create (FolioHandle        dcHandle,
 
 FolioStatus GraphicItem::Create (FolioHandle                dcHandle,
                                  const ResourceGraphicPtr&  resourceGraphic,
-                                 DrawingElement::Id         drawingElementId,
                                  Id                         itemId,
                                  Int32                      screenXLeft,
                                  Int32                      screenYTop,
@@ -178,7 +177,7 @@ FolioStatus GraphicItem::Create (FolioHandle                dcHandle,
         // Create the drawing elements.
 
         status = CreateDrawingElements (dcHandle,
-                                        drawingElementId,
+                                        m_resourceGraphic->GetDrawingElementId (),
                                         screenXLeft,
                                         screenYTop,
                                         screenScale);
@@ -244,11 +243,11 @@ Folio::Core::Graphic::GdiBitmapPtr  GraphicItem::GetGdiBitmap () const
 } // Endproc.
 
 
-FolioStatus GraphicItem::CreateDrawingElements (FolioHandle         dcHandle,
-                                                DrawingElement::Id  drawingElementId,
-                                                Int32               screenXLeft,
-                                                Int32               screenYTop,
-                                                UInt32              screenScale)
+FolioStatus GraphicItem::CreateDrawingElements (FolioHandle                             dcHandle,
+                                                const DrawingElement::DrawingElementId& drawingElementId,
+                                                Int32                                   screenXLeft,
+                                                Int32                                   screenYTop,
+                                                UInt32                                  screenScale)
 {
     m_drawingElementsList.clear (); // Initialise!
 
@@ -264,12 +263,12 @@ FolioStatus GraphicItem::CreateDrawingElements (FolioHandle         dcHandle,
 } // Endproc.
 
 
-FolioStatus GraphicItem::CreateDrawingElements (FolioHandle         dcHandle,
-                                                DrawingElement::Id  drawingElementId,
-                                                Int32               screenXLeft,
-                                                Int32               screenYTop,
-                                                UInt32              screenScale,
-                                                Gdiplus::ARGB       foregroundColour)
+FolioStatus GraphicItem::CreateDrawingElements (FolioHandle                             dcHandle,
+                                                const DrawingElement::DrawingElementId& drawingElementId,
+                                                Int32                                   screenXLeft,
+                                                Int32                                   screenYTop,
+                                                UInt32                                  screenScale,
+                                                Gdiplus::ARGB                           foregroundColour)
 {
     m_drawingElementsList.clear (); // Initialise!
 

@@ -21,11 +21,11 @@ namespace Util
 
 extern  FolioString     DescribeDecimal (UInt32                     number,
                                          UInt32                     numOfDigits = 0,
-                                         FolioString::value_type    padChar = L'0',
+                                         FolioString::value_type    padChar = TXT('0'),
                                          bool                       signedNumber = false);
 extern  FolioString     DescribeHexadecimal (UInt32                     number,
                                              UInt32                     uiSizeofNumber = sizeof (UInt32),
-                                             FolioString::value_type    padChar = L'0');
+                                             FolioString::value_type    padChar = TXT('0'));
 
 extern  FolioString     DescribeDayOfWeek (UInt32 dayOfWeek);
 extern  FolioString     DescribeMonth (UInt32 month);

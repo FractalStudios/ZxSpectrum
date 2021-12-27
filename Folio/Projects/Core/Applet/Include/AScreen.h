@@ -51,20 +51,20 @@ protected:
     FolioStatus StopDisplaying ();
 
     template <typename T>
-    FolioStatus AddGraphicItem (FolioHandle                                 dcHandle, 
-                                FolioHandle                                 instanceHandle,
-                                Folio::Core::Game::DrawingElement::Id       drawingElementId,
-                                const Folio::Core::Game::ItemAttributes<T>& itemAttributes);
+    FolioStatus AddGraphicItem (FolioHandle                                                 dcHandle, 
+                                FolioHandle                                                 instanceHandle,
+                                const Folio::Core::Game::DrawingElement::DrawingElementId&  drawingElementId,
+                                const Folio::Core::Game::ItemAttributes<T>&                 itemAttributes);
 
-    typedef void    (FOLIO_CALL *SetItemTextFunction) (Folio::Core::Game::TextItemPtr::element_type &item);
+    typedef void    (FOLIO_CALL *SetItemTextFunction) (Folio::Core::Game::TextItemPtr::element_type& item);
 
     template <typename T>
-    FolioStatus AddTextItem (FolioHandle                                    dcHandle, 
-                             Folio::Core::Game::DrawingElement::Id          drawingElementId,
-                             Folio::Core::Graphic::GdiRasterFont&           gdiRasterFont,
-                             const Folio::Core::Game::ItemAttributes<T>&    itemAttributes,
-                             SetItemTextFunction                            setItemTextFunction = 0,
-                             bool                                           gdiBitmapCacheRqd = false);
+    FolioStatus AddTextItem (FolioHandle                                                dcHandle, 
+                             const Folio::Core::Game::DrawingElement::DrawingElementId& drawingElementId,
+                             Folio::Core::Graphic::GdiRasterFont&                       gdiRasterFont,
+                             const Folio::Core::Game::ItemAttributes<T>&                itemAttributes,
+                             SetItemTextFunction                                        setItemTextFunction = 0,
+                             bool                                                       gdiBitmapCacheRqd = false);
 
     virtual FolioStatus BuildScreenItems (FolioHandle   dcHandle, 
                                           FolioHandle   instanceHandle) = 0;
@@ -82,10 +82,10 @@ private:
 
 
 template <typename T>
-FolioStatus AScreen::AddGraphicItem (FolioHandle                                    dcHandle, 
-                                     FolioHandle                                    instanceHandle ,
-                                     Folio::Core::Game::DrawingElement::Id          drawingElementId,
-                                     const Folio::Core::Game::ItemAttributes<T>&    itemAttributes)
+FolioStatus AScreen::AddGraphicItem (FolioHandle                                                dcHandle, 
+                                     FolioHandle                                                instanceHandle ,
+                                     const Folio::Core::Game::DrawingElement::DrawingElementId& drawingElementId,
+                                     const Folio::Core::Game::ItemAttributes<T>&                itemAttributes)
 {
     // Create a graphic item.
             
@@ -112,12 +112,12 @@ FolioStatus AScreen::AddGraphicItem (FolioHandle                                
 
 
 template <typename T>
-FolioStatus AScreen::AddTextItem (FolioHandle                                   dcHandle, 
-                                  Folio::Core::Game::DrawingElement::Id         drawingElementId,
-                                  Folio::Core::Graphic::GdiRasterFont&          gdiRasterFont,
-                                  const Folio::Core::Game::ItemAttributes<T>&   itemAttributes,
-                                  SetItemTextFunction                           setItemTextFunction,
-                                  bool                                          gdiBitmapCacheRqd)
+FolioStatus AScreen::AddTextItem (FolioHandle                                                   dcHandle, 
+                                  const Folio::Core::Game::DrawingElement::DrawingElementId&    drawingElementId,
+                                  Folio::Core::Graphic::GdiRasterFont&                          gdiRasterFont,
+                                  const Folio::Core::Game::ItemAttributes<T>&                   itemAttributes,
+                                  SetItemTextFunction                                           setItemTextFunction,
+                                  bool                                                          gdiBitmapCacheRqd)
 {
     // Create a text item.
 

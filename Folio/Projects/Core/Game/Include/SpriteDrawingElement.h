@@ -26,11 +26,11 @@ public:
     :   m_createdTickCount(0)
     {} // Endproc.
 
-    SpriteDrawingElement (DrawingElement::Id        id,
-                          const T&                  sprite,
-                          ACollisionGrid::CellValue cellValue = ACollisionGrid::CELL_VALUE_EMPTY)
+    SpriteDrawingElement (const DrawingElement::DrawingElementId&   drawingElementId,
+                          const T&                                  sprite,
+                          ACollisionGrid::CellValue                 cellValue = ACollisionGrid::CELL_VALUE_EMPTY)
     :   m_sprite(sprite),
-        m_drawingElement(new DrawingElement(id, 
+        m_drawingElement(new DrawingElement(drawingElementId, 
                                             sprite->GetCollisionXLeft (), 
                                             sprite->GetCollisionYTop (), 
                                             sprite, 
@@ -42,9 +42,9 @@ public:
     ~SpriteDrawingElement ()
     {} // Endproc.
 
-    FolioStatus Create (DrawingElement::Id          id,
-                        const T&                    sprite,
-                        ACollisionGrid::CellValue   cellValue = ACollisionGrid::CELL_VALUE_EMPTY)
+    FolioStatus Create (const DrawingElement::DrawingElementId& drawingElementId,
+                        const T&                                sprite,
+                        ACollisionGrid::CellValue               cellValue = ACollisionGrid::CELL_VALUE_EMPTY)
     {
         FolioStatus status = ERR_SUCCESS;
 
@@ -63,7 +63,7 @@ public:
 
             m_sprite = sprite;
             
-            m_drawingElement.reset (new DrawingElement(id, 
+            m_drawingElement.reset (new DrawingElement(drawingElementId, 
                                                        sprite->GetCollisionXLeft (), 
                                                        sprite->GetCollisionYTop (), 
                                                        sprite, 
@@ -104,8 +104,8 @@ public:
         return (m_sprite != 0);
     } // Endproc.
 
-    FolioStatus CreateDrawingElement (DrawingElement::Id        id,
-                                      ACollisionGrid::CellValue cellValue = ACollisionGrid::CELL_VALUE_EMPTY)
+    FolioStatus CreateDrawingElement (const DrawingElement::DrawingElementId&   drawingElementId,
+                                      ACollisionGrid::CellValue                 cellValue = ACollisionGrid::CELL_VALUE_EMPTY)
     {
         FolioStatus status = ERR_SUCCESS;
 
@@ -122,7 +122,7 @@ public:
         {
             // No. Create the sprite drawing element.
 
-            m_drawingElement.reset (new DrawingElement(id, 
+            m_drawingElement.reset (new DrawingElement(drawingElementId, 
                                                        m_sprite->GetCollisionXLeft (), 
                                                        m_sprite->GetCollisionYTop (), 
                                                        m_sprite, 

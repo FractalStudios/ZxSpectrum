@@ -16,7 +16,7 @@ using   namespace   Gdiplus;
  * The default class constructor.
  */
 GdiFont::GdiFont ()
-:   m_fontFamily(L"Arial"),
+:   m_fontFamily(TXT("Arial")),
     m_fontFormat(DEFAULT_FONT_FORMAT),
     m_fontSize(DEFAULT_FONT_SIZE),
     m_attributesAltered(false)

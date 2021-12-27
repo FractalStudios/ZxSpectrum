@@ -44,7 +44,7 @@ Vector2::~Vector2 ()
  * @param [in] rhs
  * The vector to copy to this one.
  */
-Vector2::Vector2 (const Vector2 &rhs)
+Vector2::Vector2 (const Vector2& rhs)
 :   m_x(rhs.m_x),
 	m_y(rhs.m_y)
 {

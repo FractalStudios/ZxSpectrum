@@ -15,8 +15,7 @@ namespace Game
 {
 
 ResourceGraphic::ResourceGraphic ()
-:   m_drawingElementId(DrawingElement::DRAWING_ELEMENT_ID_UNDEFINED),
-    m_bitmapResourceId(FOLIO_UNDEFINED),
+:   m_bitmapResourceId(FOLIO_UNDEFINED),
     m_changeableColourTableIndex(FOLIO_INVALID_INDEX),
     m_currentChangeableColour(Folio::Core::Game::ZxSpectrum::GetBitmapChangeColour ()),
     m_collisionGridCellValue(ACollisionGrid::CELL_VALUE_EMPTY),
@@ -39,12 +38,12 @@ bool    ResourceGraphic::IsCreated () const
 } // Endproc.
 
 
-FolioStatus ResourceGraphic::Create (FolioHandle                instanceHandle,
-                                     DrawingElement::Id         drawingElementId,
-                                     UInt16                     bitmapResourceId,
-                                     bool                       maskedGdiBitmapRqd,
-                                     ACollisionGrid::CellValue  collisionGridCellValue,
-                                     Gdiplus::ARGB              maskColour)
+FolioStatus ResourceGraphic::Create (FolioHandle                                instanceHandle,
+                                     const DrawingElement::DrawingElementId&    drawingElementId,
+                                     UInt16                                     bitmapResourceId,
+                                     bool                                       maskedGdiBitmapRqd,
+                                     ACollisionGrid::CellValue                  collisionGridCellValue,
+                                     Gdiplus::ARGB                              maskColour)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -63,8 +62,9 @@ FolioStatus ResourceGraphic::Create (FolioHandle                instanceHandle,
 
         #ifdef _OUTPUT_RESOURCE_GRAPHIC_
         FolioOStringStream  str;
-        str << TXT("ResourceGraphic::Create ") << Folio::Core::Util::DescribeId (bitmapResourceId)
-            << TXT(" 0x") << std::setw(8) << std::setfill(TXT('0')) << std::hex << this
+        str << TXT("ResourceGraphic::Create:") 
+            << TXT(' ') << Folio::Core::Util::DescribeHexadecimal (reinterpret_cast<UInt32> (this))
+            << TXT(' ') << Folio::Core::Util::DescribeBitmapResourceId (bitmapResourceId)
             << std::endl;
         ::OutputDebugString (str.str ().c_str ());
         #endif
@@ -92,13 +92,13 @@ FolioStatus ResourceGraphic::Create (FolioHandle                instanceHandle,
 } // Endproc.
 
 
-FolioStatus ResourceGraphic::Create (FolioHandle                instanceHandle,
-                                     DrawingElement::Id         drawingElementId,
-                                     UInt16                     bitmapResourceId,
-                                     Gdiplus::ARGB              changeColour, 
-                                     bool                       maskedGdiBitmapRqd,
-                                     ACollisionGrid::CellValue  collisionGridCellValue,
-                                     Gdiplus::ARGB              maskColour)
+FolioStatus ResourceGraphic::Create (FolioHandle                                instanceHandle,
+                                     const DrawingElement::DrawingElementId&    drawingElementId,
+                                     UInt16                                     bitmapResourceId,
+                                     Gdiplus::ARGB                              changeColour, 
+                                     bool                                       maskedGdiBitmapRqd,
+                                     ACollisionGrid::CellValue                  collisionGridCellValue,
+                                     Gdiplus::ARGB                              maskColour)
 {
     // Create the resource graphic.
 
@@ -138,14 +138,14 @@ FolioStatus ResourceGraphic::Create (FolioHandle                instanceHandle,
 } // Endproc.
 
 
-FolioStatus ResourceGraphic::Create (FolioHandle                instanceHandle,
-                                     DrawingElement::Id         drawingElementId,
-                                     UInt16                     bitmapResourceId,
-                                     Gdiplus::ARGB              changeColour, 
-                                     Gdiplus::ARGB              newColour, 
-                                     bool                       maskedGdiBitmapRqd,
-                                     ACollisionGrid::CellValue  collisionGridCellValue,
-                                     Gdiplus::ARGB              maskColour)
+FolioStatus ResourceGraphic::Create (FolioHandle                                instanceHandle,
+                                     const DrawingElement::DrawingElementId&    drawingElementId,
+                                     UInt16                                     bitmapResourceId,
+                                     Gdiplus::ARGB                              changeColour, 
+                                     Gdiplus::ARGB                              newColour, 
+                                     bool                                       maskedGdiBitmapRqd,
+                                     ACollisionGrid::CellValue                  collisionGridCellValue,
+                                     Gdiplus::ARGB                              maskColour)
 {
     // Create the resource graphic.
 
@@ -347,9 +347,10 @@ FolioStatus ResourceGraphic::ChangeColour (Gdiplus::ARGB newColour)
 
                     #ifdef _OUTPUT_RESOURCE_GRAPHIC_
                     FolioOStringStream  str;
-                    str << TXT("ResourceGraphic::ChangeColour ") << Folio::Core::Util::DescribeId (m_bitmapResourceId)
-                        << TXT(" 0x") << std::setw(8) << std::setfill(TXT('0')) << newColour
-                        << TXT(" 0x") << std::setw(8) << std::setfill(TXT('0')) << std::hex << this
+                    str << TXT("ResourceGraphic::ChangeColour:") 
+                        << TXT(' ') << Folio::Core::Util::DescribeHexadecimal (reinterpret_cast<UInt32> (this))
+                        << TXT(' ') << Folio::Core::Util::DescribeBitmapResourceId (m_bitmapResourceId)
+                        << TXT(' ') << Folio::Core::Util::DescribeHexadecimal (newColour)
                         << std::endl;
                     ::OutputDebugString (str.str ().c_str ());
                     #endif
@@ -378,7 +379,7 @@ FolioStatus ResourceGraphic::QueryDrawingElements (FolioHandle                  
                                                    UInt32                           screenScale,
                                                    UInt32                           drawingFlags,
                                                    const DrawingElement::UserData&  drawingElementUserData,
-                                                   DrawingElementsList              &drawingElementsList,
+                                                   DrawingElementsList&             drawingElementsList,
                                                    bool                             maskedDrawingElementRqd)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -391,8 +392,9 @@ FolioStatus ResourceGraphic::QueryDrawingElements (FolioHandle                  
     {
         #ifdef _OUTPUT_RESOURCE_GRAPHIC_
         FolioOStringStream  str;
-        str << TXT("ResourceGraphic::QueryDrawingElements ") << Folio::Core::Util::DescribeId (m_bitmapResourceId)
-            << TXT(" 0x") << std::setw(8) << std::setfill(TXT('0')) << std::hex << this
+        str << TXT("ResourceGraphic::QueryDrawingElements:") 
+            << TXT(' ') << Folio::Core::Util::DescribeHexadecimal (reinterpret_cast<UInt32> (this))
+            << TXT(' ') << Folio::Core::Util::DescribeBitmapResourceId (m_bitmapResourceId)
             << std::endl;
         ::OutputDebugString (str.str ().c_str ());
         #endif
@@ -519,7 +521,7 @@ FolioStatus ResourceGraphic::QueryDrawingElements (FolioHandle                  
                                                    Gdiplus::ARGB                    colour, 
                                                    UInt32                           drawingFlags,
                                                    const DrawingElement::UserData&  drawingElementUserData,
-                                                   DrawingElementsList              &drawingElementsList,
+                                                   DrawingElementsList&             drawingElementsList,
                                                    bool                             maskedDrawingElementRqd)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -562,7 +564,7 @@ FolioStatus ResourceGraphic::QueryDrawingElements (FolioHandle                  
 } // Endproc.
 
 
-DrawingElement::Id  ResourceGraphic::GetDrawingElementId () const
+DrawingElement::DrawingElementId    ResourceGraphic::GetDrawingElementId () const
 {
     return (m_drawingElementId);
 } // Endproc.
@@ -652,6 +654,20 @@ UInt32  ResourceGraphic::GetGraphicHeight () const
 } // Endproc.
 
 
+FolioString ResourceGraphic::Describe () const
+{
+    FolioOStringStream  str;
+
+    str << Folio::Core::Util::DescribeBitmapResourceId (m_bitmapResourceId)
+        << TXT(" '") << m_drawingElementId << TXT('\'')
+        << TXT(' ') << Folio::Core::Util::DescribeHexadecimal (reinterpret_cast<UInt32> (this))
+        << TXT(' ') << Folio::Core::Util::DescribeHexadecimal (reinterpret_cast<UInt32> (m_gdiBitmap.get ()))
+        << TXT(' ') << Folio::Core::Util::DescribeHexadecimal (reinterpret_cast<UInt32> (m_maskedGdiBitmap.get ()));
+
+    return (str.str ());
+} // Endproc.
+
+
 UInt32  ResourceGraphic::GetOrientation (UInt32 drawingFlags)
 {
     return (drawingFlags & ORIENTATION_MASK);
@@ -736,10 +752,10 @@ bool    ResourceGraphic::IsFlipVertical (UInt32 drawingFlags)
 } // Endproc.
 
 
-bool    ResourceGraphic::IsGdiBitmapMatch (FolioHandle                              dcHandle,
-                                           UInt32                                   screenScale,
-                                           UInt32                                   drawingFlags,
-                                           const Folio::Core::Graphic::GdiBitmapPtr &gdiBitmap) const
+bool    ResourceGraphic::IsGdiBitmapMatch (FolioHandle                                  dcHandle,
+                                           UInt32                                       screenScale,
+                                           UInt32                                       drawingFlags,
+                                           const Folio::Core::Graphic::GdiBitmapPtr&    gdiBitmap) const
 {
     return (gdiBitmap                                   &&
             (m_screenScale  == screenScale)             && 
@@ -777,7 +793,8 @@ FolioStatus ResourceGraphic::CreateGdiBitmap (FolioHandle                       
 
     #ifdef _OUTPUT_RESOURCE_GRAPHIC_
     FolioOStringStream  str;
-    str << TXT("ResourceGraphic::CreateGdiBitmap ") << Folio::Core::Util::DescribeId (gdiDiBitmap->GetResourceId ())
+    str << TXT("ResourceGraphic::CreateGdiBitmap:") 
+        << TXT(' ') << Folio::Core::Util::DescribeBitmapResourceId (gdiDiBitmap->GetResourceId ())
         << std::endl;
     ::OutputDebugString (str.str ().c_str ());
     #endif
@@ -845,7 +862,8 @@ FolioStatus ResourceGraphic::CreateMaskedGdiBitmap (FolioHandle                 
 {
     #ifdef _OUTPUT_RESOURCE_GRAPHIC_
     FolioOStringStream  str;
-    str << TXT("ResourceGraphic::CreateMaskedGdiBitmap ") << Folio::Core::Util::DescribeId (gdiBitmap->GetId ())
+    str << TXT("ResourceGraphic::CreateMaskedGdiBitmap:") 
+        << TXT(' ') << Folio::Core::Util::DescribeBitmapResourceId (gdiBitmap->GetId ())
         << std::endl;
     ::OutputDebugString (str.str ().c_str ());
     #endif
