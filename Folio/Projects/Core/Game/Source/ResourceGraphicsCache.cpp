@@ -132,7 +132,7 @@ FolioStatus ResourceGraphicsCache::GainResourceGraphic (const OwnerId&          
         FolioOStringStream  str;
         str << TXT("ResourceGraphicsCache::GainResourceGraphic:") 
             << TXT(' ') << drawingElementId
-            << TXT(", bitmapResourceId=") << Folio::Core::Util::DescribeBitmapResourceId (bitmapResourceId)
+            << TXT(' ') << Folio::Core::Util::DescribeBitmapResourceId (bitmapResourceId)
             << std::endl;
         ::OutputDebugString (str.str ().c_str ());
         Dump (true);

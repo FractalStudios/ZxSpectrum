@@ -616,7 +616,7 @@ FolioStatus BackgroundItem::SetBackgroundItemGraphic ()
     {
         // Query the background item's graphic.
 
-        status = QueryBackgroundItemGraphic (Folio::Core::Game::ResourceGraphicsCache::MakeOwnerId (m_screenNumber),
+        status = QueryBackgroundItemGraphic (Screen::MakeOwnerId (m_screenNumber),
                                              m_backgroundItemId,
                                              m_backgroundItemGraphic);
     } // Endif.

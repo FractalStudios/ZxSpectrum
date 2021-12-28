@@ -11,17 +11,19 @@ namespace Game
 {
 
 // Drawing element identifiers.
-const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_ROOM                    = TXT("Room");                  // Part of a screen's reported drawing elements.
-const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_BACKGROUND_ITEM         = TXT("Background Item");       // Part of a screen's reported drawing elements.
-const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_INFORMATION_PANEL_ITEM  = TXT("Informaton Panel Item"); // Part of a screen's reported drawing elements.
-const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_STATIC_SPRITE           = TXT("Static Sprite");
-const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_NASTY_SPRITE            = TXT("Nasty Sprite");
-const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_BOSS_SPRITE             = TXT("Boss Sprite");
-const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_WEAPON_SPRITE           = TXT("Weapon Sprite");
-const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_MAIN_PLAYER_SPRITE      = TXT("Main Player Sprite");
-const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_LOADING_SCREEN_ITEM     = TXT("Loading Screen Item");
-const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_SELECTION_SCREEN_ITEM   = TXT("Selection Screen Item");
-const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_GAME_OVER_SCREEN_ITEM   = TXT("Game Over Screen Item");
+const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_ROOM                        = TXT("Room");                  // Part of a screen's reported drawing elements.
+const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_BACKGROUND_ITEM             = TXT("Background Item");       // Part of a screen's reported drawing elements.
+const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_INFORMATION_PANEL_ITEM      = TXT("Informaton Panel Item"); // Part of a screen's reported drawing elements.
+const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_STATIC_SPRITE               = TXT("Static Sprite");
+const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_OBJECT_SPRITE               = TXT("Object Sprite");
+const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_NASTY_SPRITE                = TXT("Nasty Sprite");
+const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_BOSS_SPRITE                 = TXT("Boss Sprite");
+const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_WEAPON_SPRITE               = TXT("Weapon Sprite");
+const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_MAIN_PLAYER_SPRITE          = TXT("Main Player Sprite");
+const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_LOADING_SCREEN_ITEM         = TXT("Loading Screen Item");
+const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_SELECTION_SCREEN_ITEM       = TXT("Selection Screen Item");
+const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_GAME_OVER_SCREEN_ITEM       = TXT("Game Over Screen Item");
+const   DrawingElement::DrawingElementId::value_type*   DrawingElement::DRAWING_ELEMENT_GAME_COMPLETED_SCREEN_ITEM  = TXT("Game Completed Screen Item");
 
 DrawingElement::DrawingElement (const DrawingElementId&                             drawingElementId,
                                 Int32                                               screenXLeft,

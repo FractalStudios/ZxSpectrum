@@ -24,7 +24,6 @@
     <ClCompile Include="Source\GameOverScreen.cpp" />
     <ClCompile Include="Source\InformationPanel.cpp" />
     <ClCompile Include="Source\MainCanvasMsgHandler.cpp" />
-    <ClCompile Include="Source\ResourceOwnerIds.cpp" />
     <ClCompile Include="Source\SpriteGraphics.cpp" />
     <ClCompile Include="Source\NastySprite.cpp" />
     <ClCompile Include="Source\RoomGraphics.cpp" />
@@ -52,7 +51,6 @@
     <ClInclude Include="Source\GameOverScreen.h" />
     <ClInclude Include="Source\InformationPanel.h" />
     <ClInclude Include="Source\MainCanvasMsgHandler.h" />
-    <ClInclude Include="Source\ResourceOwnerIds.h" />
     <ClInclude Include="Source\SpriteGraphics.h" />
     <ClInclude Include="Source\NastySprite.h" />
     <ClInclude Include="Source\resource.h" />

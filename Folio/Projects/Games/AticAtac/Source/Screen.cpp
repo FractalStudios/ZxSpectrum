@@ -602,6 +602,12 @@ UInt32  Screen::GetTotalNumRooms ()
 } // Endproc.
 
 
+Folio::Core::Game::ResourceGraphicsCache::OwnerId   Screen::MakeOwnerId (UInt32 screenNumber)
+{
+    return (TXT("Screen ") + Folio::Core::Game::ResourceGraphicsCache::MakeOwnerId (screenNumber));
+} // Endproc.
+
+
 bool    Screen::IsScreenInitialised () const
 {
     return (m_screenInitialised);
@@ -2690,7 +2696,7 @@ FolioStatus Screen::AddDroppedItem (InformationPanel::DroppedItem& droppedItem)
 {
     // Gain the dropped item's static sprite's graphic resource.
 
-    FolioStatus status = droppedItem.m_staticSprite->GainResourceGraphics (Folio::Core::Game::ResourceGraphicsCache::MakeOwnerId (m_screenNumber));
+    FolioStatus status = droppedItem.m_staticSprite->GainResourceGraphics (Screen::MakeOwnerId (m_screenNumber));
 
     if (status == ERR_SUCCESS)
     {
@@ -2748,7 +2754,7 @@ FolioStatus Screen::BuildRoomDrawingElements (FolioHandle   dcHandle,
 
     RoomGraphicPtr  roomGraphic;
 
-    FolioStatus status = QueryRoomGraphic (Folio::Core::Game::ResourceGraphicsCache::MakeOwnerId (m_screenNumber),
+    FolioStatus status = QueryRoomGraphic (Screen::MakeOwnerId (m_screenNumber),
                                            m_roomId, 
                                            roomGraphic);
 
@@ -3274,7 +3280,7 @@ FolioStatus Screen::ReleaseResourceGraphics ()
 {
     // Release the screen's graphics from the resource graphics cache.
 
-    return (g_resourceGraphicsCache.ReleaseResourceGraphics (Folio::Core::Game::ResourceGraphicsCache::MakeOwnerId (m_screenNumber)));
+    return (g_resourceGraphicsCache.ReleaseResourceGraphics (MakeOwnerId (m_screenNumber)));
 } // Endproc.
 
 

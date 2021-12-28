@@ -67,9 +67,6 @@
     <ClCompile Include="Source\BitmapResourceId.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ResourceOwnerIds.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\DrawingElementIds.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -139,9 +136,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Ultimate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ResourceOwnerIds.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\DrawingElementIds.h">

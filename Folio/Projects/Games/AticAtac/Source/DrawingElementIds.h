@@ -15,7 +15,7 @@ namespace AticAtac
 {
 
 // Drawing element identifiers.
-const   Folio::Core::Game::DrawingElement::DrawingElementId DRAWING_ELEMENT_FALLING_SIMULATION_SCREEN_ITEM = TXT("FALLING_SIMULATION_SCREEN_ITEM");
+const   Folio::Core::Game::DrawingElement::DrawingElementId DRAWING_ELEMENT_FALLING_SIMULATION_SCREEN_ITEM = TXT("Falling Simulation Screen Item");
 
 } // Endnamespace.
 

@@ -29,6 +29,7 @@ public:
     static  const   DrawingElementId::value_type*   DRAWING_ELEMENT_BACKGROUND_ITEM;           // Part of a screen's reported drawing elements.
     static  const   DrawingElementId::value_type*   DRAWING_ELEMENT_INFORMATION_PANEL_ITEM;    // Part of a screen's reported drawing elements.
     static  const   DrawingElementId::value_type*   DRAWING_ELEMENT_STATIC_SPRITE;
+    static  const   DrawingElementId::value_type*   DRAWING_ELEMENT_OBJECT_SPRITE;
     static  const   DrawingElementId::value_type*   DRAWING_ELEMENT_MAIN_PLAYER_SPRITE;
     static  const   DrawingElementId::value_type*   DRAWING_ELEMENT_NASTY_SPRITE;
     static  const   DrawingElementId::value_type*   DRAWING_ELEMENT_BOSS_SPRITE;
@@ -36,6 +37,7 @@ public:
     static  const   DrawingElementId::value_type*   DRAWING_ELEMENT_LOADING_SCREEN_ITEM;
     static  const   DrawingElementId::value_type*   DRAWING_ELEMENT_SELECTION_SCREEN_ITEM;
     static  const   DrawingElementId::value_type*   DRAWING_ELEMENT_GAME_OVER_SCREEN_ITEM;
+    static  const   DrawingElementId::value_type*   DRAWING_ELEMENT_GAME_COMPLETED_SCREEN_ITEM;
 
     // User data.
     typedef void*   UserData;

@@ -264,7 +264,7 @@ FolioStatus StaticSprite::Create (FolioHandle                           dcHandle
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<STATIC_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                        g_resourceGraphicsCache,
-                                                                                                       Folio::Core::Game::ResourceGraphicsCache::MakeOwnerId (initialScreenNumber),
+                                                                                                       Screen::MakeOwnerId (initialScreenNumber),
                                                                                                        Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_STATIC_SPRITE,
                                                                                                        staticSpriteId,
                                                                                                        staticSpriteColour,
@@ -326,7 +326,7 @@ FolioStatus StaticSprite::Create (FolioHandle dcHandle)
     {
         // Yes. Gain the static sprite's graphic from the resource cache.
 
-        status = GainResourceGraphics (Folio::Core::Game::ResourceGraphicsCache::MakeOwnerId (m_screenNumber));
+        status = GainResourceGraphics (Screen::MakeOwnerId (m_screenNumber));
 
         if (status == ERR_SUCCESS)
         {

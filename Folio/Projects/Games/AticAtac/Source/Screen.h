@@ -69,6 +69,8 @@ public:
 
     static  UInt32  GetTotalNumRooms ();
 
+    static  Folio::Core::Game::ResourceGraphicsCache::OwnerId   MakeOwnerId (UInt32 screenNumber);
+
 private:
     static  const   UInt32  MAX_REMOVE_NASTY_SPRITES_TICK_COUNT = 10 * 1000;    // The maximum tick count to remove the nasty sprites.
     static  const   UInt32  MAX_OPEN_CLOSE_DOORS_TICK_COUNT     = 15 * 1000;    // The maximum tick count to open/close the screen's doors.
