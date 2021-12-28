@@ -2,7 +2,6 @@
 
 // "Home-made" includes.
 #include    <Applet.h>
-#include    "DrawingElement.h"
 
 #pragma pack(push, 1)
 
@@ -18,7 +17,8 @@ namespace SabreWulf
 // Border screen item identifier enumeration.
 enum BORDER_SCREEN_ITEM_ID
 {
-    BORDER_SCREEN_ITEM_BORDER = DRAWING_ELEMENT_BORDER_SCREEN_ITEM * MAX_NUM_DRAWING_ELEMENTS_PER_ITEM,
+    BORDER_SCREEN_ITEM_UNDEFINED = Folio::Core::Game::AItem::ITEM_ID_UNDEFINED,
+    BORDER_SCREEN_ITEM_BORDER,
 }; // Endenum.
 
 

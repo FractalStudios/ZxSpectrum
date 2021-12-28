@@ -7,7 +7,6 @@
 #include    <Applet.h>
 #include    <Game.h>
 #include    <Util.h>
-#include    "DrawingElement.h"
 
 #pragma pack(push, 1)
 
@@ -23,7 +22,8 @@ namespace SabreWulf
 // Loading screen item identifier enumeration.
 enum LOADING_SCREEN_ITEM_ID
 {
-    LOADING_SCREEN_ITEM_GRAPHIC = DRAWING_ELEMENT_LOADING_SCREEN_ITEM * MAX_NUM_DRAWING_ELEMENTS_PER_ITEM,
+    LOADING_SCREEN_ITEM_UNDEFINED = Folio::Core::Game::AItem::ITEM_ID_UNDEFINED,
+    LOADING_SCREEN_ITEM_GRAPHIC,
 }; // Endenum.
 
 

@@ -65,7 +65,7 @@ FolioStatus GameCompletedScreen::BuildScreenItems (FolioHandle  dcHandle,
             
             status = AddGraphicItem (dcHandle, 
                                      instanceHandle ,
-                                     DRAWING_ELEMENT_GAME_COMPLETED_SCREEN_ITEM,
+                                     Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_GAME_COMPLETED_SCREEN_ITEM,
                                      Folio::Core::Game::ItemAttributes<GAME_COMPLETED_SCREEN_ITEM_ID> (itr->m_itemId,
                                                                                                        BACKGROUND_ITEM_e1ec,
                                                                                                        itr->m_screenXLeft, 
@@ -82,7 +82,7 @@ FolioStatus GameCompletedScreen::BuildScreenItems (FolioHandle  dcHandle,
             // Add game completed screen text item.
             
             status = AddTextItem (dcHandle, 
-                                  DRAWING_ELEMENT_GAME_COMPLETED_SCREEN_ITEM,
+                                  Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_GAME_COMPLETED_SCREEN_ITEM,
                                   *Folio::Core::Game::ZxSpectrum::GetFont (),
                                   *itr,
                                   SetItemText);
@@ -140,7 +140,7 @@ FolioStatus GameCompletedScreen::PlayMainGameMusic ()
 } // Endproc.
 
 
-void    GameCompletedScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type &item)
+void    GameCompletedScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type& item)
 {
     switch (item.GetItemId ())
     {

@@ -34,7 +34,7 @@ public:
         {} // Endproc.
 
         HighScore (UInt32                   score,
-                   const FolioNarrowString  &initials)
+                   const FolioNarrowString& initials)
         :   m_score(score),
             m_initials(initials)
         {} // Endproc.
@@ -42,7 +42,7 @@ public:
         ~HighScore ()
         {} // Endproc.
 
-        bool    operator < (const HighScore &rhs)
+        bool    operator < (const HighScore& rhs)
         {
             // Sort from high to low.
 
@@ -55,7 +55,7 @@ public:
 
     bool    IsHighScore (UInt32 score) const;
     UInt32  GetHighScorePosition (UInt32 score) const;
-    void    AddHighScore (const HighScore &highScore);
+    void    AddHighScore (const HighScore& highScore);
     
     HighScore   GetHighScore (UInt32 highScorePosition) const;
     UInt32      GetHighestScore () const;

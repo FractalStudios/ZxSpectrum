@@ -45,7 +45,7 @@ OrchidSpriteDrawingElement  g_orchidSpriteDrawingElement;
 NastySpriteDrawingElementsList  g_nastySpriteDrawingElementsList;
 
 
-FolioStatus InitialiseGlobals (Folio::Core::Applet::Canvas  &canvas,
+FolioStatus InitialiseGlobals (Folio::Core::Applet::Canvas& canvas,
                                bool                         applicationInitialise)
 {
     FolioStatus status = ERR_SUCCESS;

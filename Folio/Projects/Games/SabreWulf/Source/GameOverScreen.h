@@ -5,7 +5,6 @@
 
 // "Home-made" includes.
 #include    <Applet.h>
-#include    "DrawingElement.h"
 
 #pragma pack(push, 1)
 
@@ -21,7 +20,8 @@ namespace SabreWulf
 // Game over screen item identifier enumeration.
 enum GAME_OVER_SCREEN_ITEM_ID
 {
-    GAME_OVER_SCREEN_ITEM_INFORMATION_PANEL = DRAWING_ELEMENT_GAME_OVER_SCREEN_ITEM * MAX_NUM_DRAWING_ELEMENTS_PER_ITEM,
+    GAME_OVER_SCREEN_ITEM_UNDEFINED = Folio::Core::Game::AItem::ITEM_ID_UNDEFINED,
+    GAME_OVER_SCREEN_ITEM_INFORMATION_PANEL,
     GAME_OVER_SCREEN_ITEM_GAME_OVER_TEXT,
     GAME_OVER_SCREEN_ITEM_PLAYER_TEXT,
     GAME_OVER_SCREEN_ITEM_ADVENTURE_COMPLETED_TEXT,
@@ -47,7 +47,7 @@ private:
 
     FolioStatus PlayGameOverMusic ();
 
-    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
+    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type& item);
 
     // Private copy constructor to prevent copying.
     GameOverScreen (const GameOverScreen& rhs);

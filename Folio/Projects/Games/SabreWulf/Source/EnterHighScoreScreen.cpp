@@ -1,5 +1,6 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
+#include    "DrawingElementIds.h"
 #include    "EnterHighScoreScreen.h"
 #include    "Globals.h"
 #include    "Ultimate.h"
@@ -38,7 +39,7 @@ static  const   Folio::Core::Game::ItemAttributesList<ENTER_HIGH_SCORE_SCREEN_IT
 Folio::Core::Util::Sound::SoundSample   EnterHighScoreScreen::m_selectingInitialSoundSample(Ultimate::CreateSoundSample (0x80, 0x10));  // The selecting initial sound sample.
 Folio::Core::Util::Sound::SoundSample   EnterHighScoreScreen::m_enteredInitialSoundSample(Ultimate::CreateSoundSample (0x40, 0x30));    // The entered initial sound sample.
 
-EnterHighScoreScreen::EnterHighScoreScreen (const SelectionScreenPtr &selectionScreen)
+EnterHighScoreScreen::EnterHighScoreScreen (const SelectionScreenPtr& selectionScreen)
 :   m_selectionScreen(selectionScreen),
     m_currentInitial(' ')
 {
@@ -257,8 +258,8 @@ FolioStatus EnterHighScoreScreen::UpdateScreen (UPDATE update)
 } // Endproc.
 
 
-FolioStatus EnterHighScoreScreen::UpdateInitial (Gdiplus::Graphics  &graphics,
-                                                 bool               &redrawCanvas)
+FolioStatus EnterHighScoreScreen::UpdateInitial (Gdiplus::Graphics& graphics,
+                                                 bool&              redrawCanvas)
 {
     redrawCanvas = false;   // Initialise!
 
@@ -313,7 +314,7 @@ FolioStatus EnterHighScoreScreen::UpdateInitial (Gdiplus::Graphics  &graphics,
 } // Endproc.
 
 
-void    EnterHighScoreScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type &item)
+void    EnterHighScoreScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type& item)
 {
     switch (item.GetItemId ())
     {

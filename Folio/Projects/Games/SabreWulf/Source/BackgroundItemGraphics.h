@@ -81,11 +81,11 @@ typedef std::map<BACKGROUND_ITEM_ID, BackgroundItemGraphic> BackgroundItemGraphi
 
 // Routines.
 
-extern  FolioStatus CreateBackgroundItemGraphics (FolioHandle               instanceHandle,
-                                                  BackgroundItemGraphicsMap &backgroundItemGraphicsMap);
+extern  FolioStatus CreateBackgroundItemGraphics (FolioHandle                   instanceHandle,
+                                                  BackgroundItemGraphicsMap&    backgroundItemGraphicsMap);
 extern  FolioStatus FindBackgroundItemGraphic (BACKGROUND_ITEM_ID               backgroundItemId,
-                                               const BackgroundItemGraphicsMap  &backgroundItemGraphicsMap,
-                                               BackgroundItemGraphic            &backgroundItemGraphic);
+                                               const BackgroundItemGraphicsMap& backgroundItemGraphicsMap,
+                                               BackgroundItemGraphic&           backgroundItemGraphic);
 
 } // Endnamespace.
 

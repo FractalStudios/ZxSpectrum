@@ -8,7 +8,6 @@
 #include    <Applet.h>
 #include    <Game.h>
 #include    <Util.h>
-#include    "DrawingElement.h"
 #include    "ObjectSprite.h"
 #include    "PlayerSprite.h"
 #include    "PlayerStatistics.h"
@@ -27,7 +26,8 @@ namespace SabreWulf
 // Information panel item identifier enumeration.
 enum INFORMATION_PANEL_ITEM_ID
 {
-    INFORMATION_PANEL_ITEM_PLAYER_1_UP = DRAWING_ELEMENT_INFORMATION_PANEL_ITEM * MAX_NUM_DRAWING_ELEMENTS_PER_ITEM,
+    INFORMATION_PANEL_ITEM_UNDEFINED = Folio::Core::Game::AItem::ITEM_ID_UNDEFINED,
+    INFORMATION_PANEL_ITEM_PLAYER_1_UP,
     INFORMATION_PANEL_ITEM_PLAYER_1_SCORE,
     INFORMATION_PANEL_ITEM_PLAYER_1_LIVES,
     INFORMATION_PANEL_ITEM_PLAYER_1_GRAPHIC_CHARACTER,
@@ -44,14 +44,14 @@ enum INFORMATION_PANEL_ITEM_ID
 class InformationPanel
 {
 public:
-    InformationPanel (Folio::Core::Applet::Canvas &canvas);
+    InformationPanel (Folio::Core::Applet::Canvas& canvas);
     ~InformationPanel ();
 
     FolioStatus Create (UInt32 totalNumScreens);
     FolioStatus Start ();
     FolioStatus Draw ();
-    FolioStatus QueryItems (Folio::Core::Game::ItemsList &itemsList) const;
-    FolioStatus HandleProcessFrame (bool &isStarting);
+    FolioStatus QueryItems (Folio::Core::Game::ItemsList& itemsList) const;
+    FolioStatus HandleProcessFrame (bool& isStarting);
 
     // Player enumeration.
     enum PLAYER
@@ -140,7 +140,7 @@ private:
                             FolioHandle instanceHandle);
     FolioStatus BuildDrawingElements (FolioHandle dcHandle);
     FolioStatus CheckPlayerUp (UInt32   currentTickCount,
-                               bool     &isStarting);
+                               bool&    isStarting);
 
     // The update enumeration.
     enum UPDATE
@@ -151,15 +151,15 @@ private:
     }; // Endenum.
 
     FolioStatus Update (UPDATE update);
-    FolioStatus UpdateLives (Gdiplus::Graphics  &graphics,
+    FolioStatus UpdateLives (Gdiplus::Graphics& graphics,
                              bool               &redrawCanvas);
-    FolioStatus UpdateScore (Gdiplus::Graphics  &graphics,
-                             bool               &redrawCanvas);
-    FolioStatus UpdateFlashPlayerUp (Gdiplus::Graphics  &graphics,
-                                     bool               &redrawCanvas);
+    FolioStatus UpdateScore (Gdiplus::Graphics& graphics,
+                             bool&              redrawCanvas);
+    FolioStatus UpdateFlashPlayerUp (Gdiplus::Graphics& graphics,
+                                     bool&              redrawCanvas);
     FolioStatus Reset ();
 
-    void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
+    void    SetItemText (Folio::Core::Game::TextItemPtr::element_type& item);
     
     // Private copy constructor to prevent copying.
     InformationPanel (const InformationPanel& rhs);
@@ -174,8 +174,8 @@ typedef std::shared_ptr<InformationPanel>   InformationPanelPtr;
 
 // Routines.
 
-extern  FolioStatus CreateInformationPanel (Folio::Core::Applet::Canvas &canvas, 
-                                            InformationPanelPtr         &informationPanel);
+extern  FolioStatus CreateInformationPanel (Folio::Core::Applet::Canvas&    canvas, 
+                                            InformationPanelPtr&            informationPanel);
 
 } // Endnamespace.
 

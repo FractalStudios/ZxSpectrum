@@ -5,7 +5,6 @@
 
 // "Home-made" includes.
 #include    "BorderScreen.h"
-#include    "DrawingElement.h"
 
 #pragma pack(push, 1)
 
@@ -21,7 +20,8 @@ namespace SabreWulf
 // High score screen item identifier enumeration.
 enum HIGH_SCORE_SCREEN_ITEM_ID
 {
-    HIGH_SCORE_SCREEN_ITEM_INFORMATION_PANEL = DRAWING_ELEMENT_HIGH_SCORE_SCREEN_ITEM * MAX_NUM_DRAWING_ELEMENTS_PER_ITEM,
+    HIGH_SCORE_SCREEN_ITEM_UNDEFINED = Folio::Core::Game::AItem::ITEM_ID_UNDEFINED,
+    HIGH_SCORE_SCREEN_ITEM_INFORMATION_PANEL,
     HIGH_SCORE_SCREEN_ITEM_BORDER,
     HIGH_SCORE_SCREEN_ITEM_TITLE,
     HIGH_SCORE_SCREEN_ITEM_1_POSITION_TEXT,
@@ -62,7 +62,7 @@ private:
     virtual FolioStatus ProcessScreenInput ();    
     virtual FolioStatus ProcessScreenFrame ();
 
-    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
+    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type& item);
 
     // Private copy constructor to prevent copying.
     HighScoreScreen (const HighScoreScreen& rhs);

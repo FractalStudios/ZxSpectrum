@@ -1,8 +1,7 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
-#include    "CollisionGrid.h"
-#include    "DrawingElement.h"
 #include    "BackgroundItemGraphics.h"
+#include    "CollisionGrid.h"
 
 namespace Folio
 {
@@ -77,8 +76,8 @@ static  const   BackgroundItemGraphicAttributes g_backgroundItemGraphicAttribute
 };
 
 
-FolioStatus CreateBackgroundItemGraphics (FolioHandle               instanceHandle,
-                                          BackgroundItemGraphicsMap &backgroundItemGraphicsMap)
+FolioStatus CreateBackgroundItemGraphics (FolioHandle                   instanceHandle,
+                                          BackgroundItemGraphicsMap&    backgroundItemGraphicsMap)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -95,7 +94,7 @@ FolioStatus CreateBackgroundItemGraphics (FolioHandle               instanceHand
         BackgroundItemGraphic   backgroundItemGraphic(new BackgroundItemGraphic::element_type);
 
         status = backgroundItemGraphic->Create (instanceHandle,
-                                                DRAWING_ELEMENT_BACKGROUND_ITEM,
+                                                Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_BACKGROUND_ITEM,
                                                 g_backgroundItemGraphicAttributesTable [index].m_backgroundItemId,
                                                 false,  // Masked GDI bitmap is not required.
                                                 g_backgroundItemGraphicAttributesTable [index].m_collisionGridCellValue);
@@ -120,8 +119,8 @@ FolioStatus CreateBackgroundItemGraphics (FolioHandle               instanceHand
 
 
 FolioStatus FindBackgroundItemGraphic (BACKGROUND_ITEM_ID               backgroundItemId,
-                                       const BackgroundItemGraphicsMap  &backgroundItemGraphicsMap,
-                                       BackgroundItemGraphic            &backgroundItemGraphic)
+                                       const BackgroundItemGraphicsMap& backgroundItemGraphicsMap,
+                                       BackgroundItemGraphic&           backgroundItemGraphic)
 {
     FolioStatus status = ERR_SUCCESS;
 

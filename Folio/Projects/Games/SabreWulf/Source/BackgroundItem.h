@@ -27,7 +27,7 @@ public:
                     Int32               screenYTop);
     ~BackgroundItem ();
 
-    FolioStatus             SetBackgroundItemGraphic (const BackgroundItemGraphicsMap &backgroundItemGraphicsMap);
+    FolioStatus             SetBackgroundItemGraphic (const BackgroundItemGraphicsMap& backgroundItemGraphicsMap);
     BackgroundItemGraphic   GetBackgroundItemGraphic () const;
 
     BACKGROUND_ITEM_ID  GetBackgroundItemId () const;
@@ -42,7 +42,7 @@ public:
     Int32           GetScreenHeight () const;
 
     FolioStatus QueryDrawingElements (FolioHandle                               dcHandle,
-                                      Folio::Core::Game::DrawingElementsList    &drawingElementsList);
+                                      Folio::Core::Game::DrawingElementsList&   drawingElementsList);
 
     operator Folio::Core::Game::ItemAttributes<BACKGROUND_ITEM_ID> () const;
 

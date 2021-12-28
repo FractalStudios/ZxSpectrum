@@ -67,7 +67,7 @@ FolioStatus GameOverScreen::BuildScreenItems (FolioHandle   dcHandle,
             // Add game over screen text item.
 
             status = AddTextItem (dcHandle, 
-                                  DRAWING_ELEMENT_GAME_OVER_SCREEN_ITEM,
+                                  Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_GAME_OVER_SCREEN_ITEM,
                                   *Folio::Core::Game::ZxSpectrum::GetFont (),
                                   *itr,
                                   SetItemText);
@@ -125,7 +125,7 @@ FolioStatus GameOverScreen::PlayGameOverMusic ()
 } // Endproc.
 
 
-void    GameOverScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type &item)
+void    GameOverScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type& item)
 {
     switch (item.GetItemId ())
     {

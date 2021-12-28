@@ -2,6 +2,7 @@
 #include    "StdAfx.h"
 #include    "BackgroundItem.h"
 #include    "BorderScreen.h"
+#include    "DrawingElementIds.h"
 
 namespace Folio
 {
@@ -43,7 +44,7 @@ FolioStatus BorderScreen::AddBorderScreenItems (FolioHandle dcHandle,
         // Add border screen graphic item.
 
         status = AddGraphicItem (dcHandle, 
-                                 instanceHandle ,
+                                 instanceHandle,
                                  DRAWING_ELEMENT_BORDER_SCREEN_ITEM,
                                  Folio::Core::Game::ItemAttributes<BACKGROUND_ITEM_ID> (*itr));
     } // Endfor.

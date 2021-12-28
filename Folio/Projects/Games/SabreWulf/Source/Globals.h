@@ -57,7 +57,7 @@ extern  NastySpriteDrawingElementsList  g_nastySpriteDrawingElementsList;
 
 // Routines.
 
-extern  FolioStatus InitialiseGlobals (Folio::Core::Applet::Canvas  &canvas,
+extern  FolioStatus InitialiseGlobals (Folio::Core::Applet::Canvas& canvas,
                                        bool                         applicationInitialise = true);
 extern  FolioStatus TerminateGlobals ();
 

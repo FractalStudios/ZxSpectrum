@@ -26,7 +26,7 @@ BackgroundItem::~BackgroundItem ()
 } // Endproc.
 
 
-FolioStatus BackgroundItem::SetBackgroundItemGraphic (const BackgroundItemGraphicsMap &backgroundItemGraphicsMap)
+FolioStatus BackgroundItem::SetBackgroundItemGraphic (const BackgroundItemGraphicsMap& backgroundItemGraphicsMap)
 {
     return (FindBackgroundItemGraphic (m_backgroundItemId,
                                        backgroundItemGraphicsMap,
@@ -98,7 +98,7 @@ Int32   BackgroundItem::GetScreenHeight () const
 
 
 FolioStatus BackgroundItem::QueryDrawingElements (FolioHandle                               dcHandle,
-                                                  Folio::Core::Game::DrawingElementsList    &drawingElementsList)
+                                                  Folio::Core::Game::DrawingElementsList&   drawingElementsList)
 {
     FolioStatus status = ERR_SUCCESS;
 

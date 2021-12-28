@@ -5,7 +5,6 @@
 
 // "Home-made" includes.
 #include    <Applet.h>
-#include    "DrawingElement.h"
 
 #pragma pack(push, 1)
 
@@ -21,7 +20,8 @@ namespace SabreWulf
 // Found amulet piece screen item identifier enumeration.
 enum FOUND_AMULET_PIECE_SCREEN_ITEM_ID
 {
-    FOUND_AMULET_PIECE_SCREEN_ITEM_INFORMATION_PANEL = DRAWING_ELEMENT_FOUND_AMULET_PIECE_SCREEN_ITEM * MAX_NUM_DRAWING_ELEMENTS_PER_ITEM,
+    FOUND_AMULET_PIECE_SCREEN_ITEM_UNDEFINED = Folio::Core::Game::AItem::ITEM_ID_UNDEFINED,
+    FOUND_AMULET_PIECE_SCREEN_ITEM_INFORMATION_PANEL,
     FOUND_AMULET_PIECE_SCREEN_ITEM_AMULET_PIECE_TOP_LEFT,   
     FOUND_AMULET_PIECE_SCREEN_ITEM_AMULET_PIECE_TOP_RIGHT,  
     FOUND_AMULET_PIECE_SCREEN_ITEM_AMULET_PIECE_BOTTOM_LEFT,
@@ -51,7 +51,7 @@ private:
 
     FolioStatus PlayFoundAmuletPieceMusic ();
 
-    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
+    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type& item);
 
     // Private copy constructor to prevent copying.
     FoundAmuletPieceScreen (const FoundAmuletPieceScreen& rhs);

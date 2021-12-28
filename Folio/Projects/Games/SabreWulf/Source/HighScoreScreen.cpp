@@ -1,5 +1,6 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
+#include    "DrawingElementIds.h"
 #include    "Globals.h"
 #include    "HighScoreScreen.h"
 
@@ -152,7 +153,7 @@ FolioStatus HighScoreScreen::ProcessScreenFrame ()
 } // Endproc.
 
 
-void    HighScoreScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type &item)
+void    HighScoreScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type& item)
 {
     switch (item.GetItemId ())
     {

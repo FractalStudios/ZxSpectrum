@@ -50,7 +50,7 @@ UInt32  HighScoreTable::GetHighScorePosition (UInt32 score) const
 } // Endproc.
 
 
-void    HighScoreTable::AddHighScore (const HighScore &highScore)
+void    HighScoreTable::AddHighScore (const HighScore& highScore)
 {
     // Is this a high score?
 

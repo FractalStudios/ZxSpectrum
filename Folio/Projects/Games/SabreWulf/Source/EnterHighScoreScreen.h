@@ -5,7 +5,6 @@
 
 // "Home-made" includes.
 #include    "BorderScreen.h"
-#include    "DrawingElement.h"
 #include    "HighScoreTable.h"
 #include    "SelectionScreen.h"
 
@@ -23,7 +22,8 @@ namespace SabreWulf
 // Enter high score screen item identifier enumeration.
 enum ENTER_HIGH_SCORE_SCREEN_ITEM_ID
 {
-    ENTER_HIGH_SCORE_SCREEN_ITEM_INFORMATION_PANEL = DRAWING_ELEMENT_ENTER_HIGH_SCORE_SCREEN_ITEM * MAX_NUM_DRAWING_ELEMENTS_PER_ITEM,
+    ENTER_HIGH_SCORE_SCREEN_ITEM_UNDEFINED = Folio::Core::Game::AItem::ITEM_ID_UNDEFINED,
+    ENTER_HIGH_SCORE_SCREEN_ITEM_INFORMATION_PANEL,
     ENTER_HIGH_SCORE_SCREEN_ITEM_BORDER,
     ENTER_HIGH_SCORE_SCREEN_ITEM_CONGRATULATIONS_TEXT,
     ENTER_HIGH_SCORE_SCREEN_ITEM_PLAYER_TEXT,
@@ -44,7 +44,7 @@ enum ENTER_HIGH_SCORE_SCREEN_ITEM_ID
 class EnterHighScoreScreen : public BorderScreen
 {
 public:
-    EnterHighScoreScreen (const SelectionScreenPtr &selectionScreen);
+    EnterHighScoreScreen (const SelectionScreenPtr& selectionScreen);
     ~EnterHighScoreScreen ();
 
 private:
@@ -69,10 +69,10 @@ private:
     }; // Endenum.
 
     FolioStatus UpdateScreen (UPDATE update);
-    FolioStatus UpdateInitial (Gdiplus::Graphics    &graphics,
-                               bool                 &redrawCanvas);
+    FolioStatus UpdateInitial (Gdiplus::Graphics&   graphics,
+                               bool&                redrawCanvas);
     
-    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
+    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type& item);
 
     // Private copy constructor to prevent copying.
     EnterHighScoreScreen (const EnterHighScoreScreen& rhs);

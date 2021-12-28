@@ -5,7 +5,6 @@
 
 // "Home-made" includes.
 #include    <Applet.h>
-#include    "DrawingElement.h"
 
 #pragma pack(push, 1)
 
@@ -21,7 +20,8 @@ namespace SabreWulf
 // Game completed screen item identifier enumeration.
 enum GAME_COMPLETED_SCREEN_ITEM_ID
 {
-    GAME_COMPLETED_SCREEN_ITEM_INFORMATION_PANEL = DRAWING_ELEMENT_GAME_COMPLETED_SCREEN_ITEM * MAX_NUM_DRAWING_ELEMENTS_PER_ITEM,
+    GAME_COMPLETED_SCREEN_ITEM_UNDEFINED = Folio::Core::Game::AItem::ITEM_ID_UNDEFINED,
+    GAME_COMPLETED_SCREEN_ITEM_INFORMATION_PANEL,
     GAME_COMPLETED_SCREEN_ITEM_GAME_COMPLETED_1_TEXT,
     GAME_COMPLETED_SCREEN_ITEM_GAME_COMPLETED_2_TEXT,
     GAME_COMPLETED_SCREEN_ITEM_GAME_COMPLETED_3_TEXT,
@@ -50,7 +50,7 @@ private:
 
     FolioStatus PlayMainGameMusic ();
 
-    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
+    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type& item);
 
     // Private copy constructor to prevent copying.
     GameCompletedScreen (const GameCompletedScreen& rhs);

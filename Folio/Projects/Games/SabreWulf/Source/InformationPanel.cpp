@@ -46,7 +46,7 @@ static  const   Folio::Core::Game::ItemAttributesList<INFORMATION_PANEL_ITEM_ID>
 // Information panel static members.
 Folio::Core::Util::Sound::SoundSample   InformationPanel::m_startingSoundSample(Ultimate::CreateSoundSample (0x80, 0x10));  // The starting sound sample.
 
-InformationPanel::InformationPanel (Folio::Core::Applet::Canvas &canvas)
+InformationPanel::InformationPanel (Folio::Core::Applet::Canvas& canvas)
 :   m_canvas(canvas),
     m_informationPanelScreenRect(SCREEN_X_ORIGIN, SCREEN_Y_ORIGIN, SCREEN_WIDTH, SCREEN_HEIGHT),
     m_totalNumScreens(0),
@@ -131,7 +131,7 @@ FolioStatus InformationPanel::Draw ()
 } // Endproc.
 
 
-FolioStatus InformationPanel::QueryItems (Folio::Core::Game::ItemsList &itemsList) const
+FolioStatus InformationPanel::QueryItems (Folio::Core::Game::ItemsList& itemsList) const
 {
     // Query the information panel items.
 
@@ -180,7 +180,7 @@ FolioStatus InformationPanel::QueryItems (Folio::Core::Game::ItemsList &itemsLis
 } // Endproc.
 
 
-FolioStatus InformationPanel::HandleProcessFrame (bool &isStarting) 
+FolioStatus InformationPanel::HandleProcessFrame (bool& isStarting) 
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -539,7 +539,7 @@ FolioStatus InformationPanel::BuildItems (FolioHandle   dcHandle,
                 Folio::Core::Game::TextItemPtr  item(new Folio::Core::Game::TextItemPtr::element_type);
                 
                 status = item->Create (dcHandle,
-                                       DRAWING_ELEMENT_INFORMATION_PANEL_ITEM,
+                                       Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_INFORMATION_PANEL_ITEM,
                                        ((itr->m_itemId == INFORMATION_PANEL_ITEM_PLAYER_1_GRAPHIC_CHARACTER) || 
                                         (itr->m_itemId == INFORMATION_PANEL_ITEM_PLAYER_2_GRAPHIC_CHARACTER)) 
                                        ? g_playerLivesCharacterFont : *Folio::Core::Game::ZxSpectrum::GetFont (),
@@ -671,7 +671,7 @@ FolioStatus InformationPanel::BuildDrawingElements (FolioHandle dcHandle)
 
 
 FolioStatus InformationPanel::CheckPlayerUp (UInt32 currentTickCount, 
-                                             bool   &isStarting)
+                                             bool&  isStarting)
 {                     
     static  const   UINT32  MAX_STARTING_COUNT = 7;
 
@@ -784,8 +784,8 @@ FolioStatus InformationPanel::Update (UPDATE update)
 } // Endproc.
 
 
-FolioStatus InformationPanel::UpdateLives (Gdiplus::Graphics    &graphics,
-                                           bool                 &redrawCanvas)
+FolioStatus InformationPanel::UpdateLives (Gdiplus::Graphics&   graphics,
+                                           bool&                redrawCanvas)
 {
     redrawCanvas = false;   // Initialise!
 
@@ -832,8 +832,8 @@ FolioStatus InformationPanel::UpdateLives (Gdiplus::Graphics    &graphics,
 } // Endproc.
 
 
-FolioStatus InformationPanel::UpdateScore (Gdiplus::Graphics    &graphics,
-                                           bool                 &redrawCanvas)
+FolioStatus InformationPanel::UpdateScore (Gdiplus::Graphics&   graphics,
+                                           bool&                redrawCanvas)
 {
     redrawCanvas = false;   // Initialise!
 
@@ -877,8 +877,8 @@ FolioStatus InformationPanel::UpdateScore (Gdiplus::Graphics    &graphics,
 } // Endproc.
 
 
-FolioStatus InformationPanel::UpdateFlashPlayerUp (Gdiplus::Graphics    &graphics,
-                                                   bool                 &redrawCanvas)
+FolioStatus InformationPanel::UpdateFlashPlayerUp (Gdiplus::Graphics&   graphics,
+                                                   bool&                redrawCanvas)
 {
     redrawCanvas = false; // Initialise!
 
@@ -981,7 +981,7 @@ FolioStatus InformationPanel::Reset ()
 } // Endproc.
 
 
-void    InformationPanel::SetItemText (Folio::Core::Game::TextItemPtr::element_type &item)
+void    InformationPanel::SetItemText (Folio::Core::Game::TextItemPtr::element_type& item)
 {
     switch (item.GetItemId ())
     {
@@ -1032,8 +1032,8 @@ void    InformationPanel::SetItemText (Folio::Core::Game::TextItemPtr::element_t
 } // Endproc.
 
 
-FolioStatus CreateInformationPanel (Folio::Core::Applet::Canvas &canvas, 
-                                    InformationPanelPtr         &informationPanel)
+FolioStatus CreateInformationPanel (Folio::Core::Applet::Canvas&    canvas, 
+                                    InformationPanelPtr&            informationPanel)
 {
     // Create the information panel.
 

@@ -13,9 +13,10 @@
   <ItemGroup>
     <ClCompile Include="Source\BackgroundItem.cpp" />
     <ClCompile Include="Source\BackgroundItemGraphics.cpp" />
+    <ClCompile Include="Source\BitmapResourceId.cpp" />
     <ClCompile Include="Source\BorderScreen.cpp" />
     <ClCompile Include="Source\CollisionGrid.cpp" />
-    <ClCompile Include="Source\DrawingElement.cpp" />
+    <ClCompile Include="Source\DrawingElementIds.cpp" />
     <ClCompile Include="Source\EnterHighScoreScreen.cpp" />
     <ClCompile Include="Source\FoundAmuletPieceScreen.cpp" />
     <ClCompile Include="Source\GameCompletedScreen.cpp" />
@@ -32,7 +33,7 @@
     <ClCompile Include="Source\OrchidSprite.cpp" />
     <ClCompile Include="Source\PlayerSprite.cpp" />
     <ClCompile Include="Source\PlayerStatistics.cpp" />
-    <ClCompile Include="Source\ResourceOwnerId.cpp" />
+    <ClCompile Include="Source\ResourceOwnerIds.cpp" />
     <ClCompile Include="Source\ScreenBackground.cpp" />
     <ClCompile Include="Source\ScreenMap.cpp" />
     <ClCompile Include="Source\Screen.cpp" />
@@ -49,7 +50,7 @@
     <ClInclude Include="Source\BackgroundItemGraphics.h" />
     <ClInclude Include="Source\BorderScreen.h" />
     <ClInclude Include="Source\CollisionGrid.h" />
-    <ClInclude Include="Source\DrawingElement.h" />
+    <ClInclude Include="Source\DrawingElementIds.h" />
     <ClInclude Include="Source\EnterHighScoreScreen.h" />
     <ClInclude Include="Source\FoundAmuletPieceScreen.h" />
     <ClInclude Include="Source\GameCompletedScreen.h" />
@@ -67,7 +68,7 @@
     <ClInclude Include="Source\PlayerSprite.h" />
     <ClInclude Include="Source\PlayerStatistics.h" />
     <ClInclude Include="Source\resource.h" />
-    <ClInclude Include="Source\ResourceOwnerId.h" />
+    <ClInclude Include="Source\ResourceOwnerIds.h" />
     <ClInclude Include="Source\ScreenBackground.h" />
     <ClInclude Include="Source\ScreenMap.h" />
     <ClInclude Include="Source\Screen.h" />

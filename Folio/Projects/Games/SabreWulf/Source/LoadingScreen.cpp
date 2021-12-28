@@ -53,7 +53,7 @@ FolioStatus LoadingScreen::BuildScreenItems (FolioHandle    dcHandle,
 
             status = AddGraphicItem (dcHandle, 
                                      instanceHandle ,
-                                     DRAWING_ELEMENT_LOADING_SCREEN_ITEM,
+                                     Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_LOADING_SCREEN_ITEM,
                                      *itr);
             break;
 

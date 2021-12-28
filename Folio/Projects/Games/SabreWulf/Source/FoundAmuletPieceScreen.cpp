@@ -1,5 +1,6 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
+#include    "DrawingElementIds.h"
 #include    "BackgroundItemGraphics.h"
 #include    "FoundAmuletPieceScreen.h"
 #include    "Globals.h"
@@ -177,7 +178,7 @@ FolioStatus FoundAmuletPieceScreen::PlayFoundAmuletPieceMusic ()
 } // Endproc.
 
 
-void    FoundAmuletPieceScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type &item)
+void    FoundAmuletPieceScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type& item)
 {
     switch (item.GetItemId ())
     {
