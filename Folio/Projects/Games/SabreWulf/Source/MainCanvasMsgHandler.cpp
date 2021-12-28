@@ -4,8 +4,8 @@
 #include    "Globals.h"
 #include    "MainCanvasMsgHandler.h"
 
-//#define _AUTO_TEST_
-#define AUTO_TEST_SCREEN_TIME 5 * 1000
+#define _AUTO_TEST_
+#define AUTO_TEST_SCREEN_TIME 1 * 1000
 
 namespace Folio
 {
@@ -509,20 +509,23 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingGameStateFrame (FolioHandl
         
     if (status == ERR_SUCCESS)
     {
-        //if (m_selectionScreen->IsPlayerFireKeyDown ())
-        if (Folio::Core::Util::DateTime::GetCurrentTickCount () > (s_screenTickCount + AUTO_TEST_SCREEN_TIME))
+        if (m_selectionScreen->IsPlayerFireKeyDown ())
+        //if (Folio::Core::Util::DateTime::GetCurrentTickCount () > (s_screenTickCount + AUTO_TEST_SCREEN_TIME))
         {
             m_screensList [m_currentScreenListIndex]->ExitScreen ();
 
             s_screenTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();
 
-            if (++g_screenMap.m_currentScreenMapIndex >= g_screenMap.GetTotalNumScreens ())
+            if (g_screenMap.MoveToNewScreen (CollisionGrid::ScreenExit::RIGHT))
             {
                 //Folio::Core::Util::g_handleMonitor.Dump ();
                 //g_resourceGraphicsCache.Dump (false);
-                g_resourceGraphicsCache.DumpNumUsedBitmaps (false);
 
-                g_screenMap.m_currentScreenMapIndex = 0;
+                //if (g_screenMap.GetCurrentScreenNumber () == 0)
+                //{
+                //    g_resourceGraphicsCache.DumpNumUsedBitmaps (false);
+                //} // Endif.
+
             } // Endif.
             
             status = DisplayScreen ();

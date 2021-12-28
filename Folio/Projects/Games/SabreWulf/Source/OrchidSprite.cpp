@@ -1,8 +1,9 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
+#include    "DrawingElementIds.h"
 #include    "Globals.h"
 #include    "OrchidSprite.h"
-#include    "ResourceOwnerId.h"
+#include    "ResourceOwnerIds.h"
 #include    "SpriteGraphics.h"
 
 namespace Folio
@@ -140,7 +141,7 @@ void    OrchidSprite::StartTransitionTickCount (bool newScreen)
             {
                 // The orchid sprite should shrink.
 
-                SetOrchidSpriteShrinking ();
+                //SetOrchidSpriteShrinking ();
             } // Endelse.
 
         } // Endif.
@@ -150,8 +151,8 @@ void    OrchidSprite::StartTransitionTickCount (bool newScreen)
             // No. Set the transition tick count at which time orchid sprite 
             // should start to shrink.
 
-            m_transitionTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount () + 
-                                    1000 * Folio::Core::Util::Random::GetRandomNumber (1, 4);
+            m_transitionTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();// + 
+                                    //1000 * Folio::Core::Util::Random::GetRandomNumber (1, 4);
         } // Endelse.
 
     } // Endif.
@@ -203,7 +204,7 @@ void    OrchidSprite::CheckTransition ()
 
         // Should the orchid sprite transition?
 
-        if (Folio::Core::Util::DateTime::GetCurrentTickCount () >= m_transitionTickCount)
+        //if (Folio::Core::Util::DateTime::GetCurrentTickCount () >= m_transitionTickCount)
         {
             // Yes. Is the orchid sprite grown?
 
@@ -211,7 +212,7 @@ void    OrchidSprite::CheckTransition ()
             {
                 // Yes. The orchid sprite should shrink.
 
-                SetOrchidSpriteShrinking ();
+                //SetOrchidSpriteShrinking ();
             } // Endif.
 
             else
@@ -231,10 +232,10 @@ void    OrchidSprite::CheckTransition ()
 } // Endproc.
 
 
-FolioStatus OrchidSprite::HandlePlayerCollision (ORCHID_SPRITE_TYPE                     &orchidSpriteType,
-                                                 Folio::Core::Game::ZxSpectrum::COLOUR  &orchidSpriteColour)
+FolioStatus OrchidSprite::HandlePlayerCollision (ORCHID_SPRITE_TYPE&                    orchidSpriteType,
+                                                 Folio::Core::Game::ZxSpectrum::COLOUR& orchidSpriteColour)
 {
-    orchidSpriteType    = UNDEFINED_ORCHID_TYPE; // Initialise!
+    orchidSpriteType    = ORCHID_TYPE_UNDEFINED; // Initialise!
     orchidSpriteColour  = Folio::Core::Game::ZxSpectrum::UNDEFINED;
 
     FolioStatus status = ERR_SUCCESS;
@@ -484,7 +485,7 @@ Folio::Core::Game::ZxSpectrum::COLOUR   OrchidSprite::GetOrchidSpriteColour ()
 
 
 FolioStatus CreateOrchidSpriteDrawingElement (FolioHandle                   dcHandle,
-                                              OrchidSpriteDrawingElement    &orchidSpriteDrawingElement)
+                                              OrchidSpriteDrawingElement&   orchidSpriteDrawingElement)
 {
     // Before creating an orchid sprite drawing element, make sure that the 
     // current orchid sprite drawing element is destroyed.
@@ -510,15 +511,13 @@ FolioStatus CreateOrchidSpriteDrawingElement (FolioHandle                   dcHa
 } // Endproc.
 
 
-FolioStatus InitialiseScreenOrchidSprite (CollisionGrid &collisionGrid)
+FolioStatus InitialiseScreenOrchidSprite (CollisionGrid& collisionGrid)
 {
     FolioStatus status = ERR_SUCCESS;
 
-    // Is the orchid sprite drawing element created and does the current screen
-    // support an orchid sprite?
+    // Does the current screen support an orchid sprite?
 
-    if (g_orchidSpriteDrawingElement.IsCreated () && 
-        g_screenMap.IsScreenOrchidSprite ())
+    if (g_screenMap.IsScreenOrchidSprite ())
     {
         // Yes. Get the orchid sprite.
 
@@ -554,34 +553,39 @@ FolioStatus UpdateScreenOrchidSprite ()
 {
     FolioStatus status = ERR_SUCCESS;
     
-    // Is the orchid sprite drawing element created and does the current screen
-    // support an orchid sprite?
+    // Does the current screen support an orchid sprite?
 
-    if (g_orchidSpriteDrawingElement.IsCreated () && 
-        g_screenMap.IsScreenOrchidSprite ())
+    if (g_screenMap.IsScreenOrchidSprite ())
     {
         // Yes. Get the orchid sprite.
 
         OrchidSpritePtr &orchidSprite(g_orchidSpriteDrawingElement.m_sprite);
 
-        // Start the orchid sprite's transition tick count.
+        // Set the orchid sprite's screen position.
 
-        orchidSprite->StartTransitionTickCount ();
+        status = orchidSprite->SetScreenBottomLeft (g_screenMap.GetScreenOrchidSpriteScreenXLeft (), 
+                                                    g_screenMap.GetScreenOrchidSpriteScreenYBottom ());
+
+        if (status == ERR_SUCCESS)
+        {
+            // Start the orchid sprite's transition tick count.
+
+            orchidSprite->StartTransitionTickCount ();
+        } // Endif.
+
     } // Endif.
 
     return (status);
 } // Endproc.
 
 
-FolioStatus CheckScreenOrchidSprite (Gdiplus::Graphics &graphics)
+FolioStatus CheckScreenOrchidSprite (Gdiplus::Graphics& graphics)
 {
     FolioStatus status = ERR_SUCCESS;
 
-    // Is the orchid sprite drawing element created and does the current screen
-    // support an orchid sprite?
+    // Does the current screen support an orchid sprite?
 
-    if (g_orchidSpriteDrawingElement.IsCreated () && 
-        g_screenMap.IsScreenOrchidSprite ())
+    if (g_screenMap.IsScreenOrchidSprite ())
     {
         // Yes. Get the orchid sprite.
 
@@ -596,21 +600,48 @@ FolioStatus CheckScreenOrchidSprite (Gdiplus::Graphics &graphics)
 } // Endproc.
 
 
-FolioStatus StoreScreenOrchidSpriteBackground (Gdiplus::Graphics &graphics)
+FolioStatus StoreScreenOrchidSpriteBackground (Gdiplus::Graphics& graphics)
 {
-    return (g_orchidSpriteDrawingElement.StoreSpriteBackground (graphics));
+    FolioStatus status = ERR_SUCCESS;
+
+    // Does the current screen support an orchid sprite?
+
+    if (g_screenMap.IsScreenOrchidSprite ())
+    {
+        status = g_orchidSpriteDrawingElement.StoreSpriteBackground (graphics);
+    } // Endif.
+
+    return (status);
 } // Endproc.
 
 
-FolioStatus RestoreScreenOrchidSpriteBackground (Gdiplus::Graphics &graphics)
+FolioStatus RestoreScreenOrchidSpriteBackground (Gdiplus::Graphics& graphics)
 {
-    return (g_orchidSpriteDrawingElement.RestoreSpriteBackground (graphics));
+    FolioStatus status = ERR_SUCCESS;
+
+    // Does the current screen support an orchid sprite?
+
+    if (g_screenMap.IsScreenOrchidSprite ())
+    {
+        status = g_orchidSpriteDrawingElement.RestoreSpriteBackground (graphics);
+    } // Endif.
+
+    return (status);
 } // Endproc.
 
 
-FolioStatus DrawScreenOrchidSprite (Gdiplus::Graphics &graphics)
+FolioStatus DrawScreenOrchidSprite (Gdiplus::Graphics& graphics)
 {
-    return (g_orchidSpriteDrawingElement.DrawSprite (graphics));
+    FolioStatus status = ERR_SUCCESS;
+
+    // Does the current screen support an orchid sprite?
+
+    if (g_screenMap.IsScreenOrchidSprite ())
+    {
+        status = g_orchidSpriteDrawingElement.DrawSprite (graphics);
+    } // Endif.
+
+    return (status);
 } // Endproc.
 
 } // Endnamespace.

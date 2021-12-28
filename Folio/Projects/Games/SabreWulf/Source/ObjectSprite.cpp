@@ -2,7 +2,7 @@
 #include    "StdAfx.h"
 #include    "Globals.h"
 #include    "ObjectSprite.h"
-#include    "ResourceOwnerId.h"
+#include    "Screen.h"
 #include    "SpriteGraphics.h"
 #include    "Ultimate.h"
 
@@ -67,8 +67,8 @@ FolioStatus ObjectSprite::Create (FolioHandle       dcHandle,
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<OBJECT_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                        g_resourceGraphicsCache,
-                                                                                                       currentScreenMapIndex,
-                                                                                                       DRAWING_ELEMENT_OBJECT_SPRITE,
+                                                                                                       Screen::MakeOwnerId (currentScreenMapIndex),
+                                                                                                       Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_OBJECT_SPRITE,
                                                                                                        objectSpriteId,
                                                                                                        objectSpriteColour,
                                                                                                        g_objectSpriteGraphicCharacteristics,
@@ -137,7 +137,7 @@ FolioStatus ObjectSprite::ChangeObjectSpriteColour ()
 } // Endproc.
 
 
-FolioStatus ObjectSprite::HandlePlayerCollision (bool &foundAmuletPiece)
+FolioStatus ObjectSprite::HandlePlayerCollision (bool& foundAmuletPiece)
 {
     foundAmuletPiece = false;   // Initialise!
 
@@ -297,13 +297,13 @@ Folio::Core::Game::ZxSpectrum::COLOUR   ObjectSprite::GetObjectSpriteColour (OBJ
 } // Endproc.
 
 
-static  FolioStatus AddScreenObjectSprite (const ObjectSpritePtr            &objectSprite,
-                                           ObjectSpriteDrawingElementsList  &objectSpriteDrawingElementsList, 
-                                           CollisionGrid                    &collisionGrid)
+static  FolioStatus AddScreenObjectSprite (const ObjectSpritePtr&           objectSprite,
+                                           ObjectSpriteDrawingElementsList& objectSpriteDrawingElementsList, 
+                                           CollisionGrid&                   collisionGrid)
 {
     // Create an object sprite drawing element.
 
-    ObjectSpriteDrawingElement  objectSpriteDrawingElement(DRAWING_ELEMENT_OBJECT_SPRITE, 
+    ObjectSpriteDrawingElement  objectSpriteDrawingElement(Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_OBJECT_SPRITE, 
                                                            objectSprite, 
                                                            objectSprite->GetCollisionGridCellValue ());
 
@@ -324,8 +324,8 @@ static  FolioStatus AddScreenObjectSprite (const ObjectSpritePtr            &obj
 
 
 FolioStatus InitialiseScreenObjectSprites (FolioHandle                      dcHandle,
-                                           ObjectSpriteDrawingElementsList  &objectSpriteDrawingElementsList,
-                                           CollisionGrid                    &collisionGrid)
+                                           ObjectSpriteDrawingElementsList& objectSpriteDrawingElementsList,
+                                           CollisionGrid&                   collisionGrid)
 {
     objectSpriteDrawingElementsList.clear ();   // Initialise!
     
@@ -356,8 +356,8 @@ FolioStatus InitialiseScreenObjectSprites (FolioHandle                      dcHa
 } // Endproc.
 
 
-FolioStatus CheckScreenObjectSprites (Gdiplus::Graphics                 &graphics,
-                                      ObjectSpriteDrawingElementsList   &objectSpriteDrawingElementsList)
+FolioStatus CheckScreenObjectSprites (Gdiplus::Graphics&                graphics,
+                                      ObjectSpriteDrawingElementsList&  objectSpriteDrawingElementsList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -386,24 +386,24 @@ FolioStatus CheckScreenObjectSprites (Gdiplus::Graphics                 &graphic
 } // Endproc.
 
 
-FolioStatus StoreScreenObjectSpriteBackgrounds (Gdiplus::Graphics               &graphics,
-                                                ObjectSpriteDrawingElementsList &objectSpriteDrawingElementsList)
+FolioStatus StoreScreenObjectSpriteBackgrounds (Gdiplus::Graphics&                  graphics,
+                                                ObjectSpriteDrawingElementsList&    objectSpriteDrawingElementsList)
 {
     return (Folio::Core::Game::StoreSpriteBackgrounds<ObjectSpriteDrawingElementsList> (graphics, 
                                                                                         objectSpriteDrawingElementsList));
 } // Endproc.
 
 
-FolioStatus RestoreScreenObjectSpriteBackgrounds (Gdiplus::Graphics                 &graphics,
-                                                  ObjectSpriteDrawingElementsList   &objectSpriteDrawingElementsList)
+FolioStatus RestoreScreenObjectSpriteBackgrounds (Gdiplus::Graphics&                graphics,
+                                                  ObjectSpriteDrawingElementsList&  objectSpriteDrawingElementsList)
 {
     return (Folio::Core::Game::RestoreSpriteBackgrounds<ObjectSpriteDrawingElementsList> (graphics, 
                                                                                           objectSpriteDrawingElementsList));
 } // Endproc.
 
 
-FolioStatus DrawScreenObjectSprites (Gdiplus::Graphics                  &graphics,
-                                     ObjectSpriteDrawingElementsList    &objectSpriteDrawingElementsList)
+FolioStatus DrawScreenObjectSprites (Gdiplus::Graphics&                 graphics,
+                                     ObjectSpriteDrawingElementsList&   objectSpriteDrawingElementsList)
 {
     return (Folio::Core::Game::DrawSprites<ObjectSpriteDrawingElementsList> (graphics, 
                                                                              objectSpriteDrawingElementsList));
