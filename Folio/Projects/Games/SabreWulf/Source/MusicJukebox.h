@@ -21,10 +21,10 @@ public:
 
     FolioStatus Create ();
 
-    FolioStatus PlayMainGameMusic (bool &isFinished);
-    FolioStatus PlayStartingGameMusic (bool &isFinished);
-    FolioStatus PlayGameOverMusic (bool &isFinished);
-    FolioStatus PlayFoundAmuletPieceMusic (bool &isFinished);
+    FolioStatus PlayMainGameMusic (bool& isFinished);
+    FolioStatus PlayStartingGameMusic (bool& isFinished);
+    FolioStatus PlayGameOverMusic (bool& isFinished);
+    FolioStatus PlayFoundAmuletPieceMusic (bool& isFinished);
     FolioStatus StopPlayingMusic ();
 
 private:
@@ -46,10 +46,10 @@ private:
     Folio::Core::Util::Sound::SoundSamplesList  m_gameOverMusic;            // Game over music.
     Folio::Core::Util::Sound::SoundSamplesList  m_foundAmuletPieceMusic;    // Found amulet piece music.
     
-    FolioStatus PlayMusic (MUSIC                                            music,
-                           const Folio::Core::Util::Sound::SoundSamplesList &soundSamplesList,
-                           bool                                             playAsynchronously,
-                           bool                                             &isFinished);
+    FolioStatus PlayMusic (MUSIC                                                music,
+                           const Folio::Core::Util::Sound::SoundSamplesList&    soundSamplesList,
+                           bool                                                 playAsynchronously,
+                           bool&                                                isFinished);
 
     void    StartPlayingMusic (MUSIC music);
     void    StopPlayingMusic (MUSIC music);

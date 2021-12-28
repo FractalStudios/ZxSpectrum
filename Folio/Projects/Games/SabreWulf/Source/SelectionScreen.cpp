@@ -152,7 +152,7 @@ bool    SelectionScreen::IsPlayerFireKeyDown () const
 } // Endproc.
 
 
-bool    SelectionScreen::IsPlayerDirectionKeyDown (Folio::Core::Game::Direction &direction) const
+bool    SelectionScreen::IsPlayerDirectionKeyDown (Folio::Core::Game::Direction& direction) const
 {
     direction = Folio::Core::Game::NO_DIRECTION;    // Initialise!
 
@@ -288,7 +288,7 @@ FolioStatus SelectionScreen::BuildScreenItems (FolioHandle  dcHandle,
             // Add selection screen text item.
 
             status = AddTextItem (dcHandle, 
-                                  DRAWING_ELEMENT_SELECTION_SCREEN_ITEM,
+                                  Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_SELECTION_SCREEN_ITEM,
                                   *Folio::Core::Game::ZxSpectrum::GetFont (),
                                   *itr,
                                   SetItemText,
@@ -508,8 +508,8 @@ FolioStatus SelectionScreen::UpdateScreen (UPDATE update)
 } // Endproc.
 
 
-FolioStatus SelectionScreen::UpdatePlayerSelection (Gdiplus::Graphics   &graphics,
-                                                    bool                &redrawCanvas)
+FolioStatus SelectionScreen::UpdatePlayerSelection (Gdiplus::Graphics&  graphics,
+                                                    bool&               redrawCanvas)
 {
     redrawCanvas = false;   // Initialise!
 
@@ -574,8 +574,8 @@ FolioStatus SelectionScreen::UpdatePlayerSelection (Gdiplus::Graphics   &graphic
 } // Endproc.
 
 
-FolioStatus SelectionScreen::UpdateGameControlSelection (Gdiplus::Graphics  &graphics,
-                                                         bool               &redrawCanvas)
+FolioStatus SelectionScreen::UpdateGameControlSelection (Gdiplus::Graphics& graphics,
+                                                         bool&              redrawCanvas)
 {
     redrawCanvas = false;   // Initialise!
 
@@ -650,8 +650,8 @@ FolioStatus SelectionScreen::UpdateGameControlSelection (Gdiplus::Graphics  &gra
 } // Endproc.
 
 
-FolioStatus SelectionScreen::UpdateFlashCurrentSelections (Gdiplus::Graphics    &graphics,
-                                                           bool                 &redrawCanvas)
+FolioStatus SelectionScreen::UpdateFlashCurrentSelections (Gdiplus::Graphics&   graphics,
+                                                           bool&                redrawCanvas)
 {
     redrawCanvas = false;   // Initialise!
 
@@ -1026,7 +1026,7 @@ void    SelectionScreen::StopStartingGameMusic ()
 } // Endproc.
 
 
-void    SelectionScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type &item)
+void    SelectionScreen::SetItemText (Folio::Core::Game::TextItemPtr::element_type& item)
 {
     switch (item.GetItemId ())
     {

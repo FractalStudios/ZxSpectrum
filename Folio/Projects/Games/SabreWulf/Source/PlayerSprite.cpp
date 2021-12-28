@@ -3,7 +3,6 @@
 #include    "Globals.h"
 #include    "NastySprite.h"
 #include    "PlayerSprite.h"
-#include    "ResourceOwnerId.h"
 #include    "SpriteGraphics.h"
 #include    "Ultimate.h"
 
@@ -59,8 +58,8 @@ FolioStatus PlayerSprite::Create (FolioHandle dcHandle)
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<PLAYER_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                        g_resourceGraphicsCache,
-                                                                                                       OWNER_ID_PLAYER_SPRITE,
-                                                                                                       DRAWING_ELEMENT_PLAYER_SPRITE,
+                                                                                                       Folio::Core::Game::ResourceGraphicsCache::OWNER_ID_MAIN_PLAYER_SPRITE,
+                                                                                                       Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_MAIN_PLAYER_SPRITE,
                                                                                                        PLAYER_SPRITE_SABRE_MAN,
                                                                                                        INITIAL_COLOUR,
                                                                                                        g_playerSpriteGraphicCharacteristics,
@@ -198,9 +197,9 @@ FolioStatus PlayerSprite::UpdateDirection (Folio::Core::Game::Direction directio
 } // Endproc.
 
 
-FolioStatus PlayerSprite::CheckPlayerSprite (Gdiplus::Graphics                  &graphics,
-                                             CollisionGrid                      &collisionGrid,
-                                             ObjectSpriteDrawingElementsList    &screenObjectSpriteDrawingElementsList)
+FolioStatus PlayerSprite::CheckPlayerSprite (Gdiplus::Graphics&                 graphics,
+                                             CollisionGrid&                     collisionGrid,
+                                             ObjectSpriteDrawingElementsList&   screenObjectSpriteDrawingElementsList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -367,8 +366,8 @@ FolioStatus PlayerSprite::SetTerminatingMode (FolioHandle dcHandle)
 
     FolioStatus status = Folio::Core::Game::QuerySpriteGraphicAttributes<PLAYER_SPRITE_ID, SPRITE_ID> (dcHandle,
                                                                                                        g_resourceGraphicsCache,
-                                                                                                       OWNER_ID_PLAYER_SPRITE,
-                                                                                                       DRAWING_ELEMENT_PLAYER_SPRITE,
+                                                                                                       Folio::Core::Game::ResourceGraphicsCache::OWNER_ID_MAIN_PLAYER_SPRITE,
+                                                                                                       Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_MAIN_PLAYER_SPRITE,
                                                                                                        INITIAL_COLOUR,
                                                                                                        s_terminatingSpriteGraphicAttributes,
                                                                                                        spriteGraphicAttributesList);
@@ -386,9 +385,9 @@ FolioStatus PlayerSprite::SetTerminatingMode (FolioHandle dcHandle)
 } // Endproc.
 
 
-FolioStatus PlayerSprite::HandleCollision (const CollisionGrid::CellElements    &cellElements,
-                                            CollisionGrid                       &collisionGrid,
-                                            ObjectSpriteDrawingElementsList     &screenObjectSpriteDrawingElementsList)
+FolioStatus PlayerSprite::HandleCollision (const CollisionGrid::CellElements&   cellElements,
+                                            CollisionGrid&                      collisionGrid,
+                                            ObjectSpriteDrawingElementsList&    screenObjectSpriteDrawingElementsList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -440,19 +439,17 @@ FolioStatus PlayerSprite::HandleCollision (const CollisionGrid::CellElements    
 } // Endproc.
 
 
-FolioStatus PlayerSprite::HandleItemCollision (const CollisionGrid::CellElement &cellElement,
-                                               CollisionGrid                    &collisionGrid)
+FolioStatus PlayerSprite::HandleItemCollision (const CollisionGrid::CellElement&    cellElement,
+                                               CollisionGrid&                       collisionGrid)
 {
     FolioStatus status = ERR_SUCCESS;
 
     // The player sprite has collided with a non-solid item. The only non-solid 
     // item on a screen is an orchid sprite.
 
-    // Is the orchid sprite drawing element created and does the current screen
-    // support an orchid sprite?
+    // Does the current screen support an orchid sprite?
 
-    if (g_orchidSpriteDrawingElement.IsCreated () && 
-        g_screenMap.IsScreenOrchidSprite ())
+    if (g_screenMap.IsScreenOrchidSprite ())
     {
         // Yes. Get the orchid sprite.
 
@@ -460,7 +457,7 @@ FolioStatus PlayerSprite::HandleItemCollision (const CollisionGrid::CellElement 
 
         // Handle the player sprite's collision with the orchid sprite.
 
-        OrchidSprite::ORCHID_SPRITE_TYPE        orchidSpriteType    = OrchidSprite::UNDEFINED_ORCHID_TYPE;
+        OrchidSprite::ORCHID_SPRITE_TYPE        orchidSpriteType    = OrchidSprite::ORCHID_TYPE_UNDEFINED;
         Folio::Core::Game::ZxSpectrum::COLOUR   orchidSpriteColour  = Folio::Core::Game::ZxSpectrum::UNDEFINED;
 
         status = orchidSprite->HandlePlayerCollision (orchidSpriteType, orchidSpriteColour);
@@ -498,7 +495,7 @@ FolioStatus PlayerSprite::HandleItemCollision (const CollisionGrid::CellElement 
                 status = ClearInfection ();
                 break;
 
-            case OrchidSprite::UNDEFINED_ORCHID_TYPE:
+            case OrchidSprite::ORCHID_TYPE_UNDEFINED:
             default:
                 break;
             } // Endswitch.
@@ -516,8 +513,8 @@ FolioStatus PlayerSprite::HandleItemCollision (const CollisionGrid::CellElement 
 } // Endproc.
 
 
-FolioStatus PlayerSprite::HandleSolidItemCollision (const CollisionGrid::CellElement    &cellElement,
-                                                    CollisionGrid                       &collisionGrid)
+FolioStatus PlayerSprite::HandleSolidItemCollision (const CollisionGrid::CellElement&   cellElement,
+                                                    CollisionGrid&                      collisionGrid)
 {
     // The player sprite has collided with a solid item.
     
@@ -537,9 +534,9 @@ FolioStatus PlayerSprite::HandleSolidItemCollision (const CollisionGrid::CellEle
 } // Endproc.
 
 
-FolioStatus PlayerSprite::HandleCollectableItemCollision (const CollisionGrid::CellElement  &cellElement,
-                                                          CollisionGrid                     &collisionGrid,
-                                                          ObjectSpriteDrawingElementsList   &screenObjectSpriteDrawingElementsList)
+FolioStatus PlayerSprite::HandleCollectableItemCollision (const CollisionGrid::CellElement& cellElement,
+                                                          CollisionGrid&                    collisionGrid,
+                                                          ObjectSpriteDrawingElementsList&  screenObjectSpriteDrawingElementsList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -625,8 +622,8 @@ FolioStatus PlayerSprite::HandleCollectableItemCollision (const CollisionGrid::C
 } // Endproc.
 
 
-FolioStatus PlayerSprite::HandleNastySpriteCollision (const CollisionGrid::CellElement  &cellElement,
-                                                      CollisionGrid                     &collisionGrid)
+FolioStatus PlayerSprite::HandleNastySpriteCollision (const CollisionGrid::CellElement& cellElement,
+                                                      CollisionGrid&                    collisionGrid)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -974,8 +971,8 @@ Int32   PlayerSprite::CalculateScreenXLeft (Int32 bitmapScreenWidth) const
 } // Endproc.
 
 
-FolioStatus CreatePlayerSprite (FolioHandle     dcHandle, 
-                                PlayerSpritePtr &playerSprite)
+FolioStatus CreatePlayerSprite (FolioHandle         dcHandle, 
+                                PlayerSpritePtr&    playerSprite)
 {
     // Create the player sprite.
 
@@ -985,19 +982,19 @@ FolioStatus CreatePlayerSprite (FolioHandle     dcHandle,
 } // Endproc.
 
 
-FolioStatus StorePlayerSpriteBackground (Gdiplus::Graphics &graphics)
+FolioStatus StorePlayerSpriteBackground (Gdiplus::Graphics& graphics)
 {
     return (g_playerSprite->StoreUnderlyingBackground (graphics));
 } // Endproc.
 
 
-FolioStatus RestorePlayerSpriteBackground (Gdiplus::Graphics &graphics)
+FolioStatus RestorePlayerSpriteBackground (Gdiplus::Graphics& graphics)
 {
     return (g_playerSprite->RestoreUnderlyingBackground (graphics));
 } // Endproc.
 
 
-FolioStatus DrawPlayerSprite (Gdiplus::Graphics &graphics)
+FolioStatus DrawPlayerSprite (Gdiplus::Graphics& graphics)
 {
     return (g_playerSprite->Draw (graphics));
 } // Endproc.

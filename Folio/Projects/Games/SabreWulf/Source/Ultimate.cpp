@@ -127,7 +127,7 @@ Folio::Core::Util::Sound::SoundSample   CreateSoundSample (Folio::Core::Game::Zx
 } // Endproc.
 
 
-Folio::Core::Util::Sound::SoundSamplesList  CreateMusicSamples (const ByteList &tune)
+Folio::Core::Util::Sound::SoundSamplesList  CreateMusicSamples (const ByteList& tune)
 {
     Folio::Core::Util::Sound::SoundSamplesList  soundSamplesList;
 

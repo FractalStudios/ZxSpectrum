@@ -7,7 +7,6 @@
 // "Home-made" includes.
 #include    <Game.h>
 #include    "CollisionGrid.h"
-#include    "DrawingElement.h"
 
 #pragma pack(push, 1)
 
@@ -23,8 +22,8 @@ namespace SabreWulf
 // Object sprite identifier enumeration.
 enum OBJECT_SPRITE_ID
 {
-    OBJECT_SPRITE_UNDEFINED = DRAWING_ELEMENT_UNDEFINED,
-    OBJECT_SPRITE_BOX = DRAWING_ELEMENT_OBJECT_SPRITE * MAX_NUM_DRAWING_ELEMENTS_PER_ITEM,                              
+    OBJECT_SPRITE_UNDEFINED = Folio::Core::Game::AItem::ITEM_ID_UNDEFINED,
+    OBJECT_SPRITE_BOX,
     OBJECT_SPRITE_RING,
     OBJECT_SPRITE_APPLE,
     OBJECT_SPRITE_CHARM,
@@ -53,7 +52,7 @@ public:
                         Int32               screenXLeft,
                         Int32               screenYBottom);
     FolioStatus ChangeObjectSpriteColour ();
-    FolioStatus HandlePlayerCollision (bool &foundAmuletPiece);
+    FolioStatus HandlePlayerCollision (bool& foundAmuletPiece);
 
     OBJECT_SPRITE_ID    GetObjectSpriteId () const;
 
@@ -92,16 +91,16 @@ typedef std::vector<ObjectSpriteDrawingElement> ObjectSpriteDrawingElementsList;
 // Routines.
 
 extern  FolioStatus InitialiseScreenObjectSprites (FolioHandle                      dcHandle,
-                                                   ObjectSpriteDrawingElementsList  &objectSpriteDrawingElementsList,
-                                                   CollisionGrid                    &collisionGrid);
-extern  FolioStatus CheckScreenObjectSprites (Gdiplus::Graphics                 &graphics, 
-                                              ObjectSpriteDrawingElementsList   &objectSpriteDrawingElementsList);
-extern  FolioStatus StoreScreenObjectSpriteBackgrounds (Gdiplus::Graphics               &graphics,
-                                                        ObjectSpriteDrawingElementsList &objectSpriteDrawingElementsList);
-extern  FolioStatus RestoreScreenObjectSpriteBackgrounds (Gdiplus::Graphics                 &graphics,
-                                                          ObjectSpriteDrawingElementsList   &objectSpriteDrawingElementsList);
-extern  FolioStatus DrawScreenObjectSprites (Gdiplus::Graphics                  &graphics,
-                                             ObjectSpriteDrawingElementsList    &objectSpriteDrawingElementsList);
+                                                   ObjectSpriteDrawingElementsList& objectSpriteDrawingElementsList,
+                                                   CollisionGrid&                   collisionGrid);
+extern  FolioStatus CheckScreenObjectSprites (Gdiplus::Graphics&                graphics, 
+                                              ObjectSpriteDrawingElementsList&  objectSpriteDrawingElementsList);
+extern  FolioStatus StoreScreenObjectSpriteBackgrounds (Gdiplus::Graphics&                  graphics,
+                                                        ObjectSpriteDrawingElementsList&    objectSpriteDrawingElementsList);
+extern  FolioStatus RestoreScreenObjectSpriteBackgrounds (Gdiplus::Graphics&                graphics,
+                                                          ObjectSpriteDrawingElementsList&  objectSpriteDrawingElementsList);
+extern  FolioStatus DrawScreenObjectSprites (Gdiplus::Graphics&                 graphics,
+                                             ObjectSpriteDrawingElementsList&   objectSpriteDrawingElementsList);
 
 } // Endnamespace.
 

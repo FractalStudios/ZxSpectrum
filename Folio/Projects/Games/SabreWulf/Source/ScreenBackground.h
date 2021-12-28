@@ -24,8 +24,8 @@ namespace SabreWulf
 class ScreenBackground
 {
 public:
-    ScreenBackground (const BackgroundItemsList         &backgroundItemsList,
-                      const BackgroundItemGraphicsMap   &backgroundItemGraphicsMap);
+    ScreenBackground (const BackgroundItemsList&        backgroundItemsList,
+                      const BackgroundItemGraphicsMap&  backgroundItemGraphicsMap);
     ~ScreenBackground ();
 
     BackgroundItemsList GetBackgroundItemsList () const;
@@ -33,7 +33,7 @@ public:
 private:
     BackgroundItemsList m_backgroundItemsList;  // The screen's background items list.
 
-    FolioStatus SetBackgroundItemGraphics (const BackgroundItemGraphicsMap &backgroundItemGraphicsMap);
+    FolioStatus SetBackgroundItemGraphics (const BackgroundItemGraphicsMap& backgroundItemGraphicsMap);
 
     // Private copy constructor to prevent copying.
     ScreenBackground (const ScreenBackground& rhs);
@@ -51,10 +51,10 @@ typedef std::map<ScreenMap::ScreenNumber, ScreenBackgroundPtr>  ScreenBackground
 
 // Routines.
 
-extern  FolioStatus CreateScreenBackgrounds (const BackgroundItemGraphicsMap    &backgroundItemGraphicsMap,
-                                             ScreenBackgroundsMap               &screenBackgroundsMap);
+extern  FolioStatus CreateScreenBackgrounds (const BackgroundItemGraphicsMap&   backgroundItemGraphicsMap,
+                                             ScreenBackgroundsMap&              screenBackgroundsMap);
 extern  FolioStatus QueryScreenBackgroundList (ScreenMap::ScreenNumber  screenNumber,
-                                               BackgroundItemsList      &backgroundItemsList);
+                                               BackgroundItemsList&     backgroundItemsList);
 
 } // Endnamespace.
 

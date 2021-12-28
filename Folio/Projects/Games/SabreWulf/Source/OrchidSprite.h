@@ -6,7 +6,6 @@
 // "Home-made" includes.
 #include    <Game.h>
 #include    "CollisionGrid.h"
-#include    "DrawingElement.h"
 
 #pragma pack(push, 1)
 
@@ -22,8 +21,8 @@ namespace SabreWulf
 // Orchid sprite identifier enumeration.
 enum ORCHID_SPRITE_ID
 {
-    ORCHID_SPRITE_UNDEFINED = DRAWING_ELEMENT_UNDEFINED,
-    ORCHID_SPRITE = DRAWING_ELEMENT_ORCHID_SPRITE * MAX_NUM_DRAWING_ELEMENTS_PER_ITEM,                              
+    ORCHID_SPRITE_UNDEFINED = Folio::Core::Game::AItem::ITEM_ID_UNDEFINED,
+    ORCHID_SPRITE,
 }; // Endenum.
 
 
@@ -45,16 +44,16 @@ public:
     // Orchid sprite type enumeration.
     enum ORCHID_SPRITE_TYPE
     {
-        UNDEFINED_ORCHID_TYPE = -1,
-        IMMUNITY = 0,   // Red.
-        CONFUSION,      // Magenta.
-        SPEED,          // Cyan.
-        SICKNESS,       // Yellow.
-        CURE,           // White.
+        ORCHID_TYPE_UNDEFINED = Folio::Core::Game::AItem::ITEM_ID_UNDEFINED,
+        IMMUNITY,   // Red.
+        CONFUSION,  // Magenta.
+        SPEED,      // Cyan.
+        SICKNESS,   // Yellow.
+        CURE,       // White.
     }; // Endenum.
 
-    FolioStatus HandlePlayerCollision (ORCHID_SPRITE_TYPE                       &orchidSpriteType,
-                                       Folio::Core::Game::ZxSpectrum::COLOUR    &orchidSpriteColour);
+    FolioStatus HandlePlayerCollision (ORCHID_SPRITE_TYPE&                      orchidSpriteType,
+                                       Folio::Core::Game::ZxSpectrum::COLOUR&   orchidSpriteColour);
 
 private:
     static  const   Int32   INITIAL_SCREEN_X_LEFT   = 120;  // The initial screen X left (in pixels) of the orchid sprite.
@@ -107,13 +106,13 @@ typedef Folio::Core::Game::SpriteDrawingElement<OrchidSpritePtr>    OrchidSprite
 // Routines.
 
 extern  FolioStatus CreateOrchidSpriteDrawingElement (FolioHandle                   dcHandle,
-                                                      OrchidSpriteDrawingElement    &orchidSpriteDrawingElement);
-extern  FolioStatus InitialiseScreenOrchidSprite (CollisionGrid &collisionGrid);
+                                                      OrchidSpriteDrawingElement&   orchidSpriteDrawingElement);
+extern  FolioStatus InitialiseScreenOrchidSprite (CollisionGrid& collisionGrid);
 extern  FolioStatus UpdateScreenOrchidSprite ();
-extern  FolioStatus CheckScreenOrchidSprite (Gdiplus::Graphics &graphics);
-extern  FolioStatus StoreScreenOrchidSpriteBackground (Gdiplus::Graphics &graphics);
-extern  FolioStatus RestoreScreenOrchidSpriteBackground (Gdiplus::Graphics &graphics);
-extern  FolioStatus DrawScreenOrchidSprite (Gdiplus::Graphics &graphics);
+extern  FolioStatus CheckScreenOrchidSprite (Gdiplus::Graphics& graphics);
+extern  FolioStatus StoreScreenOrchidSpriteBackground (Gdiplus::Graphics& graphics);
+extern  FolioStatus RestoreScreenOrchidSpriteBackground (Gdiplus::Graphics& graphics);
+extern  FolioStatus DrawScreenOrchidSprite (Gdiplus::Graphics& graphics);
 
 } // Endnamespace.
 

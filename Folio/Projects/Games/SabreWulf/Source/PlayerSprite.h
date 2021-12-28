@@ -6,7 +6,6 @@
 // "Home-made" includes.
 #include    <Game.h>
 #include    "CollisionGrid.h"
-#include    "DrawingElement.h"
 #include    "ObjectSprite.h"
 
 #pragma pack(push, 1)
@@ -23,8 +22,8 @@ namespace SabreWulf
 // Player sprite identifier enumeration.
 enum PLAYER_SPRITE_ID
 {
-    PLAYER_SPRITE_UNDEFINED = DRAWING_ELEMENT_UNDEFINED,
-    PLAYER_SPRITE_SABRE_MAN = DRAWING_ELEMENT_PLAYER_SPRITE * MAX_NUM_DRAWING_ELEMENTS_PER_ITEM,
+    PLAYER_SPRITE_UNDEFINED = Folio::Core::Game::AItem::ITEM_ID_UNDEFINED,
+    PLAYER_SPRITE_SABRE_MAN,
 }; // Endenum.
 
 
@@ -44,9 +43,9 @@ public:
     FolioStatus Start ();
     FolioStatus UpdateDirection (Folio::Core::Game::Direction   direction, 
                                  bool                           keyDown);
-    FolioStatus CheckPlayerSprite (Gdiplus::Graphics                &graphics,
-                                   CollisionGrid                    &collisionGrid,
-                                   ObjectSpriteDrawingElementsList  &screenObjectSpriteDrawingElementsList);
+    FolioStatus CheckPlayerSprite (Gdiplus::Graphics&               graphics,
+                                   CollisionGrid&                   collisionGrid,
+                                   ObjectSpriteDrawingElementsList& screenObjectSpriteDrawingElementsList);
 
     FolioStatus SetFireKeyDown (bool fireKeyDown);
     FolioStatus SetGameOver ();
@@ -88,18 +87,18 @@ private:
 
     FolioStatus SetTerminatingMode (FolioHandle dcHandle);
 
-    FolioStatus HandleCollision (const CollisionGrid::CellElements  &cellElements,
-                                 CollisionGrid                      &collisionGrid,
-                                 ObjectSpriteDrawingElementsList    &screenObjectSpriteDrawingElementsList);
-    FolioStatus HandleItemCollision (const CollisionGrid::CellElement   &cellElement,
-                                     CollisionGrid                      &collisionGrid);
-    FolioStatus HandleSolidItemCollision (const CollisionGrid::CellElement  &cellElement, 
-                                          CollisionGrid                     &collisionGrid);
-    FolioStatus HandleCollectableItemCollision (const CollisionGrid::CellElement    &cellElement,
-                                                CollisionGrid                       &collisionGrid,
-                                                ObjectSpriteDrawingElementsList     &screenObjectSpriteDrawingElementsList);
-    FolioStatus HandleNastySpriteCollision (const CollisionGrid::CellElement    &cellElement,
-                                            CollisionGrid                       &collisionGrid);
+    FolioStatus HandleCollision (const CollisionGrid::CellElements& cellElements,
+                                 CollisionGrid&                     collisionGrid,
+                                 ObjectSpriteDrawingElementsList&   screenObjectSpriteDrawingElementsList);
+    FolioStatus HandleItemCollision (const CollisionGrid::CellElement&  cellElement,
+                                     CollisionGrid&                     collisionGrid);
+    FolioStatus HandleSolidItemCollision (const CollisionGrid::CellElement& cellElement, 
+                                          CollisionGrid&                    collisionGrid);
+    FolioStatus HandleCollectableItemCollision (const CollisionGrid::CellElement&   cellElement,
+                                                CollisionGrid&                      collisionGrid,
+                                                ObjectSpriteDrawingElementsList&    screenObjectSpriteDrawingElementsList);
+    FolioStatus HandleNastySpriteCollision (const CollisionGrid::CellElement&   cellElement,
+                                            CollisionGrid&                      collisionGrid);
 
     bool    IsDead (const CollisionGrid::CellElement& cellElement);
 
@@ -134,11 +133,11 @@ typedef std::shared_ptr<PlayerSprite>   PlayerSpritePtr;
 
 // Routines.
 
-extern  FolioStatus CreatePlayerSprite (FolioHandle     dcHandle, 
-                                        PlayerSpritePtr &playerSprite);
-extern  FolioStatus StorePlayerSpriteBackground (Gdiplus::Graphics &graphics);
-extern  FolioStatus RestorePlayerSpriteBackground (Gdiplus::Graphics &graphics);
-extern  FolioStatus DrawPlayerSprite (Gdiplus::Graphics &graphics);
+extern  FolioStatus CreatePlayerSprite (FolioHandle         dcHandle, 
+                                        PlayerSpritePtr&    playerSprite);
+extern  FolioStatus StorePlayerSpriteBackground (Gdiplus::Graphics& graphics);
+extern  FolioStatus RestorePlayerSpriteBackground (Gdiplus::Graphics& graphics);
+extern  FolioStatus DrawPlayerSprite (Gdiplus::Graphics& graphics);
 
 } // Endnamespace.
 

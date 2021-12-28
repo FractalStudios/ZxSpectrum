@@ -24,7 +24,8 @@ namespace SabreWulf
 class ScreenMap
 {
 public:
-    static  const   UInt32  INITIAL_SCREEN_INDEX    = 168;                  // Index to the initial screen.
+    static  const   UInt32  INITIAL_SCREEN_INDEX    = 0;                  // Index to the initial screen.
+    //static  const   UInt32  INITIAL_SCREEN_INDEX    = 168;                  // Index to the initial screen.
     static  const   UInt32  UNDEFINED_SCREEN_INDEX  = FOLIO_INVALID_INDEX;  // Undefined screen index.
 
     ScreenMap ();
@@ -45,8 +46,8 @@ public:
     Int32   GetScreenOrchidSpriteScreenXLeft () const;
     Int32   GetScreenOrchidSpriteScreenYBottom () const;
 
-    FolioStatus QueryScreenObjectSprites (FolioHandle       dcHandle,
-                                          ObjectSpritesList &objectSpritesList) const;
+    FolioStatus QueryScreenObjectSprites (FolioHandle           dcHandle,
+                                          ObjectSpritesList&    objectSpritesList) const;
 
     static  UInt32  GetTotalNumScreens ();
 
@@ -81,8 +82,8 @@ private:
     static  const   ScreenIndexList m_amuletPieceScreenIndexList;   // Amulet piece screen index list.
     static  UInt32  m_amuletPieceScreenIndexListIndex;  // The index into the amulet piece screen index list.
 
-    static  bool    IsAmuletPieceOnScreen (UInt32           screenMapIndex,
-                                           OBJECT_SPRITE_ID &amuletPieceId);
+    static  bool    IsAmuletPieceOnScreen (UInt32               screenMapIndex,
+                                           OBJECT_SPRITE_ID&    amuletPieceId);
 
     // Private copy constructor to prevent copying.
     ScreenMap (const ScreenMap& rhs);

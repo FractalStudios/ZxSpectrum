@@ -5,7 +5,6 @@
 
 // "Home-made" includes.
 #include    "BorderScreen.h"
-#include    "DrawingElement.h"
 
 #pragma pack(push, 1)
 
@@ -21,7 +20,8 @@ namespace SabreWulf
 // Selection screen item identifier enumeration.
 enum SELECTION_SCREEN_ITEM_ID
 {
-    SELECTION_SCREEN_ITEM_INFORMATION_PANEL = DRAWING_ELEMENT_SELECTION_SCREEN_ITEM * MAX_NUM_DRAWING_ELEMENTS_PER_ITEM,
+    SELECTION_SCREEN_ITEM_UNDEFINED = Folio::Core::Game::AItem::ITEM_ID_UNDEFINED,
+    SELECTION_SCREEN_ITEM_INFORMATION_PANEL,
     SELECTION_SCREEN_ITEM_BORDER,
     SELECTION_SCREEN_ITEM_1_PLAYER_TEXT,
     SELECTION_SCREEN_ITEM_2_PLAYER_TEXT,
@@ -65,7 +65,7 @@ public:
 
     bool    IsPauseGameKeyDown () const;
     bool    IsPlayerFireKeyDown () const;
-    bool    IsPlayerDirectionKeyDown (Folio::Core::Game::Direction &direction) const;
+    bool    IsPlayerDirectionKeyDown (Folio::Core::Game::Direction& direction) const;
 
 private:
     static  const   UInt32  MAX_DISPLAY_SCREEN_TIME = 30 * 1000;    // 30 seconds.
@@ -94,12 +94,12 @@ private:
     }; // Endenum.
 
     FolioStatus UpdateScreen (UPDATE update);
-    FolioStatus UpdatePlayerSelection (Gdiplus::Graphics    &graphics,
-                                       bool                 &redrawCanvas);
-    FolioStatus UpdateGameControlSelection (Gdiplus::Graphics   &graphics,
-                                            bool                &redrawCanvas);
-    FolioStatus UpdateFlashCurrentSelections (Gdiplus::Graphics &graphics,
-                                              bool              &redrawCanvas);
+    FolioStatus UpdatePlayerSelection (Gdiplus::Graphics&   graphics,
+                                       bool&                redrawCanvas);
+    FolioStatus UpdateGameControlSelection (Gdiplus::Graphics&  graphics,
+                                            bool&               redrawCanvas);
+    FolioStatus UpdateFlashCurrentSelections (Gdiplus::Graphics&    graphics,
+                                              bool&                 redrawCanvas);
 
     FolioStatus ProcessScreenFrameWaitingForSelection (UInt32 currentTickCount);
     FolioStatus ProcessScreenFrameStartingGame (UInt32 currentTickCount);
@@ -115,7 +115,7 @@ private:
     FolioStatus PlayStartingGameMusic ();
     void    StopStartingGameMusic ();
 
-    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type &item);
+    static  void    SetItemText (Folio::Core::Game::TextItemPtr::element_type& item);
 
     // Private copy constructor to prevent copying.
     SelectionScreen (const SelectionScreen& rhs);

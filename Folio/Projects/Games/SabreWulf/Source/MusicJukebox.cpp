@@ -88,7 +88,7 @@ FolioStatus MusicJukebox::Create ()
 } // Endproc.
 
 
-FolioStatus MusicJukebox::PlayMainGameMusic (bool &isFinished)
+FolioStatus MusicJukebox::PlayMainGameMusic (bool& isFinished)
 {
     // Play the main game music.
 
@@ -96,7 +96,7 @@ FolioStatus MusicJukebox::PlayMainGameMusic (bool &isFinished)
 } // Endproc.
 
 
-FolioStatus MusicJukebox::PlayStartingGameMusic (bool &isFinished)
+FolioStatus MusicJukebox::PlayStartingGameMusic (bool& isFinished)
 {
     // Play the starting game music.
 
@@ -104,7 +104,7 @@ FolioStatus MusicJukebox::PlayStartingGameMusic (bool &isFinished)
 } // Endproc.
 
 
-FolioStatus MusicJukebox::PlayGameOverMusic (bool &isFinished)
+FolioStatus MusicJukebox::PlayGameOverMusic (bool& isFinished)
 {
     // Play the game over music.
 
@@ -112,7 +112,7 @@ FolioStatus MusicJukebox::PlayGameOverMusic (bool &isFinished)
 } // Endproc.
 
 
-FolioStatus MusicJukebox::PlayFoundAmuletPieceMusic (bool &isFinished)
+FolioStatus MusicJukebox::PlayFoundAmuletPieceMusic (bool& isFinished)
 {
     // Play the found amulet piece music.
 
@@ -131,9 +131,9 @@ FolioStatus MusicJukebox::StopPlayingMusic ()
 
 
 FolioStatus MusicJukebox::PlayMusic (MUSIC                                              music,
-                                     const Folio::Core::Util::Sound::SoundSamplesList   &soundSamplesList,
+                                     const Folio::Core::Util::Sound::SoundSamplesList&  soundSamplesList,
                                      bool                                               playAsynchronously,
-                                     bool                                               &isFinished)
+                                     bool&                                              isFinished)
 {
     FolioStatus status = ERR_SUCCESS;
 

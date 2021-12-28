@@ -75,8 +75,8 @@ static  const   ScreenBackgroundAttributes  g_screenBackgroundAttributesTable []
 };
 
 
-ScreenBackground::ScreenBackground (const BackgroundItemsList       &backgroundItemsList,
-                                    const BackgroundItemGraphicsMap &backgroundItemGraphicsMap)
+ScreenBackground::ScreenBackground (const BackgroundItemsList&          backgroundItemsList,
+                                    const BackgroundItemGraphicsMap&    backgroundItemGraphicsMap)
 :   m_backgroundItemsList(backgroundItemsList)
 {
     // Set the screen's background item graphics.
@@ -96,7 +96,7 @@ BackgroundItemsList ScreenBackground::GetBackgroundItemsList () const
 } // Endproc.
 
 
-FolioStatus ScreenBackground::SetBackgroundItemGraphics (const BackgroundItemGraphicsMap &backgroundItemGraphicsMap)
+FolioStatus ScreenBackground::SetBackgroundItemGraphics (const BackgroundItemGraphicsMap& backgroundItemGraphicsMap)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -115,8 +115,8 @@ FolioStatus ScreenBackground::SetBackgroundItemGraphics (const BackgroundItemGra
 } // Endproc.
 
 
-FolioStatus CreateScreenBackgrounds (const BackgroundItemGraphicsMap    &backgroundItemGraphicsMap,
-                                     ScreenBackgroundsMap               &screenBackgroundsMap)
+FolioStatus CreateScreenBackgrounds (const BackgroundItemGraphicsMap&   backgroundItemGraphicsMap,
+                                     ScreenBackgroundsMap&              screenBackgroundsMap)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -145,7 +145,7 @@ FolioStatus CreateScreenBackgrounds (const BackgroundItemGraphicsMap    &backgro
 
 
 FolioStatus QueryScreenBackgroundList (ScreenMap::ScreenNumber  screenNumber,
-                                       BackgroundItemsList      &backgroundItemsList)
+                                       BackgroundItemsList&     backgroundItemsList)
 {
     FolioStatus status = ERR_SUCCESS;
     

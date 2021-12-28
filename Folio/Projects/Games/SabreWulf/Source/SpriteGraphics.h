@@ -206,7 +206,7 @@ enum SPRITE_ID
 // Routines.
 
 extern  FolioStatus CreateSpriteGraphics (FolioHandle                               instanceHandle,
-                                          Folio::Core::Game::ResourceGraphicsCache  &resourceGraphicsCache);
+                                          Folio::Core::Game::ResourceGraphicsCache& resourceGraphicsCache);
 
 } // Endnamespace.
 

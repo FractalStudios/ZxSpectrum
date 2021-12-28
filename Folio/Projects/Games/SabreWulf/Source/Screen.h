@@ -26,12 +26,16 @@ namespace SabreWulf
 class Screen
 {
 public:
-    Screen (Folio::Core::Applet::Canvas &canvas,
-            const BackgroundItemsList   &backgroundItemsList);
+    Screen (Folio::Core::Applet::Canvas&    canvas,
+            const BackgroundItemsList&      backgroundItemsList);
     ~Screen ();
 
     FolioStatus Draw ();
-    FolioStatus HandleProcessFrame (bool &isStarting);
+    FolioStatus HandleProcessFrame (bool& isStarting);
+
+    static  Folio::Core::Game::ResourceGraphicsCache::OwnerId   MakeOwnerId (UInt32 screenNumber);
+
+    FolioStatus ExitScreen ();
     
 private:
     // Screen screen attributes.
@@ -55,19 +59,18 @@ private:
     bool    IsScreenInitialised () const;
 
     FolioStatus QueryScreenDrawingElements (FolioHandle                             dcHandle,
-                                            Folio::Core::Game::DrawingElementsList  &screenDrawingElementsList);
+                                            Folio::Core::Game::DrawingElementsList& screenDrawingElementsList);
     FolioStatus InitialiseScreen (FolioHandle                                   dcHandle,
-                                  const Folio::Core::Game::DrawingElementsList  &screenDrawingElementsList);
+                                  const Folio::Core::Game::DrawingElementsList& screenDrawingElementsList);
     FolioStatus UpdateScreen (FolioHandle                                   dcHandle,
-                              const Folio::Core::Game::DrawingElementsList  &screenDrawingElementsList);
-    FolioStatus DrawScreen (const Folio::Core::Game::DrawingElementsList &screenDrawingElementsList);
-    FolioStatus ExitScreen ();
+                              const Folio::Core::Game::DrawingElementsList& screenDrawingElementsList);
+    FolioStatus DrawScreen (const Folio::Core::Game::DrawingElementsList& screenDrawingElementsList);
     FolioStatus MoveToNewScreen ();
 
-    FolioStatus StoreScreenSpriteBackgrounds (Gdiplus::Graphics &graphics);
-    FolioStatus RestoreScreenSpriteBackgrounds (Gdiplus::Graphics &graphics);
-    FolioStatus DrawScreenSprites (Gdiplus::Graphics &graphics);
-    FolioStatus CheckScreenSprites (Gdiplus::Graphics &graphics);
+    FolioStatus StoreScreenSpriteBackgrounds (Gdiplus::Graphics& graphics);
+    FolioStatus RestoreScreenSpriteBackgrounds (Gdiplus::Graphics& graphics);
+    FolioStatus DrawScreenSprites (Gdiplus::Graphics& graphics);
+    FolioStatus CheckScreenSprites (Gdiplus::Graphics& graphics);
 
     FolioStatus ReleaseResourceGraphics ();
 
@@ -87,8 +90,8 @@ typedef std::vector<ScreenPtr>  ScreensList;
 
 // Routines.
 
-extern  FolioStatus BuildScreens (Folio::Core::Applet::Canvas   &canvas,
-                                  ScreensList                   &screensList);
+extern  FolioStatus BuildScreens (Folio::Core::Applet::Canvas&  canvas,
+                                  ScreensList&                  screensList);
 
 } // Endnamespace.
 

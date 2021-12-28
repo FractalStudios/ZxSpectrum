@@ -29,7 +29,7 @@ typedef std::vector<Folio::Core::Game::ZxSpectrum::BYTE>    ByteList;
 
 extern  Folio::Core::Util::Sound::SoundSample   CreateSoundSample (Folio::Core::Game::ZxSpectrum::BYTE  frequency,
                                                                    Folio::Core::Game::ZxSpectrum::BYTE  numLoops);
-extern  Folio::Core::Util::Sound::SoundSamplesList  CreateMusicSamples (const ByteList &tune);
+extern  Folio::Core::Util::Sound::SoundSamplesList  CreateMusicSamples (const ByteList& tune);
 
 } // Endnamespace.
 

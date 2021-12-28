@@ -15,8 +15,8 @@ namespace Games
 namespace SabreWulf
 {
 
-Screen::Screen (Folio::Core::Applet::Canvas &canvas,
-                const BackgroundItemsList   &backgroundItemsList)
+Screen::Screen (Folio::Core::Applet::Canvas&    canvas,
+                const BackgroundItemsList&      backgroundItemsList)
 :   m_canvas(canvas),
     m_screenScreenRect(SCREEN_X_ORIGIN, SCREEN_Y_ORIGIN, SCREEN_WIDTH, SCREEN_HEIGHT),
     m_screenInitialised(false),
@@ -85,7 +85,7 @@ FolioStatus Screen::Draw ()
 } // Endproc.
 
 
-FolioStatus Screen::HandleProcessFrame (bool &isStarting)
+FolioStatus Screen::HandleProcessFrame (bool& isStarting)
 {
     // Get the canvas graphics.
 
@@ -121,7 +121,7 @@ bool    Screen::IsScreenInitialised () const
 
 
 FolioStatus Screen::QueryScreenDrawingElements (FolioHandle                             dcHandle,
-                                                Folio::Core::Game::DrawingElementsList  &screenDrawingElementsList)
+                                                Folio::Core::Game::DrawingElementsList& screenDrawingElementsList)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -156,7 +156,7 @@ FolioStatus Screen::QueryScreenDrawingElements (FolioHandle                     
 
 
 FolioStatus Screen::InitialiseScreen (FolioHandle                                   dcHandle,
-                                      const Folio::Core::Game::DrawingElementsList  &screenDrawingElementsList)
+                                      const Folio::Core::Game::DrawingElementsList& screenDrawingElementsList)
 {                      
     // Create the screen's collision grid.
 
@@ -197,7 +197,7 @@ FolioStatus Screen::InitialiseScreen (FolioHandle                               
 
 
 FolioStatus Screen::UpdateScreen (FolioHandle                                   dcHandle,
-                                  const Folio::Core::Game::DrawingElementsList  &screenDrawingElementsList)
+                                  const Folio::Core::Game::DrawingElementsList& screenDrawingElementsList)
 {
     // Update the screen's orchid sprite.
 
@@ -214,7 +214,7 @@ FolioStatus Screen::UpdateScreen (FolioHandle                                   
 } // Endproc.
 
 
-FolioStatus Screen::DrawScreen (const Folio::Core::Game::DrawingElementsList &screenDrawingElementsList)
+FolioStatus Screen::DrawScreen (const Folio::Core::Game::DrawingElementsList& screenDrawingElementsList)
 {
     // Clear the canvas rectangle occupied by the screen.
 
@@ -281,6 +281,12 @@ FolioStatus Screen::MoveToNewScreen ()
 } // Endproc.
 
 
+Folio::Core::Game::ResourceGraphicsCache::OwnerId   Screen::MakeOwnerId (UInt32 screenNumber)
+{
+    return (TXT("Screen ") + Folio::Core::Game::ResourceGraphicsCache::MakeOwnerId (screenNumber));
+} // Endproc.
+
+
 FolioStatus Screen::ExitScreen ()
 {
     // Release the screen's graphics from the resource graphics cache.
@@ -298,7 +304,7 @@ FolioStatus Screen::ExitScreen ()
 } // Endproc.
 
 
-FolioStatus Screen::StoreScreenSpriteBackgrounds (Gdiplus::Graphics &graphics)
+FolioStatus Screen::StoreScreenSpriteBackgrounds (Gdiplus::Graphics& graphics)
 {
     // Store the screen's object sprites' underlying backgrounds.
     
@@ -340,7 +346,7 @@ FolioStatus Screen::StoreScreenSpriteBackgrounds (Gdiplus::Graphics &graphics)
 } // Endproc.
 
 
-FolioStatus Screen::RestoreScreenSpriteBackgrounds (Gdiplus::Graphics &graphics)
+FolioStatus Screen::RestoreScreenSpriteBackgrounds (Gdiplus::Graphics& graphics)
 {
     // Restore the screen's object sprites' underlying backgrounds.
     
@@ -382,7 +388,7 @@ FolioStatus Screen::RestoreScreenSpriteBackgrounds (Gdiplus::Graphics &graphics)
 } // Endproc.
 
 
-FolioStatus Screen::DrawScreenSprites (Gdiplus::Graphics &graphics)
+FolioStatus Screen::DrawScreenSprites (Gdiplus::Graphics& graphics)
 {
     // Draw the screen's object sprites.
     
@@ -411,7 +417,7 @@ FolioStatus Screen::DrawScreenSprites (Gdiplus::Graphics &graphics)
                 {
                     // Draw the player sprite.
 
-                    status = DrawPlayerSprite (graphics);
+                    //status = DrawPlayerSprite (graphics);
 
                     if (status == ERR_SUCCESS)
                     {
@@ -432,7 +438,7 @@ FolioStatus Screen::DrawScreenSprites (Gdiplus::Graphics &graphics)
 } // Endproc.
 
 
-FolioStatus Screen::CheckScreenSprites (Gdiplus::Graphics &graphics)
+FolioStatus Screen::CheckScreenSprites (Gdiplus::Graphics& graphics)
 {
     // Check the screen's object sprites.
 
@@ -512,12 +518,12 @@ FolioStatus Screen::ReleaseResourceGraphics ()
 {
     // Release the screen's graphics from the resource graphics cache.
 
-    return (g_resourceGraphicsCache.ReleaseResourceGraphics (g_screenMap.GetCurrentScreenMapIndex ()));
+    return (g_resourceGraphicsCache.ReleaseResourceGraphics (Screen::MakeOwnerId (g_screenMap.GetCurrentScreenMapIndex ())));
 } // Endproc.
 
 
-FolioStatus BuildScreens (Folio::Core::Applet::Canvas   &canvas,
-                          ScreensList                   &screensList)
+FolioStatus BuildScreens (Folio::Core::Applet::Canvas&  canvas,
+                          ScreensList&                  screensList)
 {
     FolioStatus status = ERR_SUCCESS;
 
