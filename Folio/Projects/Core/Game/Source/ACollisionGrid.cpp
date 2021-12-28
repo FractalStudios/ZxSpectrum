@@ -901,6 +901,33 @@ bool    ACollisionGrid::IsWallCollision (DIRECTION      direction,
 } // Endproc.
 
 
+void    ACollisionGrid::DrawWalls (Gdiplus::Graphics& graphics)
+{
+    for (Walls::const_iterator itr = m_walls.begin (); 
+         itr != m_walls.end (); 
+         ++itr)
+    {
+        // Copy the screen rect.
+
+        Gdiplus::Rect   rect(*itr);
+
+        // Scale it.
+
+        rect.X      *= 4;
+        rect.Y      *= 4;
+        rect.Width  *= 4;
+        rect.Height *= 4;
+
+        // Fill the rect.
+
+        Folio::Core::Graphic::Gdi::FillRectangle (graphics,
+                                                  rect, 
+                                                  Gdiplus::SolidBrush(Gdiplus::Color::Yellow));
+    } // Endfor.
+
+} // Endproc.
+
+
 void    ACollisionGrid::ToScreenRectBound (UInt32               spriteDirection, 
                                            const Gdiplus::Rect& screenRectBound,
                                            Gdiplus::Rect&       spriteScreenRect) const

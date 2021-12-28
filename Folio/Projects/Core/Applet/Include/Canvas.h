@@ -65,6 +65,7 @@ public:
     FolioStatus ResizeCanvas (UInt32    resizeType,
                               Int32     clientAreaWidth,
                               Int32     clientAreaHeight);
+    FolioStatus SaveCanvas (const FolioString& fileName);
 
 private:
     AppletWnd*  m_appletWnd;    ///< The applet window.

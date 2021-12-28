@@ -68,6 +68,8 @@ FolioStatus DrawBitmap (Gdiplus::Graphics&              graphics,
                         int                             width,
                         int                             height,
                         const Gdiplus::ImageAttributes& imageAttributes);
+FolioStatus SaveBitmap (const FolioString&  fileName,
+                        Gdiplus::Bitmap&    bitmap);
 
 FolioStatus SetClippingRegion (Gdiplus::Graphics&       graphics,
                                const Gdiplus::Region&   clippingRegion,
@@ -77,6 +79,8 @@ FolioStatus QueryClippingRegion (Gdiplus::Graphics& graphics,
                                  Gdiplus::Region&   clippingRegion);
 FolioStatus QueryClippingRegionHandle (Gdiplus::Graphics&   graphics,
                                        FolioHandle&         clippingRegionHandle);
+FolioStatus QueryEncoderClsid (const FolioString&   format,
+                               CLSID&               clsid);
 
 } // Endnamespace.
 

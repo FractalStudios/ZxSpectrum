@@ -703,6 +703,26 @@ FolioStatus Canvas::ResizeCanvas (UInt32    resizeType,
     return (status);
 } // Endproc.
 
+
+/**
+ * Method that is used to save the canvas in the applet window.
+ *
+ * @param [in] fileName
+ * The file name to save.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if successful.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus Canvas::SaveCanvas (const FolioString& fileName)
+{
+    // Save the whole bitmap from the applet window.
+
+    return (m_gdiBitmap.Save (*(m_appletWnd->GetAppletWndGraphics ()), fileName)); 
+} // Endproc.
+
 } // Endnamespace.
 
 } // Endnamespace.

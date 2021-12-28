@@ -1254,6 +1254,48 @@ FolioStatus GdiBitmap::Draw (Gdiplus::Graphics& graphics,
 
 
 /**
+ * Method that is used to save the bitmap.
+ *
+ * @param [in, out] graphics
+ * The graphics object to save to.
+ *
+ * @param [in] fileName
+ * The file name.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if successful.
+ * <li><b>ERR_INVALID_SEQUENCE</b> if a bitmap has not been created for this 
+ *     object.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus GdiBitmap::Save (Gdiplus::Graphics& graphics, 
+                             const FolioString& fileName)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Have we created a bitmap?
+
+    if (IsCreated ())
+    {
+        // Save the bitmap.
+
+        SaveBitmap (fileName);
+    } // Endif.
+
+    else
+    {
+        // No.
+
+        status = ERR_INVALID_SEQUENCE;
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+/**
  * Method that is used to draw the bitmap.
  *
  * @param [in] screenXLeft
@@ -1658,6 +1700,25 @@ FolioStatus GdiBitmap::DrawFullBitmap (HDC              graphicsDcHandle,
     } // Endelse.
 
     return (status);
+} // Endproc.
+
+
+/**
+ * Method that is used to save the bitmap.
+ *
+ * @param [in] fileName
+ * The file name.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if successful.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus GdiBitmap::SaveBitmap (const FolioString& fileName) const
+{
+    return (Folio::Core::Graphic::Gdi::SaveBitmap (fileName, 
+                                                   Bitmap(reinterpret_cast<HBITMAP> (m_bitmapHandle), NULL)));
 } // Endproc.
 
 

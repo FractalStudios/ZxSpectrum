@@ -665,7 +665,7 @@ FolioStatus FillEllipse (Gdiplus::Graphics&     graphics,
  * @param [in, out] graphics
  * The graphics object to draw to.
  *
- * @param [in] gdiBitmap
+ * @param [in] bitmap
  * The bitmap object.
  *
  * @param [in] area
@@ -726,6 +726,52 @@ FolioStatus DrawBitmap (Gdiplus::Graphics&              graphics,
 
     return (status);
 } // Endproc
+
+
+/**
+ * Function that is used to save a bitmap.
+ *
+ * @param [in] fileName
+ * The file name.
+ *
+ * @param [in] bitmap
+ * The bitmap object.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if successful.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus SaveBitmap (const FolioString&  fileName,
+                        Gdiplus::Bitmap&    bitmap)
+{
+    CLSID   clsid;  
+
+    FolioStatus status = QueryEncoderClsid (TXT("image/bmp"), clsid);
+
+    if (status == ERR_SUCCESS)
+    {
+        // Save the bitmap.
+
+        Status  gdiStatus = bitmap.Save (fileName.c_str (), 
+                                         &(clsid), 
+                                         NULL);
+
+        if (gdiStatus != Ok)
+        {
+            // Build and log an error.
+
+            status = FOLIO_MAKE_GDI_ERROR(gdiStatus);
+
+            FOLIO_LOG_CALL_ERROR (TXT("Graphics::SetClip"),
+                                  status);
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
 
 
 /**
@@ -877,6 +923,101 @@ FolioStatus QueryClippingRegionHandle (Gdiplus::Graphics&   graphics,
     {
         clippingRegionHandle = clippingRegion.GetHRGN (&(graphics));
     } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+/**
+ * Function that is used to query the encoded class identifier for a 
+ * specified format.
+ *
+ * @param [in] format
+ * The encoded format.
+ *
+ * @param [out] clsid
+ * The class identiifer.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>ERR_SUCCESS</b> if successful.
+ * <li><b>ERR_???</b> status code otherwise.
+ * </ul>
+ */
+FolioStatus   QueryEncoderClsid (const FolioString& format,
+                                 CLSID&             clsid)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    UInt32  numEncoders = 0;    // Initialise!
+    UInt32  size        = 0;
+   
+    Status   gdiStatus = GetImageEncodersSize (&(numEncoders), &(size));
+
+    if (gdiStatus == Ok)
+    {
+        if (size)
+        {
+            ImageCodecInfo* pImageCodecInfo = reinterpret_cast<ImageCodecInfo *> (new BYTE [size]);
+   
+            gdiStatus = GetImageEncoders (numEncoders, 
+                                          size, 
+                                          pImageCodecInfo);
+
+            if (gdiStatus == Ok)
+            {
+                bool    found = false;
+
+                for (UInt32 encoder = 0; 
+                     !found && (encoder < numEncoders);
+                     ++encoder)
+                {
+                    if (STRCMP (pImageCodecInfo [encoder].MimeType, 
+                        format.c_str ()) == 0)
+                    {
+                        clsid = pImageCodecInfo [encoder].Clsid;
+
+                        found = true;  
+                    } // Endif.
+
+                } // Endfor.
+
+                if (!found)
+                {
+                    status = ERR_NOT_FOUND;
+                } // Endif.
+
+            } // Endif.
+
+            else
+            {
+                // Build and log an error.
+
+                status = FOLIO_MAKE_GDI_ERROR(gdiStatus);
+
+                FOLIO_LOG_CALL_ERROR (TXT("Graphics::GetImageEncoders"),
+                                      status);
+            } // Endelse.
+
+            delete [] pImageCodecInfo;
+        } // Endif.
+
+        else
+        {
+            status = ERR_NO_MORE_DATA;
+        } // Endelse.
+
+    } // Endif.
+
+    else
+    {
+        // Build and log an error.
+
+        status = FOLIO_MAKE_GDI_ERROR(gdiStatus);
+
+        FOLIO_LOG_CALL_ERROR (TXT("Graphics::GetImageEncodersSize"),
+                              status);
+    } // Endelse.
 
     return (status);
 } // Endproc.

@@ -253,6 +253,7 @@ public:
     bool    IsWallCollision (DIRECTION      direction, 
                              Gdiplus::Rect& spriteScreenRect,
                              bool           screenEntrance = false) const;
+    void    DrawWalls (Gdiplus::Graphics& graphics);
 
     void    ToScreenRectBound (UInt32               spriteDirection, 
                                const Gdiplus::Rect& screenRectBound,

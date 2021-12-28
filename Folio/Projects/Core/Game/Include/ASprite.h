@@ -407,6 +407,9 @@ protected:
     FolioStatus QueryCurrentSpriteBitmaps (SpriteDrawing::SpriteBitmap& spriteBitmap,
                                            SpriteDrawing::SpriteBitmap& spriteMaskedBitmap,
                                            bool                         incrementCurrentSpriteGraphicsListIndex = true);
+    
+    bool    IsAutoMoveModeSupported () const;
+    void    IncNumRemainingAutoModeMoves ();
 
     FolioStatus PlaySpriteInitialisingSound (UInt32 initialisingSpriteSoundSamplesListIndex,
                                              bool   playAsynchronously = true) const;

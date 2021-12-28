@@ -40,8 +40,8 @@ protected:
                          Int32      screenYTop,
                          Direction  direction);
 
-    STATE   GetAutoMoveState (bool keyUp = true);
-    bool    IsInAutoMoveMode () const;
+    STATE   GetAutoMoveState ();
+    void    CheckAutoMoveState ();
 
     // Colour list.
     typedef std::vector<Gdiplus::ARGB>  ColourList;

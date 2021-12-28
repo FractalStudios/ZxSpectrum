@@ -97,6 +97,8 @@ public:
     FolioStatus Draw (Gdiplus::Graphics&    graphics,
                       Int32                 destinationWidth,
                       Int32                 destinationHeight);
+    FolioStatus Save (Gdiplus::Graphics&    graphics,
+                      const FolioString&    fileName);
 
     // AGdiGraphicElement method(s).
     virtual FolioStatus Draw (Int32                 screenXLeft,
@@ -144,6 +146,7 @@ private:
                                 Int32           screenXLeft,
                                 Int32           screenYTop,
                                 Gdiplus::Rect&  drawingRect) const;
+    FolioStatus SaveBitmap (const FolioString& fileName) const;
 
     void    Destroy ();
     bool    IsCreated () const;

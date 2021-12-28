@@ -1688,6 +1688,25 @@ FolioStatus ASprite::QueryCurrentSpriteBitmaps (SpriteDrawing::SpriteBitmap&    
 } // Endproc.
 
 
+bool    ASprite::IsAutoMoveModeSupported () const
+{
+    return (m_maxNumAutoMoves != 0);
+} // Endproc.
+
+
+void    ASprite::IncNumRemainingAutoModeMoves ()
+{
+    // Only increment the remaining number of auto-moves if it's not reached 
+    // the maximum number of auto-moves.
+
+    if (m_remainingNumAutoMoves < m_maxNumAutoMoves)
+    {
+        m_remainingNumAutoMoves++;
+    } // Endif.
+
+} // Endproc.
+
+
 FolioStatus ASprite::PlaySpriteInitialisingSound (UInt32    initialisingSpriteSoundSamplesListIndex,
                                                   bool      playAsynchronously) const
 {

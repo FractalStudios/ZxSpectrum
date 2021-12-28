@@ -17,7 +17,6 @@ FontPtr GetFont ()
 {
     static  const   Folio::Core::Graphic::GdiRasterFont::CharacterMap   characterMap =
     {
-
  //         char        FolioByteBuffer
         {   ' ',	    {   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, },  },
         {   '!',	    {   0x00, 0x10, 0x10, 0x10, 0x10, 0x00, 0x10, 0x00, },  },

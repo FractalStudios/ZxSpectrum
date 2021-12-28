@@ -32,17 +32,38 @@ FolioStatus APlayerSprite::UpdateDirection (Direction   direction,
 
     if (keyDown)
     {
-        // Yes. Has the player sprite's direction changed?
+        // Yes. Is the player sprite currently static?
+
+        if (m_state == STATE_STATIC)
+        {
+            // Yes. Reset the remaining number of auto-moves.
+
+            m_remainingNumAutoMoves = 0;
+        } // Endif.
+        
+        // Has the player sprite's direction changed?
 
         if (direction != m_direction)
-        {
-            // Yes. Set the player sprite's direction.
+        {                    
+            // Yes. Reset the remaining number of auto-moves.
+
+            m_remainingNumAutoMoves = 0;
+
+            // Set the player sprite's direction.
     
             status = SetDirection (direction);
         } // Endif.
 
         if (status == ERR_SUCCESS)
         {
+            // The player sprite is not in auto-move mode.
+
+            m_inAutoMoveMode = false;
+
+            // Increment the number of remaining of auto-moves.
+
+            IncNumRemainingAutoModeMoves ();
+
             // The player sprite is moving in the direction.
         
             m_state = STATE_MOVING; 
@@ -50,15 +71,14 @@ FolioStatus APlayerSprite::UpdateDirection (Direction   direction,
 
     } // Endif.
 
-    // All keys are up. Is the player sprite in auto-move mode?
+    // All keys are up.
 
     else
-    if (!m_inAutoMoveMode)
     {
-        // No. Get the auto-move state.
+        // Get the auto-move state.
         
         m_state = GetAutoMoveState ();
-    } // Endelseif.
+    } // Endelse.
 
     return (status);
 } // Endproc.
@@ -104,38 +124,68 @@ FolioStatus APlayerSprite::Restart (Int32       screenXLeft,
 } // Endproc.
 
 
-APlayerSprite::STATE    APlayerSprite::GetAutoMoveState (bool keyUp)
+APlayerSprite::STATE    APlayerSprite::GetAutoMoveState ()
 {
     STATE   state = STATE_STATIC;   // Initialise!
 
-    // The player sprite is moving if the player sprite is entering a screen.
+    // Does the player sprite support auto-move mode?
 
-    if (m_isEnteringScreen)
+    if (IsAutoMoveModeSupported ())
     {
-        state = STATE_MOVING;
+        // Yes. The player sprite is in auto-move mode if there is a remaining 
+        // number of auto-moves.
+
+        if (m_remainingNumAutoMoves)
+        {
+            // The player sprite is moving in auto-move mode.
+
+            m_inAutoMoveMode = true;
+
+            state = STATE_MOVING; 
+        } // Endif.
+
+        else
+        {
+            // The player sprite is not in auto-move mode.
+
+            m_inAutoMoveMode = false;
+        } // Endelse.
+
     } // Endif.
-
-    // The player sprite is moving if a key is up and the player sprite supports 
-    // auto-move mode. 
-
-    else
-    if (keyUp && m_maxNumAutoMoves)
-    {
-        // The player sprite is moving in auto-move mode.
-
-        m_inAutoMoveMode        = true;
-        m_remainingNumAutoMoves = m_maxNumAutoMoves;
-
-        state = STATE_MOVING; 
-    } // Endelseif.
 
     return (state);
 } // Endproc.
 
 
-bool    APlayerSprite::IsInAutoMoveMode () const
+void    APlayerSprite::CheckAutoMoveState ()
 {
-    return (m_inAutoMoveMode);
+    // Is the player sprite moving in auto-move mode?
+
+    if (m_inAutoMoveMode && m_remainingNumAutoMoves)
+    {
+        // Yes. Still in auto-move mode?
+
+        if (--m_remainingNumAutoMoves == 0)
+        {
+            // No. No longer entering the screen.
+
+            m_isEnteringScreen = false;
+
+            // The player sprite is static.
+
+            m_state = STATE_STATIC;
+            m_speed = STATIC_SPEED;
+        } // Endif.
+
+        else
+        {
+            // Yes. The player sprite is moving.
+
+            m_state = STATE_MOVING;
+        } // Endelse.
+    
+    } // Endif.
+
 } // Endproc.
 
 
@@ -317,85 +367,52 @@ FolioStatus APlayerSprite::HandleMoveSprite (Gdiplus::Graphics&     graphics,
 
     m_isExitedScreen = CalculateScreenRect (speed, collisionGrid);
 
-    if (collisionGrid.IsWalls ())
+    // Has the player sprite exited the screen?
+
+    if (m_isExitedScreen)
     {
-        if (m_isAtWall)
-        {
-            // Yes. Is this the same wall the player sprite was at previously?
+        // Yes.
 
-            if ((m_action == NO_ACTION)                     &&
-                (m_wallBound.m_direction == m_direction)    &&
-                 m_wallBound.m_screenRect.Equals (m_collisionRect))
-            {
-                // Yes. The player sprite is static.
-
-                m_state = STATE_STATIC;
-                m_speed = STATIC_SPEED;
-            } // Endif.
-
-            else
-            {
-                // No. Note the player sprite's wall bound.
-
-                m_wallBound.m_direction     = m_direction;
-                m_wallBound.m_screenRect    = m_collisionRect;
-            } // Endelse.
-
-        } // Endif.
-
+        m_isEnteringScreen = true;  // We're entering the next screen.
     } // Endif.
 
     // Is the player sprite at a wall?
 
     else
+    if (m_isAtWall)
     {
-        // Has the player sprite exited the screen?
+        // Yes. Is this the same wall the player sprite was at previously?
 
-        if (m_isExitedScreen)
+        if ((m_action == NO_ACTION)                     &&
+            (m_wallBound.m_direction == m_direction)    &&
+             m_wallBound.m_screenRect.Equals (m_collisionRect))
         {
-            // Yes.
+            // Yes. The player sprite is static.
 
-            m_isEnteringScreen = true;  // We're entering the next screen.
-
-            // Set the auto-move mode.
-
-            m_inAutoMoveMode        = (m_maxNumAutoMoves != 0);
-            m_remainingNumAutoMoves = m_maxNumAutoMoves;
+            m_state = STATE_STATIC;
+            m_speed = STATIC_SPEED;
         } // Endif.
 
-        // Is the player sprite not entering the screen and in auto-move mode?
-
         else
-        if (!m_isEnteringScreen && m_inAutoMoveMode)
         {
-            // Yes. Still moving? 
+            // No. Note the player sprite's wall bound.
 
-            if (--m_remainingNumAutoMoves == 0)
-            {
-                // No. No longer in auto-move mode.
+            m_wallBound.m_direction     = m_direction;
+            m_wallBound.m_screenRect    = m_collisionRect;
 
-                m_inAutoMoveMode = false;
+            // Check auto-move mode. 
 
-                // Reset the remaining number of auto-moves.
+            CheckAutoMoveState ();
+        } // Endelse.
 
-                m_remainingNumAutoMoves = m_maxNumAutoMoves;
+    } // Endelseif.
 
-                // The player sprite is static.
+    else
+    {
+        // Yes. Check auto-move mode. 
 
-                m_state = STATE_STATIC;
-                m_speed = STATIC_SPEED;
-            } // Endif.
-
-            else
-            {
-                // Yes. The player sprite is moving.
-
-                m_state = STATE_MOVING;
-            } // Endelse.
-
-        } // Endelseif.
-
-    } // Endelse.
+        CheckAutoMoveState ();
+    } // Endelseif.
 
     return (ERR_SUCCESS);
 } // Endproc.
@@ -666,20 +683,28 @@ bool    APlayerSprite::CalculateScreenRect (UInt32                  speed,
         switch (m_screenExit.m_orientation)
         {
         case ACollisionGrid::ScreenExit::TOP:
-        case ACollisionGrid::ScreenExit::FLOOR:
-            isExitedScreen = MoveDown (speed, collisionGrid); 
+            // Entered the screen from the top, move up.
+
+            MoveUp (speed, collisionGrid); 
             break;
             
         case ACollisionGrid::ScreenExit::BOTTOM:
-            isExitedScreen = MoveUp (speed, collisionGrid); 
+        case ACollisionGrid::ScreenExit::FLOOR:
+            // Entered the screen from the bottom, move down.
+            
+            MoveDown (speed, collisionGrid); 
             break;
             
         case ACollisionGrid::ScreenExit::LEFT:
-            isExitedScreen = MoveRight (speed, collisionGrid); 
+            // Entered the screen from the left, move right.
+
+            MoveRight (speed, collisionGrid); 
             break;
 
         case ACollisionGrid::ScreenExit::RIGHT:
-            isExitedScreen = MoveLeft (speed, collisionGrid); 
+            // Entered the screen from the right, move left.
+
+            MoveLeft (speed, collisionGrid); 
             break;
 
         case ACollisionGrid::ScreenExit::NONE:
@@ -692,9 +717,6 @@ bool    APlayerSprite::CalculateScreenRect (UInt32                  speed,
             break;
         } // Endswitch.
 
-        // Get the auto-move state.
-
-        m_state = GetAutoMoveState (false);
     } // Endif.
 
     else
@@ -823,7 +845,11 @@ bool    APlayerSprite::MoveUp (UInt32                   speed,
 
     else
     {
-        // No. Check for screen exit.
+        // No. No longer entering the screen.
+        
+        m_isEnteringScreen = false;
+
+        // Check for screen exit.
 
         isExitedScreen = collisionGrid.IsExitedScreen (ACollisionGrid::UP,
                                                        m_collisionRect,
@@ -904,7 +930,9 @@ bool    APlayerSprite::MoveDown (UInt32                 speed,
 
     else
     {
-        // No. Check for screen exit.
+        // No. No longer entering the screen.
+        
+        m_isEnteringScreen = false;
 
         isExitedScreen = collisionGrid.IsExitedScreen (ACollisionGrid::DOWN,
                                                        m_collisionRect,
@@ -985,7 +1013,9 @@ bool    APlayerSprite::MoveLeft (UInt32                 speed,
 
     else
     {
-        // No. Check for screen exit.
+        // No. No longer entering the screen.
+        
+        m_isEnteringScreen = false;
 
         isExitedScreen = collisionGrid.IsExitedScreen (ACollisionGrid::LEFT,
                                                        m_collisionRect,
@@ -1066,7 +1096,9 @@ bool    APlayerSprite::MoveRight (UInt32                speed,
 
     else
     {
-        // No. Check for screen exit.
+        // No. No longer entering the screen.
+        
+        m_isEnteringScreen = false;
 
         isExitedScreen = collisionGrid.IsExitedScreen (ACollisionGrid::RIGHT,
                                                        m_collisionRect,
