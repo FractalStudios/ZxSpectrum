@@ -22,6 +22,7 @@ CollisionGrid::~CollisionGrid ()
 
 
 bool    CollisionGrid::IsExitedScreen (DIRECTION        direction,
+                                       bool             externalToFloorBound,
                                        Gdiplus::Rect&   spriteScreenRect,
                                        bool&            isAtLockedScreenExit,
                                        bool&            isInScreenExit,
@@ -36,7 +37,7 @@ bool    CollisionGrid::IsExitedScreen (DIRECTION        direction,
 
     Int32   floorBound = 0; // Initialise!
 
-    if (IsOutwithFloorBound (direction, spriteScreenRect, &(floorBound)))
+    if (IsOutwithFloorBound (direction, externalToFloorBound, spriteScreenRect, &(floorBound)))
     {
         // Yes. Exited?
 

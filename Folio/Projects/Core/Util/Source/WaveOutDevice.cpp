@@ -257,6 +257,21 @@ FolioStatus WaveOutDevice::StopPlayingSoundSamples ()
 
 
 /**
+ * Method that will indicate if we're playing any samples.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>true</b> if playing any sound samples.
+ * <li><b>false</b> otherwise.
+ * </ul>
+ */
+bool    WaveOutDevice::IsPlayingSoundSamples () const
+{
+    return (!m_soundSampleContainerList.empty ());
+} // Endproc.
+
+
+/**
  * Method that will open the waveform-audio output device.
  *
  * @param [in] soundChannels

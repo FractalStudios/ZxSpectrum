@@ -54,7 +54,8 @@ public:
                       RectList*             rects = 0);
 
     FolioStatus SetScreenTopLeft (Int32 screenXLeft,
-                                  Int32 screenYTop);
+                                  Int32 screenY,
+                                  bool  screenYTopSpecified = true);
 
     Gdiplus::Rect   GetScreenRect () const;
     Int32           GetScreenXLeft () const;
@@ -64,15 +65,16 @@ public:
     Int32           GetScreenWidth () const;
     Int32           GetScreenHeight () const;
 
-    Gdiplus::Rect   GetCollisionRect () const;
-    Int32           GetCollisionXLeft () const;
-    Int32           GetCollisionYTop () const;
-    Int32           GetCollisionXRight () const;
-    Int32           GetCollisionYBottom () const;
-    Int32           GetCollisionWidth () const;
-    Int32           GetCollisionHeight () const;
+    Gdiplus::Rect   GetMovingRect () const;
+    Int32           GetMovingXLeft () const;
+    Int32           GetMovingYTop () const;
+    Int32           GetMovingXRight () const;
+    Int32           GetMovingYBottom () const;
+    Int32           GetMovingWidth () const;
+    Int32           GetMovingHeight () const;
 
     ACollisionGrid::CellValue   GetCollisionGridCellValue () const;
+    Gdiplus::Rect               GetCollisionGridDeltaRect () const;
 
     SpriteGraphic   GetCurrentSpriteGraphic () const;
     Int32   GetCurrentSpriteGraphicWidth () const;
@@ -97,6 +99,7 @@ public:
     void    SetState (STATE state, 
                       bool  playSpriteStateSound = true);
     STATE   GetState () const;
+    static  FolioString DescribeState (STATE state);
     
     bool    IsInitialiseRqd () const;
     bool    IsInitialising () const;
@@ -107,8 +110,6 @@ public:
     bool    IsStatic () const;
     bool    IsMoving () const;
     bool    IsFalling () const;
-
-    bool    IsReady () const;
 
     void    SetAlive (bool playSpriteInitialisingSound = true);
     bool    IsAlive () const;
@@ -121,11 +122,12 @@ public:
     Action      GetAction () const;
 
     FolioStatus SetScreenEntranceTopLeft (const Gdiplus::Rect&  screenScreenRect,
-                                          const ACollisionGrid& collisionGrid);
+                                          const ACollisionGrid* collisionGrid = 0);
 
     FolioStatus SetScreenEntrance (ACollisionGrid::ScreenEntrance& screenEntrance);
     void    ResetScreenEntrance (); 
 
+    void    ResetScreenExit (); 
     bool    IsAtLockedScreenExit () const;
     bool    IsInScreenExit () const;
     bool    IsInScreenExit (const Gdiplus::Rect& screenRect) const;
@@ -134,6 +136,10 @@ public:
 
     ACollisionGrid::ScreenExit      GetScreenExit () const;
     ACollisionGrid::ScreenEntrance  GetScreenEntrance () const;
+
+    FolioString Describe () const;
+
+    virtual bool    IsReady () const;
 
     // AGdiGraphicElement method(s).
     virtual FolioStatus Draw (Int32                 screenXLeft,
@@ -145,7 +151,7 @@ protected:
     STATE   m_state;    // The state of the sprite.
 
     Gdiplus::Rect   m_screenRect;       // The screen rect of the sprite.
-    Gdiplus::Rect   m_collisionRect;    // The collision rect of the sprite.
+    Gdiplus::Rect   m_movingRect;       // The moving rect of the sprite.
     Gdiplus::ARGB   m_spriteInkColour;  // The ink colour of the sprite.
     Direction       m_direction;        // The direction of the sprite.
     Action          m_action;           // The current sprite action.
@@ -232,19 +238,58 @@ protected:
             spriteMaskedBitmap  = m_spriteGraphicsList [m_currentSpriteGraphicsListIndex]->GetMaskedGdiBitmap ();
         } // Endproc.
         
+        void    SelectNextSpriteBitmaps ()
+        {
+            // Initialised?
+
+            if (m_currentSpriteGraphicsListIndex == FOLIO_INVALID_INDEX)
+            {
+                // No.
+
+                m_currentSpriteGraphicsListIndex = 0;
+            } // Endif.
+
+            else
+            if (++m_currentSpriteGraphicsListIndex >= m_spriteGraphicsList.size ())
+            {
+                m_currentSpriteGraphicsListIndex = 0;
+            } // Endif.
+
+        } // Endproc.
+        
         SpriteGraphic   GetCurrentSpriteGraphic () const
         {
-            return ((m_currentSpriteGraphicsListIndex == FOLIO_INVALID_INDEX) ? m_spriteGraphicsList [0] : m_spriteGraphicsList [m_currentSpriteGraphicsListIndex]);
+            return ((m_currentSpriteGraphicsListIndex == FOLIO_INVALID_INDEX) 
+                    ? m_spriteGraphicsList [0] : 
+                    m_spriteGraphicsList [m_currentSpriteGraphicsListIndex]);
         } // Endproc.
 
         SpriteBitmap    GetCurrentSpriteBitmap () const
         {
-            return ((m_currentSpriteGraphicsListIndex == FOLIO_INVALID_INDEX) ? m_spriteGraphicsList [0]->GetGdiBitmap () : m_spriteGraphicsList [m_currentSpriteGraphicsListIndex]->GetGdiBitmap ());
+            return ((m_currentSpriteGraphicsListIndex == FOLIO_INVALID_INDEX) 
+                    ? m_spriteGraphicsList [0]->GetGdiBitmap () : 
+                    m_spriteGraphicsList [m_currentSpriteGraphicsListIndex]->GetGdiBitmap ());
         } // Endproc.
 
         SpriteBitmap    GetCurrentSpriteMaskedBitmap () const
         {
-            return ((m_currentSpriteGraphicsListIndex == FOLIO_INVALID_INDEX) ? m_spriteGraphicsList [0]->GetMaskedGdiBitmap () : m_spriteGraphicsList [m_currentSpriteGraphicsListIndex]->GetMaskedGdiBitmap ());
+            return ((m_currentSpriteGraphicsListIndex == FOLIO_INVALID_INDEX) 
+                    ? m_spriteGraphicsList [0]->GetMaskedGdiBitmap () 
+                    : m_spriteGraphicsList [m_currentSpriteGraphicsListIndex]->GetMaskedGdiBitmap ());
+        } // Endproc.
+
+        ACollisionGrid::CellValue   GetSpriteCollisionGridCellValue () const
+        {
+            return ((m_currentSpriteGraphicsListIndex == FOLIO_INVALID_INDEX) 
+                    ? m_spriteGraphicsList [0]->GetCollisionGridCellValue () 
+                    : m_spriteGraphicsList [m_currentSpriteGraphicsListIndex]->GetCollisionGridCellValue ());
+        } // Endproc.
+
+        Gdiplus::Rect   GetSpriteCollisionGridDeltaRect () const
+        {
+            return ((m_currentSpriteGraphicsListIndex == FOLIO_INVALID_INDEX) 
+                    ? m_spriteGraphicsList [0]->GetCollisionGridDeltaRect () 
+                    : m_spriteGraphicsList [m_currentSpriteGraphicsListIndex]->GetCollisionGridDeltaRect ());
         } // Endproc.
 
         FolioStatus ChangeSpriteGraphicColour (Gdiplus::ARGB spriteInkColour)
@@ -292,6 +337,16 @@ protected:
             return (status);
         } // Endproc.
 
+        FolioString DescribeCurrentSpriteBitmap ()
+        {
+            return (Folio::Core::Util::DescribeBitmapResourceId (GetCurrentSpriteBitmap ()->GetId ()));
+        } // Endproc.
+
+        FolioString DescribeCurrentSpriteMaskedBitmap ()
+        {
+            return (Folio::Core::Util::DescribeBitmapResourceId (GetCurrentSpriteMaskedBitmap ()->GetId ()));
+        } // Endproc.
+
         Direction           m_direction;                        // The direction(s) of the sprite.
         Action              m_action;                           // The action(s) of the sprite.
         SpriteGraphicsList  m_spriteGraphicsList;               // The sprite's graphics list representing the direction(s).
@@ -328,16 +383,28 @@ protected:
     UInt32  m_terminatingMaxSequenceCount;      // Terminating sprite maximum sequence count.
     UInt32  m_currentTerminatingSequenceCount;  // The current terminating sprite sequence count.
 
-    bool    m_playSpriteInitialisingSound;  // Indicates if the sprite's initialising sound should be played.
+    bool    m_playSpriteInitialisingSoundResource;  // Indicates if the sprite's initialising sound resource should be played.
+    FolioHandle m_initialisingSpriteSoundResource;  // The sprite initialising sound resource.
+
+    bool    m_playSpriteInitialisingSoundSamples;  // Indicates if the sprite's initialising sound samples should be played.
     SpriteStationarySoundSamplesList    m_initialisingSpriteSoundSamplesList;   // The sprite's initialising sound samples list.
     UInt32  m_currentInitialisingSpriteSoundSamplesListIndex;                   // Index to the sprite's current initialising sound sample in the sprite's initialising sound samples list.
 
-    bool    m_playSpriteTerminatingSound;   // Indicates if the sprite's terminating sound should be played.
+    bool    m_playSpriteTerminatingSoundResource;  // Indicates if the sprite's terminating sound resource should be played.
+    FolioHandle m_terminatingSpriteSoundResource;  // The sprite terminating sound resource.
+
+    bool    m_playSpriteTerminatingSoundSamples;    // Indicates if the sprite's terminating sound samples should be played.
     SpriteStationarySoundSamplesList    m_terminatingSpriteSoundSamplesList;    // The sprite's terminating sound samples list.
     UInt32  m_currentTerminatingSpriteSoundSamplesListIndex;                    // Index to the sprite's current terminating sound sample in the sprite's terminating sound samples list.
 
     bool        m_isAtWall;     // Indicates if the sprite is at a wall.
     WallBound   m_wallBound;    // The sprite's wall bound (if it is at a wall).
+
+    static  const   UInt32  NO_REBOUND          = 0x00000000;   // No rebound.
+    static  const   UInt32  WALL_REBOUND        = 0x00000001;   // Rebound at a wall.
+    static  const   UInt32  FLOOR_BOUND_REBOUND = 0x00000002;   // Rebound at a floor bound.
+
+    UInt32  m_reboundFlags; // Rebound flags.
 
     ASprite ();
 
@@ -351,25 +418,33 @@ protected:
                         Gdiplus::ARGB                               spriteInkColour,
                         Direction                                   initialDirection,
                         Folio::Core::Game::ResourceGraphicsCache    *resourceGraphicsCache = 0,
-                        UInt32                                      maxNumAutoMoves = 0);
+                        UInt32                                      maxNumAutoMoves = 0,
+                        UInt32                                      reboundFlags = (WALL_REBOUND | FLOOR_BOUND_REBOUND));
     FolioStatus Recreate (Int32     screenXLeft,
                           Int32     screenYTop,
                           Direction direction);
     FolioStatus Destroy ();
+
+    FolioStatus InitialiseSprite (Gdiplus::Graphics&    graphics,
+                                  RectList*             rects = 0);
+    FolioStatus TerminateSprite (Gdiplus::Graphics& graphics,
+                                 RectList*          rects = 0);
+    FolioStatus DrawSprite (Gdiplus::Graphics&  graphics,
+                            RectList*           rects = 0);
 
     void    SetSpriteMovementSoundSamples (const SpriteMovementSoundSamplesList& spriteMovementSoundSampleList);
     void    SetSpriteInitialisedSoundSample (const SpriteSoundSample& spriteInitialisedSoundSample);
     void    SetSpriteTerminatedSoundSample (const SpriteSoundSample& spriteTerminatedSoundSample);
     void    SetSpriteReboundSoundSample (const SpriteSoundSample& spriteReboundSoundSample);
 
-    FolioStatus SetGraphicInitialisingMode (FolioHandle                             dcHandle,
-                                            const SpriteGraphicAttributesList&      initialisingSpriteGraphicAttributesList,
-                                            UInt32                                  initialisingMaxSequenceCount,
-                                            const SpriteStationarySoundSamplesList* initialisingSpriteSoundSamplesList = 0);
-    FolioStatus SetGraphicTerminatingMode (FolioHandle                              dcHandle,
-                                           const SpriteGraphicAttributesList&       terminatingSpriteGraphicAttributesList,
-                                           UInt32                                   terminatingMaxSequenceCount,
-                                           const SpriteStationarySoundSamplesList*  terminatingSpriteSoundSamplesList = 0);
+    FolioStatus SetGraphicInitialisingMode (FolioHandle                         dcHandle,
+                                            const SpriteGraphicAttributesList&  initialisingSpriteGraphicAttributesList,
+                                            UInt32                              initialisingMaxSequenceCount,
+                                            FolioHandle                         initialisingSpriteSoundResource = 0);
+    FolioStatus SetGraphicTerminatingMode (FolioHandle                          dcHandle,
+                                           const SpriteGraphicAttributesList&   terminatingSpriteGraphicAttributesList,
+                                           UInt32                               terminatingMaxSequenceCount,
+                                           FolioHandle                          terminatingSpriteSoundResource = 0);
 
     void    SetPlaySpriteInitialisingSound (bool playSpriteInitialisingSound);
     void    SetPlaySpriteTerminatingSound (bool playSpriteTerminatingSound);
@@ -378,13 +453,22 @@ protected:
     void    SetPlaySpriteReboundSound (bool playSpriteReboundSound);
 
     FolioStatus SetDirection (Direction direction);
+    bool    IsDirection (Direction direction) const;
     bool    IsDirection () const;
 
-    FolioStatus SetAction (Action action);
+    FolioStatus SetAction (Action   action, 
+                           UInt32   actionTickCount = 0);
+    FolioStatus ResetAction ();
+    bool    IsAction (Action action) const;
     bool    IsAction () const;
+    bool    IsActionComplete (Action action) const;
 
-    void        SetPreviousSpriteDirection (Direction direction);
-    Direction   GetPreviousSpriteDirection () const;
+    bool    IsAtWall () const;
+
+    void        SetPreviousDirection (Direction direction);
+    Direction   GetPreviousDirection () const;
+    Direction   GetPreviousHorizontalDirection () const;
+    Direction   GetPreviousVerticalDirection () const;
     
     Direction   GetDirectionToScreenTopLeft (Int32                  initialScreenXLeft,
                                              Int32                  initialScreenYTop,
@@ -402,18 +486,21 @@ protected:
 
     FolioStatus SetCurrentSpriteBitmaps (Direction          direction,
                                          SpriteDrawingList& spriteDrawingList,
-                                         bool               setSpriteScreenSize = false,
-                                         bool               ignoreAction = false);
+                                         bool               setSpriteScreenSize = false);
     FolioStatus QueryCurrentSpriteBitmaps (SpriteDrawing::SpriteBitmap& spriteBitmap,
                                            SpriteDrawing::SpriteBitmap& spriteMaskedBitmap,
                                            bool                         incrementCurrentSpriteGraphicsListIndex = true);
+    FolioStatus SelectNextSpriteBitmaps ();
     
     bool    IsAutoMoveModeSupported () const;
     void    IncNumRemainingAutoModeMoves ();
+    void    ResetNumRemainingAutoModeMoves ();
 
-    FolioStatus PlaySpriteInitialisingSound (UInt32 initialisingSpriteSoundSamplesListIndex,
+    FolioStatus PlaySpriteInitialisingSound (UInt32 initialisingSequenceCount,
+                                             UInt32 initialisingSpriteSoundSamplesListIndex,
                                              bool   playAsynchronously = true) const;
-    FolioStatus PlaySpriteTerminatingSound (UInt32  terminatingSpriteSoundSamplesListIndex,
+    FolioStatus PlaySpriteTerminatingSound (UInt32  terminatingSequenceCount,
+                                            UInt32  terminatingSpriteSoundSamplesListIndex,
                                             bool    playAsynchronously = true) const;
     FolioStatus PlaySpriteInitialisedSound (bool playAsynchronously = true) const;
     FolioStatus PlaySpriteTerminatedSound (bool playAsynchronously = true) const;
@@ -421,17 +508,23 @@ protected:
 
     FolioStatus PlaySpriteMovementSound (bool playAsynchronously = true);
 
-    virtual Int32   CalculateCollisionXLeft () const;
-    virtual Int32   CalculateCollisionYTop () const;
+    Direction   GetFloorBoundDirection (ACollisionGrid::DIRECTION collisionGridDirection) const;
+
+    static  ACollisionGrid::DIRECTION   ToCollisionGridDirection (Folio::Core::Game::Direction direction);
+
     virtual Int32   CalculateScreenXLeft (ACollisionGrid::DIRECTION collisionGridDirection) const;
     virtual Int32   CalculateScreenYTop (ACollisionGrid::DIRECTION collisionGridDirection) const;
     virtual Int32   CalculateScreenXLeft (Int32 bitmapScreenWidth) const;
     virtual Int32   CalculateScreenYTop (Int32 bitmapScreenHeight) const;
+    virtual Int32   CalculateMovingXLeft (Int32 bitmapScreenWidth) const;
+    virtual Int32   CalculateMovingYTop (Int32 bitmapScreenHeight) const;
+    virtual Int32   CalculateMovingWidth (Int32 bitmapScreenWidth) const;
+    virtual Int32   CalculateMovingHeight (Int32 bitmapScreenHeight) const;
 
     virtual FolioStatus HandleInitialiseSprite (Gdiplus::Graphics&  graphics,
-                                                RectList*           rects);
+                                                RectList*           rects = 0);
     virtual FolioStatus HandleTerminateSprite (Gdiplus::Graphics&   graphics,
-                                               RectList*            rects);
+                                               RectList*            rects = 0);
 
     virtual FolioStatus HandleMoveSprite (Gdiplus::Graphics&    graphics,
                                           UInt32                speed, 
@@ -442,9 +535,7 @@ protected:
 private:
     Folio::Core::Game::ResourceGraphicsCache    *m_resourceGraphicsCache;   //  The resource graphics cache.
 
-    FolioHandle                         m_dcHandle;                 // Handle to the DC.
-    DrawingElement::DrawingElementId    m_drawingElementId;         // The drawing element identifier of the sprite.
-    ACollisionGrid::CellValue           m_collisionGridCellValue;   // The collision grid cell value of the sprite.
+    FolioHandle m_dcHandle; // Handle to the DC.
 
     // Drawing mode enumeration.
     enum DRAWING_MODE
@@ -470,6 +561,8 @@ private:
     bool    m_playSpriteReboundSound;   // Indicates if the sprite's rebound sound should be played.
     SpriteSoundSample   m_spriteReboundSoundSample;     // The sprite's rebound sound sample.
 
+    UInt32  m_actionTickCount;  // The action tick count;
+
     FolioStatus CreateSpriteDrawingList (FolioHandle                        dcHandle,
                                          const SpriteGraphicAttributesList& spriteGraphicAttributesList,
                                          UInt32                             screenScale,
@@ -479,13 +572,6 @@ private:
                                          UInt32                             screenScale,
                                          Direction                          direction,
                                          SpriteDrawingList&                 spriteDrawingList);
-
-    FolioStatus InitialiseSprite (Gdiplus::Graphics&    graphics,
-                                  RectList*             rects);
-    FolioStatus TerminateSprite (Gdiplus::Graphics& graphics,
-                                 RectList*          rects);
-    FolioStatus DrawSprite (Gdiplus::Graphics&  graphics,
-                            RectList*           rects);
 
     FolioStatus PerformGraphicInitialising (Gdiplus::Graphics&  graphics,
                                             RectList*           rects = 0);
@@ -499,6 +585,10 @@ private:
     void    SetSpriteScreenSize (const SpriteDrawing::SpriteBitmap& spriteBitmap);
     void    CalculateScreenRect (UInt32                 speed,
                                  const ACollisionGrid&  collisionGrid);
+    void    SetSpriteWidth (Int32   bitmapScreenWidth, 
+                            bool    setMovingWidth = true);
+    void    SetSpriteHeight (Int32  bitmapScreenHeight,
+                             bool   setMovingHeight = true);
 
     void    MoveUp (UInt32                  speed,
                     const ACollisionGrid&   collisionGrid);
@@ -511,8 +601,8 @@ private:
     FolioStatus CheckSpritePosition (const ACollisionGrid&      collisionGrid,
                                      ACollisionGrid::DIRECTION  collisionGridDirection);
 
-    Direction   GetFloorBoundDirection (ACollisionGrid::DIRECTION collisionGridDirection) const;
-
+    FolioStatus PlaySpriteSoundResource (FolioHandle    spriteSoundResource,
+                                         bool           playAsynchronously) const;
     FolioStatus PlaySpriteSoundSample (const SpriteSoundSample& spriteSoundSample,
                                        bool                     playAsynchronously) const;
     FolioStatus PlaySpriteStationarySoundSamples (const SpriteStationarySoundSamplesList&   stationarySpriteSoundSamplesList,
@@ -520,6 +610,9 @@ private:
                                                   bool                                      playAsynchronously) const;
 
     FolioStatus SetCurrentSpriteMovementSoundSample (Direction direction);
+
+    void    StartActionTickCount (UInt32 actionTickCount);
+    bool    IsActionTickCountComplete () const;
 }; // Endclass.
 
 // Sprite pointer.

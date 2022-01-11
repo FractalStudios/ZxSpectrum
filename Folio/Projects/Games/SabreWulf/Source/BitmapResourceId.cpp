@@ -145,8 +145,8 @@ FolioString DescribeBitmapResourceId (UInt16 bitmapResourceId)
     case 232: return (TXT("IDB_BITMAP_SABRE_MAN_FALLING_RIGHT"));
     case 233: return (TXT("IDB_BITMAP_SABRE_MAN_SITTING_LEFT"));
     case 234: return (TXT("IDB_BITMAP_SABRE_MAN_SITTING_RIGHT"));
-    case 235: return (TXT("IDB_BITMAP_SABRE_MAN_GAME_OVER_LEFT"));
-    case 236: return (TXT("IDB_BITMAP_SABRE_MAN_GAME_OVER_RIGHT"));
+    case 235: return (TXT("IDB_BITMAP_SABRE_MAN_LYING_DEAD_LEFT"));
+    case 236: return (TXT("IDB_BITMAP_SABRE_MAN_LYING_DEAD_RIGHT"));
     case 237: return (TXT("IDB_BITMAP_ORCHID_1"));
     case 238: return (TXT("IDB_BITMAP_ORCHID_2"));
     case 239: return (TXT("IDB_BITMAP_ORCHID_3"));

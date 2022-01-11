@@ -4,7 +4,6 @@
 #include    "ObjectSprite.h"
 #include    "Screen.h"
 #include    "SpriteGraphics.h"
-#include    "Ultimate.h"
 
 namespace Folio
 {
@@ -34,9 +33,6 @@ static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<OBJECT_SPRIT
     {   OBJECT_SPRITE_AMULET_PIECE_BOTTOM_RIGHT,    Folio::Core::Game::NO_DIRECTION,    {   SPRITE_AMULET_PIECE_BOTTOM_RIGHT,   },  },
 };
 
-
-// Object sprite static members.
-Folio::Core::Util::Sound::SoundSample   ObjectSprite::m_objectCollectedSoundSample(Ultimate::CreateSoundSample (0x40, 0x30));   // The object collected sound sample.
 
 ObjectSprite::ObjectSprite ()
 :   m_objectSpriteId(OBJECT_SPRITE_UNDEFINED),
@@ -143,9 +139,9 @@ FolioStatus ObjectSprite::HandlePlayerCollision (bool& foundAmuletPiece)
 
     // The player has collided with an object sprite.
 
-    // Play the object collected sound.
+    // Play the player collected item sound.
 
-    FolioStatus status = Folio::Core::Util::Sound::PlaySoundSample (m_objectCollectedSoundSample);
+    FolioStatus status = g_soundResources.PlayPlayerCollectedItemSound ();
 
     if (status == ERR_SUCCESS)
     {
@@ -304,8 +300,7 @@ static  FolioStatus AddScreenObjectSprite (const ObjectSpritePtr&           obje
     // Create an object sprite drawing element.
 
     ObjectSpriteDrawingElement  objectSpriteDrawingElement(Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_OBJECT_SPRITE, 
-                                                           objectSprite, 
-                                                           objectSprite->GetCollisionGridCellValue ());
+                                                           objectSprite);
 
     // Add the object sprite to the current screen's collision grid.
 

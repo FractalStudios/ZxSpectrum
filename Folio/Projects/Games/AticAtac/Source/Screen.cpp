@@ -1265,8 +1265,7 @@ FolioStatus Screen::AddStaticSprite (const StaticSpritePtr& staticSprite,
     // Create a static sprite drawing element.
 
     StaticSpriteDrawingElement  staticSpriteDrawingElement(Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_STATIC_SPRITE,
-                                                           staticSprite, 
-                                                           staticSprite->GetCollisionGridCellValue ());
+                                                           staticSprite);
 
     // Add to the screen's static sprite drawing elements list.
 
@@ -1595,8 +1594,7 @@ FolioStatus Screen::AddNastySprite (NASTY_SPRITE_ID nastySpriteId)
             // Create a nasty sprite drawing element.
 
             NastySpriteDrawingElement   nastySpriteDrawingElement(Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_NASTY_SPRITE, 
-                                                                  nastySprite,
-                                                                  nastySprite->GetCollisionGridCellValue ());
+                                                                  nastySprite);
 
             // Add the nasty sprite drawing element to the nasty sprite drawing 
             // elements list.
@@ -2367,7 +2365,7 @@ FolioStatus Screen::HandleSolidItemCollision (const CollisionGrid::CellElement& 
         Gdiplus::Rect   mainPlayerScreenRect(g_mainPlayer->GetScreenRect ());
                 
         m_collisionGrid.ToScreenRectBound (g_mainPlayer->GetDirection (), 
-                                           cellElement.m_screenRect,
+                                           cellElement.m_collisionGridRect,
                                            mainPlayerScreenRect);
 
         // Set the main player's position.

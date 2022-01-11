@@ -1,7 +1,7 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
-#include    "DrawingElementIds.h"
 #include    "BackgroundItemGraphics.h"
+#include    "DrawingElementIds.h"
 #include    "FoundAmuletPieceScreen.h"
 #include    "Globals.h"
 

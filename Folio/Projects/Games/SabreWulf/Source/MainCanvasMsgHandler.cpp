@@ -4,7 +4,7 @@
 #include    "Globals.h"
 #include    "MainCanvasMsgHandler.h"
 
-#define _AUTO_TEST_
+//#define _AUTO_TEST_
 #define AUTO_TEST_SCREEN_TIME 1 * 1000
 
 namespace Folio
@@ -325,7 +325,7 @@ FolioStatus MainCanvasMsgHandler::HandleProcessFoundAmuletPieceScreenFrame (Foli
 
             // Display the current screen.
 
-            status = DisplayScreen ();
+            status = DisplayScreen (true);  // Redisplay.
                 
             if (status == ERR_SUCCESS)
             {        
@@ -552,10 +552,6 @@ FolioStatus MainCanvasMsgHandler::HandleProcessPlayingGameStateFrame (FolioHandl
         
         if (status == ERR_SUCCESS)
         {
-            // Reset player fire key down.
-
-            g_playerSprite->SetFireKeyDown (false);
-
             // Has the player exited a screen?
 
             if (g_playerSprite->IsExitedScreen ())
@@ -624,52 +620,45 @@ FolioStatus MainCanvasMsgHandler::CheckPlayingGameStateInput ()
 {
     FolioStatus status = ERR_SUCCESS;
 
+    // Is the pause game key down?  
+
+    if (m_selectionScreen->IsPauseGameKeyDown ())
+    {
+        // Yes. Pause the game.
+
+        m_state = STATE_PAUSED_GAME;
+    } // Endif.
+
     // Is the player ready?
 
+    else
     if (g_playerSprite->IsReady ())
     {
-        // Is the pause game key down?  
+        // Yes. Is any player fire key down?  
 
-        if (m_selectionScreen->IsPauseGameKeyDown ())
+        g_playerSprite->SetFireKeyDown (m_selectionScreen->IsPlayerFireKeyDown ());
+
+        // Is any player direction key down?
+
+        Folio::Core::Game::Direction    direction = Folio::Core::Game::NO_DIRECTION;    // Initialise!
+
+        if (m_selectionScreen->IsPlayerDirectionKeyDown (direction))
         {
-            // Yes. Pause the game.
+            // Yes. Update the player's direction.
 
-            m_state = STATE_PAUSED_GAME;
+            status = g_playerSprite->UpdateDirection (direction);
         } // Endif.
 
+        // Is the player moving?
+
         else
+        if (g_playerSprite->IsMoving ())
         {
-            // Is the player fire key down?  
+            // Yes. Update the player's direction.
 
-            if (m_selectionScreen->IsPlayerFireKeyDown ())
-            {
-                // Yes. Set player fire key down.
-
-                g_playerSprite->SetFireKeyDown (true);
-            } // Endif.
-
-            // Is a player's direction key down?
-
-            Folio::Core::Game::Direction    direction = Folio::Core::Game::NO_DIRECTION;    // Initialise!
-
-            if (m_selectionScreen->IsPlayerDirectionKeyDown (direction))
-            {
-                // Yes. Update the player's direction.
-
-                status = g_playerSprite->UpdateDirection (direction, true);
-            } // Endif.
-
-            // Is the player moving?
-
-            else
-            if (g_playerSprite->IsMoving ())
-            {
-                // Yes. Update the player's direction.
-
-                status = g_playerSprite->UpdateDirection (direction, false);
-            } // Endelseif.
-
-        } // Endelse.
+            status = g_playerSprite->UpdateDirection (g_playerSprite->GetDirection (), 
+                                                      false);   // Key not down.
+        } // Endelseif.
 
     } // Endif.
 
@@ -726,15 +715,20 @@ FolioStatus MainCanvasMsgHandler::StartPlayingGame ()
 } // Endproc.
 
 
-FolioStatus MainCanvasMsgHandler::DisplayScreen ()
+FolioStatus MainCanvasMsgHandler::DisplayScreen (bool redisplay)
 {
-    // Get the current screen map index.
+    // Is the screen being redisplayed?
 
-    m_currentScreenListIndex = g_screenMap.GetCurrentScreenMapIndex ();
+    if (!redisplay)
+    {
+        // No. Get the current screen map index.
+
+        m_currentScreenListIndex = g_screenMap.GetCurrentScreenMapIndex ();
+    } // Endif.
 
     // Draw the current screen.
 
-    return (m_screensList [m_currentScreenListIndex]->Draw ());
+    return (m_screensList [m_currentScreenListIndex]->Draw (redisplay));
 } // Endproc.
 
 
@@ -754,7 +748,7 @@ void    MainCanvasMsgHandler::DisplayFrameRate () const
     Folio::Core::Util::Wnd::SetWndText (m_canvas->GetCanvasWndHandle (), str.str ().c_str ());
     
     str << std::endl;
-    ::OutputDebugString (str.str ().c_str ());
+    //::OutputDebugString (str.str ().c_str ());
 } // Endproc.
 
 } // Endnamespace.

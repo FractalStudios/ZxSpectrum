@@ -30,11 +30,13 @@ DrawingElement::DrawingElement (const DrawingElementId&                         
                                 Int32                                               screenYTop,
                                 const Folio::Core::Graphic::GdiGraphicElementPtr&   gdiGraphicElement,
                                 UserData                                            userData,
-                                UInt32                                              collisionGridCellValue)
+                                UInt32                                              collisionGridCellValue,
+                                const Gdiplus::Rect*                                collisionGridDeltaRect)
 :   m_drawingElementId(drawingElementId),
     m_screenRect(screenXLeft, screenYTop, gdiGraphicElement->GetScreenWidth (), gdiGraphicElement->GetScreenHeight ()),
     m_userData(userData),
     m_collisionGridCellValue(collisionGridCellValue),
+    m_collisionGridDeltaRect(collisionGridDeltaRect ? *collisionGridDeltaRect : Gdiplus::Rect()),
     m_gdiGraphicElement(gdiGraphicElement)
 {
 } // Endproc.
@@ -150,6 +152,65 @@ DrawingElement::UserData    DrawingElement::GetUserData () const
 } // Endproc.
 
 
+void    DrawingElement::SetCollisionGridDeltaRect (const Gdiplus::Rect& collisionGridDeltaRect)
+{
+    m_collisionGridDeltaRect = collisionGridDeltaRect;
+} // Endproc.
+
+
+Gdiplus::Rect   DrawingElement::GetCollisionGridDeltaRect () const
+{
+    return (m_collisionGridDeltaRect);
+} // Endproc.
+
+
+Gdiplus::Rect   DrawingElement::GetCollisionGridRect () const
+{
+    return (m_collisionGridDeltaRect.IsEmptyArea () 
+            ? GetScreenRect () 
+            : Gdiplus::Rect(GetCollisionGridXLeft (), 
+                            GetCollisionGridYTop (), 
+                            GetCollisionGridWidth (), 
+                            GetCollisionGridHeight ()));
+} // Endproc.
+
+
+Int32   DrawingElement::GetCollisionGridXLeft () const
+{
+    return (m_screenRect.X + m_collisionGridDeltaRect.X);
+} // Endproc.
+
+
+Int32   DrawingElement::GetCollisionGridYTop () const
+{
+    return (m_screenRect.Y + m_collisionGridDeltaRect.Y);
+} // Endproc.
+
+
+Int32   DrawingElement::GetCollisionGridXRight () const
+{
+    return (GetCollisionGridXLeft () + GetCollisionGridWidth () - 1);
+} // Endproc.
+
+
+Int32   DrawingElement::GetCollisionGridYBottom () const
+{
+    return (GetCollisionGridYTop () + GetCollisionGridHeight () - 1);
+} // Endproc.
+
+
+Int32   DrawingElement::GetCollisionGridWidth () const
+{
+    return (m_screenRect.Width - 2 * m_collisionGridDeltaRect.Width);
+} // Endproc.
+
+
+Int32   DrawingElement::GetCollisionGridHeight () const
+{
+    return (m_screenRect.Height - 2 * m_collisionGridDeltaRect.Height);
+} // Endproc.
+
+
 void    DrawingElement::SetCollisionGridCellValue (UInt32 collisionGridCellValue)
 {
     m_collisionGridCellValue = collisionGridCellValue;
@@ -159,15 +220,6 @@ void    DrawingElement::SetCollisionGridCellValue (UInt32 collisionGridCellValue
 UInt32  DrawingElement::GetCollisionGridCellValue () const
 {
     return (m_collisionGridCellValue);
-} // Endproc.
-
-
-bool    DrawingElement::IsOverlap (const Gdiplus::Rect& screenRect) const
-{
-    return (!((m_screenRect.X > (  screenRect.X +   screenRect.Width  - 1)) ||
-                (screenRect.X > (m_screenRect.X + m_screenRect.Width  - 1)) ||
-              (m_screenRect.Y > (  screenRect.Y +   screenRect.Height - 1)) ||
-                (screenRect.Y > (m_screenRect.Y + m_screenRect.Height - 1))));
 } // Endproc.
 
 

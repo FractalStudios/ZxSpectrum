@@ -1,6 +1,7 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
 #include    "Globals.h"
+#include    "Screen.h"
 #include    "SpriteGraphics.h"
 
 namespace Folio
@@ -26,6 +27,9 @@ HighScoreTable  g_highScoreTable;
 // The information panel.
 InformationPanelPtr g_informationPanel;         
 
+// The sound resources.
+SoundResources  g_soundResources;
+
 // The music jukebox.
 MusicJukebox    g_musicJukebox;
 
@@ -35,6 +39,9 @@ ScreenBackgroundsMap    g_screenBackgroundsMap;
 // The screen map.
 ScreenMap    g_screenMap;
 
+// The screen collision grid map.
+ScreenCollisionGridMap  g_screenCollisionGridMap;
+
 // The player sprite.
 PlayerSpritePtr g_playerSprite;
 
@@ -43,6 +50,9 @@ OrchidSpriteDrawingElement  g_orchidSpriteDrawingElement;
 
 // The nasty sprite drawing elements list.
 NastySpriteDrawingElementsList  g_nastySpriteDrawingElementsList;
+
+// The boss sprite drawing elements list.
+BossSpriteDrawingElementsList   g_bossSpriteDrawingElementsList;
 
 
 FolioStatus InitialiseGlobals (Folio::Core::Applet::Canvas& canvas,
@@ -80,16 +90,32 @@ FolioStatus InitialiseGlobals (Folio::Core::Applet::Canvas& canvas,
 
                 if (status == ERR_SUCCESS)
                 {
-                    // Create the music jukebox.
+                    // Create the sound resources.
 
-                    status = g_musicJukebox.Create ();
+                    status = g_soundResources.Create ();
 
                     if (status == ERR_SUCCESS)
                     {
-                        // Create the screen backgrounds.
+                        // Create the music jukebox.
 
-                        status = CreateScreenBackgrounds (g_backgroundItemGraphicsMap,
-                                                          g_screenBackgroundsMap);
+                        status = g_musicJukebox.Create ();
+
+                        if (status == ERR_SUCCESS)
+                        {
+                            // Create the screen backgrounds.
+
+                            status = CreateScreenBackgrounds (g_backgroundItemGraphicsMap,
+                                                              g_screenBackgroundsMap);
+
+                            if (status == ERR_SUCCESS)
+                            {
+                                // Create the screen collision grids.
+
+                                status = CreateScreenCollisionGrids (g_screenCollisionGridMap);
+                            } // Endif.
+
+                        } // Endif.
+
                     } // Endif.
 
                 } // Endif.
@@ -110,14 +136,21 @@ FolioStatus InitialiseGlobals (Folio::Core::Applet::Canvas& canvas,
         {
             // Create the orchid sprite drawing element.
 
-            status = CreateOrchidSpriteDrawingElement (dcHandle,
-                                                       g_orchidSpriteDrawingElement);
+            status = CreateOrchidSpriteDrawingElement (dcHandle);
 
             if (status == ERR_SUCCESS)
             {
-                // Clear the nasty sprite drawing elements list.
+                // Create the boss sprite drawing elements.
 
-                g_nastySpriteDrawingElementsList.clear ();
+                status = CreateBossSpriteDrawingElements (dcHandle);
+
+                if (status == ERR_SUCCESS)
+                {
+                    // Clear the nasty sprite drawing elements list.
+
+                    g_nastySpriteDrawingElementsList.clear ();
+                } // Endif.
+
             } // Endif.
 
         } // Endif.

@@ -89,13 +89,18 @@ FolioStatus LoadSoundResource (FolioHandle      instanceHandle,
  * @param [in] soundHandle
  * The sound resource handle.
  *
+ * @param [in] playAsynchronously
+ * <b>true</b> if a the sound resource should be played asynchronously, 
+ * <b>false</b> otherwise.
+ *
  * @return
  * The possible return values are:<ul>
  * <li><b>ERR_SUCCESS</b> if the sound resource was successfully played.
  * <li><b>ERR_???</b> status code otherwise.
  * </ul>
  */
-FolioStatus PlaySoundResource (FolioHandle soundHandle)
+FolioStatus PlaySoundResource (FolioHandle  soundHandle,
+                               bool         playAsynchronously)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -106,7 +111,7 @@ FolioStatus PlaySoundResource (FolioHandle soundHandle)
     if (lpvResource != NULL) 
     { 
         if (!::sndPlaySound (reinterpret_cast<LPCWSTR> (lpvResource), 
-                             SND_MEMORY | SND_SYNC | SND_NODEFAULT))
+                             playAsynchronously ? SND_MEMORY | SND_ASYNC | SND_NODEFAULT : SND_MEMORY | SND_SYNC | SND_NODEFAULT))
         {
             status = FOLIO_MAKE_OS_ERROR(::GetLastError ());
         } // Endif.
@@ -276,6 +281,34 @@ FolioStatus StopPlayingSoundSamples ()
     } // Endelse.
 
     return (status);
+} // Endproc.
+
+
+/**
+ * Function that will indicate if we're playing any sound samples.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>true</b> if playing any sound samples.
+ * <li><b>false</b> otherwise.
+ * </ul>
+ */
+bool    IsPlayingSoundSamples ()
+{
+    bool    isPlayingSoundSamples = false;
+
+    // Get the sound sample player instance.
+        
+    SoundSamplePlayer*  soundSamplePlayer = SoundSamplePlayer::GetInstance ();
+
+    if (soundSamplePlayer)
+    {
+        // Are we playing any sound samples?
+            
+        isPlayingSoundSamples = soundSamplePlayer->IsPlaying ();
+    } // Endif.
+ 
+    return (isPlayingSoundSamples);
 } // Endproc.
 
 

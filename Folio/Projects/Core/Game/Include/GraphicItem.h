@@ -6,7 +6,6 @@
 // "Home-made" includes.
 #include    <Graphic.h>
 #include    "AItem.h"
-#include    "ResourceGraphic.h"
 
 #pragma pack(push, 1)
 

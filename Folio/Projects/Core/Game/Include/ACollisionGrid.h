@@ -18,21 +18,6 @@ namespace Game
 class ACollisionGrid
 {
 public:
-    virtual ~ACollisionGrid ();
-
-    FolioStatus Create (const Gdiplus::Rect& floorRect);
-    FolioStatus Create (const Gdiplus::Rect&                            floorRect,
-                        const Folio::Core::Game::DrawingElementsList&   drawingElementsList);
-    FolioStatus Clear ();
-
-    Gdiplus::Rect   GetFloorRect () const;
-    Int32           GetFloorLeftBound () const;
-    Int32           GetFloorRightBound () const;
-    Int32           GetFloorTopBound () const;
-    Int32           GetFloorBottomBound () const;
-    Int32           GetFloorWidth () const;
-    Int32           GetFloorHeight () const;
-
     // Cell value.
     typedef UInt32  CellValue;
 
@@ -45,6 +30,7 @@ public:
     static  const   CellValue   CELL_VALUE_COLLECTABLE_ITEM = CELL_VALUE_ITEM | 0x00000008;
     static  const   CellValue   CELL_VALUE_WALL             = 0x00001000;
     static  const   CellValue   CELL_VALUE_EXIT             = 0x00002000;
+    static  const   CellValue   CELL_VALUE_GAME_COMPLETE    = 0x00004000;
     static  const   CellValue   CELL_VALUE_NASTY_SPRITE     = 0x00010000;
     static  const   CellValue   CELL_VALUE_BOSS_SPRITE      = 0x00020000;
     static  const   CellValue   CELL_VALUE_WEAPON_SPRITE    = 0x00040000;
@@ -59,28 +45,28 @@ public:
         typedef DrawingElement::UserData    UserData;
 
         CellElement (const CellElementId&   cellElementId,
-                     const Gdiplus::Rect&   screenRect,
-                     CellValue              cellValue = CELL_VALUE_EMPTY,
+                     CellValue              cellValue,
+                     const Gdiplus::Rect&   collisionGridRect,
                      UserData               userData = 0)
-        :   m_cellElementId(cellElementId),                   
-            m_screenRect(screenRect),           
+        :   m_cellElementId(cellElementId),
             m_cellValue(cellValue),
-            m_userData(userData)             
+            m_collisionGridRect(collisionGridRect),
+            m_userData(userData)
         {} // Endproc.
 
-        CellElement (const DrawingElement& drawingElement)
-        :   m_cellElementId(drawingElement.GetDrawingElementId ()),                   
-            m_screenRect(drawingElement.GetScreenRect ()),           
+        CellElement (const DrawingElement&  drawingElement)
+        :   m_cellElementId(drawingElement.GetDrawingElementId ()),
             m_cellValue(drawingElement.GetCollisionGridCellValue ()),
-            m_userData(drawingElement.GetUserData ())             
+            m_collisionGridRect(drawingElement.GetCollisionGridRect ()),
+            m_userData(drawingElement.GetUserData ())
         {} // Endproc.
 
         bool    IsOverlap (const Gdiplus::Rect& screenRect) const
         {
-            return (!((m_screenRect.X > (  screenRect.X +   screenRect.Width  - 1)) ||
-                        (screenRect.X > (m_screenRect.X + m_screenRect.Width  - 1)) ||
-                      (m_screenRect.Y > (  screenRect.Y +   screenRect.Height - 1)) ||
-                        (screenRect.Y > (m_screenRect.Y + m_screenRect.Height - 1))));
+            return (!((m_collisionGridRect.X > (         screenRect.X +   screenRect.Width         - 1))    ||
+                               (screenRect.X > (m_collisionGridRect.X + m_collisionGridRect.Width  - 1))    ||
+                      (m_collisionGridRect.Y > (         screenRect.Y +   screenRect.Height        - 1))    ||
+                               (screenRect.Y > (m_collisionGridRect.Y + m_collisionGridRect.Height - 1))));
         } // Endproc.
 
         bool    operator == (const CellElement& rhs) const
@@ -88,23 +74,45 @@ public:
             return ((m_cellElementId == rhs.m_cellElementId) && (m_userData == rhs.m_userData));
         } // Endproc.
 
-        CellElementId       m_cellElementId;    // The identifier of the cell element.
-        Gdiplus::Rect       m_screenRect;       // The screen rect of the cell element.
-        CellValue           m_cellValue;        // The collision grid cell value of the cell element.
-        UserData            m_userData;         // User defined data applicable to the cell element.
+        CellElementId   m_cellElementId;        // The identifier of the cell element.
+        CellValue       m_cellValue;            // The collision grid cell value of the cell element.
+        Gdiplus::Rect   m_collisionGridRect;    // The collision rect of the cell element.
+        UserData        m_userData;             // User defined data applicable to the cell element.
     }; // Endstruct.
 
     // Cell elements.
     typedef std::vector<CellElement> CellElements;
 
+    virtual ~ACollisionGrid ();
+
+    FolioStatus Create (const Gdiplus::Rect& floorRect);
+    FolioStatus Create (const Gdiplus::Rect&    floorRect,
+                        const CellElements&     cellElements);
+    FolioStatus Create (const Gdiplus::Rect&                            floorRect,
+                        const Folio::Core::Game::DrawingElementsList&   drawingElementsList);
+    FolioStatus Clear ();
+
     FolioStatus AddCellElement (const CellElement& cellElement);
+    FolioStatus AddCellElements (const CellElements& cellElements);
     FolioStatus RemoveCellElement (const CellElement& cellElement);
+    FolioStatus RemoveCellElements (const CellElements& cellElements);
+    FolioStatus RemoveCellElements (const CellElement::CellElementId& cellElementId);
     FolioStatus UpdateCellElement (const CellElement& cellElement);
+    FolioStatus UpdateCellElements (const CellElements& cellElements);
 
     bool    FindCellElement (CellElement::UserData  userData,
                              CellElement&           cellElement) const;
     bool    FindCellElements (const CellElement::CellElementId& cellElementId,
                               CellElements&                     cellElements) const;
+
+    Gdiplus::Rect   GetFloorRect () const;
+    Gdiplus::Rect   GetFloorBoundRect () const;
+    Int32           GetFloorLeftBound () const;
+    Int32           GetFloorRightBound () const;
+    Int32           GetFloorTopBound () const;
+    Int32           GetFloorBottomBound () const;
+    Int32           GetFloorWidth () const;
+    Int32           GetFloorHeight () const;
 
     bool    IsCollision (const Gdiplus::Rect&   spriteScreenRect,
                          CellElements&          cellElements) const;
@@ -190,6 +198,18 @@ public:
             return (m_state == LOCKED);
         } // Endproc.
 
+        void    Reset ()
+        {
+            m_orientation   = NONE;
+            m_state         = OPEN;
+            m_userData      = 0;
+
+            m_screenRect.X      = 0;
+            m_screenRect.Y      = 0;
+            m_screenRect.Width  = 0;
+            m_screenRect.Height = 0;
+        } // Endproc.
+
         ORIENTATION     m_orientation;  // The orientation of the screen exit.
         Gdiplus::Rect   m_screenRect;   // The screen rect of the screen exit.
         STATE           m_state;        // The state of the screen exit.
@@ -216,6 +236,7 @@ public:
     // Direction enumeration.
     enum DIRECTION
     {
+        UNDEFINED = -1,
         UP = 0,
         DOWN,
         LEFT,
@@ -223,6 +244,7 @@ public:
     }; // Endenum.
 
     virtual bool    IsExitedScreen (DIRECTION       direction,
+                                    bool            externalToFloorBound,
                                     Gdiplus::Rect&  spriteScreenRect,
                                     bool&           isAtLockedScreenExit,
                                     bool&           isInScreenExit,
@@ -242,6 +264,7 @@ public:
                                   ScreenExit&       screenExit) const;
 
     bool    IsOutwithFloorBound (DIRECTION      direction, 
+                                 bool           externalToFloorBound,
                                  Gdiplus::Rect& spriteScreenRect,
                                  Int32*         floorBound = 0) const;
 
@@ -267,6 +290,7 @@ public:
     static  bool    IsCollectableItem (CellValue cellValue);
     static  bool    IsWall (CellValue cellValue);
     static  bool    IsExit (CellValue cellValue);
+    static  bool    IsGameComplete (CellValue cellValue);
     static  bool    IsNastySprite (CellValue cellValue);
     static  bool    IsBossSprite (CellValue cellValue);
     static  bool    IsWeaponSprite (CellValue cellValue);

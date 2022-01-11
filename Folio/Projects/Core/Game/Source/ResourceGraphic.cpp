@@ -43,6 +43,7 @@ FolioStatus ResourceGraphic::Create (FolioHandle                                
                                      UInt16                                     bitmapResourceId,
                                      bool                                       maskedGdiBitmapRqd,
                                      ACollisionGrid::CellValue                  collisionGridCellValue,
+                                     const Gdiplus::Rect*                       collisionGridDeltaRect,
                                      Gdiplus::ARGB                              maskColour)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -84,6 +85,24 @@ FolioStatus ResourceGraphic::Create (FolioHandle                                
             m_maskedGdiBitmapRqd        = maskedGdiBitmapRqd;
             m_maskColour                = maskColour;
             m_collisionGridCellValue    = collisionGridCellValue;
+            
+            if (collisionGridDeltaRect)
+            {
+                if ((collisionGridDeltaRect->X < 0) ||
+                   ((collisionGridDeltaRect->X + collisionGridDeltaRect->Width) > m_gdiDiBitmap->GetBitmapWidth ()))
+                {
+                    FOLIO_DEBUG_BREAK;
+                } // Endif.`
+
+                if ((collisionGridDeltaRect->Y < 0) ||
+                    ((collisionGridDeltaRect->Y + collisionGridDeltaRect->Height) > m_gdiDiBitmap->GetBitmapHeight ()))
+                {
+                    FOLIO_DEBUG_BREAK;
+                } // Endif.`
+
+                m_collisionGridDeltaRect = *collisionGridDeltaRect;
+            } // Endif.
+
         } // Endif.
 
     } // Endelse.
@@ -98,6 +117,7 @@ FolioStatus ResourceGraphic::Create (FolioHandle                                
                                      Gdiplus::ARGB                              changeColour, 
                                      bool                                       maskedGdiBitmapRqd,
                                      ACollisionGrid::CellValue                  collisionGridCellValue,
+                                     const Gdiplus::Rect*                       collisionGridDeltaRect,
                                      Gdiplus::ARGB                              maskColour)
 {
     // Create the resource graphic.
@@ -107,6 +127,7 @@ FolioStatus ResourceGraphic::Create (FolioHandle                                
                                  bitmapResourceId,
                                  maskedGdiBitmapRqd,
                                  collisionGridCellValue,
+                                 collisionGridDeltaRect,
                                  maskColour);
 
     if (status == ERR_SUCCESS)
@@ -145,6 +166,7 @@ FolioStatus ResourceGraphic::Create (FolioHandle                                
                                      Gdiplus::ARGB                              newColour, 
                                      bool                                       maskedGdiBitmapRqd,
                                      ACollisionGrid::CellValue                  collisionGridCellValue,
+                                     const Gdiplus::Rect*                       collisionGridDeltaRect,
                                      Gdiplus::ARGB                              maskColour)
 {
     // Create the resource graphic.
@@ -154,6 +176,7 @@ FolioStatus ResourceGraphic::Create (FolioHandle                                
                                  bitmapResourceId,
                                  maskedGdiBitmapRqd,
                                  collisionGridCellValue,
+                                 collisionGridDeltaRect,
                                  maskColour);
 
     if (status == ERR_SUCCESS)
@@ -459,7 +482,8 @@ FolioStatus ResourceGraphic::QueryDrawingElements (FolioHandle                  
                                                                       screenYTop,
                                                                       m_maskedGdiBitmap,
                                                                       drawingElementUserData,
-                                                                      m_collisionGridCellValue));
+                                                                      m_collisionGridCellValue,
+                                                                      m_collisionGridDeltaRect.IsEmptyArea () ? 0 : &(m_collisionGridDeltaRect)));
                     } // Endif.
 
                 } // Endif.
@@ -491,7 +515,8 @@ FolioStatus ResourceGraphic::QueryDrawingElements (FolioHandle                  
                                                               screenYTop,
                                                               m_gdiBitmap, 
                                                               drawingElementUserData,
-                                                              m_collisionGridCellValue));
+                                                              m_collisionGridCellValue,
+                                                              m_collisionGridDeltaRect.IsEmptyArea () ? 0 : &(m_collisionGridDeltaRect)));
 
                 // Note the attributes.
 
@@ -591,6 +616,12 @@ Gdiplus::ARGB   ResourceGraphic::GetCurrentChangeableColour () const
 ACollisionGrid::CellValue   ResourceGraphic::GetCollisionGridCellValue () const
 {
     return (m_collisionGridCellValue);
+} // Endproc.
+
+
+Gdiplus::Rect   ResourceGraphic::GetCollisionGridDeltaRect () const
+{
+    return (m_collisionGridDeltaRect);
 } // Endproc.
 
 

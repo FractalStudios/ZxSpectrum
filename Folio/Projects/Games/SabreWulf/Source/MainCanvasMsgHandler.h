@@ -83,7 +83,7 @@ private:
 
     FolioStatus CheckPlayingGameStateInput ();
     FolioStatus StartPlayingGame ();
-    FolioStatus DisplayScreen ();
+    FolioStatus DisplayScreen (bool redisplay = false);
 
     void    DisplayFrameRate () const;
 

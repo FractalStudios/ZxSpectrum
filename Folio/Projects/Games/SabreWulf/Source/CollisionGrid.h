@@ -1,5 +1,8 @@
 #pragma once
 
+// STL includes.
+#include    <memory>
+
 // "Home-made" includes.
 #include    <Game.h>
 
@@ -19,14 +22,10 @@ class CollisionGrid : public Folio::Core::Game::ACollisionGrid
 public:
     CollisionGrid ();
     ~CollisionGrid ();
-
-private:
-    // Private copy constructor to prevent copying.
-    CollisionGrid (const CollisionGrid& rhs);
-
-    // Private assignment operator to prevent copying.
-    CollisionGrid& operator= (const CollisionGrid& rhs);
 }; // Endclass.
+
+// Collision grid pointer.
+typedef std::shared_ptr<CollisionGrid>  CollisionGridPtr;
 
 } // Endnamespace.
 

@@ -31,6 +31,19 @@ FolioStatus ACollisionGrid::Create (const Gdiplus::Rect& floorRect)
 } // Endproc.
 
 
+FolioStatus ACollisionGrid::Create (const Gdiplus::Rect&    floorRect,
+                                    const CellElements&     cellElements)
+{
+    // Note the floor rect of the colllision grid.
+
+    m_floorRect = floorRect;
+
+    // Add the cell elements to the collision grid.
+
+    return (AddCellElements (cellElements));
+} // Endproc.
+
+
 FolioStatus ACollisionGrid::Create (const Gdiplus::Rect&                            floorRect,
                                     const Folio::Core::Game::DrawingElementsList&   drawingElementsList)
 {
@@ -69,51 +82,6 @@ FolioStatus ACollisionGrid::Clear ()
 } // Endproc.
 
 
-Gdiplus::Rect   ACollisionGrid::GetFloorRect () const
-{
-    return (Gdiplus::Rect(GetFloorLeftBound (),
-                          GetFloorTopBound (),
-                          GetFloorRightBound (),
-                          GetFloorBottomBound ()));
-} // Endproc.
-
-
-Int32   ACollisionGrid::GetFloorLeftBound () const
-{
-    return (m_floorRect.X);
-} // Endproc.
-
-
-Int32   ACollisionGrid::GetFloorRightBound () const
-{
-    return (m_floorRect.X + m_floorRect.Width - 1);
-} // Endproc.
-
-
-Int32   ACollisionGrid::GetFloorTopBound () const
-{
-    return (m_floorRect.Y);
-} // Endproc.
-
-
-Int32   ACollisionGrid::GetFloorBottomBound () const
-{
-    return (m_floorRect.Y + m_floorRect.Height - 1);
-} // Endproc.
-
-
-Int32   ACollisionGrid::GetFloorWidth () const
-{
-    return (m_floorRect.Width);
-} // Endproc.
-
-
-Int32   ACollisionGrid::GetFloorHeight () const
-{
-    return (m_floorRect.Height);
-} // Endproc.
-
-
 FolioStatus ACollisionGrid::AddCellElement (const CellElement& cellElement)
 {
     // Is this a wall?
@@ -149,6 +117,25 @@ FolioStatus ACollisionGrid::AddCellElement (const CellElement& cellElement)
 } // Endproc.
 
 
+FolioStatus ACollisionGrid::AddCellElements (const CellElements& cellElements)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Add the cell elements to the collision grid.
+
+    for (CellElements::const_iterator itr = cellElements.begin ();
+         (status == ERR_SUCCESS) && (itr != cellElements.end ());
+         ++itr)
+    {
+        // Add the cell element to the collision grid.
+
+        status = AddCellElement (*itr);
+    } // Endfor.
+    
+    return (status);
+} // Endproc.
+
+
 FolioStatus ACollisionGrid::RemoveCellElement (const CellElement& cellElement)
 {
     // Does the cell element support a collision grid cell value?
@@ -169,6 +156,51 @@ FolioStatus ACollisionGrid::RemoveCellElement (const CellElement& cellElement)
         } // Endif.
     
     } // Endif.
+
+    return (ERR_SUCCESS);
+} // Endproc.
+
+
+FolioStatus ACollisionGrid::RemoveCellElements (const CellElements& cellElements)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Remove the cell elements from the collision grid.
+
+    for (CellElements::const_iterator itr = cellElements.begin ();
+         (status == ERR_SUCCESS) && (itr != cellElements.end ());
+         ++itr)
+    {
+        // Remove the cell element from the collision grid.
+
+        status = RemoveCellElement (*itr);
+    } // Endfor.
+    
+    return (status);
+} // Endproc.
+
+
+FolioStatus ACollisionGrid::RemoveCellElements (const CellElement::CellElementId& cellElementId)
+{
+    // Remove the cell elements from the collision grid.
+
+    Grid::iterator  itr = m_grid.begin ();
+
+    while (itr != m_grid.end ())
+    {
+        if (itr->m_cellElementId == cellElementId)
+        {
+            // Remove the cell element from the grid.
+
+            itr = m_grid.erase (itr);
+        } // Endif.
+
+        else
+        {
+            ++itr;  // Next.
+        } // Endelse.
+
+    } // Endwhile.
 
     return (ERR_SUCCESS);
 } // Endproc.
@@ -195,6 +227,25 @@ FolioStatus ACollisionGrid::UpdateCellElement (const CellElement& cellElement)
 
     } // Endif.
 
+    return (status);
+} // Endproc.
+
+
+FolioStatus ACollisionGrid::UpdateCellElements (const CellElements& cellElements)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Update the cell elements in the collision grid.
+
+    for (CellElements::const_iterator itr = cellElements.begin ();
+         (status == ERR_SUCCESS) && (itr != cellElements.end ());
+         ++itr)
+    {
+        // Update the cell element in the collision grid.
+
+        status = UpdateCellElement (*itr);
+    } // Endfor.
+    
     return (status);
 } // Endproc.
 
@@ -242,6 +293,57 @@ bool    ACollisionGrid::FindCellElements (const CellElement::CellElementId& cell
     } // Endfor.
 
     return (!cellElements.empty ());
+} // Endproc.
+
+
+Gdiplus::Rect   ACollisionGrid::GetFloorRect () const
+{
+    return (m_floorRect);
+} // Endproc.
+
+
+Gdiplus::Rect   ACollisionGrid::GetFloorBoundRect () const
+{
+    return (Gdiplus::Rect(m_floorRect.X,
+                          m_floorRect.Y,
+                          m_floorRect.Width - 1,
+                          m_floorRect.Height - 1));
+} // Endproc.
+
+
+Int32   ACollisionGrid::GetFloorLeftBound () const
+{
+    return (m_floorRect.X);
+} // Endproc.
+
+
+Int32   ACollisionGrid::GetFloorRightBound () const
+{
+    return (m_floorRect.X + m_floorRect.Width - 1);
+} // Endproc.
+
+
+Int32   ACollisionGrid::GetFloorTopBound () const
+{
+    return (m_floorRect.Y);
+} // Endproc.
+
+
+Int32   ACollisionGrid::GetFloorBottomBound () const
+{
+    return (m_floorRect.Y + m_floorRect.Height - 1);
+} // Endproc.
+
+
+Int32   ACollisionGrid::GetFloorWidth () const
+{
+    return (m_floorRect.Width);
+} // Endproc.
+
+
+Int32   ACollisionGrid::GetFloorHeight () const
+{
+    return (m_floorRect.Height);
 } // Endproc.
 
 
@@ -409,6 +511,7 @@ bool    ACollisionGrid::IsScreenExit (ScreenExit::UserData userData) const
 
 
 bool    ACollisionGrid::IsExitedScreen (DIRECTION       direction,
+                                        bool            externalToFloorBound,
                                         Gdiplus::Rect&  spriteScreenRect,
                                         bool&           isAtLockedScreenExit,
                                         bool&           isInScreenExit,
@@ -423,7 +526,7 @@ bool    ACollisionGrid::IsExitedScreen (DIRECTION       direction,
 
     Int32   floorBound = 0; // Initialise!
 
-    if (IsOutwithFloorBound (direction, spriteScreenRect, &(floorBound)))
+    if (IsOutwithFloorBound (direction, externalToFloorBound, spriteScreenRect, &(floorBound)))
     {
         // Yes. Exited.
 
@@ -435,52 +538,25 @@ bool    ACollisionGrid::IsExitedScreen (DIRECTION       direction,
         {
         case UP:
             screenExit.m_orientation = ScreenExit::TOP;
-
-            // Psuedo screen exit.
-
-            screenExit.m_screenRect.X       = spriteScreenRect.X; 
-            screenExit.m_screenRect.Y       = floorBound;
-            screenExit.m_screenRect.Width   = spriteScreenRect.Width;
-            screenExit.m_screenRect.Height  = spriteScreenRect.Height;
             break; 
 
         case DOWN:
             screenExit.m_orientation = ScreenExit::BOTTOM;
-
-            // Psuedo screen exit.
-
-            screenExit.m_screenRect.X       = spriteScreenRect.X; 
-            screenExit.m_screenRect.Y       = floorBound;
-            screenExit.m_screenRect.Width   = spriteScreenRect.Width;
-            screenExit.m_screenRect.Height  = spriteScreenRect.Height;
             break; 
 
         case LEFT:
             screenExit.m_orientation = ScreenExit::LEFT;
-
-            // Psuedo screen exit.
-
-            screenExit.m_screenRect.X       = floorBound; 
-            screenExit.m_screenRect.Y       = spriteScreenRect.X;
-            screenExit.m_screenRect.Width   = spriteScreenRect.Width;
-            screenExit.m_screenRect.Height  = spriteScreenRect.Height;
             break; 
 
         case RIGHT:
             screenExit.m_orientation = ScreenExit::RIGHT;
-
-            // Psuedo screen exit.
-
-            screenExit.m_screenRect.X       = floorBound; 
-            screenExit.m_screenRect.Y       = spriteScreenRect.X;
-            screenExit.m_screenRect.Width   = spriteScreenRect.Width;
-            screenExit.m_screenRect.Height  = spriteScreenRect.Height;
             break; 
 
         default:
             break; 
         } // Endswitch.
 
+        screenExit.m_screenRect = spriteScreenRect;
         screenExit.m_state      = ScreenExit::OPEN;
         screenExit.m_userData   = 0;
     } // Endif.
@@ -743,7 +819,8 @@ void    ACollisionGrid::CheckScreenExitBound (DIRECTION         direction,
 } // Endproc.
 
 
-bool    ACollisionGrid::IsOutwithFloorBound (DIRECTION      direction, 
+bool    ACollisionGrid::IsOutwithFloorBound (DIRECTION      direction,
+                                             bool           externalToFloorBound,
                                              Gdiplus::Rect& spriteScreenRect,
                                              Int32*         floorBound) const
 {
@@ -759,7 +836,9 @@ bool    ACollisionGrid::IsOutwithFloorBound (DIRECTION      direction,
 
     case DOWN:
         myFloorBound        = GetFloorBottomBound ();
-        isOutwithFloorBound = (spriteScreenRect.Y + spriteScreenRect.Height - 1) > myFloorBound;
+        isOutwithFloorBound = externalToFloorBound
+                              ? spriteScreenRect.Y > myFloorBound
+                              : (spriteScreenRect.Y + spriteScreenRect.Height - 1) > myFloorBound;
         break;
 
     case LEFT:
@@ -769,7 +848,12 @@ bool    ACollisionGrid::IsOutwithFloorBound (DIRECTION      direction,
 
     case RIGHT:
         myFloorBound        = GetFloorRightBound ();
-        isOutwithFloorBound = (spriteScreenRect.X + spriteScreenRect.Width - 1) > myFloorBound;
+        isOutwithFloorBound = externalToFloorBound
+                              ? spriteScreenRect.X > myFloorBound
+                              : (spriteScreenRect.X + spriteScreenRect.Width - 1) > myFloorBound;
+        break;
+
+    default:
         break;
     } // Endswitch.
 
@@ -778,11 +862,36 @@ bool    ACollisionGrid::IsOutwithFloorBound (DIRECTION      direction,
         *floorBound = myFloorBound;
     } // Endif.
 
-    else
     if (isOutwithFloorBound)
     {
+        if (externalToFloorBound)
+        {
+            switch (direction)
+            {
+            case UP:
+                myFloorBound = GetFloorBottomBound ();
+                break;
+
+            case DOWN:
+                myFloorBound = GetFloorTopBound ();
+                break;
+
+            case LEFT:
+                myFloorBound = GetFloorRightBound ();
+                break;
+
+            case RIGHT:
+                myFloorBound = GetFloorLeftBound ();
+                break;
+
+            default:
+                break;
+            } // Endswitch.
+        
+        } // Endif.
+
         ToFloorBound (direction, myFloorBound, spriteScreenRect);
-    } // Endelseif.
+    } // Endif.
 
     return (isOutwithFloorBound);
 } // Endproc.
@@ -810,6 +919,9 @@ void    ACollisionGrid::ToFloorBound (DIRECTION         direction,
 
     case RIGHT:
         spriteScreenRect.X = floorBound - spriteScreenRect.Width + 1;
+        break;
+
+    default:
         break;
     } // Endswitch.
 
@@ -1111,6 +1223,12 @@ bool    ACollisionGrid::IsExit (CellValue cellValue)
 } // Endproc.
 
 
+bool    ACollisionGrid::IsGameComplete (CellValue cellValue)
+{
+    return ((cellValue & CELL_VALUE_GAME_COMPLETE) == CELL_VALUE_GAME_COMPLETE);
+} // Endproc.
+
+
 bool    ACollisionGrid::IsNastySprite (CellValue cellValue)
 {
     return ((cellValue & CELL_VALUE_NASTY_SPRITE) == CELL_VALUE_NASTY_SPRITE);
@@ -1133,34 +1251,36 @@ void    ACollisionGrid::BuildWall (const CellElement& cellElement)
 {
     bool    addedToWall = false;    // Initialse!
 
-    // Get the cell element's screen rect;
+    // Get the cell element's collision grid rect;
 
-    Gdiplus::Rect   screenRect(cellElement.m_screenRect);
+    const Gdiplus::Rect&    collisionGridRect(cellElement.m_collisionGridRect);
 
     for (Walls::iterator itr = m_walls.begin ();
          !addedToWall && (itr != m_walls.end ());
          ++itr)
     {
-        if ((itr->Y         == screenRect.Y) &&
-            (itr->Height    == screenRect.Height))
+        if ((itr->Y      == collisionGridRect.Y) &&
+            (itr->Height == collisionGridRect.Height))
         {
-            if ((itr->X <= screenRect.X) &&
-                ((itr->X + itr->Width) >= screenRect.X))
+            if ((itr->X <= collisionGridRect.X) &&
+                ((itr->X + itr->Width) >= collisionGridRect.X))
             {
-                itr->Width += screenRect.Width;
+                itr->Width += collisionGridRect.Width;
+                
                 addedToWall = true;
             } // Endif.
         
         } // Endif.
 
         else
-        if ((itr->X         == screenRect.X) &&
-            (itr->Width     == screenRect.Width))
+        if ((itr->X     == collisionGridRect.X) &&
+            (itr->Width == collisionGridRect.Width))
         {
-            if ((itr->Y <= screenRect.Y) &&
-                ((itr->Y + itr->Height) >= screenRect.Y))
+            if ((itr->Y <= collisionGridRect.Y) &&
+                ((itr->Y + itr->Height) >= collisionGridRect.Y))
             {
-                itr->Height += screenRect.Height;
+                itr->Height += collisionGridRect.Height;
+                
                 addedToWall = true;
             } // Endif.
         
@@ -1172,7 +1292,7 @@ void    ACollisionGrid::BuildWall (const CellElement& cellElement)
     {
         // New wall.
 
-        m_walls.push_back (screenRect);
+        m_walls.push_back (collisionGridRect);
     } // Endif.
 
 } // Endproc.

@@ -130,8 +130,8 @@
 #define IDB_BITMAP_SABRE_MAN_FALLING_RIGHT                          232
 #define IDB_BITMAP_SABRE_MAN_SITTING_LEFT                           233
 #define IDB_BITMAP_SABRE_MAN_SITTING_RIGHT                          234
-#define IDB_BITMAP_SABRE_MAN_GAME_OVER_LEFT                         235
-#define IDB_BITMAP_SABRE_MAN_GAME_OVER_RIGHT                        236
+#define IDB_BITMAP_SABRE_MAN_LYING_DEAD_LEFT                        235
+#define IDB_BITMAP_SABRE_MAN_LYING_DEAD_RIGHT                       236
 #define IDB_BITMAP_ORCHID_1                                         237
 #define IDB_BITMAP_ORCHID_2                                         238
 #define IDB_BITMAP_ORCHID_3                                         239
@@ -206,12 +206,21 @@
 #define IDB_BITMAP_FROG_LEFT_2                                      308
 #define IDB_BITMAP_FROG_RIGHT_1                                     309
 #define IDB_BITMAP_FROG_RIGHT_2                                     310
+#define IDB_WAVE_START_GAME                                         500
+#define IDB_WAVE_PLAYER_MOVING_1                                    501
+#define IDB_WAVE_PLAYER_MOVING_2                                    502
+#define IDB_WAVE_PLAYER_COLLECTED_ITEM                              503
+#define IDB_WAVE_PLAYER_INFECTION_FINISHING                         504
+#define IDB_WAVE_PLAYER_STRIKING_BOSS                               505
+#define IDB_WAVE_PLAYER_TERMINATING                                 506
+#define IDB_WAVE_NASTY_INITIALISING                                 507
+#define IDB_WAVE_NASTY_TERMINATING                                  508
                                                                    
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        311
+#define _APS_NEXT_RESOURCE_VALUE        312
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           101

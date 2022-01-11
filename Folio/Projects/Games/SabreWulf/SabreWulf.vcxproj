@@ -15,6 +15,7 @@
     <ClCompile Include="Source\BackgroundItemGraphics.cpp" />
     <ClCompile Include="Source\BitmapResourceId.cpp" />
     <ClCompile Include="Source\BorderScreen.cpp" />
+    <ClCompile Include="Source\BossSprite.cpp" />
     <ClCompile Include="Source\CollisionGrid.cpp" />
     <ClCompile Include="Source\DrawingElementIds.cpp" />
     <ClCompile Include="Source\EnterHighScoreScreen.cpp" />
@@ -38,6 +39,7 @@
     <ClCompile Include="Source\ScreenMap.cpp" />
     <ClCompile Include="Source\Screen.cpp" />
     <ClCompile Include="Source\SelectionScreen.cpp" />
+    <ClCompile Include="Source\SoundResources.cpp" />
     <ClCompile Include="Source\SpriteGraphics.cpp" />
     <ClCompile Include="Source\StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -49,6 +51,7 @@
     <ClInclude Include="Source\BackgroundItem.h" />
     <ClInclude Include="Source\BackgroundItemGraphics.h" />
     <ClInclude Include="Source\BorderScreen.h" />
+    <ClInclude Include="Source\BossSprite.h" />
     <ClInclude Include="Source\CollisionGrid.h" />
     <ClInclude Include="Source\DrawingElementIds.h" />
     <ClInclude Include="Source\EnterHighScoreScreen.h" />
@@ -73,6 +76,7 @@
     <ClInclude Include="Source\ScreenMap.h" />
     <ClInclude Include="Source\Screen.h" />
     <ClInclude Include="Source\SelectionScreen.h" />
+    <ClInclude Include="Source\SoundResources.h" />
     <ClInclude Include="Source\SpriteGraphics.h" />
     <ClInclude Include="Source\StdAfx.h" />
     <ClInclude Include="Source\Ultimate.h" />

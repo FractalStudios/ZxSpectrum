@@ -27,7 +27,7 @@ namespace SabreWulf
 enum INFORMATION_PANEL_ITEM_ID
 {
     INFORMATION_PANEL_ITEM_UNDEFINED = Folio::Core::Game::AItem::ITEM_ID_UNDEFINED,
-    INFORMATION_PANEL_ITEM_PLAYER_1_UP,
+    INFORMATION_PANEL_ITEM_PLAYER_1_UP = 64,
     INFORMATION_PANEL_ITEM_PLAYER_1_SCORE,
     INFORMATION_PANEL_ITEM_PLAYER_1_LIVES,
     INFORMATION_PANEL_ITEM_PLAYER_1_GRAPHIC_CHARACTER,
@@ -49,7 +49,7 @@ public:
 
     FolioStatus Create (UInt32 totalNumScreens);
     FolioStatus Start ();
-    FolioStatus Draw ();
+    FolioStatus Draw (bool redisplay = false);
     FolioStatus QueryItems (Folio::Core::Game::ItemsList& itemsList) const;
     FolioStatus HandleProcessFrame (bool& isStarting);
 
@@ -133,8 +133,6 @@ private:
 
     Folio::Core::Game::ItemsList            m_itemsList;            // The information panel's items.
     Folio::Core::Game::DrawingElementsList  m_drawingElementsList;  // The information panel's drawing elements.
-
-    static  Folio::Core::Util::Sound::SoundSample   m_startingSoundSample;  // The starting sound sample.
 
     FolioStatus BuildItems (FolioHandle dcHandle, 
                             FolioHandle instanceHandle);

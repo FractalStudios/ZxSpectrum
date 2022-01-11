@@ -22,7 +22,8 @@ namespace Sound
 extern  FolioStatus LoadSoundResource (FolioHandle      instanceHandle,
                                        UInt16           resourceId,
                                        FolioHandle&     soundHandle);
-extern  FolioStatus PlaySoundResource (FolioHandle soundHandle);
+extern  FolioStatus PlaySoundResource (FolioHandle  soundHandle,
+                                       bool         playAsynchronously = true);
 extern  FolioStatus StopPlayingSoundResource (FolioHandle soundHandle);
 
 extern  FolioStatus PlaySoundSample (const SoundSample& soundSample,
@@ -30,6 +31,7 @@ extern  FolioStatus PlaySoundSample (const SoundSample& soundSample,
 extern  FolioStatus PlaySoundSamples (const SoundSamplesList&   soundSamplesList,
                                       bool                      playAsynchronously = true);
 extern  FolioStatus StopPlayingSoundSamples ();
+extern  bool    IsPlayingSoundSamples ();
 
 extern  FolioStatus Beep (UInt32                            soundDuration,
                           const float&                      soundFrequency, 

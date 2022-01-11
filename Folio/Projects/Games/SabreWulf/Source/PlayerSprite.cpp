@@ -1,6 +1,7 @@
 // "Home-made" includes.
 #include    "StdAfx.h"
 #include    "Globals.h"
+#include    "BossSprite.h"
 #include    "NastySprite.h"
 #include    "PlayerSprite.h"
 #include    "SpriteGraphics.h"
@@ -19,25 +20,32 @@ namespace SabreWulf
 static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<PLAYER_SPRITE_ID, SPRITE_ID>    g_playerSpriteGraphicCharacteristics =
 {
 //      m_spriteId                  m_direction             m_spriteGraphicIdsList                                                                                                                                                                                                                                                  m_action
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::E,   {   SPRITE_SABRE_MAN_RIGHT, SPRITE_SABRE_MAN_WALKING_RIGHT_1, SPRITE_SABRE_MAN_RIGHT, SPRITE_SABRE_MAN_WALKING_RIGHT_2,                                                                                                                                             },                                      },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::W,   {   SPRITE_SABRE_MAN_LEFT, SPRITE_SABRE_MAN_WALKING_LEFT_1, SPRITE_SABRE_MAN_LEFT, SPRITE_SABRE_MAN_WALKING_LEFT_2,                                                                                                                                                 },                                      },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::N,   {   SPRITE_SABRE_MAN_UP, SPRITE_SABRE_MAN_WALKING_UP_1, SPRITE_SABRE_MAN_UP, SPRITE_SABRE_MAN_WALKING_UP_2,                                                                                                                                                         },                                      },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::S,   {   SPRITE_SABRE_MAN_DOWN, SPRITE_SABRE_MAN_WALKING_DOWN_1, SPRITE_SABRE_MAN_DOWN, SPRITE_SABRE_MAN_WALKING_DOWN_2,                                                                                                                                                 },                                      },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::E,   {   SPRITE_SABRE_MAN_WALKING_RIGHT_1, SPRITE_SABRE_MAN_RIGHT, SPRITE_SABRE_MAN_WALKING_RIGHT_2, SPRITE_SABRE_MAN_RIGHT,                                                                                                                                             },                                      },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::W,   {   SPRITE_SABRE_MAN_WALKING_LEFT_1, SPRITE_SABRE_MAN_LEFT, SPRITE_SABRE_MAN_WALKING_LEFT_2, SPRITE_SABRE_MAN_LEFT,                                                                                                                                                 },                                      },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::N,   {   SPRITE_SABRE_MAN_WALKING_UP_1, SPRITE_SABRE_MAN_UP, SPRITE_SABRE_MAN_WALKING_UP_2, SPRITE_SABRE_MAN_UP,                                                                                                                                                         },                                      },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::S,   {   SPRITE_SABRE_MAN_WALKING_DOWN_1, SPRITE_SABRE_MAN_DOWN, SPRITE_SABRE_MAN_WALKING_DOWN_2, SPRITE_SABRE_MAN_DOWN,                                                                                                                                                 },                                      },
+
     {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::E,   {   SPRITE_SABRE_MAN_SWORD_RIGHT_1, SPRITE_SABRE_MAN_SWORD_RIGHT_2, SPRITE_SABRE_MAN_SWORD_RIGHT_3, SPRITE_SABRE_MAN_SWORD_RIGHT_4, SPRITE_SABRE_MAN_SWORD_RIGHT_5, SPRITE_SABRE_MAN_SWORD_RIGHT_4, SPRITE_SABRE_MAN_SWORD_RIGHT_6, SPRITE_SABRE_MAN_SWORD_RIGHT_2, },  PlayerSprite::ACTION_SWIPE_SWORD,   },
     {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::W,   {   SPRITE_SABRE_MAN_SWORD_LEFT_1, SPRITE_SABRE_MAN_SWORD_LEFT_2, SPRITE_SABRE_MAN_SWORD_LEFT_3, SPRITE_SABRE_MAN_SWORD_LEFT_4, SPRITE_SABRE_MAN_SWORD_LEFT_5, SPRITE_SABRE_MAN_SWORD_LEFT_4, SPRITE_SABRE_MAN_SWORD_LEFT_6, SPRITE_SABRE_MAN_SWORD_LEFT_2,         },  PlayerSprite::ACTION_SWIPE_SWORD,   },
+
     {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::E,   {   SPRITE_SABRE_MAN_FALLING_RIGHT,                                                                                                                                                                                                                                 },  PlayerSprite::ACTION_FALLING,       },
     {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::W,   {   SPRITE_SABRE_MAN_FALLING_LEFT,                                                                                                                                                                                                                                  },  PlayerSprite::ACTION_FALLING,       },
+
     {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::E,   {   SPRITE_SABRE_MAN_SITTING_RIGHT,                                                                                                                                                                                                                                 },  PlayerSprite::ACTION_SITTING,       },
     {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::W,   {   SPRITE_SABRE_MAN_SITTING_LEFT,                                                                                                                                                                                                                                  },  PlayerSprite::ACTION_SITTING,       },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::E,   {   SPRITE_SABRE_MAN_GAME_OVER_RIGHT,                                                                                                                                                                                                                               },  PlayerSprite::ACTION_GAME_OVER,     },
-    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::W,   {   SPRITE_SABRE_MAN_GAME_OVER_LEFT,                                                                                                                                                                                                                                },  PlayerSprite::ACTION_GAME_OVER,     },
+
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::E,   {   SPRITE_SABRE_MAN_LYING_DEAD_RIGHT,                                                                                                                                                                                                                              },  PlayerSprite::ACTION_LYING_DEAD,    },
+    {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::W,   {   SPRITE_SABRE_MAN_LYING_DEAD_LEFT,                                                                                                                                                                                                                               },  PlayerSprite::ACTION_LYING_DEAD,    },
 };
 
 
 PlayerSprite::PlayerSprite ()
 :   m_playerSpriteSpeed(DEFAULT_SPEED),
     m_infection(NO_INFECTION),
+    m_infectionColour(INITIAL_COLOUR),
+    m_infectionColourSet(false),
     m_infectionTickCount(0),
+    m_infectionCountdown(INFECTION_COUNTDOWN),
     m_justFoundAmuletPiece(false)
 {
 } // Endproc.
@@ -50,7 +58,7 @@ PlayerSprite::~PlayerSprite ()
 
 FolioStatus PlayerSprite::Create (FolioHandle dcHandle)
 {
-    static  const   UInt32  MAX_NUM_AUTO_MOVES = 3;
+    static  const   UInt32  MAX_NUM_AUTO_MOVES = 8;
 
     // Query the player sprite's graphics.
 
@@ -132,11 +140,11 @@ FolioStatus PlayerSprite::UpdateDirection (Folio::Core::Game::Direction directio
 {
     FolioStatus status = ERR_SUCCESS;
 
-    // Is the player sprite sick?
+    // Is the player sprite ready?
 
-    if (!IsInfectionSickness ())
+    if (IsReady ())
     {
-        // No. Is a key down?
+        // Yes. Is a key down?
 
         if (keyDown)
         {
@@ -205,51 +213,118 @@ FolioStatus PlayerSprite::CheckPlayerSprite (Gdiplus::Graphics&                 
 
     switch (m_state)
     {
+    case STATE_INITIALISED:
+        status = Folio::Core::Game::APlayerSprite::Static (graphics, collisionGrid);
+        break;
+
     case STATE_TERMINATED:
         // Decrement the player sprite's life.
 
         status = g_informationPanel->DecrementPlayerLife (&(g_playerSprite));
         break;
 
-    case STATE_INITIALISED:
     case STATE_STATIC:
     case STATE_MOVING:
-        // Is the player sprite's infection finished?
-
-        if (IsInfectionFinished ())
+        // Is the player sprite falling?
+        
+        if (IsAction (ACTION_FALLING)) 
         {
-            // Yes. Clear the player sprite's infection.
+            // Yes. Move the player sprite.
 
-            status = ClearInfection ();
+            status = Folio::Core::Game::APlayerSprite::Move (graphics, 
+                                                             m_playerSpriteSpeed, 
+                                                             collisionGrid);
+
+            // Is the player sprite at a wall or screen edge?
+
+            if ((status == ERR_SUCCESS) && 
+                (IsAtWall () || IsExitedScreen ()))
+            {
+                // Yes. Reset the player sprite's falling action.
+
+                status = ResetFalling ();
+
+                if (status == ERR_SUCCESS)
+                {
+                    // Player sprite is not exiting or entering a screen.
+                
+                    ResetScreenExit ();
+
+                    // The player sprite is now dead.
+
+                    SetDead ();
+                } // Endif.
+
+            } // Endif.
+
         } // Endif.
 
-        if (status == ERR_SUCCESS)
+        // Is the player sprite lying dead?
+        
+        else
+        if (IsAction (ACTION_LYING_DEAD)) 
         {
-            status = (m_state == STATE_MOVING) && (m_playerSpriteSpeed != STATIC_SPEED) 
-                     ? Folio::Core::Game::APlayerSprite::Move (graphics, m_playerSpriteSpeed, collisionGrid)
-                     : Folio::Core::Game::APlayerSprite::Static (graphics, collisionGrid);
+            // Yes. Is the player sprite's lying dead action complete?
 
-            // Has the player sprite exited the screen?
-
-            if ((status == ERR_SUCCESS) && !IsExitedScreen ())
+            if (IsActionComplete (ACTION_LYING_DEAD))
             {
-                // No. Has the player sprite collided with something?
+                // Yes. The game is over.
 
-                CollisionGrid::CellElements cellElements;
+                SetGameOver ();
+            } // Endif.
 
-                if (collisionGrid.IsCollision (g_playerSprite->GetCollisionRect (), 
-                                               cellElements))
+        } // Endelseif.
+
+        else
+        {
+            // Is the player sprite's infection finished?
+
+            if (IsInfectionFinished ())
+            {
+                // Yes. Clear the player sprite's infection.
+
+                status = ClearInfection ();
+            } // Endif.
+
+            // Is the player sprite's infection finishing?
+        
+            else
+            if (IsInfectionFinishing ())
+            {
+                // Yes.
+
+                status = InfectionFinishing ();
+            } // Endelseif.
+
+            if (status == ERR_SUCCESS)
+            {
+                status = (m_state == STATE_MOVING)
+                         ? Folio::Core::Game::APlayerSprite::Move (graphics, m_playerSpriteSpeed, collisionGrid)
+                         : Folio::Core::Game::APlayerSprite::Static (graphics, collisionGrid);
+
+                // Has the player sprite not exited the screen?
+
+                if ((status == ERR_SUCCESS) && !IsExitedScreen ())
                 {
-                    // Yes. Handle the collision.
+                    // Yes. Has the player sprite collided with something?
 
-                    status = HandleCollision (cellElements, 
-                                              collisionGrid, 
-                                              screenObjectSpriteDrawingElementsList);
-                } // Endif.
+                    CollisionGrid::CellElements cellElements;
+
+                    if (collisionGrid.IsCollision (IsAction (ACTION_SWIPE_SWORD) ? g_playerSprite->GetScreenRect () : g_playerSprite->GetMovingRect (), 
+                                                   cellElements))
+                    {
+                        // Yes. Handle the collision.
+
+                        status = HandleCollision (cellElements, 
+                                                  collisionGrid, 
+                                                  screenObjectSpriteDrawingElementsList);
+                    } // Endif.
             
+                } // Endif.
+        
             } // Endif.
         
-        } // Endif.
+        } // Endelse.
         break;
 
     default:
@@ -264,9 +339,9 @@ FolioStatus PlayerSprite::SetFireKeyDown (bool fireKeyDown)
 {
     FolioStatus status = ERR_SUCCESS;
 
-    // Is the player sprite NOT infected and ready?
+    // Is the player sprite ready and not infected?
 
-    if (!IsInfection () && IsReady ())
+    if (IsReady () && !IsInfection ())
     {
         // Yes. Is the fire key down?
 
@@ -274,65 +349,55 @@ FolioStatus PlayerSprite::SetFireKeyDown (bool fireKeyDown)
         {
             // Yes. Set the player sprite's swipe sword action.
 
-            status = SetAction (ACTION_SWIPE_SWORD);
-
-            if (status == ERR_SUCCESS)
-            {
-                m_playerSpriteSpeed = SWIPE_SWORD_SPEED;
-            } // Endif.
-
+            status = SetSwipeSword ();
         } // Endif.
     
-        // Is the player sprite performing an action?
+        // Is the player sprite performing the swipe sword action?
 
         else
-        if (IsAction ())
+        if (IsAction (ACTION_SWIPE_SWORD))
         {
-            // Yes. Reset the player sprite's action.
+            // Yes. Reset the player sprite's swipe sword action.
 
-            status = SetAction (Folio::Core::Game::NO_ACTION);
-
-            if (status == ERR_SUCCESS)
-            {
-                m_playerSpriteSpeed = DEFAULT_SPEED;
-            } // Endif.
-
+            status = ResetSwipeSword ();
         } // Endelseif.
     
     } // Endif.
-
+       
     return (status);
 } // Endproc.
 
 
-FolioStatus PlayerSprite::SetGameOver ()
-{
-    // Set the player sprite's game over action.
+FolioStatus PlayerSprite::Alive ()
+{   
+    // The player sprite is static.
 
-    FolioStatus status = SetAction (ACTION_GAME_OVER);
+    SetState (STATE_STATIC);
+
+    return (ERR_SUCCESS);
+} // Endproc.
+
+
+FolioStatus PlayerSprite::Dead ()
+{
+    static  const   UInt32  LYING_DEAD_TICK_COUNT = 2 * 1000;   // Tick count the player sprite can be lying dead.
+
+    // Set the player sprite's lying dead action.
+
+    FolioStatus status = SetAction (ACTION_LYING_DEAD, LYING_DEAD_TICK_COUNT);
 
     if (status == ERR_SUCCESS)
     {
-        // The player sprite's game is over.
+        // Reset the number of remaining auto-mode moves.
 
-        APlayerSprite::SetGameOver ();
+        ResetNumRemainingAutoModeMoves ();
+
+        // The player sprite is static.
+
+        SetState (STATE_STATIC);
     } // Endif.
 
     return (status);
-} // Endproc.
-
-
-bool    PlayerSprite::IsImmune () const
-{
-    // If the player sprite has any infection then it is immune.
-
-    return (IsInfection ());
-} // Endproc.
-
-
-bool    PlayerSprite::IsSick () const
-{
-    return (IsInfectionSickness ());
 } // Endproc.
 
 
@@ -348,16 +413,27 @@ bool    PlayerSprite::IsJustFoundAmuletPiece () const
 } // Endproc.
 
 
+bool    PlayerSprite::IsReady () const
+{
+    // Is the player sprite ready and not sick, falling or lying dead?
+
+    return (ASprite::IsReady ()         &&
+            !IsInfectionSickness ()     &&
+            !IsAction (ACTION_FALLING)  &&
+            !IsAction (ACTION_LYING_DEAD));
+} // Endproc.
+
+
 FolioStatus PlayerSprite::SetTerminatingMode (FolioHandle dcHandle)
 {
-    static  const   UInt32  MAX_SEQUENCE_COUNT = 6;
+    static  const   UInt32  MAX_SEQUENCE_COUNT = MAX_PLAYER_SPRITE_SITTING_DRAWING_ELEMENTS;
 
     // Player sprite terminating sprite characteristics.
     static  const   Folio::Core::Game::SpriteGraphicCharacteristicsList<PLAYER_SPRITE_ID, SPRITE_ID>    s_terminatingSpriteGraphicAttributes = 
     {
-    //      m_spriteId                  m_direction             m_spriteGraphicIdsList
-        {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::W,   {   SPRITE_SABRE_MAN_SITTING_LEFT,  },  },
-        {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::E,   {   SPRITE_SABRE_MAN_SITTING_RIGHT, },  },
+    //      m_spriteId                  m_direction             m_spriteGraphicIdsList                  m_action
+        {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::E,   {   SPRITE_SABRE_MAN_SITTING_RIGHT, },                                  },
+        {   PLAYER_SPRITE_SABRE_MAN,    Folio::Core::Game::W,   {   SPRITE_SABRE_MAN_SITTING_LEFT,  },                                  },
     };
 
     // Query the player sprite's terminating graphics.
@@ -378,7 +454,8 @@ FolioStatus PlayerSprite::SetTerminatingMode (FolioHandle dcHandle)
 
         status = SetGraphicTerminatingMode (dcHandle,
                                             spriteGraphicAttributesList,
-                                            MAX_SEQUENCE_COUNT);
+                                            MAX_SEQUENCE_COUNT,
+                                            g_soundResources.GetPlayerTerminatingSound ());
     } // Endif.
 
     return (status);
@@ -426,10 +503,16 @@ FolioStatus PlayerSprite::HandleCollision (const CollisionGrid::CellElements&   
         case CollisionGrid::CELL_VALUE_BOSS_SPRITE:
             // Handle the player sprite's collision with a boss sprite.
 
-            //status = HandleBossSpriteCollision (*itr, collisionGrid);
+            status = HandleBossSpriteCollision (*itr, collisionGrid);
             break;
 
-        default:
+         case CollisionGrid::CELL_VALUE_GAME_COMPLETE:
+            // Handle the player sprite's collision with the game complete.
+
+            status = HandleGameCompleteCollision (*itr, collisionGrid);
+            break;
+
+       default:
             break;
         } // Endswitch.
 
@@ -442,72 +525,56 @@ FolioStatus PlayerSprite::HandleCollision (const CollisionGrid::CellElements&   
 FolioStatus PlayerSprite::HandleItemCollision (const CollisionGrid::CellElement&    cellElement,
                                                CollisionGrid&                       collisionGrid)
 {
-    FolioStatus status = ERR_SUCCESS;
-
     // The player sprite has collided with a non-solid item. The only non-solid 
     // item on a screen is an orchid sprite.
 
-    // Does the current screen support an orchid sprite?
+    // Handle the player sprite's collision with the orchid sprite.
 
-    if (g_screenMap.IsScreenOrchidSprite ())
-    {
-        // Yes. Get the orchid sprite.
+    OrchidSprite::ORCHID_SPRITE_TYPE        orchidSpriteType    = OrchidSprite::ORCHID_TYPE_UNDEFINED;
+    Folio::Core::Game::ZxSpectrum::COLOUR   orchidSpriteColour  = Folio::Core::Game::ZxSpectrum::UNDEFINED;
 
-        OrchidSpritePtr &orchidSprite(g_orchidSpriteDrawingElement.m_sprite);
+    FolioStatus status = g_orchidSpriteDrawingElement.m_sprite->HandlePlayerCollision (orchidSpriteType, 
+                                                                                       orchidSpriteColour);
 
-        // Handle the player sprite's collision with the orchid sprite.
+    if (status == ERR_SUCCESS)
+    {            
+        // Set the player sprite's infection.
 
-        OrchidSprite::ORCHID_SPRITE_TYPE        orchidSpriteType    = OrchidSprite::ORCHID_TYPE_UNDEFINED;
-        Folio::Core::Game::ZxSpectrum::COLOUR   orchidSpriteColour  = Folio::Core::Game::ZxSpectrum::UNDEFINED;
+        switch (orchidSpriteType)
+        {
+        case OrchidSprite::IMMUNITY:
+            status = SetInfection (IMMUNITY, orchidSpriteColour);
+            break;
 
-        status = orchidSprite->HandlePlayerCollision (orchidSpriteType, orchidSpriteColour);
+        case OrchidSprite::CONFUSION:
+            status = SetInfection (CONFUSION, orchidSpriteColour);
+            break;
+    
+        case OrchidSprite::SPEED: 
+            status = SetInfection (SPEED, orchidSpriteColour);
+            break;
+    
+        case OrchidSprite::SICKNESS:
+            status = SetInfection (SICKNESS, orchidSpriteColour);
 
-        if (status == ERR_SUCCESS)
-        {            
-            // Set the player sprite's infection.
-
-            switch (orchidSpriteType)
+            if (status == ERR_SUCCESS)
             {
-            case OrchidSprite::IMMUNITY:
-                status = SetInfection (IMMUNITY, orchidSpriteColour);
-                break;
+                // Remove all the screen's nasty sprites.
 
-            case OrchidSprite::CONFUSION:
-                status = SetInfection (CONFUSION, orchidSpriteColour);
-                break;
+                status = RemoveScreenNastySprites (collisionGrid);
+            } // Endif.
+            break;
     
-            case OrchidSprite::SPEED: 
-                status = SetInfection (SPEED, orchidSpriteColour);
-                break;
-    
-            case OrchidSprite::SICKNESS:
-                status = SetInfection (SICKNESS, orchidSpriteColour);
+        case OrchidSprite::CURE:
+            status = ClearInfection ();
+            break;
 
-                if (status == ERR_SUCCESS)
-                {
-                    // Remove all the screen's nasty sprites.
-
-                    status = RemoveScreenNastySprites (collisionGrid);
-                } // Endif.
-                break;
-    
-            case OrchidSprite::CURE:
-                status = ClearInfection ();
-                break;
-
-            case OrchidSprite::ORCHID_TYPE_UNDEFINED:
-            default:
-                break;
-            } // Endswitch.
-
-        } // Endif.
+        case OrchidSprite::ORCHID_TYPE_UNDEFINED:
+        default:
+            break;
+        } // Endswitch.
 
     } // Endif.
-
-    else
-    {
-        status = ERR_INTERNAL_ERROR;
-    } // Endelse.
 
     return (status);
 } // Endproc.
@@ -525,7 +592,7 @@ FolioStatus PlayerSprite::HandleSolidItemCollision (const CollisionGrid::CellEle
     // The player sprite is bound to the solid item.
 
     collisionGrid.ToScreenRectBound (GetDirection (), 
-                                     cellElement.m_screenRect,
+                                     cellElement.m_collisionGridRect,
                                      playerScreenRect);
 
     // Set the player sprite's screen position.
@@ -543,80 +610,69 @@ FolioStatus PlayerSprite::HandleCollectableItemCollision (const CollisionGrid::C
     // The player sprite has collided with a collectable item. The only 
     // collectable item on a screen is an object sprite.
 
-    // Any current screen object sprites?
+    // Find the collectable object sprite that the player sprite has 
+    // collided with.
 
-    if (!screenObjectSpriteDrawingElementsList.empty ())
+    bool    found = false;  // Initialise!
+
+    ObjectSpriteDrawingElementsList::iterator itr = screenObjectSpriteDrawingElementsList.begin ();
+
+    do
     {
-        // Find the collectable object sprite that the player sprite has 
-        // collided with.
+        // Get the object sprite.
 
-        ObjectSpriteDrawingElementsList::iterator   itr = screenObjectSpriteDrawingElementsList.begin ();
+        ObjectSpritePtr &objectSprite(itr->m_sprite);
 
-        bool    found = false;  // Initialise!
+        // Is this the collectable object sprite that the player sprite 
+        // has collided with?
 
-        do
-        {              
-            // Get the object sprite.
-
-            ObjectSpritePtr &objectSprite(itr->m_sprite);
-
-            // Is this the collectable object sprite that the player sprite 
-            // has collided with?
-
-            if (objectSprite.get () == cellElement.m_userData)
-            {
-                // Yes. 
+        if (objectSprite.get () == cellElement.m_userData)
+        {
+            // Yes. 
                 
-                found = true;   // Found the collectable object sprite.
+            found = true;   // Found the collectable object sprite.
                 
-                // Handle the player sprite's collision with the object sprite.
+            // Handle the player sprite's collision with the object sprite.
 
-                status = objectSprite->HandlePlayerCollision (m_justFoundAmuletPiece);
+            status = objectSprite->HandlePlayerCollision (m_justFoundAmuletPiece);
                     
+            if (status == ERR_SUCCESS)
+            {
+                // Remove the object sprite from the screen's collision grid.
+
+                status = collisionGrid.RemoveCellElement (cellElement);
+
                 if (status == ERR_SUCCESS)
                 {
-                    // Remove the object sprite from the screen's collision grid.
+                    // Remove the object sprite from the screen's object sprite 
+                    // drawing elements list.
 
-                    status = collisionGrid.RemoveCellElement (cellElement);
-
-                    if (status == ERR_SUCCESS)
-                    {
-                        // Remove the object sprite from the screen's object 
-                        // sprite drawing elements list.
-
-                        screenObjectSpriteDrawingElementsList.erase (itr);
-                    } // Endif.
-
+                    itr = screenObjectSpriteDrawingElementsList.erase (itr);
                 } // Endif.
 
             } // Endif.
 
-            else
-            {
-                ++itr;  // Next.
-            } // Endelse.
-
-        } // Enddo.
-        while (!found                   && 
-               (status == ERR_SUCCESS)  && 
-               (itr != screenObjectSpriteDrawingElementsList.end ()));
-
-        // Did we find the collectable object sprite that the player sprite has 
-        // collided with?
-
-        if (!found && (status == ERR_SUCCESS))
-        {
-            // No.
-
-            status = ERR_INTERNAL_ERROR;
         } // Endif.
 
-    } // Endif.
+        else
+        {
+            ++itr;  // Next.
+        } // Endelse.
 
-    else
+    } // Enddo.
+    while (!found                   &&
+           (status == ERR_SUCCESS)  &&        
+           (itr != screenObjectSpriteDrawingElementsList.end ()));
+
+    // Did we find the collectable object sprite that the player sprite has 
+    // collided with?
+
+    if (!found && (status == ERR_SUCCESS))
     {
+        // No.
+
         status = ERR_INTERNAL_ERROR;
-    } // Endelse.
+    } // Endif.
 
     return (status);
 } // Endproc.
@@ -629,45 +685,59 @@ FolioStatus PlayerSprite::HandleNastySpriteCollision (const CollisionGrid::CellE
 
     // The player sprite has collided with a nasty sprite.
 
-    // Get the current screen map index.
+    // Is the player sprite NOT immune?
 
-    UInt32  currentScreenMapIndex = g_screenMap.GetCurrentScreenMapIndex ();
+    if (!IsImmune ())
+    {
+        // Yes. Get the current screen map index.
 
-    // Find the nasty sprite that the player sprite has collided with.
+        UInt32  currentScreenMapIndex = g_screenMap.GetCurrentScreenMapIndex ();
 
-    bool    found = false;  // Initialise!
+        // Find the nasty sprite that the player sprite has collided with.
 
-    for (NastySpriteDrawingElementsList::iterator itr = g_nastySpriteDrawingElementsList.begin ();
-         !found && (status == ERR_SUCCESS) && (itr != g_nastySpriteDrawingElementsList.end ());
-         ++itr)
-    {              
-        // Get the nasty sprite.
+        bool    found = false;  // Initialise!
 
-        NastySpritePtr  &nastySprite(itr->m_sprite);
+        for (NastySpriteDrawingElementsList::iterator itr = g_nastySpriteDrawingElementsList.begin ();
+             !found && (status == ERR_SUCCESS) && (itr != g_nastySpriteDrawingElementsList.end ());
+             ++itr)
+        {              
+            // Get the nasty sprite.
 
-        // Is the nasty sprite on the current screen that the player sprite has 
-        // collided with?
+            NastySpritePtr  &nastySprite(itr->m_sprite);
 
-        if ((nastySprite->GetNastySpriteScreenMapIndex () == currentScreenMapIndex) && 
-            (nastySprite.get () == cellElement.m_userData))
-        {
-            // Yes. 
-            
-            found = true;   // Found the nasty sprite.
-            
-            // Is the nasty sprite ready and the player sprite 
-            // NOT immune?
-            
-            if (nastySprite->IsReady () && !IsImmune ())
+            // Is the nasty sprite on the current screen that the player sprite 
+            // has collided with?
+
+            if ((nastySprite->GetNastySpriteScreenMapIndex () == currentScreenMapIndex) && 
+                (nastySprite.get () == cellElement.m_userData))
             {
-                // Yes. Is the player sprite dead?
+                // Yes. 
+            
+                found = true;   // Found the nasty sprite.
+            
+                // Check if the player sprite is dead.
 
-                if (IsDead (cellElement))
+                if (CheckPlayerSpriteDead (*nastySprite))
                 {
                     // Yes. Remove all the screen's nasty sprites.
 
                     status = RemoveScreenNastySprites (collisionGrid);
                 } // Endif.
+
+                else
+                {
+                    // No. Remove the nasty sprite from the screen's collision grid.
+
+                    status = collisionGrid.RemoveCellElement (cellElement);
+
+                    if (status == ERR_SUCCESS)
+                    {
+                        // The nasty sprite is dead.
+
+                        nastySprite->SetDead ();
+                    } // Endif.
+
+                } // Endelse.
 
                 if (status == ERR_SUCCESS)
                 {
@@ -678,51 +748,238 @@ FolioStatus PlayerSprite::HandleNastySpriteCollision (const CollisionGrid::CellE
 
             } // Endif.
 
+        } // Endfor.
+    
+        // Did we find the nasty sprite that the player sprite has collided with?
+
+        if (!found && (status == ERR_SUCCESS))
+        {
+            // No.
+
+            status = ERR_INTERNAL_ERROR;
         } // Endif.
 
-    } // Endfor.
+    } // Endif.
 
     return (status);
 } // Endproc.
 
 
-bool    PlayerSprite::IsDead (const CollisionGrid::CellElement& cellElement)
+FolioStatus PlayerSprite::HandleBossSpriteCollision (const CollisionGrid::CellElement&  cellElement,
+                                                     CollisionGrid&                     collisionGrid)
 {
-    //ia 
-    return (true);
+    FolioStatus status = ERR_SUCCESS;
+
+    // The player sprite has collided with a boss sprite.
+
+    // Is the player sprite NOT immune?
+
+    if (!IsImmune ())
+    {
+        // Yes. Get the current screen map index.
+
+        UInt32  currentScreenMapIndex = g_screenMap.GetCurrentScreenMapIndex ();
+
+        // Find the boss sprite that the player sprite has collided with.
+
+        bool    found = false;  // Initialise!
+
+        for (BossSpriteDrawingElementsList::iterator itr = g_bossSpriteDrawingElementsList.begin ();
+             !found && (status == ERR_SUCCESS) && (itr != g_bossSpriteDrawingElementsList.end ());
+             ++itr)
+        {              
+            // Get the boss sprite.
+
+            BossSpritePtr  &bossSprite(itr->m_sprite);
+
+            // Is the boss sprite on the current screen that the player sprite 
+            // has collided with?
+
+            if ((bossSprite->GetBossSpriteScreenMapIndex () == currentScreenMapIndex) && 
+                (bossSprite.get () == cellElement.m_userData))
+            {
+                // Yes. 
+            
+                found = true;   // Found the boss sprite.
+            
+                // Check if the player sprite is dead.
+
+                bool    changeDirection = false;    // Initialise!
+
+                if (CheckPlayerSpriteDead (*bossSprite, &(changeDirection)))
+                {
+                    // Yes. Remove all the screen's nasty sprites.
+
+                    status = RemoveScreenNastySprites (collisionGrid);
+
+                    if (changeDirection && (status == ERR_SUCCESS))
+                    {
+                        // Yes. Change the direction of the boss sprite.
+
+                        status = bossSprite->ChangeDirection ();
+                    } // Endif.
+
+                } // Endif.
+
+                // Should the boss sprite change direction?.
+
+                else
+                if (changeDirection)
+                {
+                    // Yes. Play the player striking boss sound.
+
+                    status = g_soundResources.PlayPlayerStrikingBossSound ();
+
+                    if (status == ERR_SUCCESS)
+                    {
+                        // Change the direction of the boss sprite.
+
+                        status = bossSprite->ChangeDirection ();
+                    } // Endif.
+
+                } // Endelseif.
+
+                else
+                {
+                    // No. Play the player striking boss sound.
+
+                    status = g_soundResources.PlayPlayerStrikingBossSound ();
+
+                    if (status == ERR_SUCCESS)
+                    {
+                        // Change the speed of the boss sprite.
+
+                           status = bossSprite->ChangeSpeed ();
+                    } // Endif.
+                
+                } // Endelse.
+
+            } // Endif.
+
+        } // Endfor.
+    
+        // Did we find the boss sprite that the player sprite has collided with?
+
+        if (!found && (status == ERR_SUCCESS))
+        {
+            // No.
+
+            status = ERR_INTERNAL_ERROR;
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus PlayerSprite::HandleGameCompleteCollision (const CollisionGrid::CellElement&    cellElement,
+                                                       CollisionGrid&                       collisionGrid)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // The player sprite has collided with the game complete.
+
+    // Is the player sprite entering the game complete?
+
+    if (m_direction & Folio::Core::Game::N)
+    {
+        // Yes. The player has completed the game!!
+
+        SetGameCompleted ();
+    } // Endif.
+
+    else
+    {
+        // Treat the game complete as a solid item.
+
+        status = HandleSolidItemCollision (cellElement, collisionGrid);
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
+bool    PlayerSprite::CheckPlayerSpriteDead (const Folio::Core::Game::ASprite&  nastySprite, 
+                                             bool*                              changeDirection)
+{
+    if (changeDirection)
+    {
+        *changeDirection = false;
+    } // Endif.
+
+    bool    isDead = false; // Initialise!
 
     // The player sprite cannot be dead if the player sprite is immune.
 
-    bool    isDead = !IsImmune ();
-
-    if (isDead)
+    if (!IsImmune ())
     {
-        // The player sprite is dead depending on the player sprite's action.
+        // Get the direction of the nasty (or boss) sprite.
+        
+        Folio::Core::Game::Direction    nastySpirteDirection = nastySprite.GetDirection ();
+
+        // Get the screen rect of the nasty (or boss) sprite.
+        
+        Gdiplus::Rect   nastySpriteCollisionRect = nastySprite.GetScreenRect ();
+
+        // The player sprite may be dead, depending on the player sprite's action.
 
         switch (m_action)
         {
         case ACTION_SWIPE_SWORD:
             // Depending on the orientation of the player sprite to the nasty 
-            // sprite, the player sprite may or may not be dead.
-                
-            // Get the direction of the nasty sprite.
+            // (or boss) sprite, the player sprite may or may not be dead.
+            //              
+            // If the player sprite is moving in the same direction to the 
+            // nasty (or boss) sprite, and the nasty (or boss) sprite is behind 
+            // the player sprite, then the player sprite is dead.
 
-            switch (reinterpret_cast<NastySprite *> (cellElement.m_userData)->GetDirection ())
+            switch (nastySpirteDirection)
             {
             case Folio::Core::Game::E:
             case Folio::Core::Game::NE:
             case Folio::Core::Game::SE:
-                isDead = (m_direction & Folio::Core::Game::E) || 
-                       (((m_direction == Folio::Core::Game::N) || (m_direction == Folio::Core::Game::S)) && 
-                         (m_previousHorizontalDirection & Folio::Core::Game::E));
+                isDead = ((nastySpriteCollisionRect.X <= m_screenRect.X) &&
+                         ((m_direction & Folio::Core::Game::E) || 
+                        (((m_previousHorizontalDirection & Folio::Core::Game::E)) &&
+                         ((m_direction == Folio::Core::Game::N) || (m_direction == Folio::Core::Game::S)))));
+
+                // If the player sprite is not dead, should the nasty (or 
+                // bosss) sprite change direction?
+                //              
+                // If the player sprite is moving in the opposite direction to 
+                // the nasty (or boss) sprite, then the nasty (or boss) sprite 
+                // should change direction.
+
+                if (!isDead && changeDirection)
+                {
+                    *changeDirection = (m_direction & Folio::Core::Game::W) || 
+                                     (((m_previousHorizontalDirection & Folio::Core::Game::W)) &&
+                                      ((m_direction == Folio::Core::Game::N) || (m_direction == Folio::Core::Game::S)));
+                } // Endif.
                 break;
             
             case Folio::Core::Game::W:
             case Folio::Core::Game::NW:
             case Folio::Core::Game::SW:
-                isDead = (m_direction & Folio::Core::Game::W) || 
-                       (((m_direction == Folio::Core::Game::N )|| (m_direction == Folio::Core::Game::S)) && 
-                         (m_previousHorizontalDirection & Folio::Core::Game::W));
+                isDead = ((nastySpriteCollisionRect.X >= m_screenRect.X) &&
+                         ((m_direction & Folio::Core::Game::W) || 
+                        (((m_previousHorizontalDirection & Folio::Core::Game::W)) &&
+                         ((m_direction == Folio::Core::Game::N) || (m_direction == Folio::Core::Game::S)))));
+
+                // If the player sprite is not dead, should the nasty (or 
+                // bosss) sprite change direction?
+                //              
+                // If the player sprite is moving in the opposite direction to 
+                // the nasty (or boss) sprite, then the nasty (or boss) sprite 
+                // should change direction.
+
+                if (!isDead && changeDirection)
+                {
+                    *changeDirection = (m_direction & Folio::Core::Game::E) || 
+                                     (((m_previousHorizontalDirection & Folio::Core::Game::E)) &&
+                                      ((m_direction == Folio::Core::Game::N) || (m_direction == Folio::Core::Game::S)));
+                } // Endif.
                 break;
 
             case Folio::Core::Game::N:
@@ -735,7 +992,7 @@ bool    PlayerSprite::IsDead (const CollisionGrid::CellElement& cellElement)
 
         case ACTION_FALLING:    
         case ACTION_SITTING:    
-        case ACTION_GAME_OVER:  
+        case ACTION_LYING_DEAD:  
             // The player sprite cannot be dead if already dead or dying.
 
             isDead = false;
@@ -744,16 +1001,87 @@ bool    PlayerSprite::IsDead (const CollisionGrid::CellElement& cellElement)
         case Folio::Core::Game::NO_ACTION:
         default:
             isDead = true;
+
+            // If the player sprite is moving in the opposite direction to 
+            // the nasty (or boss) sprite, then the nasty (or boss) sprite 
+            // should change direction.
+
+            switch (nastySpirteDirection)
+            {
+            case Folio::Core::Game::E:
+            case Folio::Core::Game::NE:
+            case Folio::Core::Game::SE:
+                if (changeDirection)
+                {
+                    *changeDirection = !(m_direction & Folio::Core::Game::E);
+                } // Endif.
+                break;
+            
+            case Folio::Core::Game::W:
+            case Folio::Core::Game::NW:
+            case Folio::Core::Game::SW:
+                if (changeDirection)
+                {
+                    *changeDirection = !(m_direction & Folio::Core::Game::W);
+                } // Endif.
+                break;
+
+            case Folio::Core::Game::N:
+                if (changeDirection)
+                {
+                    *changeDirection = !(m_direction & Folio::Core::Game::N);
+                } // Endif.
+                break;
+
+            case Folio::Core::Game::S:
+                if (changeDirection)
+                {
+                    *changeDirection = !(m_direction & Folio::Core::Game::S);
+                } // Endif.
+                break;
+
+            default:
+                break;
+            } // Endswitch.
+
             break;
         } // Endswitch.
 
-    } // Endif.
+        if (isDead)
+        {
+            // The player sprite is dead. Based on the direction of the nasty 
+            // (or boss sprite), determine if the player sprite should be 
+            // falling.
 
-    if (isDead)
-    {
-        // The player sprite is dead.
+            switch (nastySpirteDirection)
+            {
+            case Folio::Core::Game::E:
+            case Folio::Core::Game::NE:
+            case Folio::Core::Game::SE:
+                // The player sprite is falling.
 
-        SetDead ();
+                SetFalling (Folio::Core::Game::E);
+                break;
+
+            case Folio::Core::Game::W:
+            case Folio::Core::Game::NW:
+            case Folio::Core::Game::SW:
+                // The player sprite is falling.
+
+                SetFalling (Folio::Core::Game::W);
+                break;
+
+            case Folio::Core::Game::N:
+            case Folio::Core::Game::S:
+            default:
+                // The player sprite is dead.
+
+                SetDead ();
+                break;
+            } // Endswitch.
+
+        } // Endif.
+
     } // Endif.
 
     return (isDead);
@@ -763,14 +1091,29 @@ bool    PlayerSprite::IsDead (const CollisionGrid::CellElement& cellElement)
 FolioStatus PlayerSprite::SetInfection (INFECTION                               infection,
                                         Folio::Core::Game::ZxSpectrum::COLOUR   playerSpriteColour)
 {
+    FolioStatus status = ERR_SUCCESS;
+    
     // Set the player sprite's action depending on the infection.
 
-    FolioStatus status = SetAction ((infection == SICKNESS) 
-                         ? ACTION_SITTING 
-                         : Folio::Core::Game::NO_ACTION);
+    if (infection == SICKNESS)
+    {
+        // The player sprite is sitting.
+
+        status = SetSitting ();
+    } // Endif.
+    
+    else
+    if (IsAction (ACTION_SITTING))
+    {
+        status = ResetSitting ();
+    } // Endelseif.
 
     if (status == ERR_SUCCESS)
     {
+        // Reset the number of remaining auto-mode moves.
+
+        ResetNumRemainingAutoModeMoves ();
+
         // Change the player sprite's colour.
 
         status = ChangeSpriteInkColour (Folio::Core::Game::ZxSpectrum::MapInkColour (playerSpriteColour),   
@@ -779,6 +1122,30 @@ FolioStatus PlayerSprite::SetInfection (INFECTION                               
 
         if (status == ERR_SUCCESS)
         {
+            // Set the player sprite's infection colour.
+
+            m_infectionColour       = playerSpriteColour; 
+            m_infectionColourSet    = true;
+            
+            // Set the player sprite's state.
+
+            switch (infection)
+            {
+            case NO_INFECTION:
+                break;
+
+            case SICKNESS:
+                SetState (STATE_STATIC);
+                break;
+
+            case IMMUNITY:
+            case CONFUSION:
+            case SPEED:
+            default:
+                SetState (STATE_MOVING);
+                break;
+            } // Endswitch.
+
             // Set the player sprite's speed.
 
             switch (infection)
@@ -805,7 +1172,9 @@ FolioStatus PlayerSprite::SetInfection (INFECTION                               
 
             if (infection == NO_INFECTION)
             {
-                m_infectionTickCount = 0;   // Reset.
+                // Reset the infection tick count.
+
+                ResetInfectionTickCount ();
             } // Endif.
 
             else
@@ -829,16 +1198,70 @@ FolioStatus PlayerSprite::ClearInfection ()
 } // Endproc.
 
 
+FolioStatus PlayerSprite::InfectionFinishing ()
+{
+    // Play the player infection finishing sound.
+
+    FolioStatus status = g_soundResources.PlayPlayerInfectionFinishingSound ();
+
+    if (status == ERR_SUCCESS)
+    {
+        // Toggle the player sprite's colour.
+
+        status = ChangeSpriteInkColour (Folio::Core::Game::ZxSpectrum::MapInkColour (m_infectionColourSet ? INITIAL_COLOUR : m_infectionColour),   
+                                                                                     false,  // Don't change the player sprite's initialising graphics. 
+                                                                                     false); // Don't change the player sprite's terminating graphics.
+
+        if (status == ERR_SUCCESS)
+        {
+            m_infectionColourSet = !m_infectionColourSet;
+        } // Endif.
+    
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
 void    PlayerSprite::StartInfectionTickCount ()
 {
-    m_infectionTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount () + 
-                           1000 * Folio::Core::Util::Random::GetRandomNumber (5, 8);
+    m_infectionTickCount    = Folio::Core::Util::DateTime::GetCurrentTickCount () + INFECTION_TICK_COUNT;
+    m_infectionCountdown    = INFECTION_COUNTDOWN;
+} // Endproc.
+
+
+void    PlayerSprite::ResetInfectionTickCount ()
+{
+    m_infectionTickCount    = 0;
+    m_infectionCountdown    = INFECTION_COUNTDOWN;
+} // Endproc.
+
+
+bool    PlayerSprite::IsImmune () const
+{
+    // If the player sprite has any infection then it is immune.
+
+    return (IsInfection ());
 } // Endproc.
 
 
 bool    PlayerSprite::IsInfection () const
 {
     return (m_infection != NO_INFECTION);
+} // Endproc.
+
+
+bool    PlayerSprite::IsInfectionFinishing () const
+{
+    bool    isInfectionFinishing = (IsInfection () && 
+                                    (static_cast<Int32> ((m_infectionTickCount - Folio::Core::Util::DateTime::GetCurrentTickCount ()) / 500) <= m_infectionCountdown));
+
+    if (isInfectionFinishing)
+    {
+        m_infectionCountdown--; // Decrement the infection countdown.
+    } // Endif.
+
+    return (isInfectionFinishing);
 } // Endproc.
 
 
@@ -867,6 +1290,112 @@ bool    PlayerSprite::IsInfectionSickness () const
 } // Endproc.
 
 
+FolioStatus PlayerSprite::SetSwipeSword ()
+{
+    // Set the player sprite's swipe sword action.
+
+    FolioStatus status = SetAction (ACTION_SWIPE_SWORD);
+
+    if (status == ERR_SUCCESS)
+    {
+        // Set the player sprite's speed.
+
+        m_playerSpriteSpeed = SWIPE_SWORD_SPEED;
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus PlayerSprite::ResetSwipeSword ()
+{
+    // Reset the player sprite's action.
+
+    FolioStatus status = ResetAction ();
+
+    if (status == ERR_SUCCESS)
+    {
+        // Set the player sprite's speed.
+        
+        m_playerSpriteSpeed = DEFAULT_SPEED;
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus PlayerSprite::SetSitting ()
+{
+    // Set the player sprite's sitting action.
+
+    return (SetAction (ACTION_SITTING));
+} // Endproc.
+
+
+FolioStatus PlayerSprite::ResetSitting ()
+{
+    // Reset the player sprite's action.
+
+    return (ResetAction ());
+} // Endproc.
+
+
+FolioStatus PlayerSprite::SetFalling (Folio::Core::Game::Direction direction)
+{
+    // Set the player sprite's direction.
+    
+    FolioStatus status = SetDirection (direction);
+
+    if (status == ERR_SUCCESS)
+    {
+        // The player sprite is falling.
+    
+        status = SetAction (ACTION_FALLING);
+
+        if (status == ERR_SUCCESS)
+        {
+            // Reset the number of remaining auto-mode moves.
+
+            ResetNumRemainingAutoModeMoves ();
+
+            // The player sprite is moving.
+
+            SetState (STATE_MOVING);
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus PlayerSprite::ResetFalling ()
+{
+    // Toggle the player sprite's direction.
+    
+    FolioStatus status = SetDirection ((GetDirection () == Folio::Core::Game::E) 
+                                       ? Folio::Core::Game::W 
+                                       : Folio::Core::Game::E);
+                
+    if (status == ERR_SUCCESS)
+    {
+        // Reset the player sprite's action.
+
+        status = ResetAction ();
+
+        if (status == ERR_SUCCESS)
+        {
+            // The player sprite is static.
+
+            SetState (STATE_STATIC);
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
 void    PlayerSprite::SetMovementSoundSamples ()
 {
     // Player sprite sound sample list.
@@ -883,9 +1412,11 @@ void    PlayerSprite::SetMovementSoundSamples ()
 } // Endproc.
 
 
-Int32   PlayerSprite::CalculateCollisionXLeft () const
+Int32   PlayerSprite::CalculateMovingXLeft (Int32 bitmapScreenWidth) const
 {
-    if (m_action == ACTION_SWIPE_SWORD)
+    // Is the player sprite performing the swipe sword action?
+
+    if (IsAction (ACTION_SWIPE_SWORD))
     {
         switch (m_direction)
         {
@@ -893,14 +1424,14 @@ Int32   PlayerSprite::CalculateCollisionXLeft () const
         case Folio::Core::Game::S:
             if (m_previousHorizontalDirection == Folio::Core::Game::W)
             {
-                return (m_screenRect.X + m_screenRect.Width - m_collisionRect.Width);
+                return (m_screenRect.X + m_screenRect.Width - m_movingRect.Width);
             } // Endif.
             break;
 
         case Folio::Core::Game::W:
         case Folio::Core::Game::NW:
         case Folio::Core::Game::SW:
-            return (m_screenRect.X + m_screenRect.Width - m_collisionRect.Width);
+            return (m_screenRect.X + m_screenRect.Width - m_movingRect.Width);
 
         case Folio::Core::Game::E:
         case Folio::Core::Game::NE:
@@ -911,35 +1442,13 @@ Int32   PlayerSprite::CalculateCollisionXLeft () const
 
     } // Endif.
 
-    return (APlayerSprite::CalculateCollisionXLeft ());
+    return (APlayerSprite::CalculateMovingXLeft (bitmapScreenWidth));
 } // Endproc.
 
 
-Int32   PlayerSprite::CalculateScreenXLeft (CollisionGrid::DIRECTION collisionGridDirection) const
+Int32   PlayerSprite::CalculateScreenXLeft (Folio::Core::Game::ACollisionGrid::DIRECTION collisionGridDirection) const
 {
-    switch (m_direction)
-    {
-    case Folio::Core::Game::N:
-    case Folio::Core::Game::S:
-        if (m_previousHorizontalDirection == Folio::Core::Game::W)
-        {
-            return (m_collisionRect.X + m_collisionRect.Width - m_screenRect.Width);
-        } // Endif.
-        break;
-
-    case Folio::Core::Game::W:
-    case Folio::Core::Game::NW:
-    case Folio::Core::Game::SW:
-        return (m_collisionRect.X + m_collisionRect.Width - m_screenRect.Width);
-
-    case Folio::Core::Game::E:
-    case Folio::Core::Game::NE:
-    case Folio::Core::Game::SE:
-    default:
-        break;
-    } // Endswitch.
-
-    return (m_collisionRect.X);
+    return (CalculateScreenXLeft (m_screenRect.Width));
 } // Endproc.
 
 
@@ -951,14 +1460,14 @@ Int32   PlayerSprite::CalculateScreenXLeft (Int32 bitmapScreenWidth) const
     case Folio::Core::Game::S:
         if (m_previousHorizontalDirection == Folio::Core::Game::W)
         {
-            return (m_collisionRect.X + m_collisionRect.Width - bitmapScreenWidth);
+            return (m_movingRect.X + m_movingRect.Width - bitmapScreenWidth);
         } // Endif.
         break;
 
     case Folio::Core::Game::W:
     case Folio::Core::Game::NW:
     case Folio::Core::Game::SW:
-        return (m_collisionRect.X + m_collisionRect.Width - bitmapScreenWidth);
+        return (m_movingRect.X + m_movingRect.Width - bitmapScreenWidth);
 
     case Folio::Core::Game::E:
     case Folio::Core::Game::NE:
@@ -967,7 +1476,7 @@ Int32   PlayerSprite::CalculateScreenXLeft (Int32 bitmapScreenWidth) const
         break;
     } // Endswitch.
 
-    return (m_collisionRect.X);
+    return (GetMovingXLeft ());
 } // Endproc.
 
 

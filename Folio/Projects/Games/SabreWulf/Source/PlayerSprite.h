@@ -31,10 +31,10 @@ enum PLAYER_SPRITE_ID
 class PlayerSprite : public Folio::Core::Game::APlayerSprite
 {
 public:
-    static  const   Folio::Core::Game::Action   ACTION_SWIPE_SWORD  = 0x00000001;    // Swipe sword action.
-    static  const   Folio::Core::Game::Action   ACTION_FALLING      = 0x00000002;    // Falling action.
-    static  const   Folio::Core::Game::Action   ACTION_SITTING      = 0x00000004;    // Sitting action.
-    static  const   Folio::Core::Game::Action   ACTION_GAME_OVER    = 0x00000008;    // Game over action.
+    static  const   Folio::Core::Game::Action   ACTION_SWIPE_SWORD  = 1;    // Swipe sword action.
+    static  const   Folio::Core::Game::Action   ACTION_FALLING      = 2;    // Falling action.
+    static  const   Folio::Core::Game::Action   ACTION_SITTING      = 3;    // Sitting action.
+    static  const   Folio::Core::Game::Action   ACTION_LYING_DEAD   = 4;    // Lying dead action.
 
     PlayerSprite ();
     ~PlayerSprite ();
@@ -42,31 +42,35 @@ public:
     FolioStatus Create (FolioHandle dcHandle);
     FolioStatus Start ();
     FolioStatus UpdateDirection (Folio::Core::Game::Direction   direction, 
-                                 bool                           keyDown);
+                                 bool                           keyDown = true);
     FolioStatus CheckPlayerSprite (Gdiplus::Graphics&               graphics,
                                    CollisionGrid&                   collisionGrid,
                                    ObjectSpriteDrawingElementsList& screenObjectSpriteDrawingElementsList);
 
     FolioStatus SetFireKeyDown (bool fireKeyDown);
-    FolioStatus SetGameOver ();
-
-    bool    IsImmune () const;
-    bool    IsSick () const;
+    FolioStatus Alive ();
+    FolioStatus Dead ();
 
     void    ResetJustFoundAmuletPiece ();
     bool    IsJustFoundAmuletPiece () const;
+
+    // ASprite method(s).
+    virtual bool    IsReady () const;
 
 private:
     static  const   Int32   INITIAL_SCREEN_X_LEFT   = 120;  // The initial screen X left (in pixels) of the player sprite.
     static  const   Int32   INITIAL_SCREEN_Y_TOP    =  96;  // The initial screen Y top (in pixels) of the player sprite.
 
     static  const   UInt32  DEFAULT_SPEED       = 4;  // The default speed of the player sprite.
-    static  const   UInt32  SWIPE_SWORD_SPEED   = 1;  // The speed of the player sprite when swipping the sword.
+    static  const   UInt32  SWIPE_SWORD_SPEED   = 2;  // The speed of the player sprite when swipping the sword.
     static  const   UInt32  FAST_SPEED          = 8;  // The speed of the player sprite when its infection is SPEED.
 
     static  const   Folio::Core::Game::ZxSpectrum::COLOUR   INITIAL_COLOUR = Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::WHITE); // The initial colour of the player sprite.
     
     static  const   Folio::Core::Game::Direction    INITIAL_DIRECTION = Folio::Core::Game::W;   // The initial direction of the player sprite.
+
+    static  const   UInt32  INFECTION_COUNTDOWN     = 3;            // The countdown (in seconds) whist the player sprite is infected.
+    static  const   UInt32  INFECTION_TICK_COUNT    = 15 * 1000;    // The time (in tick counts) the player sprite can be infected.
 
     UInt32  m_playerSpriteSpeed;    // The speed of the player sprite.
 
@@ -74,14 +78,17 @@ private:
     enum INFECTION
     {
         NO_INFECTION = 0,
-        IMMUNITY,
-        CONFUSION,
-        SPEED,
-        SICKNESS,
+        IMMUNITY,   // Player is immune from nasties.
+        CONFUSION,  // Player direction is reversed.
+        SPEED,      // Player moves faster and is immune from nasties.
+        SICKNESS,   // Player is sick.
     }; // Endenum.
 
-    INFECTION   m_infection;            // The player sprite's infection.
-    UInt32      m_infectionTickCount;   // The infection tick count of the player sprite.
+    INFECTION                               m_infection;            // The player sprite's infection.
+    Folio::Core::Game::ZxSpectrum::COLOUR   m_infectionColour;      // The player sprite's infection colour.
+    bool                                    m_infectionColourSet;   // true if the infection colour is set, false otherwise.
+    UInt32                                  m_infectionTickCount;   // The infection tick count of the player sprite.
+    mutable Int32                           m_infectionCountdown;   // The remaining countdown (in seconds) whilst the player sprite is infected.
 
     bool    m_justFoundAmuletPiece; // Indicates if the player sprite has just found an amulet piece.
 
@@ -99,25 +106,43 @@ private:
                                                 ObjectSpriteDrawingElementsList&    screenObjectSpriteDrawingElementsList);
     FolioStatus HandleNastySpriteCollision (const CollisionGrid::CellElement&   cellElement,
                                             CollisionGrid&                      collisionGrid);
+    FolioStatus HandleBossSpriteCollision (const CollisionGrid::CellElement&    cellElement,
+                                           CollisionGrid&                       collisionGrid);
+    FolioStatus HandleGameCompleteCollision (const CollisionGrid::CellElement&  cellElement,
+                                             CollisionGrid&                     collisionGrid);
 
-    bool    IsDead (const CollisionGrid::CellElement& cellElement);
+    bool    CheckPlayerSpriteDead (const Folio::Core::Game::ASprite&    nastySprite,
+                                   bool*                                changeDirection = 0);
 
     FolioStatus SetInfection (INFECTION                             infection,
                               Folio::Core::Game::ZxSpectrum::COLOUR playerSpriteColour);
     FolioStatus ClearInfection ();
+    FolioStatus InfectionFinishing ();
 
     void    StartInfectionTickCount ();
+    void    ResetInfectionTickCount ();
+    bool    IsImmune () const;
     bool    IsInfection () const;
+    bool    IsInfectionFinishing () const;
     bool    IsInfectionFinished () const;
     bool    IsInfectionImmunity () const;
     bool    IsInfectionConfusion () const;
     bool    IsInfectionSickness () const;
 
+    FolioStatus SetSwipeSword ();
+    FolioStatus ResetSwipeSword ();
+
+    FolioStatus SetSitting ();
+    FolioStatus ResetSitting ();
+
+    FolioStatus SetFalling (Folio::Core::Game::Direction direction);
+    FolioStatus ResetFalling ();
+
     void    SetMovementSoundSamples ();
 
     // APlayerSprite method(s).
-    virtual Int32   CalculateCollisionXLeft () const;
-    virtual Int32   CalculateScreenXLeft (CollisionGrid::DIRECTION collisionGridDirection) const;
+    virtual Int32   CalculateMovingXLeft (Int32 bitmapScreenWidth) const;
+    virtual Int32   CalculateScreenXLeft (Folio::Core::Game::ACollisionGrid::DIRECTION collisionGridDirection) const;
     virtual Int32   CalculateScreenXLeft (Int32 bitmapScreenWidth) const;
     
     // Private copy constructor to prevent copying.

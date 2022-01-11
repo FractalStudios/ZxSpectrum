@@ -35,21 +35,18 @@ public:
 
     FolioStatus Create (FolioHandle dcHandle);
 
-    FolioStatus SetScreenBottomLeft (Int32  screenXLeft,
-                                     Int32  screenYBottom);
-
-    void    StartTransitionTickCount (bool newScreen = true);
+    void    EnteredNewScreen ();
     void    CheckTransition ();
 
     // Orchid sprite type enumeration.
     enum ORCHID_SPRITE_TYPE
     {
         ORCHID_TYPE_UNDEFINED = Folio::Core::Game::AItem::ITEM_ID_UNDEFINED,
-        IMMUNITY,   // Red.
-        CONFUSION,  // Magenta.
-        SPEED,      // Cyan.
-        SICKNESS,   // Yellow.
-        CURE,       // White.
+        IMMUNITY,   // Player is immune from nasties. Red.
+        CONFUSION,  // Player direction is reversed. Magenta.
+        SPEED,      // Player moves faster and is immune from nasties. Cyan.
+        SICKNESS,   // Player is sick. All nasties die. Yellow.
+        CURE,       // Player is cured of any infection. White.
     }; // Endenum.
 
     FolioStatus HandlePlayerCollision (ORCHID_SPRITE_TYPE&                      orchidSpriteType,
@@ -59,11 +56,17 @@ private:
     static  const   Int32   INITIAL_SCREEN_X_LEFT   = 120;  // The initial screen X left (in pixels) of the orchid sprite.
     static  const   Int32   INITIAL_SCREEN_Y_TOP    =  80;  // The initial screen Y top (in pixels) of the orchid sprite.
 
+    static  const   UInt32  MIN_GROW_SECONDS    = 5;    // The minimum time (in seconds) the orchid sprite can take to grow.
+    static  const   UInt32  MAX_GROW_SECONDS    = 20;   // The maximum time (in seconds) the orchid sprite can take to grow.
+
+    static  const   UInt32  MIN_SHRINK_SECONDS  = 4;    // The minimum time (in seconds) the orchid sprite can take to shrink.
+    static  const   UInt32  MAX_SHRINK_SECONDS  = 8;    // The maximum time (in seconds) the orchid sprite can take to shrink.
+
     Folio::Core::Game::ZxSpectrum::COLOUR   m_orchidSpriteColour;   // The colour of the orchid sprite.
     UInt32                                  m_transitionTickCount;  // The transition tick count of the orchid sprite.
 
     UInt32  m_colourChangeIndex;    // The colour change index of the orchid sprite.
-    bool    m_infectedPlayer;       // Indicates if the orchid sprite has infected the player.
+    bool    m_infectious;           // Indicates if the orchid sprite is infectious.
 
     FolioStatus SetInitialisingMode (FolioHandle                            dcHandle,
                                      Folio::Core::Game::ZxSpectrum::COLOUR  orchidSpriteColour);
@@ -84,8 +87,12 @@ private:
     void    SetOrchidSpriteShrunk ();
     bool    IsOrchidSpriteShrunk () const;
 
-    bool    IsOrchidSpriteInfectious () const;
+    void    StartTransitionTickCount (bool grow);
+    bool    IsTransitionComplete () const;
 
+    // ASprite method(s).
+    virtual Int32   CalculateCollisionHeight (Int32 bitmapScreenHeight) const;
+    
     static  ORCHID_SPRITE_TYPE  GetOrchidSpriteType (Folio::Core::Game::ZxSpectrum::COLOUR orchidSpriteColour);
     static  Folio::Core::Game::ZxSpectrum::COLOUR   GetOrchidSpriteColour ();
 
@@ -105,8 +112,7 @@ typedef Folio::Core::Game::SpriteDrawingElement<OrchidSpritePtr>    OrchidSprite
 
 // Routines.
 
-extern  FolioStatus CreateOrchidSpriteDrawingElement (FolioHandle                   dcHandle,
-                                                      OrchidSpriteDrawingElement&   orchidSpriteDrawingElement);
+extern  FolioStatus CreateOrchidSpriteDrawingElement (FolioHandle dcHandle);
 extern  FolioStatus InitialiseScreenOrchidSprite (CollisionGrid& collisionGrid);
 extern  FolioStatus UpdateScreenOrchidSprite ();
 extern  FolioStatus CheckScreenOrchidSprite (Gdiplus::Graphics& graphics);

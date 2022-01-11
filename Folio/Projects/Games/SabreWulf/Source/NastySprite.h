@@ -7,6 +7,7 @@
 // "Home-made" includes.
 #include    <Game.h>
 #include    "CollisionGrid.h"
+#include    "ResourceOwnerIds.h"
 
 #pragma pack(push, 1)
 
@@ -19,8 +20,11 @@ namespace Games
 namespace SabreWulf
 {
 
+// The minimum number of nasty sprites that can be displayed on a screen.
+const   UInt32  MIN_NASTY_SPRITES_PER_SCREEN = 0;
+
 // The maximum number of nasty sprites that can be displayed on a screen.
-const   UInt32  MAX_NASTY_SPRITES_PER_SCREEN = 3;
+const   UInt32  MAX_NASTY_SPRITES_PER_SCREEN = MAX_NASTY_SPRITE_DRAWING_ELEMENTS / 2;
 
 
 // Nasty sprite identifier enumeration.
@@ -112,16 +116,14 @@ typedef std::vector<NastySpriteDrawingElement> NastySpriteDrawingElementsList;
 
 // Routines.
 
-extern  FolioStatus UpdateScreenNastySprites (UInt32            exitScreenTickCount,
-                                              CollisionGrid&    collisionGrid);
 extern  FolioStatus CheckScreenNastySprites (FolioHandle        dcHandle,
                                              Gdiplus::Graphics& graphics,
                                              CollisionGrid&     collisionGrid,
                                              UInt32&            screenAddNastySpriteTickCount);
-extern  FolioStatus RemoveScreenNastySprites (CollisionGrid &collisionGrid);
-extern  FolioStatus StoreNastySpriteBackgrounds (Gdiplus::Graphics& graphics);
-extern  FolioStatus RestoreNastySpriteBackgrounds (Gdiplus::Graphics& graphics);
-extern  FolioStatus DrawNastySprites (Gdiplus::Graphics& graphics);
+extern  FolioStatus RemoveScreenNastySprites (CollisionGrid& collisionGrid);
+extern  FolioStatus StoreScreenNastySpriteBackgrounds (Gdiplus::Graphics& graphics);
+extern  FolioStatus RestoreScreenNastySpriteBackgrounds (Gdiplus::Graphics& graphics);
+extern  FolioStatus DrawScreenNastySprites (Gdiplus::Graphics& graphics);
 
 } // Endnamespace.
 

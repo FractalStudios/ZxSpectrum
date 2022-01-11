@@ -24,8 +24,7 @@ namespace SabreWulf
 class ScreenMap
 {
 public:
-    static  const   UInt32  INITIAL_SCREEN_INDEX    = 0;                  // Index to the initial screen.
-    //static  const   UInt32  INITIAL_SCREEN_INDEX    = 168;                  // Index to the initial screen.
+    static  const   UInt32  INITIAL_SCREEN_INDEX    = 168;                  // Index to the initial screen.
     static  const   UInt32  UNDEFINED_SCREEN_INDEX  = FOLIO_INVALID_INDEX;  // Undefined screen index.
 
     ScreenMap ();
@@ -39,6 +38,9 @@ public:
     // The screen number (0x00-0x2f).
     typedef UInt8   ScreenNumber;
 
+    static  const   ScreenNumber    MIN_SCREEN_NUMBER = 0x00;
+    static  const   ScreenNumber    MAX_SCREEN_NUMBER = 0x2f;
+
     ScreenNumber    GetCurrentScreenNumber () const;
     ScreenNumber    GetScreenNumber (UInt32 screenMapIndex) const;
 
@@ -49,14 +51,14 @@ public:
     FolioStatus QueryScreenObjectSprites (FolioHandle           dcHandle,
                                           ObjectSpritesList&    objectSpritesList) const;
 
+    static  UInt32  GetNewScreenMapIndex (CollisionGrid::ScreenExit::ORIENTATION    orientation,
+                                          UInt32                                    screenMapIndex);
     static  UInt32  GetTotalNumScreens ();
 
 private:
     // Screen map size.
     static  const   UInt32  MAX_SCREEN_MAP_ROWS     = 16;
     static  const   UInt32  MAX_SCREEN_MAP_COLUMNS  = 16;
-
-    static  const   UInt32  MAX_SCREEN_OBJECT_SPRITES = 2;  // Maximum number of screen object sprites.
 
     // Screen numbers list.
     typedef std::vector<ScreenNumber>   ScreenNumbersList;

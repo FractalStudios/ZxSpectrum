@@ -206,7 +206,7 @@ FolioStatus APlayerSprite::SetBottomUpInitialisingMode (const ColourList&       
         m_initialisingColourList                            = initialisingColourList;
         m_initialisingSpriteSoundSamplesList                = initialisingSpriteSoundSamplesList;
         m_currentInitialisingSpriteSoundSamplesListIndex    = 0;
-        m_playSpriteInitialisingSound                       = true;
+        m_playSpriteInitialisingSoundSamples                = !m_initialisingSpriteSoundSamplesList.empty ();
         break;
 
     default:
@@ -235,7 +235,7 @@ FolioStatus APlayerSprite::SetTopDownInitialisingMode (const ColourList&        
         m_initialisingColourList                            = initialisingColourList;
         m_initialisingSpriteSoundSamplesList                = initialisingSpriteSoundSamplesList;
         m_currentInitialisingSpriteSoundSamplesListIndex    = 0;
-        m_playSpriteInitialisingSound                       = true;
+        m_playSpriteInitialisingSoundSamples                = !m_initialisingSpriteSoundSamplesList.empty ();
         break;
 
     default:
@@ -268,7 +268,7 @@ FolioStatus APlayerSprite::SetBottomUpTerminatingMode (const ColourList&        
         m_terminatingColourList                         = terminatingColourList;
         m_terminatingSpriteSoundSamplesList             = terminatingSpriteSoundSamplesList;
         m_currentTerminatingSpriteSoundSamplesListIndex = 0;
-        m_playSpriteTerminatingSound                    = true;
+        m_playSpriteTerminatingSoundSamples             = !m_terminatingSpriteSoundSamplesList.empty ();
         break;
 
     default:
@@ -301,7 +301,7 @@ FolioStatus APlayerSprite::SetTopDownTerminatingMode (const ColourList&         
         m_terminatingColourList                         = terminatingColourList;
         m_terminatingSpriteSoundSamplesList             = terminatingSpriteSoundSamplesList;
         m_currentTerminatingSpriteSoundSamplesListIndex = 0;
-        m_playSpriteTerminatingSound                    = true;
+        m_playSpriteTerminatingSoundSamples             = !m_terminatingSpriteSoundSamplesList.empty ();
         break;
 
     default:
@@ -383,9 +383,8 @@ FolioStatus APlayerSprite::HandleMoveSprite (Gdiplus::Graphics&     graphics,
     {
         // Yes. Is this the same wall the player sprite was at previously?
 
-        if ((m_action == NO_ACTION)                     &&
-            (m_wallBound.m_direction == m_direction)    &&
-             m_wallBound.m_screenRect.Equals (m_collisionRect))
+        if ((m_wallBound.m_direction == m_direction) &&
+             m_wallBound.m_screenRect.Equals (m_movingRect))
         {
             // Yes. The player sprite is static.
 
@@ -398,7 +397,7 @@ FolioStatus APlayerSprite::HandleMoveSprite (Gdiplus::Graphics&     graphics,
             // No. Note the player sprite's wall bound.
 
             m_wallBound.m_direction     = m_direction;
-            m_wallBound.m_screenRect    = m_collisionRect;
+            m_wallBound.m_screenRect    = m_movingRect;
 
             // Check auto-move mode. 
 
@@ -423,7 +422,7 @@ FolioStatus APlayerSprite::HandleStaticSprite (Gdiplus::Graphics&       graphics
 {
     // Check if the player sprite has exited the screen.
 
-    m_isExitedScreen = collisionGrid.IsExitedScreen (m_collisionRect, 
+    m_isExitedScreen = collisionGrid.IsExitedScreen (m_movingRect, 
                                                      m_isInScreenExit, 
                                                      m_screenExit);
 
@@ -696,15 +695,15 @@ bool    APlayerSprite::CalculateScreenRect (UInt32                  speed,
             break;
             
         case ACollisionGrid::ScreenExit::LEFT:
-            // Entered the screen from the left, move right.
+            // Entered the screen from the left, move left.
 
-            MoveRight (speed, collisionGrid); 
+            MoveLeft (speed, collisionGrid); 
             break;
 
         case ACollisionGrid::ScreenExit::RIGHT:
-            // Entered the screen from the right, move left.
+            // Entered the screen from the right, move right.
 
-            MoveLeft (speed, collisionGrid); 
+            MoveRight (speed, collisionGrid); 
             break;
 
         case ACollisionGrid::ScreenExit::NONE:
@@ -792,7 +791,7 @@ bool    APlayerSprite::MoveUp (UInt32                   speed,
 {
     bool    isExitedScreen = false; // Initialise!
 
-    m_collisionRect.Y -= speed; // Move up.
+    m_movingRect.Y -= speed;    // Move up.
 
     // In a screen exit?
 
@@ -809,7 +808,7 @@ bool    APlayerSprite::MoveUp (UInt32                   speed,
             // Check the screen exit's bound.
 
             collisionGrid.CheckScreenExitBound (ACollisionGrid::UP, 
-                                                m_collisionRect,
+                                                m_movingRect,
                                                 m_isEnteringScreen,
                                                 m_isInScreenExit,
                                                 m_screenExit);
@@ -823,7 +822,7 @@ bool    APlayerSprite::MoveUp (UInt32                   speed,
                 // Check for screen entry.
 
                 m_isEnteringScreen = collisionGrid.IsEnteringScreen (ACollisionGrid::UP,
-                                                                     m_collisionRect,
+                                                                     m_movingRect,
                                                                      m_isInScreenExit,
                                                                      m_screenExit);
             } // Endif.
@@ -833,7 +832,8 @@ bool    APlayerSprite::MoveUp (UInt32                   speed,
                 // Check for screen exit.
 
                 isExitedScreen = collisionGrid.IsExitedScreen (ACollisionGrid::UP,
-                                                               m_collisionRect,
+                                                               false,   // Not external to floor bound.
+                                                               m_movingRect,
                                                                m_isAtLockedScreenExit,
                                                                m_isInScreenExit,
                                                                m_screenExit);
@@ -852,7 +852,8 @@ bool    APlayerSprite::MoveUp (UInt32                   speed,
         // Check for screen exit.
 
         isExitedScreen = collisionGrid.IsExitedScreen (ACollisionGrid::UP,
-                                                       m_collisionRect,
+                                                       false,   // Not external to floor bound.
+                                                       m_movingRect,
                                                        m_isAtLockedScreenExit,
                                                        m_isInScreenExit,
                                                        m_screenExit);
@@ -861,10 +862,12 @@ bool    APlayerSprite::MoveUp (UInt32                   speed,
         {
             // Check for wall collision.
 
-            m_isAtWall = collisionGrid.IsWallCollision (ACollisionGrid::UP, m_collisionRect);
+            m_isAtWall = collisionGrid.IsWallCollision (ACollisionGrid::UP, m_movingRect);
         } // Endif.
 
     } // Endelse.
+
+    // Calculate the sprite's new screen Y position.
 
     m_screenRect.Y = CalculateScreenYTop (ACollisionGrid::UP);
 
@@ -877,7 +880,7 @@ bool    APlayerSprite::MoveDown (UInt32                 speed,
 {
     bool    isExitedScreen = false; // Initialise!
 
-    m_collisionRect.Y += speed; // Move down.
+    m_movingRect.Y += speed;    // Move down.
 
     // In a screen exit?
 
@@ -894,7 +897,7 @@ bool    APlayerSprite::MoveDown (UInt32                 speed,
             // Check the screen exit's bound.
 
             collisionGrid.CheckScreenExitBound (ACollisionGrid::DOWN, 
-                                                m_collisionRect,
+                                                m_movingRect,
                                                 m_isEnteringScreen,
                                                 m_isInScreenExit,
                                                 m_screenExit);
@@ -908,7 +911,7 @@ bool    APlayerSprite::MoveDown (UInt32                 speed,
                 // Check for screen entry.
 
                 m_isEnteringScreen = collisionGrid.IsEnteringScreen (ACollisionGrid::DOWN,
-                                                                     m_collisionRect,
+                                                                     m_movingRect,
                                                                      m_isInScreenExit,
                                                                      m_screenExit);
             } // Endif.
@@ -918,7 +921,8 @@ bool    APlayerSprite::MoveDown (UInt32                 speed,
                 // Check for screen exit.
 
                 isExitedScreen = collisionGrid.IsExitedScreen (ACollisionGrid::DOWN,
-                                                               m_collisionRect,
+                                                               false,   // Not external to floor bound.
+                                                               m_movingRect,
                                                                m_isAtLockedScreenExit,
                                                                m_isInScreenExit,
                                                                m_screenExit);
@@ -935,7 +939,8 @@ bool    APlayerSprite::MoveDown (UInt32                 speed,
         m_isEnteringScreen = false;
 
         isExitedScreen = collisionGrid.IsExitedScreen (ACollisionGrid::DOWN,
-                                                       m_collisionRect,
+                                                       false,   // Not external to floor bound.
+                                                       m_movingRect,
                                                        m_isAtLockedScreenExit,
                                                        m_isInScreenExit,
                                                        m_screenExit);
@@ -944,10 +949,12 @@ bool    APlayerSprite::MoveDown (UInt32                 speed,
         {
             // Check for wall collision.
 
-            m_isAtWall = collisionGrid.IsWallCollision (ACollisionGrid::DOWN, m_collisionRect);
+            m_isAtWall = collisionGrid.IsWallCollision (ACollisionGrid::DOWN, m_movingRect);
         } // Endif.
 
     } // Endelse.
+
+    // Calculate the sprite's new screen Y position.
 
     m_screenRect.Y = CalculateScreenYTop (ACollisionGrid::DOWN);
 
@@ -960,7 +967,7 @@ bool    APlayerSprite::MoveLeft (UInt32                 speed,
 {
     bool    isExitedScreen = false; // Initialise!
 
-    m_collisionRect.X -= speed; // Move left.
+    m_movingRect.X -= speed;    // Move left.
 
     // In a screen exit?
 
@@ -977,7 +984,7 @@ bool    APlayerSprite::MoveLeft (UInt32                 speed,
             // Check the screen exit's bound.
 
             collisionGrid.CheckScreenExitBound (ACollisionGrid::LEFT, 
-                                                m_collisionRect,
+                                                m_movingRect,
                                                 m_isEnteringScreen,
                                                 m_isInScreenExit,
                                                 m_screenExit);
@@ -991,7 +998,7 @@ bool    APlayerSprite::MoveLeft (UInt32                 speed,
                 // Check for screen entry.
 
                 m_isEnteringScreen = collisionGrid.IsEnteringScreen (ACollisionGrid::LEFT,
-                                                                     m_collisionRect,
+                                                                     m_movingRect,
                                                                      m_isInScreenExit,
                                                                      m_screenExit);
             } // Endif.
@@ -1001,7 +1008,8 @@ bool    APlayerSprite::MoveLeft (UInt32                 speed,
                 // Check for screen exit.
 
                 isExitedScreen = collisionGrid.IsExitedScreen (ACollisionGrid::LEFT,
-                                                               m_collisionRect,
+                                                               false,   // Not external to floor bound.
+                                                               m_movingRect,
                                                                m_isAtLockedScreenExit,
                                                                m_isInScreenExit,
                                                                m_screenExit);
@@ -1018,7 +1026,8 @@ bool    APlayerSprite::MoveLeft (UInt32                 speed,
         m_isEnteringScreen = false;
 
         isExitedScreen = collisionGrid.IsExitedScreen (ACollisionGrid::LEFT,
-                                                       m_collisionRect,
+                                                       false,   // Not external to floor bound.
+                                                       m_movingRect,
                                                        m_isAtLockedScreenExit,
                                                        m_isInScreenExit,
                                                        m_screenExit);
@@ -1027,10 +1036,12 @@ bool    APlayerSprite::MoveLeft (UInt32                 speed,
         {
             // Check for wall collision.
 
-            m_isAtWall = collisionGrid.IsWallCollision (ACollisionGrid::LEFT, m_collisionRect);
+            m_isAtWall = collisionGrid.IsWallCollision (ACollisionGrid::LEFT, m_movingRect);
         } // Endif.
 
     } // Endelse.
+
+    // Calculate the sprite's new screen X position.
 
     m_screenRect.X = CalculateScreenXLeft (ACollisionGrid::LEFT);
 
@@ -1043,7 +1054,7 @@ bool    APlayerSprite::MoveRight (UInt32                speed,
 {
     bool    isExitedScreen = false; // Initialise!
 
-    m_collisionRect.X += speed; // Move right.
+    m_movingRect.X += speed;    // Move right.
 
     // In a screen exit?
 
@@ -1060,7 +1071,7 @@ bool    APlayerSprite::MoveRight (UInt32                speed,
             // Check the screen exit's bound.
 
             collisionGrid.CheckScreenExitBound (ACollisionGrid::RIGHT, 
-                                                m_collisionRect,
+                                                m_movingRect,
                                                 m_isEnteringScreen,
                                                 m_isInScreenExit,
                                                 m_screenExit);
@@ -1074,7 +1085,7 @@ bool    APlayerSprite::MoveRight (UInt32                speed,
                 // Check for screen entry.
 
                 m_isEnteringScreen = collisionGrid.IsEnteringScreen (ACollisionGrid::RIGHT,
-                                                                     m_collisionRect,
+                                                                     m_movingRect,
                                                                      m_isInScreenExit,
                                                                      m_screenExit);
             } // Endif.
@@ -1084,7 +1095,8 @@ bool    APlayerSprite::MoveRight (UInt32                speed,
                 // Check for screen exit.
 
                 isExitedScreen = collisionGrid.IsExitedScreen (ACollisionGrid::RIGHT,
-                                                               m_collisionRect,
+                                                               false,   // Not external to floor bound.
+                                                               m_movingRect,
                                                                m_isAtLockedScreenExit,
                                                                m_isInScreenExit,
                                                                m_screenExit);
@@ -1101,7 +1113,8 @@ bool    APlayerSprite::MoveRight (UInt32                speed,
         m_isEnteringScreen = false;
 
         isExitedScreen = collisionGrid.IsExitedScreen (ACollisionGrid::RIGHT,
-                                                       m_collisionRect,
+                                                       false,   // Not external to floor bound.
+                                                       m_movingRect,
                                                        m_isAtLockedScreenExit,
                                                        m_isInScreenExit,
                                                        m_screenExit);
@@ -1110,10 +1123,12 @@ bool    APlayerSprite::MoveRight (UInt32                speed,
         {
             // Check for wall collision.
 
-            m_isAtWall = collisionGrid.IsWallCollision (ACollisionGrid::RIGHT, m_collisionRect);
+            m_isAtWall = collisionGrid.IsWallCollision (ACollisionGrid::RIGHT, m_movingRect);
         } // Endif.
 
     } // Endelse.
+
+    // Calculate the sprite's new screen X position.
 
     m_screenRect.X = CalculateScreenXLeft (ACollisionGrid::RIGHT);
 

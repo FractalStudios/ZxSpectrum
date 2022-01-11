@@ -112,7 +112,8 @@ FolioStatus PlayerSprite::Create (FolioHandle                           dcHandle
                                                            Folio::Core::Game::ZxSpectrum::MapInkColour (playerSpriteColour),
                                                            initialDirection,
                                                            &(g_resourceGraphicsCache),
-                                                           MAX_NUM_AUTO_MOVES);
+                                                           MAX_NUM_AUTO_MOVES, 
+                                                           false);  // Don't support rebound.
 
         if (status == ERR_SUCCESS)
         {

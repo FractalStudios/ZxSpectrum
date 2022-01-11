@@ -22,6 +22,7 @@ public:
 
     // ACollisionGrid method(s).
     virtual bool    IsExitedScreen (DIRECTION       direction,
+                                    bool            externalToFloorBound,
                                     Gdiplus::Rect&  spriteScreenRect,
                                     bool&           isAtLockedScreenExit,
                                     bool&           isInScreenExit,

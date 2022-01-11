@@ -3,7 +3,6 @@
 #include    "Globals.h"
 #include    "InformationPanel.h"
 #include    "ScreenMap.h"
-#include    "Ultimate.h"
 
 namespace Folio
 {
@@ -42,9 +41,6 @@ static  const   Folio::Core::Game::ItemAttributesList<INFORMATION_PANEL_ITEM_ID>
     {   INFORMATION_PANEL_ITEM_PLAYER_2_SCORE,              COLUMN_TO_PIXEL(25),    ROW_TO_PIXEL( 1),   Folio::Core::Game::ZxSpectrum::BRIGHT | SET_INK_COLOUR(Folio::Core::Game::ZxSpectrum::YELLOW),                                                          },
 };
 
-
-// Information panel static members.
-Folio::Core::Util::Sound::SoundSample   InformationPanel::m_startingSoundSample(Ultimate::CreateSoundSample (0x80, 0x10));  // The starting sound sample.
 
 InformationPanel::InformationPanel (Folio::Core::Applet::Canvas& canvas)
 :   m_canvas(canvas),
@@ -105,7 +101,7 @@ FolioStatus InformationPanel::Start ()
 } // Endproc.
 
 
-FolioStatus InformationPanel::Draw ()
+FolioStatus InformationPanel::Draw (bool redisplay)
 {
     // Clear the canvas rectangle occupied by the information panel.
 
@@ -272,23 +268,28 @@ FolioStatus InformationPanel::DecrementPlayerLife (PlayerSpritePtr *playerSprite
 
         if (m_playerStatistics [m_currentPlayer].IsAlive ())
         {
-            // Yes. The current player is static.
+            // Yes. The current player is alive.
 
-            (*playerSprite)->SetState (PlayerSprite::STATE_STATIC);
+            status = (*playerSprite)->Alive ();
         } // Endif.
 
         else
         {
-            // No. The current player's game is over.
+            // No. The current player is dead.
 
-            (*playerSprite)->SetGameOver ();
+            status = (*playerSprite)->Dead ();
         } // Endelse.
 
     } // Endif.
 
-    // Update the current player's lives.
+    if (status == ERR_SUCCESS)
+    {
+        // Update the current player's lives.
 
-    return (Update (UPDATE_LIVES));
+        status = Update (UPDATE_LIVES);
+    } // Endif.
+
+    return (status);
 } // Endproc.
     
 
@@ -706,10 +707,9 @@ FolioStatus InformationPanel::CheckPlayerUp (UInt32 currentTickCount,
 
         if (status == ERR_SUCCESS)
         {
-            // Play the starting sound.
+            // Play the start game sound.
 
-            status = Folio::Core::Util::Sound::PlaySoundSample (m_startingSoundSample,
-                                                                false); // Play synchronously.
+            status = g_soundResources.PlayStartGameSound ();
 
             if (status == ERR_SUCCESS)
             {

@@ -1022,7 +1022,8 @@ FolioStatus SelectionScreen::PlayStartingGameMusic ()
 
 void    SelectionScreen::StopStartingGameMusic ()
 {
-    m_finishedPlayingStartingGameMusic = true;
+    m_finishedPlayingMainGameMusic      = false;
+    m_finishedPlayingStartingGameMusic  = false;
 } // Endproc.
 
 

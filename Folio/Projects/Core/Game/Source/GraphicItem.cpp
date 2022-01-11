@@ -1,4 +1,5 @@
 // "Home-made" includes.
+#include    "ResourceGraphic.h"
 #include    "GraphicItem.h"
 
 namespace Folio
@@ -60,6 +61,7 @@ FolioStatus GraphicItem::Create (FolioHandle                                dcHa
                                             bitmapResourceId,
                                             maskedBitmapDrawingElementRqd,
                                             ACollisionGrid::CELL_VALUE_EMPTY,
+                                            0,
                                             maskColour);
 
         if (status == ERR_SUCCESS)
@@ -125,6 +127,7 @@ FolioStatus GraphicItem::Create (FolioHandle                                dcHa
                                             changeColour,
                                             maskedBitmapDrawingElementRqd,
                                             ACollisionGrid::CELL_VALUE_EMPTY,
+                                            0,
                                             maskColour);
 
         if (status == ERR_SUCCESS)

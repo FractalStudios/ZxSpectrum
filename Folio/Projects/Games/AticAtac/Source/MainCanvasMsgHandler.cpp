@@ -541,7 +541,8 @@ FolioStatus MainCanvasMsgHandler::CheckPlayingStateInput ()
             {
                 // Yes. Update the main player's direction.
 
-                status = g_mainPlayer->UpdateDirection (direction, true);
+                status = g_mainPlayer->UpdateDirection (direction, 
+                                                        true);  // Key down.
             } // Endif.
 
             // Is the main player moving?
@@ -551,7 +552,8 @@ FolioStatus MainCanvasMsgHandler::CheckPlayingStateInput ()
             {
                 // Yes. Update the main player's direction.
 
-                status = g_mainPlayer->UpdateDirection (direction, false);
+                status = g_mainPlayer->UpdateDirection (g_mainPlayer->GetDirection (), 
+                                                        false); // Key not down.
             } // Endelseif.
 
         } // Endelse.

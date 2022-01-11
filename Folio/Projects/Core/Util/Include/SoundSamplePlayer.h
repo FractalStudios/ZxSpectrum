@@ -29,6 +29,7 @@ public:
     FolioStatus Play (const SoundSample&    soundSample,
                       bool                  playAsynchronously = true);
     FolioStatus Stop ();
+    bool    IsPlaying () const;
 
 protected:
     // As this is a process singleton, don't allow direct construction.

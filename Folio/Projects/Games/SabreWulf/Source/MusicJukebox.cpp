@@ -149,7 +149,18 @@ FolioStatus MusicJukebox::PlayMusic (MUSIC                                      
     {
         // Yes.
 
-        StopPlayingMusic (music);
+        if (playAsynchronously)
+        {
+            // Have we finished playing the sound samples?
+
+            isFinished = !Folio::Core::Util::Sound::IsPlayingSoundSamples ();
+        } // Endif.
+
+        if (isFinished)
+        {
+            StopPlayingMusic (music);
+        } // Endif.
+
     } // Endif.
 
     else

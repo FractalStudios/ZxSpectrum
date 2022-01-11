@@ -93,6 +93,20 @@ BEGIN
     END
 END
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// Wave
+//
+
+IDB_WAVE_START_GAME                                         WAVE                        "Sounds\\StartGame.wav"
+IDB_WAVE_PLAYER_MOVING_1                                    WAVE                        "Sounds\\PlayerMoving1.wav"
+IDB_WAVE_PLAYER_MOVING_2                                    WAVE                        "Sounds\\PlayerMoving2.wav"
+IDB_WAVE_PLAYER_COLLECTED_ITEM                              WAVE                        "Sounds\\PlayerCollectedItem.wav"
+IDB_WAVE_PLAYER_INFECTION_FINISHING                         WAVE                        "Sounds\\PlayerInfectionFinishing.wav" 
+IDB_WAVE_PLAYER_STRIKING_BOSS                               WAVE                        "Sounds\\PlayerStrikingBoss.wav"
+IDB_WAVE_PLAYER_TERMINATING                                 WAVE                        "Sounds\\PlayerTerminating.wav"
+IDB_WAVE_NASTY_INITIALISING                                 WAVE                        "Sounds\\NastyInitialising.wav"
+IDB_WAVE_NASTY_TERMINATING                                  WAVE                        "Sounds\\NastyTerminating.wav"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -223,12 +237,12 @@ IDB_BITMAP_WOLF_JUMPING_LEFT_1                              BITMAP              
 IDB_BITMAP_WOLF_JUMPING_LEFT_2                              BITMAP                      "Graphics\\d1beWolfJumpingLeft2.bmp"
 IDB_BITMAP_WOLF_JUMPING_RIGHT_1                             BITMAP                      "Graphics\\d17cWolfJumpingRight1.bmp"
 IDB_BITMAP_WOLF_JUMPING_RIGHT_2                             BITMAP                      "Graphics\\d220WolfJumpingRight2.bmp"
-IDB_BITMAP_SABRE_MAN_FALLING_LEFT                           BITMAP                      "Graphics\\d282SabreManFallingLeft.bmp"
-IDB_BITMAP_SABRE_MAN_FALLING_RIGHT                          BITMAP                      "Graphics\\d2fcSabreManFallingRight.bmp"
+IDB_BITMAP_SABRE_MAN_FALLING_LEFT                           BITMAP                      "Graphics\\d2fcSabreManFallingLeft.bmp"
+IDB_BITMAP_SABRE_MAN_FALLING_RIGHT                          BITMAP                      "Graphics\\d282SabreManFallingRight.bmp"
 IDB_BITMAP_SABRE_MAN_SITTING_LEFT                           BITMAP                      "Graphics\\d2b0SabreManSittingLeft.bmp"
-IDB_BITMAP_SABRE_MAN_SITTING_RIGHT                          BITMAP                      "Graphics\\d32aSabreManSittinGRight.bmp"
-IDB_BITMAP_SABRE_MAN_GAME_OVER_LEFT                         BITMAP                      "Graphics\\d2d6SabreManGameOverLeft.bmp"
-IDB_BITMAP_SABRE_MAN_GAME_OVER_RIGHT                        BITMAP                      "Graphics\\d350SabreManGameOverRight.bmp"
+IDB_BITMAP_SABRE_MAN_SITTING_RIGHT                          BITMAP                      "Graphics\\d32aSabreManSittingRight.bmp"
+IDB_BITMAP_SABRE_MAN_LYING_DEAD_LEFT                        BITMAP                      "Graphics\\d2d6SabreManLyingDeadLeft.bmp"
+IDB_BITMAP_SABRE_MAN_LYING_DEAD_RIGHT                       BITMAP                      "Graphics\\d350SabreManLyingDeadRight.bmp"
 IDB_BITMAP_ORCHID_1                                         BITMAP                      "Graphics\\d376Orchid1.bmp"
 IDB_BITMAP_ORCHID_2                                         BITMAP                      "Graphics\\d37eOrchid2.bmp"
 IDB_BITMAP_ORCHID_3                                         BITMAP                      "Graphics\\d386Orchid3.bmp"

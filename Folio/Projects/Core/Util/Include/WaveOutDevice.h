@@ -46,6 +46,7 @@ public:
     FolioStatus WaitUntilStoppedPlayingSoundSample (SoundSampleId   soundSampleId, 
                                                     UInt32          timeout);
     FolioStatus StopPlayingSoundSamples ();
+    bool    IsPlayingSoundSamples () const;
 
 private:
     FolioHandle     m_waveOutHandle;    ///< The wave out handle.

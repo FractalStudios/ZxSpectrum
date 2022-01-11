@@ -21,6 +21,7 @@ struct ScreenBackgroundAttributes
 
 // Screens background attributes table.
 // There are 48 (0x00-0x2f) screen types in total.
+// Screens not used are 0x01, 0x13, 0x24. 
 static  const   ScreenBackgroundAttributes  g_screenBackgroundAttributesTable [] =
 {
 //      m_screenNumber  m_backgroundItemsList {backgroundItemId, screenXLeft, screenYTop} 

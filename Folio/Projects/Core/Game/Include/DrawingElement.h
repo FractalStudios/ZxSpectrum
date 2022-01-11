@@ -47,7 +47,8 @@ public:
                     Int32                                               screenYTop,
                     const Folio::Core::Graphic::GdiGraphicElementPtr&   gdiGraphicElement,
                     UserData                                            userData = 0,
-                    UInt32                                              collisionGridCellValue = 0);
+                    UInt32                                              collisionGridCellValue = 0,
+                    const Gdiplus::Rect*                                collisionGridDeltaRect = 0);
     ~DrawingElement ();
 
     FolioStatus SetScreenTopLeft (Int32 screenXLeft,    
@@ -73,10 +74,19 @@ public:
     void        SetUserData (const UserData& userData);
     UserData    GetUserData () const;
 
+    void            SetCollisionGridDeltaRect (const Gdiplus::Rect& collisionGridDeltaRect);
+    Gdiplus::Rect   GetCollisionGridDeltaRect () const;
+
+    Gdiplus::Rect   GetCollisionGridRect () const;
+    Int32           GetCollisionGridXLeft () const;
+    Int32           GetCollisionGridYTop () const;
+    Int32           GetCollisionGridXRight () const;
+    Int32           GetCollisionGridYBottom () const;
+    Int32           GetCollisionGridWidth () const;
+    Int32           GetCollisionGridHeight () const;
+
     void    SetCollisionGridCellValue (UInt32 collisionGridCellValue);
     UInt32  GetCollisionGridCellValue () const;
-
-    bool    IsOverlap (const Gdiplus::Rect& screenRect) const;
 
     FolioString Describe () const;
 
@@ -90,6 +100,7 @@ private:
     Gdiplus::Rect       m_screenRect;               // The screen rect of the drawing element.
     UserData            m_userData;                 // User defined data applicable to the drawing element.
     UInt32              m_collisionGridCellValue;   // The collision grid cell value of the drawing element.
+    Gdiplus::Rect       m_collisionGridDeltaRect;   // The collision grid delta rect of the drawing element.
 
     Folio::Core::Graphic::GdiGraphicElementPtr  m_gdiGraphicElement;    // The GDI graphic element.
 

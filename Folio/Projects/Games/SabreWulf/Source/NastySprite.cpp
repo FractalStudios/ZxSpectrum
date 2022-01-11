@@ -2,10 +2,7 @@
 #include    "StdAfx.h"
 #include    "Globals.h"
 #include    "NastySprite.h"
-#include    "ResourceOwnerIds.h"
-#include    "ScreenMap.h"
 #include    "SpriteGraphics.h"
-#include    "Ultimate.h"
 
 namespace Folio
 {
@@ -165,10 +162,6 @@ FolioStatus NastySprite::CheckNastySprite (Folio::Core::Game::DrawingElementPtr&
     case STATE_INITIALISED:
         // The nasty sprite is initialised.
 
-        // Set the nasty sprite's drawing element's collision grid cell value.
-
-        drawingElement->SetCollisionGridCellValue (CollisionGrid::CELL_VALUE_NASTY_SPRITE);
-
         // The nasty sprite is static.
 
         status = Static (graphics, collisionGrid);
@@ -179,6 +172,18 @@ FolioStatus NastySprite::CheckNastySprite (Folio::Core::Game::DrawingElementPtr&
         break;
 
     case STATE_STATIC:
+        // Add the nasty sprite to the current screen's collision grid.
+
+        status = collisionGrid.AddCellElement (*(drawingElement));
+
+        if (status == ERR_SUCCESS)
+        {
+            // The nasty sprite is moving.
+
+            SetState (STATE_MOVING);
+        } // Endif.
+        break;
+
     case STATE_MOVING:
         // Move the nasty sprite.
 
@@ -188,7 +193,7 @@ FolioStatus NastySprite::CheckNastySprite (Folio::Core::Game::DrawingElementPtr&
         {
             // Set the nasty sprite's drawing element's top-left screen position.
 
-            status = drawingElement->SetScreenTopLeft (m_collisionRect.X, m_collisionRect.Y);
+            status = drawingElement->SetScreenTopLeft (m_screenRect.X, m_screenRect.Y);
 
             if (status == ERR_SUCCESS)
             {
@@ -274,7 +279,8 @@ FolioStatus NastySprite::SetInitialisingMode (FolioHandle                       
 
         status = SetGraphicInitialisingMode (dcHandle,
                                              spriteGraphicAttributesList,
-                                             MAX_SEQUENCE_COUNT);
+                                             MAX_SEQUENCE_COUNT,
+                                             g_soundResources.GetNastyInitialisingSound ());
     } // Endif.
 
     return (status);
@@ -311,7 +317,8 @@ FolioStatus NastySprite::SetTerminatingMode (FolioHandle                        
 
         status = SetGraphicTerminatingMode (dcHandle,
                                             spriteGraphicAttributesList,
-                                            MAX_SEQUENCE_COUNT);
+                                            MAX_SEQUENCE_COUNT,
+                                            g_soundResources.GetNastyTerminatingSound ());
     } // Endif.
 
     return (status);
@@ -391,7 +398,7 @@ Folio::Core::Game::Direction    NastySprite::GetNastySpriteDirection (const Coll
     case NASTY_SPRITE_BUG: 
         // Move nasty sprite to the player.
 
-        direction = GetDirectionToScreenRect (g_playerSprite->GetCollisionRect (), 
+        direction = GetDirectionToScreenRect (g_playerSprite->GetScreenRect (), 
                                               collisionGrid); 
         break;
     
@@ -627,11 +634,7 @@ static  FolioStatus CheckRemoveNastySpriteDrawingElement (UInt32 currentScreenMa
 
         NastySpriteDrawingElementsList::iterator    oldestDrawingElementItr = g_nastySpriteDrawingElementsList.begin ();
 
-        UInt32  oldestTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();  // Initialise!
-
-        bool    found = false; // Initialise!
-
-        for (NastySpriteDrawingElementsList::iterator itr = oldestDrawingElementItr;
+        for (NastySpriteDrawingElementsList::iterator itr = (oldestDrawingElementItr + 1);
              itr != g_nastySpriteDrawingElementsList.end ();
              ++itr)
         {
@@ -643,30 +646,19 @@ static  FolioStatus CheckRemoveNastySpriteDrawingElement (UInt32 currentScreenMa
             // the current oldest nasty sprite?
 
             if ((nastySprite->GetNastySpriteScreenMapIndex () != currentScreenMapIndex) && 
-                (itr->m_createdTickCount < oldestTickCount))
+                (itr->m_createdTickCount < oldestDrawingElementItr->m_createdTickCount))
             {
                 // Yes. Note the nasty sprite drawing element.
 
                 oldestDrawingElementItr = itr;
-
-                found = true;
             } // Endif.
 
         } // Endfor.
 
-        if (found)
-        {
-            // Remove the oldest nasty sprite drawing element from the nasty 
-            // sprite drawing elements list.
+        // Remove the oldest nasty sprite drawing element from the nasty sprite 
+        // drawing elements list.
     
-            g_nastySpriteDrawingElementsList.erase (oldestDrawingElementItr);
-        } // Endif.
-
-        else
-        {
-            status = ERR_IN_USE;
-        } // Endelse.
-
+        g_nastySpriteDrawingElementsList.erase (oldestDrawingElementItr);
     } // Endif.
 
     return (status);
@@ -696,24 +688,11 @@ static  FolioStatus AddScreenNastySprite (FolioHandle       dcHandle,
        
         if (status == ERR_SUCCESS)
         {
-            // Create a nasty sprite drawing element.
+            // Add the nasty sprite drawing element to the nasty sprite drawing 
+            // elements list.
 
-            NastySpriteDrawingElement   nastySpriteDrawingElement(Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_NASTY_SPRITE, 
-                                                                  nastySprite,
-                                                                  nastySprite->GetCollisionGridCellValue ());
-
-            // Add the nasty sprite to the current screen's collision grid.
-
-            status = collisionGrid.AddCellElement (*(nastySpriteDrawingElement.m_drawingElement));
-
-            if (status == ERR_SUCCESS)
-            {
-                // Add the nasty sprite drawing element to the nasty sprite drawing 
-                // elements list.
-
-                g_nastySpriteDrawingElementsList.push_back (nastySpriteDrawingElement);
-            } // Endif.
-
+            g_nastySpriteDrawingElementsList.push_back (NastySpriteDrawingElement(Folio::Core::Game::DrawingElement::DRAWING_ELEMENT_NASTY_SPRITE, 
+                                                                                  nastySprite));
         } // Endif.
 
     } // Endif.
@@ -722,17 +701,7 @@ static  FolioStatus AddScreenNastySprite (FolioHandle       dcHandle,
 } // Endproc.
 
 
-static  bool    IsRemoveScreenNastySprites (UInt32 exitScreenTickCount)
-{
-    static  const   UInt32  MAX_REMOVE_NASTY_SPRITES_TICK_COUNT = 10 * 1000;    // The maximum tick count to remove the nasty sprites.
-
-    return (exitScreenTickCount &&
-            (Folio::Core::Util::DateTime::GetCurrentTickCount () > (exitScreenTickCount + MAX_REMOVE_NASTY_SPRITES_TICK_COUNT)));
-} // Endproc.
-
-
 static  FolioStatus RemoveScreenNastySprites (UInt32            currentScreenMapIndex,
-                                              bool              onScreenEntry, 
                                               CollisionGrid&    collisionGrid)
 {
     FolioStatus status = ERR_SUCCESS;
@@ -762,23 +731,11 @@ static  FolioStatus RemoveScreenNastySprites (UInt32            currentScreenMap
 
                 if (status == ERR_SUCCESS)
                 {
-                    if (onScreenEntry)
-                    {
-                        // Remove the nasty sprite from the nasty sprite drawing 
-                        // elements list.
+                    // The nasty sprite is dead.
 
-                        itr = g_nastySpriteDrawingElementsList.erase (itr);
-                    } // Endif.
-
-                    else
-                    {
-                        // The nasty sprite is dead.
-
-                        nastySprite->SetDead (false); // Don't play its terminating sound.
+                    nastySprite->SetDead (false); // Don't play its terminating sound.
                         
-                        ++itr;  // Next nasty sprite.
-                    } // Endelse.
-
+                    ++itr;  // Next nasty sprite.
                 } // Endif.
             
             } // Endif.
@@ -853,13 +810,13 @@ static  FolioStatus StartScreenNastySprites (FolioHandle        dcHandle,
     {
         // Yes. Should we add a nasty sprite to the current screen?
 
-        //if (currentTickCount >= screenAddNastySpriteTickCount)
+        if (currentTickCount >= screenAddNastySpriteTickCount)
         {
             // Yes. Calculate the number of nasty sprites to add to the current 
             // screen.
 
-            UInt32  numNastySpritesToAdd =MAX_NASTY_SPRITES_PER_SCREEN - numNastySpritesOnScreen; 
-                //Folio::Core::Util::Random::GetRandomNumber(1, MAX_NASTY_SPRITES_PER_SCREEN - numNastySpritesOnScreen);
+            UInt32  numNastySpritesToAdd = Folio::Core::Util::Random::GetRandomNumber(MIN_NASTY_SPRITES_PER_SCREEN,
+                                                                                      MAX_NASTY_SPRITES_PER_SCREEN - numNastySpritesOnScreen);
 
             for (UInt32 nastySpriteCount = 0; 
                  (status == ERR_SUCCESS) && (nastySpriteCount < numNastySpritesToAdd); 
@@ -873,14 +830,14 @@ static  FolioStatus StartScreenNastySprites (FolioHandle        dcHandle,
                                                collisionGrid);
             } // Endfor.
 
-            //if (status == ERR_SUCCESS)
-            //{
-            //    // Restart the add nasty sprite tick count for the current 
-            //    // screen.
+            if (status == ERR_SUCCESS)
+            {
+                // Restart the add nasty sprite tick count for the current 
+                // screen.
 
-            //    SetScreenAddNastySpriteTickCount (currentTickCount, 
-            //                                      screenAddNastySpriteTickCount);
-            //} // Endif.
+                SetScreenAddNastySpriteTickCount (currentTickCount, 
+                                                  screenAddNastySpriteTickCount);
+            } // Endif.
 
         } // Endif.
 
@@ -898,32 +855,6 @@ static  FolioStatus StartScreenNastySprites (FolioHandle        dcHandle,
 } // Endproc.
 
 
-FolioStatus UpdateScreenNastySprites (UInt32            exitScreenTickCount,
-                                      CollisionGrid&    collisionGrid)
-{
-    FolioStatus status = ERR_SUCCESS;
-  
-    // Are there any created nasty sprite drawing elements?
-
-    if (!g_nastySpriteDrawingElementsList.empty ())
-    {
-        // Yes. Should the current screen's nasty sprites be removed?
-
-        if (IsRemoveScreenNastySprites (exitScreenTickCount))
-        {
-            // Yes. Remove the current screen's nasty sprites.
-
-            status = RemoveScreenNastySprites (g_screenMap.GetCurrentScreenMapIndex (),
-                                               true,    // On screen entry. 
-                                               collisionGrid);
-        } // Endif.
-    
-    } // Endif.
-
-    return (status);
-} // Endproc.
-
-
 FolioStatus CheckScreenNastySprites (FolioHandle        dcHandle,
                                      Gdiplus::Graphics& graphics,
                                      CollisionGrid&     collisionGrid,
@@ -931,10 +862,9 @@ FolioStatus CheckScreenNastySprites (FolioHandle        dcHandle,
 {
     FolioStatus status = ERR_SUCCESS;
 
-    // Is the player ready and not sick?
+    // Is the player sprite ready?
 
-    if (g_playerSprite->IsReady () &&  
-        !g_playerSprite->IsSick ())
+    if (g_playerSprite->IsReady ())
     {
         // Yes. Get the current screen map index.
 
@@ -1018,12 +948,11 @@ FolioStatus RemoveScreenNastySprites (CollisionGrid& collisionGrid)
     // Remove the current screen's nasty sprites.
 
     return (RemoveScreenNastySprites (g_screenMap.GetCurrentScreenMapIndex (), 
-                                      false,    // Not on screen entry. 
                                       collisionGrid));
 } // Endproc.
 
 
-FolioStatus StoreNastySpriteBackgrounds (Gdiplus::Graphics& graphics)
+FolioStatus StoreScreenNastySpriteBackgrounds (Gdiplus::Graphics& graphics)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -1062,7 +991,7 @@ FolioStatus StoreNastySpriteBackgrounds (Gdiplus::Graphics& graphics)
 } // Endproc.
 
 
-FolioStatus RestoreNastySpriteBackgrounds (Gdiplus::Graphics& graphics)
+FolioStatus RestoreScreenNastySpriteBackgrounds (Gdiplus::Graphics& graphics)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -1101,7 +1030,7 @@ FolioStatus RestoreNastySpriteBackgrounds (Gdiplus::Graphics& graphics)
 } // Endproc.
 
 
-FolioStatus DrawNastySprites (Gdiplus::Graphics& graphics)
+FolioStatus DrawScreenNastySprites (Gdiplus::Graphics& graphics)
 {
     FolioStatus status = ERR_SUCCESS;
 

@@ -35,6 +35,8 @@ const   Direction   SE                  = S | E;        // South-East.
 const   Direction   SW                  = S | W;        // South-West.
 const   Direction   ALL_DIRECTIONS      = N | S | E | W;
 
+extern  FolioString DescribeDirection (Direction direction);
+
 
 // Action.
 typedef UInt32  Action;

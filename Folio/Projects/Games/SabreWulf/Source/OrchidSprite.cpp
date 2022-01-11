@@ -28,7 +28,7 @@ OrchidSprite::OrchidSprite ()
 :   m_orchidSpriteColour(Folio::Core::Game::ZxSpectrum::UNDEFINED),
     m_transitionTickCount(0),
     m_colourChangeIndex(FOLIO_INVALID_INDEX),
-    m_infectedPlayer(false)
+    m_infectious(false)
 {
 } // Endproc.
 
@@ -103,70 +103,51 @@ FolioStatus OrchidSprite::Create (FolioHandle dcHandle)
 } // Endproc.
 
 
-FolioStatus OrchidSprite::SetScreenBottomLeft (Int32    screenXLeft,
-                                               Int32    screenYBottom)
+void    OrchidSprite::EnteredNewScreen ()
 {
-    // Calculate the orchid sprite's screen Y top.
+    // Is this the first screen we've entered?
 
-    Int32   screenYTop = Folio::Core::Game::ZxSpectrum::CalculateScreenYTop (screenYBottom, 
-                                                                             m_screenWidth,
-                                                                             m_screenHeight);
-
-    // Set the orchid sprite's screen position.
-
-    return (Folio::Core::Game::AStaticSprite::SetScreenTopLeft (screenXLeft, screenYTop));
-} // Endproc.
-
-
-void    OrchidSprite::StartTransitionTickCount (bool newScreen)
-{
-    // Is the orchid sprite sprite grown?
-
-    if (IsOrchidSpriteGrown ())
+    if (!m_transitionTickCount)
     {
-        // Yes. Is this a new screen?
-
-        if (newScreen)
-        {
-            // Yes. Should the orchid sprite's colour be changed?
-
-            if (Folio::Core::Util::Random::GetRandomNumber (4) == 0)
-            {
-                // Yes. Leave the orchid sprite grown but change its colour.
-
-                ChangeOrchidSpriteColour ();
-            } // Endif.
-
-            else
-            {
-                // The orchid sprite should shrink.
-
-                //SetOrchidSpriteShrinking ();
-            } // Endelse.
-
-        } // Endif.
-
-        else
-        {
-            // No. Set the transition tick count at which time orchid sprite 
-            // should start to shrink.
-
-            m_transitionTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount ();// + 
-                                    //1000 * Folio::Core::Util::Random::GetRandomNumber (1, 4);
-        } // Endelse.
-
-    } // Endif.
-
-    // Is the orchid sprite sprite shrunk?
-
-    else
-    if (IsOrchidSpriteShrunk ())
-    {
-        // Yes. Set the transition tick count at which time the orchid sprite 
+        // Yes. Start the transition tick count at which time the orchid sprite 
         // should start to grow.
 
-        m_transitionTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount () + 
-                                1000 * Folio::Core::Util::Random::GetRandomNumber (5, 10);
+        StartTransitionTickCount (true);
+    } // Endif.
+
+    // Is the orchid sprite grown?
+
+    else
+    if (IsOrchidSpriteGrown ())
+    {
+        // Yes. 
+        
+        switch (Folio::Core::Util::Random::GetRandomNumber (3))
+        {
+        case 0:
+            // Leave the orchid sprite grown but change its colour.
+
+            ChangeOrchidSpriteColour ();
+
+            // Start the transition tick count at which time the orchid sprite 
+            // should start to shrink.
+
+            StartTransitionTickCount (false);
+            break;
+
+        case 1:
+            // The orchid sprite should shrink.
+
+            SetOrchidSpriteShrinking ();
+            break;
+
+        default:
+            // The orchid sprite is shrunk.
+
+            SetOrchidSpriteShrunk ();
+            break;
+        } // Endswitch.
+
     } // Endelseif.
 
 } // Endproc.
@@ -181,10 +162,6 @@ void    OrchidSprite::CheckTransition ()
         // has now grown.
 
         SetOrchidSpriteGrown ();
-
-        // Start the transition tick count; to transition from grown to shrinking.
-
-        StartTransitionTickCount (false);   // Not a new screen.
         break;
 
     case STATE_TERMINATED:
@@ -192,19 +169,15 @@ void    OrchidSprite::CheckTransition ()
         // has now shrunk.
 
         SetOrchidSpriteShrunk ();
-
-        // Start the transition tick count; to transition from shrunk to growing.
-
-        StartTransitionTickCount (false);   // Not a new screen.
         break;
 
     case STATE_STATIC:
         // The orchid sprite is static. This means that the orchid sprite 
         // has either grown or shrunk.
 
-        // Should the orchid sprite transition?
+        // Is the orchid sprite transition complete?
 
-        //if (Folio::Core::Util::DateTime::GetCurrentTickCount () >= m_transitionTickCount)
+        if (IsTransitionComplete ())
         {
             // Yes. Is the orchid sprite grown?
 
@@ -212,7 +185,7 @@ void    OrchidSprite::CheckTransition ()
             {
                 // Yes. The orchid sprite should shrink.
 
-                //SetOrchidSpriteShrinking ();
+                SetOrchidSpriteShrinking ();
             } // Endif.
 
             else
@@ -223,6 +196,16 @@ void    OrchidSprite::CheckTransition ()
             } // Endelse.
             
         } // Endif.
+
+        // Is the orchid sprite grown and not infectious?
+
+        else
+        if (IsOrchidSpriteGrown () && !m_infectious)
+        {
+            // Yes. Now that it has grown, the orchid sprite is infectious.
+
+            m_infectious = true;
+        } // Endelseif.
         break;
 
     default:
@@ -244,7 +227,7 @@ FolioStatus OrchidSprite::HandlePlayerCollision (ORCHID_SPRITE_TYPE&            
 
     // Is the orchid sprite infectious?
 
-    if (IsOrchidSpriteInfectious ())
+    if (m_infectious)
     {
         // Yes. Get the orchid sprite type.
 
@@ -254,10 +237,6 @@ FolioStatus OrchidSprite::HandlePlayerCollision (ORCHID_SPRITE_TYPE&            
 
         orchidSpriteColour = m_orchidSpriteColour;
             
-        // The orchid sprite has infected the player.
-
-        m_infectedPlayer = true;
-
         // The orchid sprite should shrink.
 
         SetOrchidSpriteShrinking ();
@@ -355,6 +334,10 @@ FolioStatus OrchidSprite::ChangeOrchidSpriteColour ()
 
 void    OrchidSprite::SetOrchidSpriteGrowing ()
 {
+    // Whilst it is growing, the orchid sprite is not infectious.
+
+    m_infectious = false;
+
     // Set the orchid sprite's direction.
 
     SetDirection (Folio::Core::Game::N);
@@ -380,6 +363,11 @@ void    OrchidSprite::SetOrchidSpriteGrown ()
     // The orchid sprite is static.
 
     SetState (STATE_STATIC);
+
+    // Set the transition tick count at which time the orchid sprite should 
+    // start to shrink.
+
+    StartTransitionTickCount (false);
 } // Endproc.
 
 
@@ -391,6 +379,10 @@ bool    OrchidSprite::IsOrchidSpriteGrown () const
 
 void    OrchidSprite::SetOrchidSpriteShrinking ()
 {
+    // Now that it is shrinking, the orchid sprite is not infectious.
+
+    m_infectious = false;
+
     // Set the orchid sprite's direction.
 
     SetDirection (Folio::Core::Game::S);
@@ -409,6 +401,10 @@ bool    OrchidSprite::IsOrchidSpriteShrinking () const
 
 void    OrchidSprite::SetOrchidSpriteShrunk ()
 {
+    // Now that it has shrunk, the orchid sprite is not infectious.
+
+    m_infectious = false;
+
     // Set the orchid sprite's direction.
 
     SetDirection (Folio::Core::Game::S);
@@ -421,9 +417,10 @@ void    OrchidSprite::SetOrchidSpriteShrunk ()
 
     ChangeOrchidSpriteColour ();
 
-    // The orchid sprite has no longer infected the player.
+    // Set the transition tick count at which time the orchid sprite should 
+    // start to grow.
 
-    m_infectedPlayer = false;
+    StartTransitionTickCount (true);
 } // Endproc.
 
 
@@ -433,12 +430,38 @@ bool    OrchidSprite::IsOrchidSpriteShrunk () const
 } // Endproc.
 
 
-bool    OrchidSprite::IsOrchidSpriteInfectious () const
+void    OrchidSprite::StartTransitionTickCount (bool grow)
 {
-    // The orchid sprite is infectious if it is has not already infected the 
-    // player, and it is grown.
+    if (grow)
+    {
+        // Set the transition tick count at which time the orchid sprite should 
+        // start to grow.
 
-    return (!m_infectedPlayer && IsOrchidSpriteGrown ());
+        m_transitionTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount () + 
+                                1000 * Folio::Core::Util::Random::GetRandomNumber (MIN_GROW_SECONDS, MAX_GROW_SECONDS);
+    } // Endif.
+
+    else
+    {
+        // Set the transition tick count at which time the orchid sprite should 
+        // start to shrink.
+
+        m_transitionTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount () + 
+                                1000 * Folio::Core::Util::Random::GetRandomNumber (MIN_SHRINK_SECONDS, MAX_SHRINK_SECONDS);
+    } // Endelse.
+
+} // Endproc.
+
+
+bool    OrchidSprite::IsTransitionComplete () const
+{
+    return (Folio::Core::Util::DateTime::GetCurrentTickCount () >= m_transitionTickCount);
+} // Endproc.
+
+
+Int32   OrchidSprite::CalculateCollisionHeight (Int32 bitmapScreenHeight) const
+{ 
+    return (bitmapScreenHeight / 2);
 } // Endproc.
 
 
@@ -484,13 +507,12 @@ Folio::Core::Game::ZxSpectrum::COLOUR   OrchidSprite::GetOrchidSpriteColour ()
 } // Endproc.
 
 
-FolioStatus CreateOrchidSpriteDrawingElement (FolioHandle                   dcHandle,
-                                              OrchidSpriteDrawingElement&   orchidSpriteDrawingElement)
+FolioStatus CreateOrchidSpriteDrawingElement (FolioHandle dcHandle)
 {
-    // Before creating an orchid sprite drawing element, make sure that the 
+    // Before creating the orchid sprite drawing element, make sure that the 
     // current orchid sprite drawing element is destroyed.
 
-    orchidSpriteDrawingElement.Destroy ();
+    g_orchidSpriteDrawingElement.Destroy ();
 
     // Create an orchid sprite.
 
@@ -500,11 +522,15 @@ FolioStatus CreateOrchidSpriteDrawingElement (FolioHandle                   dcHa
 
     if (status == ERR_SUCCESS)
     {
-        // Create an orchid sprite drawing element.
+        // Create the orchid sprite drawing element.
     
-        status = orchidSpriteDrawingElement.Create (DRAWING_ELEMENT_ORCHID_SPRITE, 
-                                                    orchidSprite,
-                                                    orchidSprite->GetCollisionGridCellValue ());
+        status = g_orchidSpriteDrawingElement.Create (DRAWING_ELEMENT_ORCHID_SPRITE, 
+                                                      orchidSprite);
+    } // Endif.
+
+    if (status != ERR_SUCCESS)
+    {
+        g_orchidSpriteDrawingElement.Destroy ();
     } // Endif.
 
     return (status);
@@ -519,26 +545,23 @@ FolioStatus InitialiseScreenOrchidSprite (CollisionGrid& collisionGrid)
 
     if (g_screenMap.IsScreenOrchidSprite ())
     {
-        // Yes. Get the orchid sprite.
+        // Yes. Set the orchid sprite's screen position.
 
-        OrchidSpritePtr &orchidSprite(g_orchidSpriteDrawingElement.m_sprite);
-
-        // Set the orchid sprite's screen position.
-
-        status = orchidSprite->SetScreenBottomLeft (g_screenMap.GetScreenOrchidSpriteScreenXLeft (), 
-                                                    g_screenMap.GetScreenOrchidSpriteScreenYBottom ());
+        status = g_orchidSpriteDrawingElement.SetScreenTopLeft (g_screenMap.GetScreenOrchidSpriteScreenXLeft (), 
+                                                                g_screenMap.GetScreenOrchidSpriteScreenYBottom (),
+                                                                false);
 
         if (status == ERR_SUCCESS)
         {
             // Add the orchid sprite to the current screen's collision grid.
 
-            status = collisionGrid.AddCellElement (*(g_orchidSpriteDrawingElement.m_drawingElement));
+            status = collisionGrid.AddCellElement (Folio::Core::Game::ACollisionGrid::CellElement (*(g_orchidSpriteDrawingElement.m_drawingElement)));
             
             if (status == ERR_SUCCESS)
             {
-                // Start the orchid sprite's transition tick count.
+                // Entered a new screen.
 
-                orchidSprite->StartTransitionTickCount ();
+                g_orchidSpriteDrawingElement.m_sprite->EnteredNewScreen ();
             } // Endif.
 
         } // Endif.
@@ -557,22 +580,19 @@ FolioStatus UpdateScreenOrchidSprite ()
 
     if (g_screenMap.IsScreenOrchidSprite ())
     {
-        // Yes. Get the orchid sprite.
+        // Yes. Set the orchid sprite's screen position.
 
-        OrchidSpritePtr &orchidSprite(g_orchidSpriteDrawingElement.m_sprite);
-
-        // Set the orchid sprite's screen position.
-
-        status = orchidSprite->SetScreenBottomLeft (g_screenMap.GetScreenOrchidSpriteScreenXLeft (), 
-                                                    g_screenMap.GetScreenOrchidSpriteScreenYBottom ());
+        status = g_orchidSpriteDrawingElement.SetScreenTopLeft (g_screenMap.GetScreenOrchidSpriteScreenXLeft (), 
+                                                                g_screenMap.GetScreenOrchidSpriteScreenYBottom (),
+                                                                false);
 
         if (status == ERR_SUCCESS)
         {
-            // Start the orchid sprite's transition tick count.
+            // Entered a new screen.
 
-            orchidSprite->StartTransitionTickCount ();
+            g_orchidSpriteDrawingElement.m_sprite->EnteredNewScreen ();
         } // Endif.
-
+    
     } // Endif.
 
     return (status);
@@ -587,13 +607,9 @@ FolioStatus CheckScreenOrchidSprite (Gdiplus::Graphics& graphics)
 
     if (g_screenMap.IsScreenOrchidSprite ())
     {
-        // Yes. Get the orchid sprite.
+        // Yes. Check the orchid sprite's transition.
 
-        OrchidSpritePtr &orchidSprite(g_orchidSpriteDrawingElement.m_sprite);
-
-        // Check the orchid sprite's transition.
-
-        orchidSprite->CheckTransition ();
+        g_orchidSpriteDrawingElement.m_sprite->CheckTransition ();
     } // Endif.
 
     return (status);

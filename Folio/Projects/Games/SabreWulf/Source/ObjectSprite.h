@@ -7,6 +7,7 @@
 // "Home-made" includes.
 #include    <Game.h>
 #include    "CollisionGrid.h"
+#include    "ResourceOwnerIds.h"
 
 #pragma pack(push, 1)
 
@@ -18,6 +19,10 @@ namespace Games
 
 namespace SabreWulf
 {
+
+// The maximum number of object sprites per screen.
+const   UInt32  MAX_OBJECT_SPRITES_PER_SCREEN = MAX_OBJECT_SPRITE_DRAWING_ELEMENTS;
+
 
 // Object sprite identifier enumeration.
 enum OBJECT_SPRITE_ID
@@ -61,8 +66,6 @@ private:
 
     UInt32  m_colourChangeCounter;  // The colour change counter of the object sprite (if the object sprite supports colour change).
     UInt32  m_colourChangeIndex;    // The colour change index of the object sprite (if the object sprite supports colour change).
-
-    static  Folio::Core::Util::Sound::SoundSample   m_objectCollectedSoundSample;   // The object collected sound sample.
 
     FolioStatus ChangeAmuletPieceColour ();
 

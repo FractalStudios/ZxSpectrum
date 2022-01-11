@@ -99,6 +99,23 @@ FolioStatus SoundSamplePlayer::Stop ()
     return (m_waveOutDevice.StopPlayingSoundSamples ());
 } // Endproc.
 
+
+/**
+ * Method that will indicate if we're playing any samples.
+ *
+ * @return
+ * The possible return values are:<ul>
+ * <li><b>true</b> if playing any sound samples.
+ * <li><b>false</b> otherwise.
+ * </ul>
+ */
+bool    SoundSamplePlayer::IsPlaying () const
+{
+    // Is the wave out device playing any sound samples?
+
+    return (m_waveOutDevice.IsPlayingSoundSamples ());
+} // Endproc.
+
 } // Endnamespace.
 
 } // Endnamespace.

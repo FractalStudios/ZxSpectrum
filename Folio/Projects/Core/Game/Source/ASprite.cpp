@@ -32,19 +32,24 @@ ASprite::ASprite ()
     m_currentInitialisingSequenceCount(0),
     m_terminatingMaxSequenceCount(0),
     m_currentTerminatingSequenceCount(0),
-    m_playSpriteInitialisingSound(false),
+    m_playSpriteInitialisingSoundResource (false),
+    m_initialisingSpriteSoundResource(0),
+    m_playSpriteInitialisingSoundSamples(false),
     m_currentInitialisingSpriteSoundSamplesListIndex(FOLIO_INVALID_INDEX),
-    m_playSpriteTerminatingSound(false),
+    m_playSpriteTerminatingSoundResource(false),
+    m_terminatingSpriteSoundResource(0),
+    m_playSpriteTerminatingSoundSamples(false),
     m_currentTerminatingSpriteSoundSamplesListIndex(FOLIO_INVALID_INDEX),
     m_isAtWall(false),
+    m_reboundFlags(NO_REBOUND),
     m_resourceGraphicsCache(0),
     m_dcHandle(FOLIO_INVALID_HANDLE),
-    m_collisionGridCellValue(ACollisionGrid::CELL_VALUE_EMPTY),
     m_spriteMovementAudioCount(0),
     m_currentMovementSoundSamplesListIndex(FOLIO_INVALID_INDEX),
     m_playSpriteInitialisedSound(false),
     m_playSpriteTerminatedSound(false), 
-    m_playSpriteReboundSound(false) 
+    m_playSpriteReboundSound(false), 
+    m_actionTickCount(0)
 {
 } // Endproc.
 
@@ -306,7 +311,7 @@ FolioStatus ASprite::StoreUnderlyingBackground (Gdiplus::Graphics&  graphics,
         case STATE_INITIALISE_RQD:
             if (m_initialisingDrawingMode == DM_GRAPHIC)
             {
-                // Set the sprite's screen size.
+                // Set the sprite's screen size, based on the sprite's initialising bitmap.
 
                 SetSpriteScreenSize (m_initialisingSpriteDrawingList.front ().GetCurrentSpriteBitmap ());
             } // Endif.
@@ -319,7 +324,7 @@ FolioStatus ASprite::StoreUnderlyingBackground (Gdiplus::Graphics&  graphics,
         case STATE_TERMINATE_RQD:
             if (m_terminatingDrawingMode == DM_GRAPHIC)
             {
-                // Set the sprite's screen size.
+                // Set the sprite's screen size, based on the sprite's terminating bitmap.
 
                 SetSpriteScreenSize (m_terminatingSpriteDrawingList.front ().GetCurrentSpriteBitmap ());
             } // Endif.
@@ -332,7 +337,6 @@ FolioStatus ASprite::StoreUnderlyingBackground (Gdiplus::Graphics&  graphics,
         case STATE_INITIALISING:
         case STATE_INITIALISED:
         case STATE_TERMINATING:
-        case STATE_TERMINATED:
         case STATE_STATIC:
         case STATE_MOVING:
             // Buffer the underlying background.
@@ -340,6 +344,7 @@ FolioStatus ASprite::StoreUnderlyingBackground (Gdiplus::Graphics&  graphics,
             status = m_underlyingBackground.Buffer (graphics, rect ? *rect : GetScaledRect (m_screenRect.X, m_screenRect.Y));
             break;
 
+        case STATE_TERMINATED:
         default:
             break;
         } // Endswitch.
@@ -488,9 +493,10 @@ FolioStatus ASprite::Draw (Gdiplus::Graphics&   graphics,
         case STATE_INITIALISE_RQD:
             if (m_initialisingDrawingMode == DM_GRAPHIC)
             {
-                // Set the initialising sprite bitmaps.
+                // Set the sprite's initialising bitmaps.
 
-                status = SetCurrentSpriteBitmaps (m_direction, m_initialisingSpriteDrawingList, false, true);
+                status = SetCurrentSpriteBitmaps (m_direction, 
+                                                  m_initialisingSpriteDrawingList);
             } // Endif.
 
             if (status == ERR_SUCCESS)
@@ -506,9 +512,10 @@ FolioStatus ASprite::Draw (Gdiplus::Graphics&   graphics,
         case STATE_TERMINATE_RQD:
             if (m_terminatingDrawingMode == DM_GRAPHIC)
             {
-                // Set the terminating sprite bitmaps.
+                // Set the sprite's terminating bitmaps.
 
-                status = SetCurrentSpriteBitmaps (m_direction, m_terminatingSpriteDrawingList, false, true);
+                status = SetCurrentSpriteBitmaps (m_direction,
+                                                  m_terminatingSpriteDrawingList);
             } // Endif.
 
             if (status == ERR_SUCCESS)
@@ -522,13 +529,13 @@ FolioStatus ASprite::Draw (Gdiplus::Graphics&   graphics,
             break;
 
         case STATE_INITIALISED:
-        case STATE_TERMINATED:
         case STATE_STATIC:
         case STATE_MOVING:
         case STATE_FALLING:
             status = DrawSprite (graphics, rects);
             break;
 
+        case STATE_TERMINATED:
         default:
             break;
         } // Endswitch.
@@ -547,17 +554,31 @@ FolioStatus ASprite::Draw (Gdiplus::Graphics&   graphics,
 
 
 FolioStatus ASprite::SetScreenTopLeft (Int32    screenXLeft,
-                                       Int32    screenYTop)
+                                       Int32    screenY,
+                                       bool     screenYTopSpecified)
 {
     FolioStatus status = ERR_SUCCESS;
 
-    m_screenRect = Gdiplus::Rect(screenXLeft, 
-                                    screenYTop,
-                                    m_screenWidth,
-                                    m_screenHeight);
+    Int32   screenYTop = screenY;   // Initialise!
 
-    m_collisionRect.X = CalculateCollisionXLeft ();
-    m_collisionRect.Y = CalculateCollisionYTop ();
+    // If the screen YTop is not specified, then calculate it.
+
+    if (!screenYTopSpecified)
+    {
+        screenYTop = Folio::Core::Game::ZxSpectrum::CalculateScreenYTop (screenY, 
+                                                                         m_screenWidth,
+                                                                         m_screenHeight);
+    } // Endif.
+
+    // Set the sprite's new screen X and Y positions.
+
+    m_screenRect.X  = screenXLeft; 
+    m_screenRect.Y  = screenYTop;
+
+    // Calculate the sprite's new moving X and Y positions.
+
+    m_movingRect.X = CalculateMovingXLeft (m_screenWidth);
+    m_movingRect.Y = CalculateMovingYTop (m_screenHeight);
 
     return (status);
 } // Endproc.
@@ -605,51 +626,73 @@ Int32   ASprite::GetScreenHeight () const
 } // Endproc.
 
 
-Gdiplus::Rect   ASprite::GetCollisionRect () const
+Gdiplus::Rect   ASprite::GetMovingRect () const
 {
-    return (m_collisionRect);
+    return (m_movingRect);
 } // Endproc.
 
 
-Int32   ASprite::GetCollisionXLeft () const
+Int32   ASprite::GetMovingXLeft () const
 {
-    return (m_collisionRect.X);
+    return (m_movingRect.X);
 } // Endproc.
 
 
-Int32   ASprite::GetCollisionYTop () const
+Int32   ASprite::GetMovingYTop () const
 {
-    return (m_collisionRect.Y);
+    return (m_movingRect.Y);
 } // Endproc.
 
 
-Int32   ASprite::GetCollisionXRight () const
+Int32   ASprite::GetMovingXRight () const
 {
-    return (m_collisionRect.X + m_collisionRect.Width - 1);
+    return (m_movingRect.X + m_movingRect.Width - 1);
 } // Endproc.
 
 
-Int32   ASprite::GetCollisionYBottom () const
+Int32   ASprite::GetMovingYBottom () const
 {
-    return (m_collisionRect.Y + m_collisionRect.Height - 1);
+    return (m_movingRect.Y + m_movingRect.Height - 1);
 } // Endproc.
 
 
-Int32   ASprite::GetCollisionWidth () const
+Int32   ASprite::GetMovingWidth () const
 {
-    return (m_collisionRect.Width);
+    return (m_movingRect.Width);
 } // Endproc.
 
 
-Int32   ASprite::GetCollisionHeight () const
+Int32   ASprite::GetMovingHeight () const
 {
-    return (m_collisionRect.Height);
+    return (m_movingRect.Height);
 } // Endproc.
 
 
 ACollisionGrid::CellValue   ASprite::GetCollisionGridCellValue () const
 {
-    return (m_collisionGridCellValue);
+    ACollisionGrid::CellValue   collisionGridCellValue = ACollisionGrid::CELL_VALUE_EMPTY;  // Initialise!
+
+    if (m_currentSpriteDrawingList &&
+        (m_currentSpriteDrawingListIndex < m_currentSpriteDrawingList->size ()))
+    {
+        collisionGridCellValue = (*m_currentSpriteDrawingList) [m_currentSpriteDrawingListIndex].GetSpriteCollisionGridCellValue (); 
+    } // Endif.
+
+    return (collisionGridCellValue);
+} // Endproc.
+
+
+Gdiplus::Rect   ASprite::GetCollisionGridDeltaRect () const
+{
+    Gdiplus::Rect   collisionGridDeltaRect;
+
+    if (m_currentSpriteDrawingList &&
+        (m_currentSpriteDrawingListIndex < m_currentSpriteDrawingList->size ()))
+    {
+        collisionGridDeltaRect = (*m_currentSpriteDrawingList) [m_currentSpriteDrawingListIndex].GetSpriteCollisionGridDeltaRect (); 
+    } // Endif.
+
+    return (collisionGridDeltaRect);
 } // Endproc.
 
 
@@ -691,23 +734,25 @@ void    ASprite::SetState (STATE    state,
     switch (m_state)
     {
     case STATE_INITIALISE_RQD:
-        m_playSpriteInitialisingSound = playSpriteStateSound;
+        SetPlaySpriteInitialisingSound (playSpriteStateSound);
         break;
 
     case STATE_INITIALISED:
-        m_playSpriteInitialisedSound = playSpriteStateSound;
+        SetPlaySpriteInitialisedSound (playSpriteStateSound);
         break;
 
     case STATE_TERMINATE_RQD:
-        m_playSpriteTerminatingSound = playSpriteStateSound;
+        SetPlaySpriteTerminatingSound (playSpriteStateSound);
         break;
 
     case STATE_TERMINATED:
-        m_playSpriteTerminatedSound = playSpriteStateSound;
+        SetPlaySpriteTerminatedSound (playSpriteStateSound);
         break;
 
     case STATE_FALLING:
         // Always exit south.
+
+        // Set the sprite's current bitmaps, based on the new direction.
 
         SetCurrentSpriteBitmaps (S, m_spriteDrawingList);
         break;
@@ -724,6 +769,39 @@ ASprite::STATE  ASprite::GetState () const
     return (m_state);
 } // Endproc.
 
+
+FolioString ASprite::DescribeState (STATE state)
+{
+    switch (state)
+    {
+    case STATE_CREATED:
+        return (TXT("Created"));
+    case STATE_INITIALISE_RQD:
+        return (TXT("InitialiseRqd"));
+    case STATE_INITIALISING:
+        return (TXT("Initialising"));
+    case STATE_INITIALISED:
+        return (TXT("Initialised"));
+    case STATE_TERMINATE_RQD:
+        return (TXT("TerminateRqd"));
+    case STATE_TERMINATING:
+        return (TXT("Terminating"));
+    case STATE_TERMINATED:
+        return (TXT("Terminated"));
+    case STATE_STATIC:
+        return (TXT("Static"));
+    case STATE_MOVING:
+        return (TXT("Moving"));
+    case STATE_FALLING:
+        return (TXT("Falling"));
+    case STATE_UNKNOWN:
+    default:
+        return (TXT("Unknown"));
+    } // Endswitch.
+
+} // Endproc.
+
+        
 
 bool    ASprite::IsInitialiseRqd () const
 {
@@ -797,22 +875,6 @@ bool    ASprite::IsFalling () const
 } // Endproc.
 
 
-bool    ASprite::IsReady () const
-{
-    switch (m_state)
-    {
-    case STATE_STATIC:
-    case STATE_MOVING:
-    case STATE_FALLING:
-        return (true);
-
-    default:
-        return (false);
-    } // Endswitch.
-
-} // Endproc.
-
-
 void    ASprite::SetAlive (bool playSpriteInitialisingSound)
 {
     SetState (STATE_INITIALISE_RQD, playSpriteInitialisingSound);
@@ -878,78 +940,82 @@ Action  ASprite::GetAction () const
 
 
 FolioStatus ASprite::SetScreenEntranceTopLeft (const Gdiplus::Rect&     screenScreenRect,
-                                               const ACollisionGrid&    collisionGrid)
+                                               const ACollisionGrid*    collisionGrid)
 {
     FolioStatus status = ERR_SUCCESS;
 
     switch (m_screenExit.m_orientation)
     {
     case ACollisionGrid::ScreenExit::TOP:
+        // Calculate the sprite's new moving Y position.
+
+        m_movingRect.Y = screenScreenRect.Y + screenScreenRect.Height - 1 - m_movingRect.Height ; 
+
+        if (collisionGrid)
         {
-            // Calculate the sprite's new collision rect.
-
-            m_collisionRect.Y = screenScreenRect.Y + screenScreenRect.Height - m_collisionRect.Height; 
-
             // Check for a collision with a wall.
 
-            collisionGrid.IsWallCollision (ACollisionGrid::UP, m_collisionRect, true);
+            collisionGrid->IsWallCollision (ACollisionGrid::UP, m_movingRect, true);
+        } // Endif.
 
-            // Set the sprite's position.
+        // Set the sprite's new top-left position.
 
-            status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::UP), 
-                                       CalculateScreenYTop (ACollisionGrid::UP));
-        } // Endscope.
+        status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::UP), 
+                                   CalculateScreenYTop (ACollisionGrid::UP));
         break;
 
     case ACollisionGrid::ScreenExit::BOTTOM:
-        {
-            // Calculate the sprite's new collision rect.
+        // Calculate the sprite's new moving Y position.
  
-            m_collisionRect.Y = screenScreenRect.Y;
+        m_movingRect.Y = screenScreenRect.Y;
 
+        if (collisionGrid)
+        {
             // Check for a collision with a wall.
 
-            collisionGrid.IsWallCollision (ACollisionGrid::DOWN, m_collisionRect, true);
+            collisionGrid->IsWallCollision (ACollisionGrid::DOWN, m_movingRect, true);
+        } // Endif.
 
-            // Set the sprite's position.
+        // Set the sprite's new top-left position.
 
-            status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::DOWN), 
-                                       CalculateScreenYTop (ACollisionGrid::DOWN));
-        } // Endscope.
+        status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::DOWN), 
+                                   CalculateScreenYTop (ACollisionGrid::DOWN));
         break;
 
     case ACollisionGrid::ScreenExit::LEFT:
+        // Calculate the sprite's new moving X position.
+
+        m_movingRect.X = screenScreenRect.X + screenScreenRect.Width - 1 - m_movingRect.Width; 
+
+        if (collisionGrid)
         {
-            // Calculate the sprite's new collision rect.
-
-            m_collisionRect.X = screenScreenRect.X + screenScreenRect.Width - m_collisionRect.Width; 
-
             // Check for a collision with a wall.
 
-            collisionGrid.IsWallCollision (ACollisionGrid::LEFT, m_collisionRect, true);
+            collisionGrid->IsWallCollision (ACollisionGrid::LEFT, m_movingRect, true);
+        } // Endif.
 
-            // Set the sprite's position.
+        // Set the sprite's new top-left position.
 
-            status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::LEFT), 
-                                       CalculateScreenYTop (ACollisionGrid::LEFT));
-        } // Endscope.
+        status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::LEFT), 
+                                   CalculateScreenYTop (ACollisionGrid::LEFT));
         break;                                                                                             
 
     case ACollisionGrid::ScreenExit::RIGHT:
+        // Calculate the sprite's new moving X position.
+
+        m_movingRect.X = screenScreenRect.X;
+
+        if (collisionGrid)
         {
-            // Calculate the sprite's new collision rect.
-
-            m_collisionRect.X = screenScreenRect.X;
-
             // Check for a collision with a wall.
 
-            collisionGrid.IsWallCollision (ACollisionGrid::RIGHT, m_collisionRect, true);
+            collisionGrid->IsWallCollision (ACollisionGrid::RIGHT, m_movingRect, true);
+        } // Endif.
 
-            // Set the sprite's position.
+        // Set the sprite's new top-left position.
 
-            status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::RIGHT), 
-                                       CalculateScreenYTop (ACollisionGrid::RIGHT));
-        } // Endscope.
+        status = SetScreenTopLeft (CalculateScreenXLeft (ACollisionGrid::RIGHT), 
+                                   CalculateScreenYTop (ACollisionGrid::RIGHT));
         break;
 
     default:
@@ -1003,10 +1069,18 @@ FolioStatus ASprite::SetScreenEntrance (ACollisionGrid::ScreenEntrance& screenEn
 
 void    ASprite::ResetScreenEntrance () 
 {
+    ResetScreenExit ();
+} // Endproc.
+
+
+void    ASprite::ResetScreenExit () 
+{
     m_isAtLockedScreenExit  = false;
     m_isInScreenExit        = false;
     m_isExitedScreen        = false;
     m_isEnteringScreen      = false;
+
+    m_screenExit.Reset ();
 } // Endproc.
 
 
@@ -1052,6 +1126,48 @@ ACollisionGrid::ScreenEntrance  ASprite::GetScreenEntrance () const
 } // Endproc.
 
 
+FolioString ASprite::Describe () const
+{
+    FolioOStringStream  str;
+
+    if (m_currentSpriteDrawingList &&
+        (m_currentSpriteDrawingListIndex < m_currentSpriteDrawingList->size ()))
+    {
+        // Describe the sprite's current sprite bitmaps.
+
+        str << (*m_currentSpriteDrawingList) [m_currentSpriteDrawingListIndex].DescribeCurrentSpriteBitmap ()
+            << TXT(" ");
+    } // Endif.
+        
+    str << TXT("s=") << DescribeState (m_state)
+        << TXT(" x=") << m_screenRect.X
+        << TXT(" y=") << m_screenRect.Y
+        << TXT(" w=") << m_screenRect.Width
+        << TXT(" h=") << m_screenRect.Height
+        << TXT(" d=") << DescribeDirection (m_direction)
+        << TXT(" a=") << m_action
+        << TXT(" v=") << m_speed;
+
+    return (str.str ());
+} // Endproc.
+
+
+bool    ASprite::IsReady () const
+{
+    switch (m_state)
+    {
+    case STATE_STATIC:
+    case STATE_MOVING:
+    case STATE_FALLING:
+        return (true);
+
+    default:
+        return (false);
+    } // Endswitch.
+
+} // Endproc.
+
+
 FolioStatus ASprite::Draw (Int32                                                screenXLeft, 
                            Int32                                                screenYTop,
                            Gdiplus::Graphics&                                   graphics,
@@ -1086,7 +1202,8 @@ FolioStatus ASprite::Create (FolioHandle                                dcHandle
                              Gdiplus::ARGB                              spriteInkColour,
                              Direction                                  initialDirection,
                              Folio::Core::Game::ResourceGraphicsCache   *resourceGraphicsCache,
-                             UInt32                                     maxNumAutoMoves)
+                             UInt32                                     maxNumAutoMoves,
+                             UInt32                                     reboundFlags)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -1111,27 +1228,25 @@ FolioStatus ASprite::Create (FolioHandle                                dcHandle
 
         if (status == ERR_SUCCESS)
         {
-            // Set the current sprite bitmaps.
+            // Set the sprite's current bitmaps.
 
             status = SetCurrentSpriteBitmaps (initialDirection, m_spriteDrawingList);
 
             if (status == ERR_SUCCESS)
             {
-                // Get the current sprite bitmap.
+                // Get the sprite's current bitmap.
 
                 SpriteDrawing::SpriteBitmap currentSpriteBitmap(GetCurrentSpriteBitmap ());
 
-                // Set the sprite's width and height.
+                // Set the sprite's new width.
 
-                Int32   bitmapScreenWidth = currentSpriteBitmap->GetScreenWidth ();
-                SetScreenWidth (bitmapScreenWidth);
-                m_collisionRect.Width = bitmapScreenWidth;
+                SetSpriteWidth (currentSpriteBitmap->GetScreenWidth ());
 
-                Int32   bitmapScreenHeight = currentSpriteBitmap->GetScreenHeight ();
-                SetScreenHeight (bitmapScreenHeight);
-                m_collisionRect.Height = bitmapScreenHeight;
+                // Set the sprite's new height.
 
-                // Set the sprite's top-left position.
+                SetSpriteHeight (currentSpriteBitmap->GetScreenHeight ());
+
+                // Set the sprite's new top-left position.
 
                 status = SetScreenTopLeft (initialScreenXLeft, initialScreenYTop);
 
@@ -1155,10 +1270,11 @@ FolioStatus ASprite::Create (FolioHandle                                dcHandle
                         m_remainingNumAutoMoves = maxNumAutoMoves;
                         m_resourceGraphicsCache = resourceGraphicsCache;
                         m_dcHandle              = dcHandle;
+                        m_reboundFlags          = reboundFlags;
 
                         // Set the sprite's previous direction.
 
-                        SetPreviousSpriteDirection (m_direction);
+                        SetPreviousDirection (m_direction);
 
                         // We're good to go.
 
@@ -1232,6 +1348,84 @@ FolioStatus ASprite::Destroy ()
 } // Endproc.
 
 
+FolioStatus ASprite::InitialiseSprite (Gdiplus::Graphics&   graphics,
+                                       RectList*            rects)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Initialisation is dependent on the drawing mode.
+        
+    switch (m_initialisingDrawingMode)
+    {
+    case DM_GRAPHIC:
+        status = PerformGraphicInitialising (graphics, rects);
+        break;
+
+    default:
+        // Let our sub-class handle initialise.
+
+        status = HandleInitialiseSprite (graphics, rects);
+        break;
+    } // Endswitch.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::TerminateSprite (Gdiplus::Graphics&    graphics,
+                                      RectList*             rects)
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    // Termination is dependent on the drawing mode.
+        
+    switch (m_terminatingDrawingMode)
+    {
+    case DM_GRAPHIC:
+        status = PerformGraphicTerminating (graphics, rects);
+        break;
+
+    default:
+        // Let our sub-class handle terminate.
+
+        status = HandleTerminateSprite (graphics, rects);
+        break;
+    } // Endswitch.
+
+    return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::DrawSprite (Gdiplus::Graphics& graphics,
+                                 RectList*          rects)
+{
+    // Obtain the sprite's current bitmaps.
+
+    SpriteDrawing::SpriteBitmap spriteBitmap;
+    SpriteDrawing::SpriteBitmap spriteMaskedBitmap;
+
+    FolioStatus status = QueryCurrentSpriteBitmaps (spriteBitmap,
+                                                    spriteMaskedBitmap);
+
+    if (status == ERR_SUCCESS)
+    {
+        // Draw the sprite's masked bitmap.
+
+        status = spriteMaskedBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics);
+
+        if (status == ERR_SUCCESS)
+        {
+            // Draw the sprite's bitmap.
+
+            status = spriteBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics, rects);
+        } // Endif.
+
+    } // Endif.
+
+    return (status);
+} // Endproc.
+
+
 void    ASprite::SetSpriteMovementSoundSamples (const SpriteMovementSoundSamplesList& spriteMovementSoundSamplesList)
 {
     m_spriteMovementSoundSamplesList = spriteMovementSoundSamplesList;
@@ -1244,31 +1438,31 @@ void    ASprite::SetSpriteMovementSoundSamples (const SpriteMovementSoundSamples
 void    ASprite::SetSpriteInitialisedSoundSample (const SpriteSoundSample& spriteInitialisedSoundSample)
 {
     m_spriteInitialisedSoundSample = spriteInitialisedSoundSample;
-    
-    SetPlaySpriteInitialisedSound (true);
+
+    SetPlaySpriteInitialisedSound (true); 
 } // Endproc.
 
 
 void    ASprite::SetSpriteTerminatedSoundSample (const SpriteSoundSample& spriteTerminatedSoundSample)
 {
     m_spriteTerminatedSoundSample = spriteTerminatedSoundSample;
-    
-    SetPlaySpriteTerminatedSound (true);
+
+    SetPlaySpriteTerminatedSound (true); 
 } // Endproc.
 
 
 void    ASprite::SetSpriteReboundSoundSample (const SpriteSoundSample& spriteReboundSoundSample)
 {
     m_spriteReboundSoundSample = spriteReboundSoundSample;
-    
-    SetPlaySpriteReboundSound (true);
+
+    SetPlaySpriteReboundSound (true); 
 } // Endproc.
 
 
-FolioStatus ASprite::SetGraphicInitialisingMode (FolioHandle                                dcHandle,
-                                                 const SpriteGraphicAttributesList&         initialisingSpriteGraphicAttributesList,
-                                                 UInt32                                     initialisingMaxSequenceCount,
-                                                 const SpriteStationarySoundSamplesList*    initialisingSpriteSoundSamplesList)
+FolioStatus ASprite::SetGraphicInitialisingMode (FolioHandle                        dcHandle,
+                                                 const SpriteGraphicAttributesList& initialisingSpriteGraphicAttributesList,
+                                                 UInt32                             initialisingMaxSequenceCount,
+                                                 FolioHandle                        initialisingSpriteSoundResource)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -1289,17 +1483,11 @@ FolioStatus ASprite::SetGraphicInitialisingMode (FolioHandle                    
         {
             // Note the sprite's initialising attributes.
 
-            m_initialisingDrawingMode           = DM_GRAPHIC;
-            m_initialisingMaxSequenceCount      = initialisingMaxSequenceCount * m_initialisingSpriteDrawingList.front ().m_spriteGraphicsList.size ();
-            m_currentInitialisingSequenceCount  = 0;
-
-            if (initialisingSpriteSoundSamplesList)
-            {
-                m_initialisingSpriteSoundSamplesList                = *initialisingSpriteSoundSamplesList;
-                m_currentInitialisingSpriteSoundSamplesListIndex    = 0;
-                m_playSpriteInitialisingSound                       = true;
-            } // Endif.
-
+            m_initialisingDrawingMode               = DM_GRAPHIC;
+            m_initialisingMaxSequenceCount          = initialisingMaxSequenceCount * m_initialisingSpriteDrawingList.front ().m_spriteGraphicsList.size ();
+            m_currentInitialisingSequenceCount      = 0;
+            m_playSpriteInitialisingSoundResource   = initialisingSpriteSoundResource != 0; 
+            m_initialisingSpriteSoundResource       = initialisingSpriteSoundResource;
         } // Endif.
         break;
 
@@ -1312,10 +1500,10 @@ FolioStatus ASprite::SetGraphicInitialisingMode (FolioHandle                    
 } // Endproc.
 
 
-FolioStatus ASprite::SetGraphicTerminatingMode (FolioHandle                             dcHandle,
-                                                const SpriteGraphicAttributesList&      terminatingSpriteGraphicAttributesList,
-                                                UInt32                                  terminatingMaxSequenceCount,
-                                                const SpriteStationarySoundSamplesList* terminatingSpriteSoundSamplesList)
+FolioStatus ASprite::SetGraphicTerminatingMode (FolioHandle                         dcHandle,
+                                                const SpriteGraphicAttributesList&  terminatingSpriteGraphicAttributesList,
+                                                UInt32                              terminatingMaxSequenceCount,
+                                                FolioHandle                         terminatingSpriteSoundResource)
 {
     FolioStatus status = ERR_SUCCESS;
 
@@ -1341,17 +1529,11 @@ FolioStatus ASprite::SetGraphicTerminatingMode (FolioHandle                     
         {
             // Note the sprite's terminating attributes.
 
-            m_terminatingDrawingMode            = DM_GRAPHIC;
-            m_terminatingMaxSequenceCount       = terminatingMaxSequenceCount * m_terminatingSpriteDrawingList.front ().m_spriteGraphicsList.size ();
-            m_currentTerminatingSequenceCount   = 0;
-
-            if (terminatingSpriteSoundSamplesList)
-            {
-                m_terminatingSpriteSoundSamplesList             = *terminatingSpriteSoundSamplesList;
-                m_currentTerminatingSpriteSoundSamplesListIndex = 0;
-                m_playSpriteTerminatingSound                    = true;
-            } // Endif.
-
+            m_terminatingDrawingMode                = DM_GRAPHIC;
+            m_terminatingMaxSequenceCount           = terminatingMaxSequenceCount * m_terminatingSpriteDrawingList.front ().m_spriteGraphicsList.size ();
+            m_currentTerminatingSequenceCount       = 0;
+            m_playSpriteTerminatingSoundResource    = terminatingSpriteSoundResource != 0; 
+            m_terminatingSpriteSoundResource        = terminatingSpriteSoundResource;
         } // Endif.
         break;
 
@@ -1366,31 +1548,42 @@ FolioStatus ASprite::SetGraphicTerminatingMode (FolioHandle                     
 
 void    ASprite::SetPlaySpriteInitialisingSound (bool playSpriteInitialisingSound)
 {
-    m_playSpriteInitialisingSound = playSpriteInitialisingSound;
+    m_playSpriteInitialisingSoundSamples = playSpriteInitialisingSound && 
+                                           !m_initialisingSpriteSoundSamplesList.empty ();
+
+    m_playSpriteInitialisingSoundResource = playSpriteInitialisingSound && 
+                                            m_initialisingSpriteSoundResource;
 } // Endproc.
 
 
 void    ASprite::SetPlaySpriteTerminatingSound (bool playSpriteTerminatingSound)
 {
-    m_playSpriteTerminatingSound = playSpriteTerminatingSound;
+    m_playSpriteTerminatingSoundSamples = playSpriteTerminatingSound &&
+                                          !m_terminatingSpriteSoundSamplesList.empty ();
+
+    m_playSpriteTerminatingSoundResource = playSpriteTerminatingSound && 
+                                           m_terminatingSpriteSoundResource;
 } // Endproc.
 
 
 void    ASprite::SetPlaySpriteInitialisedSound (bool playSpriteInitialisedSound)
 {
-    m_playSpriteInitialisedSound = playSpriteInitialisedSound;
+    m_playSpriteInitialisedSound = playSpriteInitialisedSound &&
+                                   m_spriteInitialisedSoundSample.get () != 0;
 } // Endproc.
 
 
 void    ASprite::SetPlaySpriteTerminatedSound (bool playSpriteTerminatedSound)
 {
-    m_playSpriteTerminatedSound = playSpriteTerminatedSound;
+    m_playSpriteTerminatedSound = playSpriteTerminatedSound &&
+                                  m_spriteTerminatedSoundSample.get () != 0;
 } // Endproc.
 
 
 void    ASprite::SetPlaySpriteReboundSound (bool playSpriteReboundSound)
 {
-    m_playSpriteReboundSound = playSpriteReboundSound;
+    m_playSpriteReboundSound = playSpriteReboundSound &&
+                               m_spriteReboundSoundSample.get () != 0;
 } // Endproc.
 
 
@@ -1404,13 +1597,13 @@ FolioStatus ASprite::SetDirection (Direction direction)
     {
         // Set the sprite's previous direction.
 
-        SetPreviousSpriteDirection (m_direction);
+        SetPreviousDirection (m_direction);
 
         // Note the sprite's new direction.
         
         m_direction = direction;
 
-        // Set the current sprite bitmaps based on the new direction.
+        // Set the sprite's current bitmaps, based on the new direction.
 
         status = SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingList);
 
@@ -1428,30 +1621,72 @@ FolioStatus ASprite::SetDirection (Direction direction)
 } // Endproc.
 
 
+bool    ASprite::IsDirection (Direction direction) const
+{
+    return (m_direction == direction);
+} // Endproc.
+
+
 bool    ASprite::IsDirection () const
 {
     return (m_direction != NO_DIRECTION);
 } // Endproc.
 
 
-FolioStatus ASprite::SetAction (Action action)
+FolioStatus ASprite::SetAction (Action  action,
+                                UInt32  actionTickCount)
 {
     FolioStatus status = ERR_SUCCESS;
 
     // Has the sprite's action changed?
 
-    if (action != m_action)
+    if (action == m_action)
     {
-        // Note the sprite's new action.
+        // No. 
+        
+        if (action != NO_ACTION)
+        {
+            // Select the current sprite's next bitmaps.
+
+            status = SelectNextSpriteBitmaps ();
+        } // Endif.
+
+    } // Endif.
+
+    else
+    {
+        // Yes. Note the sprite's new action.
 
         m_action = action;
     
-        // Set the current sprite bitmaps.
+        // Set the sprite's current bitmaps, based on the new action.
 
-        status = SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingList);
+        status = SetCurrentSpriteBitmaps (m_direction, 
+                                          m_spriteDrawingList,
+                                          true);    // Set the sprite's screen size.
+
+        if (actionTickCount && (status == ERR_SUCCESS))
+        {
+            // Start the action tick count.
+
+            StartActionTickCount (actionTickCount);
+        } // Endif.
+
     } // Endif.
 
     return (status);
+} // Endproc.
+
+
+FolioStatus ASprite::ResetAction ()
+{
+    return (SetAction (NO_ACTION));
+} // Endproc.
+
+
+bool    ASprite::IsAction (Action action) const
+{
+    return (m_action == action);
 } // Endproc.
 
 
@@ -1461,7 +1696,19 @@ bool    ASprite::IsAction () const
 } // Endproc.
 
 
-void    ASprite::SetPreviousSpriteDirection (Direction direction)
+bool    ASprite::IsActionComplete (Action action) const
+{
+    return (IsAction (action) && IsActionTickCountComplete ());
+} // Endproc.
+
+
+bool    ASprite::IsAtWall () const
+{
+    return (m_isAtWall);
+} // Endproc.
+
+
+void    ASprite::SetPreviousDirection (Direction direction)
 {
     switch (direction)
     {
@@ -1504,9 +1751,21 @@ void    ASprite::SetPreviousSpriteDirection (Direction direction)
 } // Endproc.
 
 
-Direction   ASprite::GetPreviousSpriteDirection () const
+Direction   ASprite::GetPreviousDirection () const
 {
     return (m_previousHorizontalDirection | m_previousVerticalDirection);
+} // Endproc.
+
+
+Direction   ASprite::GetPreviousHorizontalDirection () const
+{
+    return (m_previousHorizontalDirection);
+} // Endproc.
+
+
+Direction   ASprite::GetPreviousVerticalDirection () const
+{
+    return (m_previousVerticalDirection);
 } // Endproc.
 
 
@@ -1519,8 +1778,8 @@ Direction   ASprite::GetDirectionToScreenTopLeft (Int32                 initialS
 
     if (toScreenTopLeft)
     {
-        direction  = (m_collisionRect.X <= initialScreenXLeft) ? E : W;
-        direction |= (m_collisionRect.Y <= initialScreenYTop) ? S : N;
+        direction  = (m_movingRect.X <= initialScreenXLeft) ? E : W;
+        direction |= (m_movingRect.Y <= initialScreenYTop) ? S : N;
     } // Endif.
 
     else
@@ -1536,8 +1795,8 @@ Direction   ASprite::GetDirectionToScreenTopLeft (Int32                 initialS
 bool    ASprite::IsAtScreenTopLeft (Int32   initialScreenXLeft,
                                     Int32   initialScreenYTop) const
 {
-    return ((m_collisionRect.X == initialScreenXLeft) &&
-            (m_collisionRect.Y == initialScreenYTop));
+    return ((m_movingRect.X == initialScreenXLeft) &&
+            (m_movingRect.Y == initialScreenYTop));
 } // Endproc.
 
 
@@ -1549,8 +1808,8 @@ Direction   ASprite::GetDirectionToScreenRect (const Gdiplus::Rect&     screenRe
 
     if (toScreenRect)
     {
-        direction  = (m_collisionRect.X <= screenRect.X) ? E : W;
-        direction |= ((m_collisionRect.Y + m_collisionRect.Height - 1) <= (screenRect.Y + screenRect.Height - 1)) ? S : N;
+        direction  = (m_movingRect.X <= screenRect.X) ? E : W;
+        direction |= ((m_movingRect.Y + m_movingRect.Height - 1) <= (screenRect.Y + screenRect.Height - 1)) ? S : N;
     } // Endif.
 
     else
@@ -1565,15 +1824,15 @@ Direction   ASprite::GetDirectionToScreenRect (const Gdiplus::Rect&     screenRe
 
 bool    ASprite::IsAtScreenRect (const Gdiplus::Rect& screenRect) const
 {
-    return ((m_collisionRect.X == screenRect.X) &&
-           ((m_collisionRect.Y + m_collisionRect.Height) == (screenRect.Y + screenRect.Height)));
+    return ((m_movingRect.X == screenRect.X) &&
+           ((m_movingRect.Y + m_movingRect.Height) == (screenRect.Y + screenRect.Height)));
 } // Endproc.
 
 
 Direction  ASprite::GetDirectionToNearestCorner (const ACollisionGrid &collisionGrid) const
 {
-    Direction   direction = ((m_collisionRect.X + m_collisionRect.Width / 2) <= (collisionGrid.GetFloorLeftBound () + collisionGrid.GetFloorWidth () / 2)) ? W : E;
-    direction |= ((m_collisionRect.Y + m_collisionRect.Height / 2) <= (collisionGrid.GetFloorTopBound () + collisionGrid.GetFloorHeight () / 2)) ? N : S;
+    Direction   direction = ((m_movingRect.X + m_movingRect.Width / 2) <= (collisionGrid.GetFloorLeftBound () + collisionGrid.GetFloorWidth () / 2)) ? W : E;
+    direction |= ((m_movingRect.Y + m_movingRect.Height / 2) <= (collisionGrid.GetFloorTopBound () + collisionGrid.GetFloorHeight () / 2)) ? N : S;
 
     return (direction);
 } // Endproc.
@@ -1581,8 +1840,7 @@ Direction  ASprite::GetDirectionToNearestCorner (const ACollisionGrid &collision
 
 FolioStatus ASprite::SetCurrentSpriteBitmaps (Direction             direction,
                                               SpriteDrawingList&    spriteDrawingList,
-                                              bool                  setSpriteScreenSize,
-                                              bool                  ignoreAction)
+                                              bool                  setSpriteScreenSize)
 {
     FolioStatus status = ERR_NOT_FOUND;
 
@@ -1600,38 +1858,20 @@ FolioStatus ASprite::SetCurrentSpriteBitmaps (Direction             direction,
     {
         // Find the sprite bitmaps that relate to the sprite bitmap index and direction.
 
+        bool    foundAction = false;    // Initialise!
+
         for (SpriteDrawingList::iterator itr = spriteDrawingList.begin ();
              itr != spriteDrawingList.end ();
              ++itr)
         {
-            if (((itr->m_direction & direction) == itr->m_direction) &&
-                 (ignoreAction || (itr->m_action == m_action)))
+            if (itr->m_action == m_action)
             {
-                // Set the current sprite drawing list.
-                
-                m_currentSpriteDrawingList      = &(spriteDrawingList);
-                m_currentSpriteDrawingListIndex = std::distance (spriteDrawingList.begin (), itr);
+                foundAction = true;
 
-                status = ERR_SUCCESS;
-
-                break;  // Get-outta-here!
-            } // Endif.
-
-        } // Endfor.
-
-        if (status == ERR_NOT_FOUND)
-        {
-            Direction   previousDirection = GetPreviousSpriteDirection ();
-
-            for (SpriteDrawingList::iterator itr = spriteDrawingList.begin ();
-                 itr != spriteDrawingList.end ();
-                 ++itr)
-            {
-                if (((itr->m_direction & previousDirection) == itr->m_direction) &&
-                     (ignoreAction || (itr->m_action == m_action)))
+                if ((itr->m_direction & direction) == itr->m_direction)
                 {
                     // Set the current sprite drawing list.
-                    
+                
                     m_currentSpriteDrawingList      = &(spriteDrawingList);
                     m_currentSpriteDrawingListIndex = std::distance (spriteDrawingList.begin (), itr);
 
@@ -1639,6 +1879,52 @@ FolioStatus ASprite::SetCurrentSpriteBitmaps (Direction             direction,
 
                     break;  // Get-outta-here!
                 } // Endif.
+
+            } // Endif.
+
+            else
+            if (foundAction)
+            {
+                break;  // Get-outta-here!
+            } // Endelseif.
+
+        } // Endfor.
+
+        if (status == ERR_NOT_FOUND)
+        {
+            // Find the sprite bitmaps that relate to the sprite bitmap index and previous direction.
+
+            Direction   previousDirection = GetPreviousDirection ();
+
+            foundAction = false;    // Initialise!
+
+            for (SpriteDrawingList::iterator itr = spriteDrawingList.begin ();
+                 itr != spriteDrawingList.end ();
+                 ++itr)
+            {
+                if (itr->m_action == m_action)
+                {
+                    foundAction = true;
+
+                    if ((itr->m_direction & previousDirection) == itr->m_direction)
+                    {
+                        // Set the current sprite drawing list.
+                    
+                        m_currentSpriteDrawingList      = &(spriteDrawingList);
+                        m_currentSpriteDrawingListIndex = std::distance (spriteDrawingList.begin (), itr);
+
+                        status = ERR_SUCCESS;
+
+                        break;  // Get-outta-here!
+                    } // Endif.
+
+                } // Endif.
+
+                else
+                if (foundAction)
+                {
+                    break;  // Get-outta-here!
+                } // Endelseif.
 
             } // Endfor.
 
@@ -1648,7 +1934,7 @@ FolioStatus ASprite::SetCurrentSpriteBitmaps (Direction             direction,
 
     if (setSpriteScreenSize && (status == ERR_SUCCESS))
     {
-        // Set the sprite's screen size.
+        // Set the sprite's screen size, based on the sprite's current bitmap.
 
         SetSpriteScreenSize (GetCurrentSpriteBitmap ());
     } // Endif.
@@ -1688,6 +1974,27 @@ FolioStatus ASprite::QueryCurrentSpriteBitmaps (SpriteDrawing::SpriteBitmap&    
 } // Endproc.
 
 
+FolioStatus ASprite::SelectNextSpriteBitmaps ()
+{
+    FolioStatus status = ERR_SUCCESS;
+
+    if (m_currentSpriteDrawingList &&
+        (m_currentSpriteDrawingListIndex < m_currentSpriteDrawingList->size ()))
+    {
+        // Query the sprite's current sprite bitmaps.
+
+        (*m_currentSpriteDrawingList) [m_currentSpriteDrawingListIndex].SelectNextSpriteBitmaps ();
+    } // Endif.
+
+    else
+    {
+        status = ERR_NOT_FOUND;
+    } // Endelse.
+
+    return (status);
+} // Endproc.
+
+
 bool    ASprite::IsAutoMoveModeSupported () const
 {
     return (m_maxNumAutoMoves != 0);
@@ -1707,37 +2014,61 @@ void    ASprite::IncNumRemainingAutoModeMoves ()
 } // Endproc.
 
 
-FolioStatus ASprite::PlaySpriteInitialisingSound (UInt32    initialisingSpriteSoundSamplesListIndex,
+void    ASprite::ResetNumRemainingAutoModeMoves ()
+{
+    m_remainingNumAutoMoves = 0;
+} // Endproc.
+
+
+FolioStatus ASprite::PlaySpriteInitialisingSound (UInt32    initialisingSequenceCount,
+                                                  UInt32    initialisingSpriteSoundSamplesListIndex,
                                                   bool      playAsynchronously) const
 {
     FolioStatus status = ERR_SUCCESS;
 
-    if (m_playSpriteInitialisingSound)
+    if (!initialisingSequenceCount && m_playSpriteInitialisingSoundResource)
+    {
+        // Play the sprite's initialising sound resource.
+
+        status = PlaySpriteSoundResource (m_initialisingSpriteSoundResource, playAsynchronously);
+    } // Endif.
+
+    else
+    if (m_playSpriteInitialisingSoundSamples)
     {
         // Play the sprite's initialising sound samples.
 
         status = PlaySpriteStationarySoundSamples (m_initialisingSpriteSoundSamplesList,
                                                    initialisingSpriteSoundSamplesListIndex,
                                                    playAsynchronously);
-    } // Endif.
+    } // Endelseif.
 
     return (status);
 } // Endproc.
 
 
-FolioStatus ASprite::PlaySpriteTerminatingSound (UInt32 terminatingSpriteSoundSamplesListIndex,
+FolioStatus ASprite::PlaySpriteTerminatingSound (UInt32 terminatingSequenceCount,
+                                                 UInt32 terminatingSpriteSoundSamplesListIndex,
                                                  bool   playAsynchronously) const
 {
     FolioStatus status = ERR_SUCCESS;
 
-    if (m_playSpriteTerminatingSound)
+    if (!terminatingSequenceCount && m_playSpriteTerminatingSoundResource)
+    {
+        // Play the sprite's terminating sound resource.
+
+        status = PlaySpriteSoundResource (m_terminatingSpriteSoundResource, playAsynchronously);
+    } // Endif.
+
+    else
+    if (m_playSpriteTerminatingSoundSamples)
     {
         // Play the sprite's terminating sound samples.
 
         status = PlaySpriteStationarySoundSamples (m_terminatingSpriteSoundSamplesList,
                                                    terminatingSpriteSoundSamplesListIndex,
                                                    playAsynchronously);
-    } // Endif.
+    } // Endelseif.
 
     return (status);
 } // Endproc.
@@ -1837,27 +2168,76 @@ FolioStatus ASprite::PlaySpriteMovementSound (bool playAsynchronously)
 } // Endproc.
 
 
-Int32   ASprite::CalculateCollisionXLeft () const
+Direction  ASprite::GetFloorBoundDirection (ACollisionGrid::DIRECTION collisionGridDirection) const
 {
-    return (m_screenRect.X);
+    Direction   direction = m_direction;    // Note the sprite's current direction.
+
+    switch (collisionGridDirection)
+    {
+    case ACollisionGrid::UP:
+        direction &= ~N;
+        direction |= S;
+        break;
+
+    case ACollisionGrid::DOWN:
+        direction &= ~S;
+        direction |= N;
+        break;
+
+    case ACollisionGrid::LEFT:
+        direction &= ~W;
+        direction |= E;
+        break;
+
+    case ACollisionGrid::RIGHT:
+        direction &= ~E;
+        direction |= W;
+        break;
+
+    default:
+        break;
+    } // Endswitch.
+
+    return (direction);
 } // Endproc.
 
 
-Int32   ASprite::CalculateCollisionYTop () const
+ACollisionGrid::DIRECTION   ASprite::ToCollisionGridDirection (Folio::Core::Game::Direction direction)
 {
-    return (m_screenRect.Y);
+    switch (direction)
+    {
+    case N:
+        return (ACollisionGrid::UP);
+
+    case S:
+        return (ACollisionGrid::DOWN);
+    
+    case E:
+    case NE:
+    case SE:
+        return (ACollisionGrid::RIGHT);
+    
+    case W:
+    case NW:
+    case SW:
+        return (ACollisionGrid::LEFT);
+
+    default:
+        return (ACollisionGrid::UNDEFINED);
+    } // Endswitch.
+
 } // Endproc.
 
 
 Int32   ASprite::CalculateScreenXLeft (ACollisionGrid::DIRECTION collisionGridDirection) const
 {
-    return (m_collisionRect.X);
+    return (GetMovingXLeft ());
 } // Endproc.
 
 
 Int32   ASprite::CalculateScreenYTop (ACollisionGrid::DIRECTION collisionGridDirection) const
 {
-    return (m_collisionRect.Y);
+    return (GetMovingYTop ());
 } // Endproc.
 
 
@@ -1870,6 +2250,30 @@ Int32   ASprite::CalculateScreenXLeft (Int32 bitmapScreenWidth) const
 Int32   ASprite::CalculateScreenYTop (Int32 bitmapScreenHeight) const
 {
     return (m_screenRect.Y + (m_screenHeight - bitmapScreenHeight) / 2);
+} // Endproc.
+
+
+Int32   ASprite::CalculateMovingXLeft (Int32 bitmapScreenWidth) const
+{
+    return (GetScreenXLeft ());
+} // Endproc.
+
+
+Int32   ASprite::CalculateMovingYTop (Int32 bitmapScreenHeight) const
+{
+    return (GetScreenYTop ());
+} // Endproc.
+
+
+Int32   ASprite::CalculateMovingWidth (Int32 bitmapScreenWidth) const
+{
+    return (GetScreenWidth ());
+} // Endproc.
+
+
+Int32   ASprite::CalculateMovingHeight (Int32 bitmapScreenHeight) const
+{
+    return (GetScreenHeight ());
 } // Endproc.
 
 
@@ -1889,7 +2293,8 @@ FolioStatus ASprite::HandleTerminateSprite (Gdiplus::Graphics&  graphics,
 {
     // Sprite is terminated.
 
-    m_state = STATE_TERMINATED;
+    m_state     = STATE_TERMINATED;
+    m_action    = NO_ACTION;
 
     return (ERR_SUCCESS);
 } // Endproc.
@@ -1917,7 +2322,8 @@ FolioStatus ASprite::HandleMoveSprite (Gdiplus::Graphics&       graphics,
             
             // Sprite is terminated.
 
-            m_state = STATE_TERMINATED;
+            m_state     = STATE_TERMINATED;
+            m_action    = NO_ACTION;
         } // Endif.
 
     } // Endif.
@@ -1994,98 +2400,9 @@ FolioStatus ASprite::CreateSpriteDrawingList (FolioHandle                       
             // Add to the sprite drawing list.
             
             spriteDrawingList.push_back (spriteDrawing);
-
-            if (m_drawingElementId.empty ())
-            {
-                // Get the sprite graphic.
-
-                const SpriteGraphic&    spriteGraphic(itr->m_spriteGraphicsList.front ());
-
-                m_drawingElementId          = spriteGraphic->GetDrawingElementId ();
-                m_collisionGridCellValue    = spriteGraphic->GetCollisionGridCellValue ();
-            } // Endif.
-
         } // Endif.
 
     } // Endfor.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::InitialiseSprite (Gdiplus::Graphics&   graphics,
-                                       RectList*            rects)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Initialisation is dependent on the drawing mode.
-        
-    switch (m_initialisingDrawingMode)
-    {
-    case DM_GRAPHIC:
-        status = PerformGraphicInitialising (graphics, rects);
-        break;
-
-    default:
-        // Let our sub-class handle initialise.
-
-        status = HandleInitialiseSprite (graphics, rects);
-        break;
-    } // Endswitch.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::TerminateSprite (Gdiplus::Graphics&    graphics,
-                                      RectList*             rects)
-{
-    FolioStatus status = ERR_SUCCESS;
-
-    // Termination is dependent on the drawing mode.
-        
-    switch (m_terminatingDrawingMode)
-    {
-    case DM_GRAPHIC:
-        status = PerformGraphicTerminating (graphics, rects);
-        break;
-
-    default:
-        // Let our sub-class handle terminate.
-
-        status = HandleTerminateSprite (graphics, rects);
-        break;
-    } // Endswitch.
-
-    return (status);
-} // Endproc.
-
-
-FolioStatus ASprite::DrawSprite (Gdiplus::Graphics& graphics,
-                                 RectList*          rects)
-{
-    // Obtain the sprite's current bitmaps.
-
-    SpriteDrawing::SpriteBitmap spriteBitmap;
-    SpriteDrawing::SpriteBitmap spriteMaskedBitmap;
-
-    FolioStatus status = QueryCurrentSpriteBitmaps (spriteBitmap,
-                                                    spriteMaskedBitmap);
-
-    if (status == ERR_SUCCESS)
-    {
-        // Draw the sprite's masked bitmap.
-
-        status = spriteMaskedBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics);
-
-        if (status == ERR_SUCCESS)
-        {
-            // Draw the sprite's bitmap.
-
-            status = spriteBitmap->Draw (m_screenRect.X, m_screenRect.Y, graphics, rects);
-        } // Endif.
-
-    } // Endif.
 
     return (status);
 } // Endproc.
@@ -2118,7 +2435,8 @@ FolioStatus ASprite::PerformGraphicInitialising (Gdiplus::Graphics& graphics,
             {
                 // Play the sprite's initialising sound.
 
-                status = PlaySpriteInitialisingSound (m_currentInitialisingSpriteSoundSamplesListIndex);
+                status = PlaySpriteInitialisingSound (m_currentInitialisingSequenceCount,
+                                                      m_currentInitialisingSpriteSoundSamplesListIndex);
 
                 if (status == ERR_SUCCESS)
                 {
@@ -2138,9 +2456,11 @@ FolioStatus ASprite::PerformGraphicInitialising (Gdiplus::Graphics& graphics,
                         m_currentInitialisingSequenceCount                  = 0;    // Reset.
                         m_currentInitialisingSpriteSoundSamplesListIndex    = 0;
 
-                        // Set the current sprite bitmaps.
+                        // Set the sprite's current bitmaps.
 
-                        SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingList, true);
+                        SetCurrentSpriteBitmaps (m_direction, 
+                                                 m_spriteDrawingList,
+                                                 true); // Set the sprite's screen size.
                     } // Endif.
 
                 } // Endif.
@@ -2182,7 +2502,8 @@ FolioStatus ASprite::PerformGraphicTerminating (Gdiplus::Graphics&  graphics,
             {
                 // Play the sprite's terminating sound.
 
-                status = PlaySpriteTerminatingSound (m_currentTerminatingSpriteSoundSamplesListIndex);
+                status = PlaySpriteTerminatingSound (m_currentTerminatingSequenceCount,
+                                                     m_currentTerminatingSpriteSoundSamplesListIndex);
                     
                 if (status == ERR_SUCCESS)
                 {
@@ -2199,12 +2520,16 @@ FolioStatus ASprite::PerformGraphicTerminating (Gdiplus::Graphics&  graphics,
 
                     if (m_state == STATE_TERMINATED)
                     {
+                        m_action = NO_ACTION;
+
                         m_currentTerminatingSequenceCount               = 0;    // Reset.
                         m_currentTerminatingSpriteSoundSamplesListIndex = 0;
 
-                        // Set the current sprite bitmaps.
+                        // Set the sprite's current bitmaps.
 
-                        SetCurrentSpriteBitmaps (m_direction, m_spriteDrawingList, true);
+                        SetCurrentSpriteBitmaps (m_direction, 
+                                                 m_spriteDrawingList, 
+                                                 true); // Set the sprite's screen size.
                     } // Endif.
 
                 } // Endif.
@@ -2283,14 +2608,17 @@ void    ASprite::SetSpriteScreenSize (const SpriteDrawing::SpriteBitmap& spriteB
 
         if (bitmapScreenWidth != m_screenWidth)
         {
-            // Yes. Set the sprite's screen width.
+            // Yes. Calculate the sprite's new screen X position.
 
-            m_screenRect.X      = CalculateScreenXLeft (bitmapScreenWidth);
-            m_screenRect.Width  = bitmapScreenWidth;
+            m_screenRect.X = CalculateScreenXLeft (bitmapScreenWidth);
 
-            SetScreenWidth (bitmapScreenWidth);
+            // Set the sprite's new width.
 
-            m_collisionRect.X = CalculateCollisionXLeft ();
+            SetSpriteWidth (bitmapScreenWidth, false);
+
+            // Calculate the sprite's new moving X position.
+
+            m_movingRect.X = CalculateMovingXLeft (bitmapScreenWidth);
         } // Endif.
 
         // Get the sprite's bitmap screen height.
@@ -2301,14 +2629,17 @@ void    ASprite::SetSpriteScreenSize (const SpriteDrawing::SpriteBitmap& spriteB
 
         if (bitmapScreenHeight != m_screenHeight)
         {
-            // Yes. Set the sprite's screen height.
+            // Yes. Calculate the sprite's new screen Y position.
 
-            m_screenRect.Y      = CalculateScreenYTop (bitmapScreenHeight);
-            m_screenRect.Height = bitmapScreenHeight;
+            m_screenRect.Y = CalculateScreenYTop (bitmapScreenHeight);
 
-            SetScreenHeight (bitmapScreenHeight);
-        
-            m_collisionRect.Y = CalculateCollisionYTop ();
+            // Set the sprite's new height.
+
+            SetSpriteHeight (bitmapScreenHeight);
+
+            // Calculate the sprite's new moving Y position.
+
+            m_movingRect.Y = CalculateMovingYTop (bitmapScreenHeight);
         } // Endif.
     
     } // Endif.
@@ -2366,14 +2697,54 @@ void    ASprite::CalculateScreenRect (UInt32                speed,
 } // Endproc.
 
 
+void    ASprite::SetSpriteWidth (Int32  bitmapScreenWidth,
+                                 bool   setMovingWidth)
+{
+    // Set the sprite's new screen width.
+
+    m_screenRect.Width = bitmapScreenWidth;
+
+    SetScreenWidth (bitmapScreenWidth);
+
+    if (setMovingWidth)
+    {
+        // Calculate the sprite's new moving width.
+
+        m_movingRect.Width = CalculateMovingWidth (bitmapScreenWidth);
+    } // Endproc.
+
+} // Endproc.
+
+
+void    ASprite::SetSpriteHeight (Int32 bitmapScreenHeight,
+                                  bool  setMovingHeight)
+{
+    // Set the sprite's new screen height.
+
+    m_screenRect.Height = bitmapScreenHeight;
+
+    SetScreenHeight (bitmapScreenHeight);
+
+    if (setMovingHeight)
+    {
+        // Calculate the sprite's new moving height.
+
+        m_movingRect.Height = CalculateMovingHeight (bitmapScreenHeight);
+    } // Endif.
+
+} // Endproc.
+
+
 void    ASprite::MoveUp (UInt32                 speed,
                          const ACollisionGrid&  collisionGrid)
 {
-    m_collisionRect.Y -= speed; // Move up.
+    m_movingRect.Y -= speed;    // Move up.
 
     // Check the sprite's position.
 
     CheckSpritePosition (collisionGrid, ACollisionGrid::UP);
+
+    // Calculate the sprite's new screen Y position.
 
     m_screenRect.Y = CalculateScreenYTop (ACollisionGrid::UP);
 } // Endproc.
@@ -2382,11 +2753,13 @@ void    ASprite::MoveUp (UInt32                 speed,
 void    ASprite::MoveDown (UInt32                   speed,
                            const ACollisionGrid&    collisionGrid)
 {
-    m_collisionRect.Y += speed; // Move down.
+    m_movingRect.Y += speed;    // Move down.
 
     // Check the sprite's position.
 
     CheckSpritePosition (collisionGrid, ACollisionGrid::DOWN);
+
+    // Calculate the sprite's new screen Y position.
 
     m_screenRect.Y = CalculateScreenYTop (ACollisionGrid::DOWN);
 } // Endproc.
@@ -2395,12 +2768,14 @@ void    ASprite::MoveDown (UInt32                   speed,
 void    ASprite::MoveLeft (UInt32                   speed,
                            const ACollisionGrid&    collisionGrid)
 {
-    m_collisionRect.X -= speed; // Move left.
+    m_movingRect.X -= speed;    // Move left.
     
     // Check the sprite's position.
 
     CheckSpritePosition (collisionGrid, ACollisionGrid::LEFT);
     
+    // Calculate the sprite's new screen X position.
+
     m_screenRect.X = CalculateScreenXLeft (ACollisionGrid::LEFT);
 } // Endproc.
 
@@ -2408,12 +2783,14 @@ void    ASprite::MoveLeft (UInt32                   speed,
 void    ASprite::MoveRight (UInt32                  speed,
                             const ACollisionGrid&   collisionGrid)
 {
-    m_collisionRect.X += speed; // Move right.
+    m_movingRect.X += speed;    // Move right.
 
     // Check the sprite's position.
 
     CheckSpritePosition (collisionGrid, ACollisionGrid::RIGHT);
     
+    // Calculate the sprite's new screen X position.
+
     m_screenRect.X = CalculateScreenXLeft (ACollisionGrid::RIGHT);
 } // Endproc.
 
@@ -2425,11 +2802,24 @@ FolioStatus ASprite::CheckSpritePosition (const ACollisionGrid&     collisionGri
 
     // Check for wall collision.
 
-    collisionGrid.IsWallCollision (collisionGridDirection, m_collisionRect);
+    m_isAtWall = collisionGrid.IsWallCollision (collisionGridDirection, m_movingRect);
 
-    // Is the sprite outwith the floor bound?
+    if (!m_isAtWall)
+    {
+        // Check exited screen.
 
-    if (collisionGrid.IsOutwithFloorBound (collisionGridDirection, m_collisionRect))
+        m_isExitedScreen = collisionGrid.IsExitedScreen (collisionGridDirection, 
+                                                         false,   // Not external to floor bound.
+                                                         m_movingRect,
+                                                         m_isAtLockedScreenExit,
+                                                         m_isInScreenExit,
+                                                         m_screenExit);
+    } // Endif.
+
+    // Has the sprite collided with a wall or exited the screen, and should it rebound?
+
+    if ((m_isAtWall       && (m_reboundFlags & WALL_REBOUND)) ||
+        (m_isExitedScreen && (m_reboundFlags & FLOOR_BOUND_REBOUND)))
     {
         // Yes. Play the sprite's rebound sound
 
@@ -2440,6 +2830,20 @@ FolioStatus ASprite::CheckSpritePosition (const ACollisionGrid&     collisionGri
             // Set the sprite's direction.
 
             status = SetDirection (GetFloorBoundDirection (collisionGridDirection));
+
+            if (status == ERR_SUCCESS)
+            {
+                m_isAtWall = false;
+
+                if (m_isExitedScreen)
+                {
+                    // Reset the screen exit
+                
+                    ResetScreenExit (); 
+                } // Endif.
+
+            } // Endif.
+
         } // Endif.
 
     } // Endif.
@@ -2448,37 +2852,10 @@ FolioStatus ASprite::CheckSpritePosition (const ACollisionGrid&     collisionGri
 } // Endproc.
 
 
-Direction  ASprite::GetFloorBoundDirection (ACollisionGrid::DIRECTION collisionGridDirection) const
+FolioStatus ASprite::PlaySpriteSoundResource (FolioHandle    spriteSoundResource,
+                                              bool           playAsynchronously) const
 {
-    Direction   direction = m_direction;    // Note the sprite's current direction.
-
-    switch (collisionGridDirection)
-    {
-    case ACollisionGrid::UP:
-        direction &= ~N;
-        direction |= S;
-        break;
-
-    case ACollisionGrid::DOWN:
-        direction &= ~S;
-        direction |= N;
-        break;
-
-    case ACollisionGrid::LEFT:
-        direction &= ~W;
-        direction |= E;
-        break;
-
-    case ACollisionGrid::RIGHT:
-        direction &= ~E;
-        direction |= W;
-        break;
-
-    default:
-        break;
-    } // Endswitch.
-
-    return (direction);
+    return (Folio::Core::Util::Sound::PlaySoundResource (spriteSoundResource, playAsynchronously));
 } // Endproc.
 
 
@@ -2571,6 +2948,18 @@ FolioStatus ASprite::SetCurrentSpriteMovementSoundSample (Direction direction)
     } // Endelse.
 
     return (status);
+} // Endproc.
+
+
+void    ASprite::StartActionTickCount (UInt32 actionTickCount)
+{
+    m_actionTickCount = Folio::Core::Util::DateTime::GetCurrentTickCount () + actionTickCount;
+} // Endproc.
+
+
+bool    ASprite::IsActionTickCountComplete () const
+{
+    return (Folio::Core::Util::DateTime::GetCurrentTickCount () >= m_actionTickCount);
 } // Endproc.
 
 } // Endnamespace.

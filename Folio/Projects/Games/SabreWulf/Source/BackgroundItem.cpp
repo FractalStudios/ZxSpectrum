@@ -117,7 +117,7 @@ FolioStatus BackgroundItem::QueryDrawingElements (FolioHandle                   
                                                                     m_screenYTop,
                                                                     Folio::Core::Game::ZxSpectrum::DEFAULT_SCREEN_SCALE,
                                                                     Folio::Core::Game::ResourceGraphic::NO_DRAWING_FLAGS,
-                                                                    const_cast<BackgroundItem *> (this),    // Drawing element user data.
+                                                                    this,   // Drawing element user data.
                                                                     m_drawingElementsList,
                                                                     false); // Masked drawing element not required.
         } // Endif.
